@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2024-2034 the original author or authors.
+  Copyright 2024-2024 the original author or authors.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -29,13 +29,16 @@
 
     <artifactId>multiple-tenant-platform</artifactId>
     <version>${revision}</version>
-    <name>Multiple Tenant Platform Parent</name>
+    <name>Multiple Tenant Platform Parent ${project.version}</name>
     <description>多租户平台父Pom</description>
     <packaging>pom</packaging>
 
     <inceptionYear>2024</inceptionYear>
     <modules>
-        <module>tenant-admin</module>
+        <module>tenant-application</module>
+        <module>tenant-domain</module>
+        <module>tenant-common</module>
+        <module>tenant-infrastructure</module>
     </modules>
     <url>https://github.com/fuhouyu/multiple-tenant-platform</url>
 
@@ -72,7 +75,30 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.test.skip>false</maven.test.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
+
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!--内部依赖-->
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>tenant-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>tenant-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>tenant-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
     <build>
@@ -80,36 +106,10 @@
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
-                <version>${apache-rat-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>..gitignore</exclude>
-                        <exclude>CHANGELOG.md</exclude>
-                        <exclude>qodana.yaml</exclude>
-                        <exclude>qodana.yaml</exclude>
-                        <exclude>style/*</exclude>
-                        <exclude>README.md</exclude>
-                        <exclude>**/*.md</exclude>
-                        <exclude>.github/**/*</exclude>
-                        <exclude>logs/*</exclude>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.imports</exclude>
-                        <exclude>**/**.yaml</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
