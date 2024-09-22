@@ -9,11 +9,32 @@ on:
 jobs:
   qodana:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 8 ]
     permissions:
       contents: write
       pull-requests: write
       checks: write
     steps:
+      - name: Setup JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '${{ matrix.java }}'
+      - name: "Cache Maven Repos"
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Checkout Parent Dependency
+        run: |
+          git clone -b develop https://github.com/fuhouyu/base-framework.git
+      - name: Install dependencies
+        run: mvn clean install -DskipTests -f base-framework/pom.xml
+
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
