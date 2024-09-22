@@ -45,9 +45,9 @@ jobs:
         uses: JetBrains/qodana-action@v2024.2
         with:
           pr-mode: false
-        primary-cache-key: |
-          ${{ runner.os }}-maven-
-          qodana-2024.2-${{ github.ref }}-${{ github.sha }}
+          primary-cache-key: |
+            ${{ runner.os }}-maven-
+            qodana-2024.2-${{ github.ref }}-${{ github.sha }}
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2092355812 }}
           QODANA_ENDPOINT: 'https://qodana.cloud'
