@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:tenant_admin
+    username: username
+    password: password
+    type: com.alibaba.druid.pool.DruidDataSource
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:db/migrate/v1.0.0/sql-init.sql
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2024-2034 the original author or authors.
+  Copyright 2024-2024 the original author or authors.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -25,27 +25,16 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tenant-admin</artifactId>
-    <packaging>jar</packaging>
-    <name>Tenant Admin</name>
-    <description>租户后台运营管理系统</description>
+    <artifactId>tenant-common</artifactId>
+    <name>Tenant Common</name>
+    <description>租户公共租件</description>
 
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-common</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
