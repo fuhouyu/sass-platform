@@ -22,24 +22,31 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '${{ matrix.java }}'
-      - name: "Cache Maven Repos"
+      - name: Cache Maven Repos
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Checkout parent dependencies
+        run: |
+          git clone -b develop https://github.com/fuhouyu/base-framework.git
+      # 安装父级依赖
+      - name: Install parent dependencies
+        run: mvn clean install -DskipTests -f base-framework/pom.xml
+
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
           fetch-depth: 0  # a full history is required for pull request analysis
+
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
-        run: |
-          git clone -b develop https://github.com/fuhouyu/base-framework.git
-          mvn clean install -DskipTests -f base-framework/pom.xml
         with:
           pr-mode: false
+        restore-keys: |
+          ${{ runner.os }}-maven-
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_2092355812 }}
           QODANA_ENDPOINT: 'https://qodana.cloud'
