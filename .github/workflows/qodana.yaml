@@ -45,6 +45,9 @@ jobs:
         uses: JetBrains/qodana-action@v2024.2
         with:
           pr-mode: false
+          path: ~/.m2/repository
+          restore-keys: |
+            ${{ runner.os }}-maven-
           primary-cache-key: |
             ${{ runner.os }}-maven-
             qodana-2024.2-${{ github.ref }}-${{ github.sha }}
