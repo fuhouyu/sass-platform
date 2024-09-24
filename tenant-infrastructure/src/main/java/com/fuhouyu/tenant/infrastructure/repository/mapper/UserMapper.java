@@ -15,23 +15,23 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository.mapper;
 
-import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
+import com.fuhouyu.tenant.infrastructure.repository.orm.UserDO;
 
 /**
  * <p>
- * 租户mapper接口
+ * 用户mapper接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 22:29
+ * @since 2024/9/24 20:26
  */
-public interface TenantMapper extends BaseMapper<TenantDO, Long> {
+public interface UserMapper extends BaseMapper<UserDO, Long> {
 
     /**
-     * 通过租户编码进行查询
+     * 通过用户名称查询
      *
-     * @param tenantCode 租户编码
-     * @return 租户do实体对象
+     * @param username 用户名称
+     * @return userDO对象
      */
-    TenantDO queryByTenantCode(String tenantCode);
+    UserDO queryByUsername(String username);
 }

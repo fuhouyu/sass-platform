@@ -34,7 +34,7 @@ public interface BaseRepository<T, ID> {
      * @param id 主键id
      * @return 返回model
      */
-    T queryById(ID id);
+    T findById(ID id);
 
     /**
      * 通过id删除
@@ -42,7 +42,7 @@ public interface BaseRepository<T, ID> {
      * @param id 主键id
      * @return 影响行数
      */
-    int deleteById(ID id);
+    int removeById(ID id);
 
     /**
      * 将数据保存到存储库
@@ -50,7 +50,7 @@ public interface BaseRepository<T, ID> {
      * @param model model
      * @return 保存后的model对象
      */
-    T insert(T model);
+    T save(T model);
 
 
     /**
@@ -59,7 +59,7 @@ public interface BaseRepository<T, ID> {
      * @param model model
      * @return 模型对象
      */
-    T update(T model);
+    T edit(T model);
 
     /**
      * 分页查询对象

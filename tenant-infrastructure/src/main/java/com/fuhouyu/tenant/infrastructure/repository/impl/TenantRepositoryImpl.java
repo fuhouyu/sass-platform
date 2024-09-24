@@ -51,22 +51,22 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantEntity queryByTenantCode(String tenantCode) {
+    public TenantEntity findByTenantCode(String tenantCode) {
         return tenantAssembler.toModel(tenantMapper.queryByTenantCode(tenantCode));
     }
 
     @Override
-    public TenantEntity queryById(Long id) {
+    public TenantEntity findById(Long id) {
         return tenantAssembler.toModel(tenantMapper.queryById(id));
     }
 
     @Override
-    public int deleteById(Long id) {
+    public int removeById(Long id) {
         return tenantMapper.deleteById(id);
     }
 
     @Override
-    public TenantEntity insert(TenantEntity model) {
+    public TenantEntity save(TenantEntity model) {
         TenantDO tenantDO = tenantAssembler.toEntity(model);
         // TODO 这里后面需要做其它的处理
         tenantMapper.insert(tenantDO);
@@ -74,7 +74,7 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantEntity update(TenantEntity model) {
+    public TenantEntity edit(TenantEntity model) {
         TenantDO tenantDO = tenantAssembler.toEntity(model);
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);

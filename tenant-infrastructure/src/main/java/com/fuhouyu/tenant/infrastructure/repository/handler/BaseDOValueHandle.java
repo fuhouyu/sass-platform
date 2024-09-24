@@ -93,6 +93,7 @@ public class BaseDOValueHandle implements Interceptor {
         baseDO.setUpdateAt(nowTime);
         baseDO.setCrateBy(username);
         baseDO.setUpdateBy(username);
+        baseDO.setIsDeleted(false);
     }
 
     /**
