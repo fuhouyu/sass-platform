@@ -16,6 +16,7 @@
 package com.fuhouyu.tenant.infrastructure.repository.mapper;
 
 import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -25,7 +26,8 @@ import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
  * @author fuhouyu
  * @since 2024/9/20 22:29
  */
-public interface TenantMapper extends BaseMapper<TenantDO> {
+@Mapper
+public interface TenantMapper extends BaseMapper<TenantDO, Long> {
 
     /**
      * 通过租户编码进行查询

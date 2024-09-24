@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.tenant.domain.repository;
 
-import com.fuhouyu.tenant.domain.model.BasePageQueryModel;
-import com.fuhouyu.tenant.domain.model.PageResultModel;
+import com.fuhouyu.tenant.common.PageQuery;
+import com.fuhouyu.tenant.common.PageResult;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ import com.fuhouyu.tenant.domain.model.PageResultModel;
  * @author fuhouyu
  * @since 2024/9/20 17:42
  */
-public interface BaseRepository<T> {
+public interface BaseRepository<T, ID> {
 
     /**
      * 通过id查询model
@@ -34,7 +34,7 @@ public interface BaseRepository<T> {
      * @param id 主键id
      * @return 返回model
      */
-    T queryById(Long id);
+    T queryById(ID id);
 
     /**
      * 通过id删除
@@ -42,7 +42,7 @@ public interface BaseRepository<T> {
      * @param id 主键id
      * @return 影响行数
      */
-    int deleteById(Long id);
+    int deleteById(ID id);
 
     /**
      * 将数据保存到存储库
@@ -68,5 +68,5 @@ public interface BaseRepository<T> {
      * @param <P>      具体的分页查询类型，由子类定义传入
      * @return 分页查询的model
      */
-    <P extends BasePageQueryModel> PageResultModel<T> pageList(P pageable);
+    <P extends PageQuery> PageResult<T> pageList(P pageable);
 }

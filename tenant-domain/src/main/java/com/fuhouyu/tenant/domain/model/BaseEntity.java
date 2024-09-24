@@ -15,62 +15,45 @@
  */
 package com.fuhouyu.tenant.domain.model;
 
-import lombok.*;
+import com.fuhouyu.tenant.common.Entity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
- * 租户模型类
+ * 基础模型
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 16:59
+ * @since 2024/9/20 17:00
  */
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
-public class TenantModel extends BaseModel {
+public abstract class BaseEntity<ID> implements Serializable, Entity<ID> {
 
     /**
-     * 主键id
+     * 创建时间
      */
-    private Long id;
+    private LocalDateTime crateAt;
 
     /**
-     * 租户编码
+     * 更新时间
      */
-    private String tenantCode;
+    private LocalDateTime updateAt;
 
     /**
-     * 租户名称
+     * 创建人
      */
-    private String tenantName;
+    private String crateBy;
 
     /**
-     * 租户类型
+     * 操作人
      */
-    private String tenantType;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 租户图标
-     */
-    private String icon;
-
-    /**
-     * 联系人
-     */
-    private String contactPerson;
-
-    /**
-     * 联系电话
-     */
-    private String contactNumber;
-
+    private String updateBy;
 
 }

@@ -13,46 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model;
+package com.fuhouyu.tenant.common;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
- * 基础模型
+ * 分页结果集的model对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 17:00
+ * @since 2024/9/21 21:27
  */
 @Getter
 @Setter
 @ToString
-public class BaseModel implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageResult<T> {
 
-    /**
-     * 创建时间
-     */
-    private LocalDateTime crateAt;
+    private int pageNum;
 
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateAt;
+    private int pageSize;
 
-    /**
-     * 创建人
-     */
-    private String crateBy;
+    private long total;
 
-    /**
-     * 操作人
-     */
-    private String updateBy;
-
+    private List<T> list;
 }

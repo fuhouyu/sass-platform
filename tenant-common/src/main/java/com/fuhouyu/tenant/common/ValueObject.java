@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model;
+package com.fuhouyu.tenant.common;
 
-import lombok.*;
-
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * <p>
- * 分页结果集的model对象
+ * 值对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/21 21:27
+ * @since 2024/9/24 16:54
  */
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class PageResultModel<T> {
+public interface ValueObject<T> extends Serializable {
 
-    private int pageNum;
-
-    private int pageSize;
-
-    private long total;
-
-    private List<T> list;
+    /**
+     * 判断两个值对象的属性是否相同
+     *
+     * @param other 值对象
+     * @return 相同返回为true
+     */
+    boolean sameValueAs(T other);
 }

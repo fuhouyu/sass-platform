@@ -17,7 +17,7 @@ package com.fuhouyu.tenant.domain.service.impl;
 
 import com.fuhouyu.framework.exception.WebServiceException;
 import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.tenant.domain.model.TenantModel;
+import com.fuhouyu.tenant.domain.model.TenantEntity;
 import com.fuhouyu.tenant.domain.repository.TenantRepository;
 import com.fuhouyu.tenant.domain.service.TenantDomainService;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ public class TenantDomainServiceImpl implements TenantDomainService {
 
 
     @Override
-    public TenantModel create(TenantModel tenantModel) {
-        TenantModel existsTenantModel = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
+    public TenantEntity create(TenantEntity tenantModel) {
+        TenantEntity existsTenantModel = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
         if (Objects.nonNull(existsTenantModel)) {
             throw new WebServiceException(
                     ResponseCodeEnum.INVALID_PARAM,
@@ -52,8 +52,8 @@ public class TenantDomainServiceImpl implements TenantDomainService {
     }
 
     @Override
-    public TenantModel update(TenantModel tenantModel) {
-        TenantModel exists = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
+    public TenantEntity update(TenantEntity tenantModel) {
+        TenantEntity exists = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
         if (Objects.isNull(exists)) {
             throw new WebServiceException(
                     ResponseCodeEnum.NOT_FOUND,

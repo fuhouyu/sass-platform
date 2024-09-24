@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.tenant.domain.repository;
 
-import com.fuhouyu.tenant.domain.model.TenantModel;
+import com.fuhouyu.tenant.domain.model.TenantEntity;
 
 /**
  * <p>
@@ -25,7 +25,7 @@ import com.fuhouyu.tenant.domain.model.TenantModel;
  * @author fuhouyu
  * @since 2024/9/20 17:23
  */
-public interface TenantRepository extends BaseRepository<TenantModel> {
+public interface TenantRepository extends BaseRepository<TenantEntity, Long> {
 
 
     /**
@@ -34,6 +34,6 @@ public interface TenantRepository extends BaseRepository<TenantModel> {
      * @param tenantCode 租户编号
      * @return 租户模型
      */
-    TenantModel queryByTenantCode(String tenantCode);
+    TenantEntity queryByTenantCode(String tenantCode);
 
 }

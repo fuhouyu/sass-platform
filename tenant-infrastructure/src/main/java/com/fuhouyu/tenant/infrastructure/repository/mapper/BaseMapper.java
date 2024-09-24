@@ -27,7 +27,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/20 22:39
  */
-public interface BaseMapper<T> {
+public interface BaseMapper<T, ID> {
 
     /**
      * 添加一个对象，返回影响的行数
@@ -50,7 +50,7 @@ public interface BaseMapper<T> {
      * @param id 主键id
      * @return 影响行数
      */
-    int deleteById(Long id);
+    int deleteById(ID id);
 
     /**
      * 通过id集合进行删除
@@ -74,7 +74,7 @@ public interface BaseMapper<T> {
      * @param id 主键id
      * @return 实体对象
      */
-    T queryById(Long id);
+    T queryById(ID id);
 
     /**
      * 批量通过id进行查询
@@ -82,7 +82,7 @@ public interface BaseMapper<T> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    List<T> queryByIds(@Param("list") List<Long> list);
+    List<T> queryByIds(@Param("list") List<ID> list);
 
 
     /**
