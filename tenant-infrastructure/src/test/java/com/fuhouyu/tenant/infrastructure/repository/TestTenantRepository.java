@@ -15,25 +15,12 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository;
 
-import com.fuhouyu.framework.context.Context;
-import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.tenant.common.PageQuery;
 import com.fuhouyu.tenant.common.PageResult;
-import com.fuhouyu.tenant.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.tenant.domain.model.TenantEntity;
 import com.fuhouyu.tenant.domain.repository.TenantRepository;
-import com.fuhouyu.tenant.infrastructure.repository.impl.TenantRepositoryImpl;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
@@ -47,45 +34,28 @@ import java.util.UUID;
  * @author fuhouyu
  * @since 2024/9/21 16:41
  */
-@ExtendWith({SpringExtension.class})
-@SpringBootTest(classes = {
-        TenantRepositoryImpl.class,
 
-})
-@SpringBootApplication
-@MapperScan(basePackages = "com.fuhouyu.tenant.infrastructure.repository.mapper")
-@TestPropertySource(locations = {"classpath:application.yaml"})
-class TestTenantRepository {
-
-    private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER = new SnowflakeIdWorker();
+class TestTenantRepository extends TestBaseRepository {
 
     @Autowired
     private TenantRepository tenantRepository;
 
-    @BeforeAll
-    static void setUp() {
-        Context<User> emptyContext = UserContextHolder.createEmptyContext();
-        DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
-        defaultUserDetail.setUsername("admin");
-        emptyContext.setObject(defaultUserDetail);
-
-    }
 
 
     @Test
     void testTenant() {
         // 保存
-        TenantEntity tenantModel = this.generateTenantModel(1);
-        tenantModel = tenantRepository.insert(tenantModel);
+        TenantEntity tenantModel = this.generateTenantModel();
+        tenantModel = tenantRepository.save(tenantModel);
         // 根据id查询
-        TenantEntity tenantModelQueryById = this.tenantRepository.queryById(tenantModel.getId());
+        TenantEntity tenantModelQueryById = this.tenantRepository.findById(tenantModel.getId());
         this.compare(tenantModel, tenantModelQueryById);
         // 根据编码查询
-        TenantEntity queryByTenantCode = this.tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
+        TenantEntity queryByTenantCode = this.tenantRepository.findByTenantCode(tenantModel.getTenantCode());
         this.compare(tenantModel, queryByTenantCode);
         // 修改
         tenantModel.setTenantName("update_tenant");
-        TenantEntity update = this.tenantRepository.update(tenantModel);
+        TenantEntity update = this.tenantRepository.edit(tenantModel);
         this.compare(tenantModel, update);
         // 批量查询
         PageQuery pageQuery = new PageQuery(1, 10);
@@ -94,11 +64,10 @@ class TestTenantRepository {
             this.compare(tenantModel, model);
         }
         // 删除
-        int count = this.tenantRepository.deleteById(tenantModel.getId());
+        int count = this.tenantRepository.removeById(tenantModel.getId());
         Assert.isTrue(count > 0, "数据删除失败");
 
     }
-
 
     private void compare(TenantEntity tenantModel, TenantEntity tenantModelQueryById) {
         Assert.isTrue(Objects.equals(tenantModel.getTenantCode(), tenantModelQueryById.getTenantCode()), "租户编码不一致");
@@ -109,12 +78,12 @@ class TestTenantRepository {
     }
 
 
-    private TenantEntity generateTenantModel(int number) {
+    private TenantEntity generateTenantModel() {
         return TenantEntity.builder()
-                .id(SNOWFLAKE_ID_WORKER.nextId())
+                .id(super.nextSnowflakeId())
                 .tenantType("company")
                 .tenantCode(getRandomString(32))
-                .tenantName("test_tenant " + number)
+                .tenantName("test_tenant " + 1)
                 .contactNumber(getRandomString(6))
                 .contactPerson(getRandomString(10))
                 .remark(UUID.randomUUID().toString()).build();

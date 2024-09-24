@@ -15,32 +15,36 @@
   limitations under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuhouyu.tenant.infrastructure.repository.mapper.TenantMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO" extends="com.fuhouyu.tenant.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
+<mapper namespace="com.fuhouyu.tenant.infrastructure.repository.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO" extends="com.fuhouyu.tenant.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR"/>
-        <result column="tenant_name" property="tenantName" jdbcType="VARCHAR"/>
-        <result column="tenant_type" property="tenantType" jdbcType="VARCHAR"/>
-        <result column="remark" property="remark" jdbcType="VARCHAR"/>
-        <result column="icon" property="icon" jdbcType="VARCHAR"/>
-        <result column="contact_person" property="contactPerson" jdbcType="VARCHAR"/>
-        <result column="contact_number" property="contactNumber" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
+        <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BIGINT"/>
         <result column="is_deleted" property="isDeleted" jdbcType="BOOLEAN"/>
     </resultMap>
 
     <sql id="TableName">
-        tenants
+        users
     </sql>
 
     <sql id="AllColumns">
         id,
-        tenant_code,
-        tenant_name,
-        tenant_type,
-        remark,
-        icon,
-        contact_person,
-        contact_number,
+        username,
+        real_name,
+        nickname,
+        email,
+        gender,
+        avatar,
+        login_date,
+        login_ip,
+        owner_tenant_id,
         is_deleted,
         create_at,
         update_at,
@@ -48,7 +52,7 @@
         update_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO">
+    <insert id="insert" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -57,13 +61,15 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
-            #{tenantCode},
-            #{tenantName},
-            #{tenantType},
-            #{remark},
-            #{icon},
-            #{contactPerson},
-            #{contactNumber},
+            #{username},
+            #{realName},
+            #{nickname},
+            #{email},
+            #{gender},
+            #{avatar},
+            #{loginDate},
+            #{loginIp},
+            #{ownerTenantId},
             #{isDeleted},
             #{crateAt},
             #{updateAt},
@@ -82,22 +88,25 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
-                #{entity.tenantCode},
-                #{entity.tenatName},
-                #{entity.tenantType},
-                #{entity.remark},
-                #{entity.icon},
-                #{entity.contactPerson},
-                #{entity.contactNumber},
+                #{entity.username},
+                #{entity.realName},
+                #{entity.nickname},
+                #{entity.email},
+                #{entity.gender},
+                #{entity.avatar},
+                #{entity.loginDate},
+                #{entity.loginIp},
+                #{entity.ownerTenantId},
+                #{entity.isDeleted},
                 #{entity.crateAt},
                 #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy},
+                #{entity.crateBy},
+                #{entity.updateBy}
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO">
+    <update id="update" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -146,10 +155,10 @@
     </select>
 
 
-    <select id="queryByTenantCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="queryByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT <include refid="AllColumns"/>
         FROM <include refid="TableName"/>
-        WHERE tenant_code = #{tenantCode}
+        WHERE username = #{username}
     </select>
 
     <select id="queryList" resultMap="BaseResultMap" >

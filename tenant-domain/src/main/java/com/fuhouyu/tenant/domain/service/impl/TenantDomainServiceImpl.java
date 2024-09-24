@@ -42,23 +42,23 @@ public class TenantDomainServiceImpl implements TenantDomainService {
 
     @Override
     public TenantEntity create(TenantEntity tenantModel) {
-        TenantEntity existsTenantModel = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
+        TenantEntity existsTenantModel = tenantRepository.findByTenantCode(tenantModel.getTenantCode());
         if (Objects.nonNull(existsTenantModel)) {
             throw new WebServiceException(
                     ResponseCodeEnum.INVALID_PARAM,
                     "当前租户编码: %s 已存在.", existsTenantModel.getTenantCode());
         }
-        return tenantRepository.insert(tenantModel);
+        return tenantRepository.save(tenantModel);
     }
 
     @Override
     public TenantEntity update(TenantEntity tenantModel) {
-        TenantEntity exists = tenantRepository.queryByTenantCode(tenantModel.getTenantCode());
+        TenantEntity exists = tenantRepository.findByTenantCode(tenantModel.getTenantCode());
         if (Objects.isNull(exists)) {
             throw new WebServiceException(
                     ResponseCodeEnum.NOT_FOUND,
                     "当前租户不存在: %s.", tenantModel.getTenantCode());
         }
-        return this.tenantRepository.update(tenantModel);
+        return this.tenantRepository.edit(tenantModel);
     }
 }

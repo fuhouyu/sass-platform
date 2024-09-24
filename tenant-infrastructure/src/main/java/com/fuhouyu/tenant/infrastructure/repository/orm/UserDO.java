@@ -20,48 +20,76 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * do基类
+ * 用户do对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 22:25
+ * @since 2024/9/24 19:22
  */
+@ToString
 @Getter
 @Setter
-@ToString
-public class BaseDO implements Serializable {
+public class UserDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键id
+     */
+    private Long id;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
+     * 邮件地址
+     */
+    private String email;
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 头像地址
+     */
+    private String avatar;
+
+    /**
+     * 登录时间
+     */
+    private LocalDateTime loginDate;
+
+    /**
+     * 登录ip
+     */
+    private String loginIp;
+
+    /**
+     * 所属的租户id
+     */
+    private Long ownerTenantId;
+
+    /**
      * 是否删除标记
      */
     private Boolean isDeleted;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime crateAt;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateAt;
-
-    /**
-     * 创建人
-     */
-    private String crateBy;
-
-    /**
-     * 操作人
-     */
-    private String updateBy;
-
 }

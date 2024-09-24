@@ -34,6 +34,6 @@ public interface TenantRepository extends BaseRepository<TenantEntity, Long> {
      * @param tenantCode 租户编号
      * @return 租户模型
      */
-    TenantEntity queryByTenantCode(String tenantCode);
+    TenantEntity findByTenantCode(String tenantCode);
 
 }
