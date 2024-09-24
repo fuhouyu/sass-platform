@@ -13,47 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.infrastructure.repository.orm;
+package com.fuhouyu.tenant.common;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * <p>
- * do基类
+ * 基础的查询model对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 22:25
+ * @since 2024/9/20 17:49
  */
+@ToString
 @Getter
 @Setter
-@ToString
-public class BaseDO implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageQuery implements Serializable {
 
+    private int pageNumber;
 
-    /**
-     * 创建时间
-     */
-    private LocalDateTime crateAt;
+    private int pageSize;
 
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateAt;
-
-    /**
-     * 创建人
-     */
-    private String crateBy;
-
-    /**
-     * 操作人
-     */
-    private String updateBy;
 
 }

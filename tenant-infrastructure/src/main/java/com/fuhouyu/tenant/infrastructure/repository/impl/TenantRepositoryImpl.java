@@ -17,9 +17,9 @@ package com.fuhouyu.tenant.infrastructure.repository.impl;
 
 import com.fuhouyu.framework.exception.WebServiceException;
 import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.tenant.domain.model.BasePageQueryModel;
-import com.fuhouyu.tenant.domain.model.PageResultModel;
-import com.fuhouyu.tenant.domain.model.TenantModel;
+import com.fuhouyu.tenant.common.PageQuery;
+import com.fuhouyu.tenant.common.PageResult;
+import com.fuhouyu.tenant.domain.model.TenantEntity;
 import com.fuhouyu.tenant.domain.repository.TenantRepository;
 import com.fuhouyu.tenant.infrastructure.repository.convert.TenantAssembler;
 import com.fuhouyu.tenant.infrastructure.repository.mapper.TenantMapper;
@@ -28,7 +28,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -52,12 +51,12 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantModel queryByTenantCode(String tenantCode) {
+    public TenantEntity queryByTenantCode(String tenantCode) {
         return tenantAssembler.toModel(tenantMapper.queryByTenantCode(tenantCode));
     }
 
     @Override
-    public TenantModel queryById(Long id) {
+    public TenantEntity queryById(Long id) {
         return tenantAssembler.toModel(tenantMapper.queryById(id));
     }
 
@@ -67,20 +66,15 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantModel insert(TenantModel model) {
+    public TenantEntity insert(TenantEntity model) {
         TenantDO tenantDO = tenantAssembler.toEntity(model);
-        LocalDateTime nowTime = LocalDateTime.now();
-        tenantDO.setCrateAt(nowTime);
-        tenantDO.setUpdateAt(nowTime);
-        tenantDO.setCrateBy("admin");
-        tenantDO.setUpdateBy("admin");
         // TODO 这里后面需要做其它的处理
         tenantMapper.insert(tenantDO);
         return tenantAssembler.toModel(tenantDO);
     }
 
     @Override
-    public TenantModel update(TenantModel model) {
+    public TenantEntity update(TenantEntity model) {
         TenantDO tenantDO = tenantAssembler.toEntity(model);
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);
@@ -92,11 +86,11 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public <P extends BasePageQueryModel> PageResultModel<TenantModel> pageList(P pageable) {
+    public <P extends PageQuery> PageResult<TenantEntity> pageList(P pageable) {
         try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
             List<TenantDO> tenantList = this.tenantMapper.queryList();
-            List<TenantModel> modelList = this.tenantAssembler.toModel(tenantList);
-            return new PageResultModel<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
+            List<TenantEntity> modelList = this.tenantAssembler.toModel(tenantList);
+            return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
         }
     }
 }

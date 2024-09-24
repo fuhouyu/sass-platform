@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model;
-
-import lombok.*;
+package com.fuhouyu.tenant.common;
 
 import java.io.Serializable;
 
 /**
  * <p>
- * 基础的查询model对象
+ * 实体接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 17:49
+ * @since 2024/9/24 16:49
  */
-@ToString
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class BasePageQueryModel implements Serializable {
+public interface Entity<ID> extends Serializable {
 
-    private int pageNumber;
+    /**
+     * 获取唯一标识符id
+     *
+     * @return 标识id
+     */
+    ID getIdentifierId();
 
-    private int pageSize;
-
-
+    /**
+     * 判断实体中的标识是否一致
+     *
+     * @param other 标识符
+     * @return 标识符相同时返回true
+     */
+    boolean sameIdentityAs(ID other);
 }

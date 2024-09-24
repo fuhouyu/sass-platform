@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository.convert;
 
-import com.fuhouyu.tenant.domain.model.TenantModel;
+import com.fuhouyu.tenant.domain.model.TenantEntity;
 import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -36,11 +36,11 @@ public interface TenantAssembler {
 
     TenantAssembler INSTANCE = Mappers.getMapper(TenantAssembler.class);
 
-    TenantModel toModel(TenantDO tenantDO);
+    TenantEntity toModel(TenantDO tenantDO);
 
-    TenantDO toEntity(TenantModel tenantModel);
+    TenantDO toEntity(TenantEntity tenantModel);
 
-    List<TenantModel> toModel(List<TenantDO> tenantDOList);
+    List<TenantEntity> toModel(List<TenantDO> tenantDOList);
 
-    List<TenantDO> toEntity(List<TenantModel> tenantModelList);
+    List<TenantDO> toEntity(List<TenantEntity> tenantModelList);
 }

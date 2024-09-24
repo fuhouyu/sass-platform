@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.tenant.domain.service;
 
-import com.fuhouyu.tenant.domain.model.TenantModel;
+import com.fuhouyu.tenant.domain.model.TenantEntity;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ public interface TenantDomainService {
      * @param tenantModel 租户模型对象
      * @return 租户模型对象
      */
-    TenantModel create(TenantModel tenantModel);
+    TenantEntity create(TenantEntity tenantModel);
 
     /**
      * 修改租户模型对象
@@ -42,5 +42,5 @@ public interface TenantDomainService {
      * @param tenantModel 租户模型对象
      * @return 租户模型对象
      */
-    TenantModel update(TenantModel tenantModel);
+    TenantEntity update(TenantEntity tenantModel);
 }
