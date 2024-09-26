@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.fuhouyu</groupId>
-        <artifactId>multiple-tenant-platform</artifactId>
+        <artifactId>sass-platform</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>

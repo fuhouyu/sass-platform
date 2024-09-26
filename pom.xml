@@ -27,10 +27,10 @@
         <relativePath/>
     </parent>
 
-    <artifactId>multiple-tenant-platform</artifactId>
+    <artifactId>sass-platform</artifactId>
     <version>${revision}</version>
-    <name>Multiple Tenant Platform Parent ${project.version}</name>
-    <description>多租户平台父Pom</description>
+    <name>Sass Platform Parent ${project.version}</name>
+    <description>Sass平台父Pom</description>
     <packaging>pom</packaging>
 
     <inceptionYear>2024</inceptionYear>
@@ -40,21 +40,21 @@
         <module>tenant-common</module>
         <module>tenant-infrastructure</module>
     </modules>
-    <url>https://github.com/fuhouyu/multiple-tenant-platform</url>
+    <url>https://github.com/fuhouyu/sass-platform</url>
 
     <developers>
         <developer>
             <id>fuhouyu</id>
             <name>fuhouyu</name>
             <email>fuhouyu@live.cn</email>
-            <url>https://github.com/fuhouyu/multiple-tenant-platform</url>
+            <url>https://github.com/fuhouyu/sass-platform</url>
         </developer>
 
     </developers>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/fuhouyu/multiple-tenant-platform/issues</url>
+        <url>https://github.com/fuhouyu/sass-platform/issues</url>
     </issueManagement>
 
     <licenses>
