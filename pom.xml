@@ -35,10 +35,10 @@
 
     <inceptionYear>2024</inceptionYear>
     <modules>
-        <module>tenant-application</module>
-        <module>tenant-domain</module>
-        <module>tenant-common</module>
-        <module>tenant-infrastructure</module>
+        <module>sass-application</module>
+        <module>sass-domain</module>
+        <module>sass-common</module>
+        <module>sass-infrastructure</module>
     </modules>
     <url>https://github.com/fuhouyu/sass-platform</url>
 
@@ -84,17 +84,17 @@
             <!--内部依赖-->
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>tenant-common</artifactId>
+                <artifactId>sass-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>tenant-domain</artifactId>
+                <artifactId>sass-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>tenant-infrastructure</artifactId>
+                <artifactId>sass-infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
