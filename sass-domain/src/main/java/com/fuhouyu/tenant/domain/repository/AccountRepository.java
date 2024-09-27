@@ -18,6 +18,8 @@ package com.fuhouyu.tenant.domain.repository;
 import com.fuhouyu.tenant.domain.model.account.AccountEntity;
 import com.fuhouyu.tenant.domain.model.account.AccountId;
 
+import java.util.List;
+
 /**
  * <p>
  * 账号存储库
@@ -28,5 +30,12 @@ import com.fuhouyu.tenant.domain.model.account.AccountId;
  */
 public interface AccountRepository extends BaseRepository<AccountEntity, AccountId> {
 
+    /**
+     * 保存账号列表
+     *
+     * @param accounts 账号列表
+     * @return 账号列表
+     */
+    List<AccountEntity> save(List<AccountEntity> accounts);
 
 }

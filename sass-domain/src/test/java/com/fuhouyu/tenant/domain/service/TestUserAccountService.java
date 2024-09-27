@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.tenant.domain.service;
 
+import com.fuhouyu.framework.exception.WebServiceException;
 import com.fuhouyu.tenant.domain.model.account.AccountEntity;
 import com.fuhouyu.tenant.domain.model.account.AccountId;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
@@ -42,17 +43,53 @@ import static org.mockito.Mockito.when;
 class TestUserAccountService extends TestBaseService {
 
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
+
     private final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+
     @InjectMocks
     private UserAccountServiceImpl userAccountService;
+
+
+    @Test
+    void testRegister() {
+        UserAccountEntity userAccountEntity = new UserAccountEntity();
+        userAccountEntity.setUsername("username");
+        userAccountEntity.setEmail("email");
+
+        AccountId accountId = new AccountId("admin", "password");
+        AccountEntity accountEntity = new AccountEntity(accountId);
+
+        userAccountEntity.addAccount(accountEntity);
+        accountEntity.enabled();
+
+        when(this.userRepository.save(userAccountEntity))
+                .then((res) -> {
+                    userAccountEntity.setId(1L);
+                    return userAccountEntity;
+                });
+        UserAccountEntity register = this.userAccountService.register(userAccountEntity);
+        Assertions.assertEquals(1L, (long) register.getId(), "Register failed");
+        // 使用空账号注册
+        userAccountEntity.getAccounts().clear();
+        Assertions.assertThrowsExactly(WebServiceException.class, () -> {
+            this.userAccountService.register(userAccountEntity);
+        });
+        // 使注册账号时抛出异常
+        userAccountEntity.addAccount(accountEntity);
+        when(this.accountRepository.save(userAccountEntity.getAccounts()))
+                .thenThrow(WebServiceException.class);
+        Assertions.assertThrowsExactly(WebServiceException.class, () -> {
+            this.userAccountService.register(userAccountEntity);
+        });
+    }
 
     @Test
     void testLogin() throws UserPrincipalNotFoundException {
         AccountId accountId = new AccountId("admin", "password");
 
         AccountEntity accountEntity = new AccountEntity(accountId);
-        accountEntity.setIsEnabled(true);
-        accountEntity.setUserId(1L);
+        accountEntity.enabled();
+        accountEntity.attachUser(1L);
 
         UserEntity userEntity = new UserEntity();
         userEntity.setId(1L);

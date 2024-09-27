@@ -28,4 +28,12 @@ import com.fuhouyu.tenant.domain.model.user.UserEntity;
 public interface UserRepository extends BaseRepository<UserEntity, Long> {
 
 
+    /**
+     * 通过用户名查询用户实体
+     *
+     * @param username 用户名称
+     * @return 用户实体
+     */
+    UserEntity findByUsername(String username);
+
 }

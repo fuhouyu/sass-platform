@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.tenant.domain.service.impl;
 
+import com.fuhouyu.framework.exception.WebServiceException;
+import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.tenant.domain.model.account.AccountEntity;
 import com.fuhouyu.tenant.domain.model.account.AccountId;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
@@ -27,8 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -50,6 +55,17 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserRepository userRepository;
 
     @Override
+    public UserAccountEntity register(UserAccountEntity userAccountEntity) {
+        // TODO 这里的用户名需要后期生成
+        UserEntity registeredUserEntity = this.userRepository.save(userAccountEntity);
+        List<AccountEntity> registeredAccountEntity =
+                this.saveAccounts(userAccountEntity.getAccounts(), registeredUserEntity.getId());
+        BeanUtils.copyProperties(registeredUserEntity, userAccountEntity);
+        userAccountEntity.addAccounts(registeredAccountEntity);
+        return userAccountEntity;
+    }
+
+    @Override
     public UserAccountEntity login(AccountId accountId) throws UserPrincipalNotFoundException {
         AccountEntity accountEntity = this.accountRepository.findById(accountId);
         if (Objects.isNull(accountEntity)) {
@@ -66,4 +82,27 @@ public class UserAccountServiceImpl implements UserAccountService {
         return userAccountEntity;
     }
 
+
+    /**
+     * 保存账号列表
+     *
+     * @param accounts 账号列表
+     * @param userId   用户id
+     * @return 账号列表集合
+     */
+    private List<AccountEntity> saveAccounts(List<AccountEntity> accounts,
+                                             Long userId) {
+        if (CollectionUtils.isEmpty(accounts)) {
+            throw new WebServiceException(ResponseCodeEnum.INVALID_PARAM,
+                    "用户关联的账号为空，无法注册");
+        }
+        accounts.forEach(accountEntity -> accountEntity.attachUser(userId));
+        try {
+            return this.accountRepository.save(accounts);
+        } catch (Exception e) {
+            LoggerUtil.error(logger, "用户账号注册失败: {}", accounts, e);
+            throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
+                    "用户注册失败");
+        }
+    }
 }
