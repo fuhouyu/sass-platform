@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.tenant.infrastructure.repository.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO" extends="com.fuhouyu.tenant.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
+        <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="TableName">
+        users
+    </sql>
+
+    <sql id="AllColumns">
+        id,
+        username,
+        real_name,
+        nickname,
+        email,
+        gender,
+        avatar,
+        login_date,
+        login_ip,
+        is_deleted,
+        create_at,
+        update_at,
+        create_by,
+        update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{id},
+            #{username},
+            #{realName},
+            #{nickname},
+            #{email},
+            #{gender},
+            #{avatar},
+            #{loginDate},
+            #{loginIp},
+            #{isDeleted},
+            #{crateAt},
+            #{updateAt},
+            #{crateBy},
+            #{updateBy}
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.id},
+                #{entity.username},
+                #{entity.realName},
+                #{entity.nickname},
+                #{entity.email},
+                #{entity.gender},
+                #{entity.avatar},
+                #{entity.loginDate},
+                #{entity.loginIp},
+                #{entity.isDeleted},
+                #{entity.crateAt},
+                #{entity.updateAt},
+                #{entity.crateBy},
+                #{entity.updateBy}
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+        <if test="tenantName != null and tenantName != ''">
+            tenant_name = #{tenantName},
+        </if>
+        <if test="contactPerson != null and contactPerson != ''">
+            contact_person = #{contactPerson},
+        </if>
+        <if test="contactNumber != null and contactNumber != ''">
+            contact_number = #{contactNumber},
+        </if>
+        remark = #{remark},
+        update_at = #{updateAt},
+        update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="AllColumns"/>
+        FROM <include refid="TableName"/>
+        WHERE id = #{id}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="AllColumns"/>
+        FROM <include refid="TableName"/>
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="queryByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="AllColumns"/>
+        FROM <include refid="TableName"/>
+        WHERE username = #{username}
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="AllColumns"/>
+                FROM
+        <include refid="TableName"/>
+    </select>
+</mapper>
