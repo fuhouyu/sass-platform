@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +64,15 @@ public class UserAccountEntity extends UserEntity {
             this.accounts = new ArrayList<>();
         }
         this.accounts.add(account);
+    }
+
+    public void addAccounts(List<AccountEntity> accounts) {
+        if (CollectionUtils.isEmpty(accounts)) {
+            return;
+        }
+        if (Objects.isNull(this.accounts)) {
+            this.accounts = new ArrayList<>(accounts.size());
+        }
+        this.accounts.addAll(accounts);
     }
 }

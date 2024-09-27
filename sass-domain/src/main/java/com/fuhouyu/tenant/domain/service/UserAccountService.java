@@ -17,6 +17,7 @@ package com.fuhouyu.tenant.domain.service;
 
 import com.fuhouyu.tenant.domain.model.account.AccountId;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
@@ -31,10 +32,20 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 public interface UserAccountService {
 
     /**
+     * 注册用户
+     *
+     * @param userAccountEntity 用户账号实体
+     * @return 用户实体
+     */
+    @Transactional(rollbackFor = Exception.class)
+    UserAccountEntity register(UserAccountEntity userAccountEntity);
+
+    /**
      * 通过账号id进行登录
      *
      * @param accountId 账号id
      * @return 登录
      */
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     UserAccountEntity login(AccountId accountId) throws UserPrincipalNotFoundException;
 }

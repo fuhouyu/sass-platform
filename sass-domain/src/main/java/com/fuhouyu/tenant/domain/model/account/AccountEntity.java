@@ -16,10 +16,7 @@
 package com.fuhouyu.tenant.domain.model.account;
 
 import com.fuhouyu.tenant.domain.model.BaseEntity;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 /**
@@ -44,6 +41,7 @@ public class AccountEntity extends BaseEntity<AccountId> {
     /**
      * 用户id
      */
+    @Setter(AccessLevel.PRIVATE)
     private Long userId;
 
     /**
@@ -64,6 +62,7 @@ public class AccountEntity extends BaseEntity<AccountId> {
     /**
      * 是否启用标记
      */
+    @Setter(AccessLevel.PRIVATE)
     private Boolean isEnabled;
 
     @Override
@@ -82,5 +81,13 @@ public class AccountEntity extends BaseEntity<AccountId> {
 
     public void enabled() {
         this.isEnabled = true;
+    }
+
+    public void attachUser(Long userId) {
+        this.userId = userId;
+    }
+
+    public void detachUser() {
+        this.userId = null;
     }
 }
