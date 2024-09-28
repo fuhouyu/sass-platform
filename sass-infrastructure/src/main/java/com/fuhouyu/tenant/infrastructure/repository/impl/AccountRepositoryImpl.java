@@ -26,6 +26,7 @@ import com.fuhouyu.tenant.infrastructure.repository.orm.AccountDO;
 import com.fuhouyu.tenant.infrastructure.repository.orm.AccountId;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,33 +40,30 @@ import java.util.List;
  * @since 2024/9/27 23:45
  */
 @Repository
+@RequiredArgsConstructor
 public class AccountRepositoryImpl implements AccountRepository {
 
     private final AccountMapper accountMapper;
 
-    private final AccountAssembler accountAssembler;
-
-    public AccountRepositoryImpl(AccountMapper accountMapper) {
-        this.accountMapper = accountMapper;
-        this.accountAssembler = AccountAssembler.INSTANCE;
-    }
+    private static final AccountAssembler ACCOUNT_ASSEMBLER = AccountAssembler.INSTANCE;
+    
 
     @Override
     public List<AccountEntity> save(List<AccountEntity> accounts) {
-        this.accountMapper.insertBatch(this.accountAssembler.toDO(accounts));
+        this.accountMapper.insertBatch(ACCOUNT_ASSEMBLER.toDO(accounts));
         return accounts;
     }
 
     @Override
     public List<AccountEntity> findByUserId(Long userId) {
         List<AccountDO> accountDOList = this.accountMapper.queryByUserId(userId);
-        return this.accountAssembler.toEntity(accountDOList);
+        return ACCOUNT_ASSEMBLER.toEntity(accountDOList);
     }
 
     @Override
     public AccountEntity findById(AccountIdEntity accountIdEntity) {
         AccountId accountId = new AccountId(accountIdEntity.account(), accountIdEntity.accountType());
-        return this.accountAssembler.toEntity(this.accountMapper.queryById(accountId));
+        return ACCOUNT_ASSEMBLER.toEntity(this.accountMapper.queryById(accountId));
     }
 
     @Override
@@ -76,14 +74,14 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public AccountEntity save(AccountEntity entity) {
-        AccountDO accountDO = this.accountAssembler.toDO(entity);
+        AccountDO accountDO = ACCOUNT_ASSEMBLER.toDO(entity);
         this.accountMapper.insert(accountDO);
         return entity;
     }
 
     @Override
     public AccountEntity edit(AccountEntity entity) {
-        AccountDO accountDO = this.accountAssembler.toDO(entity);
+        AccountDO accountDO = ACCOUNT_ASSEMBLER.toDO(entity);
         this.accountMapper.update(accountDO);
         return entity;
     }
@@ -91,8 +89,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public <P extends PageQuery> PageResult<AccountEntity> pageList(P pageable) {
         try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
-            List<AccountDO> accountDOList = this.accountMapper.queryList();
-            List<AccountEntity> entityList = this.accountAssembler.toEntity(accountDOList);
+            List<AccountDO> accountDOList = this.accountMapper.queryList(pageable);
+            List<AccountEntity> entityList = ACCOUNT_ASSEMBLER.toEntity(accountDOList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), entityList);
         }
     }

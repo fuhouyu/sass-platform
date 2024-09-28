@@ -86,7 +86,6 @@ public class UserEntity extends BaseEntity<Long> {
      */
     private Boolean isDeleted;
 
-
     @Override
     public Long getIdentifierId() {
         return this.id;

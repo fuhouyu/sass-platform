@@ -15,82 +15,71 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository;
 
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
-import com.fuhouyu.tenant.domain.repository.AccountRepository;
+import com.fuhouyu.tenant.domain.model.user.UserEntity;
+import com.fuhouyu.tenant.domain.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
- * 用户存储层测试类
+ * 用户存储层测试
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/28 13:13
+ * @since 2024/9/28 17:31
  */
 class TestUserRepository extends TestBaseRepository {
 
+
     @Autowired
-    private AccountRepository accountRepository;
-
-    @Test
-    void testInsertAccount() {
-        AccountEntity accountEntity = this.getAccountEntity();
-        AccountEntity result = this.accountRepository.save(accountEntity);
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    void testInsertBatchAccount() {
-        List<AccountEntity> list = new ArrayList<>(10);
-        for (int i = 0; i < 10; i++) {
-            list.add(this.getAccountEntity());
-        }
-        this.accountRepository.save(list);
-    }
-
-    @Test
-    void testUpdateAccount() {
-        AccountEntity accountEntity = this.getAccountEntity();
-        this.accountRepository.save(accountEntity);
-
-        accountEntity.setRefAccountId("testUpdate");
-        accountEntity.setCredentials("testUpdate");
-        AccountEntity updateResult = this.accountRepository.edit(accountEntity);
-        Assertions.assertEquals("testUpdate", updateResult.getRefAccountId(), "参数修改的返回结果有误");
-    }
+    private UserRepository userRepository;
 
 
     @Test
-    void testQueryAccount() {
-        AccountEntity accountEntity = this.getAccountEntity();
-        AccountEntity result = this.accountRepository.save(accountEntity);
+    void testUserRepository() {
+        // 保存
+        UserEntity saveEntity = this.genertaeUserEntity();
+        UserEntity saveResult = this.userRepository.save(saveEntity);
+        Assertions.assertNotNull(saveResult.getId(), "返回的id为空");
 
-        AccountEntity queryById = this.accountRepository.findById(accountEntity.getAccountIdEntity());
-        Assertions.assertEquals(result.getAccountIdEntity(), queryById.getAccountIdEntity(), "查询出的结果不一致");
+        Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.userRepository.save(saveEntity),
+                "二次保存，用户名冲突未正常抛出异常");
 
-        AccountEntity isNull = this.accountRepository.findById(new AccountIdEntity("noExist", "noExist"));
-        Assertions.assertNull(isNull, "查询到错误的结果");
+        // 修改
+        UserEntity updateEntity = this.genertaeUserEntity();
+        updateEntity.setId(saveResult.getId());
+        UserEntity updateResult = this.userRepository.edit(updateEntity);
+        Assertions.assertNotEquals(updateResult.getRealName(), saveEntity.getRealName(), "修改未成功");
 
-        // 单次查询
-        List<AccountEntity> queryByUserId = this.accountRepository.findByUserId(accountEntity.getUserId());
-        Assertions.assertNotNull(queryByUserId, "通过用户id查询出的结果不一致");
+        // 查询
+        UserEntity queryById = this.userRepository.findById(updateResult.getId());
+        Assertions.assertNotNull(queryById, "未查询到对应数据");
+        UserEntity queryByUsername = this.userRepository.findByUsername(saveEntity.getUsername());
+        Assertions.assertNotNull(queryByUsername, "未查询到对应数据");
+
+        // 删除
+        int result = this.userRepository.removeById(updateResult.getId());
+        Assertions.assertEquals(1, result, "数据删除不正常");
+
+
     }
 
 
-    private AccountEntity getAccountEntity() {
-        AccountIdEntity accountIdEntity = new AccountIdEntity(super.getUUIDStr(8), super.getUUIDStr(10));
-        AccountEntity accountEntity = new AccountEntity(accountIdEntity);
-        accountEntity.attachUser(1L);
-        accountEntity.enabled();
-        accountEntity.setCredentials("test");
-        accountEntity.setCredentialsExpirationTime(LocalDateTime.now().plusDays(99));
-        return accountEntity;
+    private UserEntity genertaeUserEntity() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(super.getUUIDStr(8));
+        userEntity.setRealName(super.getUUIDStr(8));
+        userEntity.setNickname(super.getUUIDStr(8));
+        userEntity.setEmail(super.getUUIDStr(8));
+        userEntity.setGender(super.getUUIDStr(8));
+        userEntity.setAvatar(super.getUUIDStr(8));
+        userEntity.setLoginDate(LocalDateTime.now());
+        userEntity.setLoginIp("127.0.0.1");
+        return userEntity;
+
     }
 }

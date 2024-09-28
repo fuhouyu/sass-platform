@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository.mapper;
 
+import com.fuhouyu.tenant.common.PageQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -88,7 +89,9 @@ public interface BaseMapper<T, ID> {
     /**
      * 批量查询
      *
+     * @param pageQuery 分页查询对象
+     * @param <P> 范围查询的类型
      * @return 批量查询
      */
-    List<T> queryList();
+    <P extends PageQuery> List<T> queryList(PageQuery pageQuery);
 }

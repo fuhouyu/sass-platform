@@ -116,10 +116,10 @@
             email = #{email},
         </if>
         <if test="gender != null and gender != ''">
-            email = #{email},
+            gender = #{gender},
         </if>
         <if test="avatar != null and avatar != ''">
-            email = #{email},
+            avatar = #{avatar},
         </if>
          <if test="loginDate != null ">
             login_date = #{loginDate},

@@ -15,23 +15,26 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository.assembler;
 
-import com.fuhouyu.tenant.domain.model.tenant.TenantEntity;
-import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
-import org.mapstruct.Builder;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.fuhouyu.tenant.domain.model.BaseEntity;
+import com.fuhouyu.tenant.infrastructure.repository.orm.BaseDO;
+
+import java.util.List;
 
 /**
  * <p>
- * 租户model与do的互换转换
+ * 转换基类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/21 16:29
+ * @since 2024/9/28 16:47
  */
-@Mapper(builder = @Builder(disableBuilder = true))
-public interface TenantAssembler extends BaseAssembler<TenantEntity, TenantDO> {
+public interface BaseAssembler<Entity extends BaseEntity<?>, DO extends BaseDO> {
 
-    TenantAssembler INSTANCE = Mappers.getMapper(TenantAssembler.class);
+    DO toDO(Entity source);
 
+    List<DO> toDO(List<Entity> sourceList);
+
+    Entity toEntity(DO source);
+
+    List<Entity> toEntity(List<DO> sourceList);
 }

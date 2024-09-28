@@ -34,31 +34,36 @@ import java.util.List;
  * @since 2024/9/27 23:34
  */
 @Mapper(builder = @Builder(disableBuilder = true))
-public interface AccountAssembler {
+public interface AccountAssembler extends BaseAssembler<AccountEntity, AccountDO> {
 
     AccountAssembler INSTANCE = Mappers.getMapper(AccountAssembler.class);
 
+    @Override
     @Mappings(value = {
             @Mapping(source = "accountIdEntity.account", target = "account"),
             @Mapping(source = "accountIdEntity.accountType", target = "accountType"),
     })
-    AccountDO toDO(AccountEntity accountEntity);
+    AccountDO toDO(AccountEntity source);
 
+    @Override
     @Mappings(value = {
             @Mapping(source = "accountIdEntity.account", target = "account"),
             @Mapping(source = "accountIdEntity.accountType", target = "accountType"),
     })
-    List<AccountDO> toDO(List<AccountEntity> accountEntityList);
+    List<AccountDO> toDO(List<AccountEntity> sourceList);
 
+    @Override
     @Mappings(value = {
             @Mapping(source = "account", target = "accountIdEntity.account"),
             @Mapping(source = "accountType", target = "accountIdEntity.accountType"),
     })
-    AccountEntity toEntity(AccountDO accountDO);
+    AccountEntity toEntity(AccountDO source);
 
+    @Override
     @Mappings(value = {
             @Mapping(source = "account", target = "accountIdEntity.account"),
             @Mapping(source = "accountType", target = "accountIdEntity.accountType"),
     })
-    List<AccountEntity> toEntity(List<AccountDO> accountDOList);
+    List<AccountEntity> toEntity(List<AccountDO> sourceList);
+
 }

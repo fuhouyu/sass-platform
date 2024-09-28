@@ -26,6 +26,7 @@ import com.fuhouyu.tenant.infrastructure.repository.mapper.TenantMapper;
 import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,25 +40,21 @@ import java.util.List;
  * @since 2024/9/20 22:52
  */
 @Repository
+@RequiredArgsConstructor
 public class TenantRepositoryImpl implements TenantRepository {
 
     private final TenantMapper tenantMapper;
 
-    private final TenantAssembler tenantAssembler;
-
-    public TenantRepositoryImpl(TenantMapper tenantMapper) {
-        this.tenantMapper = tenantMapper;
-        this.tenantAssembler = TenantAssembler.INSTANCE;
-    }
+    private static final TenantAssembler TENANT_ASSEMBLER = TenantAssembler.INSTANCE;
 
     @Override
     public TenantEntity findByTenantCode(String tenantCode) {
-        return tenantAssembler.toEntity(tenantMapper.queryByTenantCode(tenantCode));
+        return TENANT_ASSEMBLER.toEntity(tenantMapper.queryByTenantCode(tenantCode));
     }
 
     @Override
     public TenantEntity findById(Long id) {
-        return tenantAssembler.toEntity(tenantMapper.queryById(id));
+        return TENANT_ASSEMBLER.toEntity(tenantMapper.queryById(id));
     }
 
     @Override
@@ -67,15 +64,15 @@ public class TenantRepositoryImpl implements TenantRepository {
 
     @Override
     public TenantEntity save(TenantEntity entity) {
-        TenantDO tenantDO = tenantAssembler.toDO(entity);
+        TenantDO tenantDO = TENANT_ASSEMBLER.toDO(entity);
         // TODO 这里后面需要做其它的处理
         tenantMapper.insert(tenantDO);
-        return tenantAssembler.toEntity(tenantDO);
+        return TENANT_ASSEMBLER.toEntity(tenantDO);
     }
 
     @Override
     public TenantEntity edit(TenantEntity entity) {
-        TenantDO tenantDO = tenantAssembler.toDO(entity);
+        TenantDO tenantDO = TENANT_ASSEMBLER.toDO(entity);
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);
         if (count > 0) {
@@ -88,8 +85,8 @@ public class TenantRepositoryImpl implements TenantRepository {
     @Override
     public <P extends PageQuery> PageResult<TenantEntity> pageList(P pageable) {
         try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
-            List<TenantDO> tenantList = this.tenantMapper.queryList();
-            List<TenantEntity> modelList = this.tenantAssembler.toEntity(tenantList);
+            List<TenantDO> tenantList = this.tenantMapper.queryList(pageable);
+            List<TenantEntity> modelList = TENANT_ASSEMBLER.toEntity(tenantList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
         }
     }
