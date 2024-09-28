@@ -127,8 +127,8 @@
     <select id="queryById" resultMap="BaseResultMap">
         SELECT <include refid="AllColumns"/>
         FROM <include refid="TableName"/>
-        WHERE account = #{id.account}
-        AND account_type = #{id.accountType}
+        WHERE account = #{account}
+        AND account_type = #{accountType}
     </select>
 
 

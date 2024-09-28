@@ -57,6 +57,12 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
+    public List<AccountEntity> findByUserId(Long userId) {
+        List<AccountDO> accountDOList = this.accountMapper.queryByUserId(userId);
+        return this.accountAssembler.toEntity(accountDOList);
+    }
+
+    @Override
     public AccountEntity findById(AccountIdEntity accountIdEntity) {
         AccountId accountId = new AccountId(accountIdEntity.account(), accountIdEntity.accountType());
         return this.accountAssembler.toEntity(this.accountMapper.queryById(accountId));

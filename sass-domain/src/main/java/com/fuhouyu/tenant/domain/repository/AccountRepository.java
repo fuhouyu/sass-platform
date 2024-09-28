@@ -38,4 +38,12 @@ public interface AccountRepository extends BaseRepository<AccountEntity, Account
      */
     List<AccountEntity> save(List<AccountEntity> accounts);
 
+    /**
+     * 通过用户id查询
+     *
+     * @param userId 用户id
+     * @return 账号实体集合
+     */
+    List<AccountEntity> findByUserId(Long userId);
+
 }
