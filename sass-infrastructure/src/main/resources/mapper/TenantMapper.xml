@@ -65,9 +65,9 @@
             #{contactPerson},
             #{contactNumber},
             #{isDeleted},
-            #{crateAt},
+            #{createAt},
             #{updateAt},
-            #{crateBy},
+            #{createBy},
             #{updateBy}
         </trim>
     </insert>
@@ -89,7 +89,7 @@
                 #{entity.icon},
                 #{entity.contactPerson},
                 #{entity.contactNumber},
-                #{entity.crateAt},
+                #{entity.createAt},
                 #{entity.updateAt},
                 #{entity.createBy},
                 #{entity.updateBy},

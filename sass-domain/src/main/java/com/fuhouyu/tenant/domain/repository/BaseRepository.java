@@ -29,10 +29,10 @@ import com.fuhouyu.tenant.common.PageResult;
 public interface BaseRepository<T, ID> {
 
     /**
-     * 通过id查询model
+     * 通过id查询entity
      *
      * @param id 主键id
-     * @return 返回model
+     * @return 返回entity
      */
     T findById(ID id);
 
@@ -47,26 +47,26 @@ public interface BaseRepository<T, ID> {
     /**
      * 将数据保存到存储库
      *
-     * @param model model
-     * @return 保存后的model对象
+     * @param entity entity
+     * @return 保存后的entity对象
      */
-    T save(T model);
+    T save(T entity);
 
 
     /**
      * 修改存储库中的模型
      *
-     * @param model model
+     * @param entity entity
      * @return 模型对象
      */
-    T edit(T model);
+    T edit(T entity);
 
     /**
      * 分页查询对象
      *
      * @param pageable 分页查询的对象
      * @param <P>      具体的分页查询类型，由子类定义传入
-     * @return 分页查询的model
+     * @return 分页查询的entity
      */
     <P extends PageQuery> PageResult<T> pageList(P pageable);
 }

@@ -39,7 +39,7 @@ public abstract class BaseEntity<ID> implements Serializable, Entity<ID> {
     /**
      * 创建时间
      */
-    private LocalDateTime crateAt;
+    private LocalDateTime createAt;
 
     /**
      * 更新时间
@@ -49,7 +49,7 @@ public abstract class BaseEntity<ID> implements Serializable, Entity<ID> {
     /**
      * 创建人
      */
-    private String crateBy;
+    private String createBy;
 
     /**
      * 操作人

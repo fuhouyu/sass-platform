@@ -58,7 +58,7 @@ public interface BaseMapper<T, ID> {
      * @param list id集合
      * @return 返回影响的行数
      */
-    int deleteByIds(@Param("list") List<Long> list);
+    int deleteByIds(@Param("list") List<ID> list);
 
     /**
      * 更新对象，返回影响的行数

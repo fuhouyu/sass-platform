@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.repository;
+package com.fuhouyu.tenant.infrastructure.repository.mapper;
 
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
+import com.fuhouyu.tenant.infrastructure.repository.orm.AccountDO;
+import com.fuhouyu.tenant.infrastructure.repository.orm.AccountId;
 
 import java.util.List;
 
 /**
  * <p>
- * 账号存储库
+ * 账号mapper
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:13
+ * @since 2024/9/27 23:46
  */
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountIdEntity> {
+public interface AccountMapper extends BaseMapper<AccountDO, AccountId> {
+
 
     /**
-     * 保存账号列表
+     * 通过用户id查询出对应的账号
      *
-     * @param accounts 账号列表
-     * @return 账号列表
+     * @param userId 用户id
+     * @return 账号集合
      */
-    List<AccountEntity> save(List<AccountEntity> accounts);
-
+    List<AccountDO> queryByUserId(Long userId);
 }

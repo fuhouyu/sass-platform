@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.infrastructure.repository.convert;
+package com.fuhouyu.tenant.infrastructure.repository.assembler;
 
 import com.fuhouyu.tenant.domain.model.tenant.TenantEntity;
 import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
@@ -36,11 +36,11 @@ public interface TenantAssembler {
 
     TenantAssembler INSTANCE = Mappers.getMapper(TenantAssembler.class);
 
-    TenantEntity toModel(TenantDO tenantDO);
+    TenantEntity toEntity(TenantDO tenantDO);
 
-    TenantDO toEntity(TenantEntity tenantModel);
+    TenantDO toDO(TenantEntity tenantModel);
 
-    List<TenantEntity> toModel(List<TenantDO> tenantDOList);
+    List<TenantEntity> toEntity(List<TenantDO> tenantDOList);
 
-    List<TenantDO> toEntity(List<TenantEntity> tenantModelList);
+    List<TenantDO> toDO(List<TenantEntity> tenantModelList);
 }

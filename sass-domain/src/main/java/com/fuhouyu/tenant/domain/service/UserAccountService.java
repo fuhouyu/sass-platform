@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.tenant.domain.service;
 
-import com.fuhouyu.tenant.domain.model.account.AccountId;
+import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +43,9 @@ public interface UserAccountService {
     /**
      * 通过账号id进行登录
      *
-     * @param accountId 账号id
+     * @param accountIdEntity 账号id
      * @return 登录
      */
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    UserAccountEntity login(AccountId accountId) throws UserPrincipalNotFoundException;
+    UserAccountEntity login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException;
 }

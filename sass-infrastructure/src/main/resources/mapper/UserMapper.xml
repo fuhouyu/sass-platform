@@ -68,9 +68,9 @@
             #{loginDate},
             #{loginIp},
             #{isDeleted},
-            #{crateAt},
+            #{createAt},
             #{updateAt},
-            #{crateBy},
+            #{createBy},
             #{updateBy}
         </trim>
     </insert>
@@ -94,9 +94,9 @@
                 #{entity.loginDate},
                 #{entity.loginIp},
                 #{entity.isDeleted},
-                #{entity.crateAt},
+                #{entity.createAt},
                 #{entity.updateAt},
-                #{entity.crateBy},
+                #{entity.createBy},
                 #{entity.updateBy}
             </trim>
         </foreach>
@@ -106,16 +106,27 @@
         UPDATE
         <include refid="TableName"/>
         SET
-        <if test="tenantName != null and tenantName != ''">
-            tenant_name = #{tenantName},
+        <if test="realName != null and realName != ''">
+            real_name = #{realName},
         </if>
-        <if test="contactPerson != null and contactPerson != ''">
-            contact_person = #{contactPerson},
+        <if test="nickname != null and nickname != ''">
+            nickname = #{nickname},
         </if>
-        <if test="contactNumber != null and contactNumber != ''">
-            contact_number = #{contactNumber},
+        <if test="email != null and email != ''">
+            email = #{email},
         </if>
-        remark = #{remark},
+        <if test="gender != null and gender != ''">
+            email = #{email},
+        </if>
+        <if test="avatar != null and avatar != ''">
+            email = #{email},
+        </if>
+         <if test="loginDate != null ">
+            login_date = #{loginDate},
+        </if>
+        <if test="loginIp != null and loginIp != ''">
+            login_ip = #{loginIp},
+        </if>
         update_at = #{updateAt},
         update_by = #{updateBy}
         WHERE id = #{id}

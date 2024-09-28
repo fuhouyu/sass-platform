@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.tenant.infrastructure.repository.mapper.AccountMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.tenant.infrastructure.repository.orm.AccountDO" extends="com.fuhouyu.tenant.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
+        <id column="account" property="account" jdbcType="VARCHAR"/>
+        <result column="account_type" property="accountType" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="credentials" property="credentials" jdbcType="VARCHAR"/>
+        <result column="credentials_expiration_time" property="credentialsExpirationTime" jdbcType="TIMESTAMP"/>
+        <result column="ref_account_id" property="refAccountId" jdbcType="VARCHAR"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="TableName">
+        accounts
+    </sql>
+
+    <sql id="AllColumns">
+        account,
+        account_type,
+        user_id,
+        credentials,
+        credentials_expiration_time,
+        ref_account_id,
+        is_enabled,
+        create_at,
+        update_at,
+        create_by,
+        update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.AccountDO">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{account},
+            #{accountType},
+            #{userId},
+            #{credentials},
+            #{credentialsExpirationTime},
+            #{refAccountId},
+            #{isEnabled},
+            #{createAt},
+            #{updateAt},
+            #{createBy},
+            #{updateBy}
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.account},
+                #{entity.accountType},
+                #{entity.userId},
+                #{entity.credentials},
+                #{entity.credentialsExpirationTime},
+                #{entity.refAccountId},
+                #{entity.isEnabled},
+                #{entity.createAt},
+                #{entity.updateAt},
+                #{entity.createBy},
+                #{entity.updateBy}
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.AccountDO">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+        <if test="credentials != null and credentials != ''">
+            credentials = #{credentials},
+        </if>
+        <if test="credentialsExpirationTime != null">
+            credentials_expiration_time = #{credentialsExpirationTime},
+        </if>
+        <if test="refAccountId != null and refAccountId != ''">
+            ref_account_id = #{refAccountId},
+        </if>
+        update_at = #{updateAt},
+        update_by = #{updateBy}
+        WHERE account = #{account}
+        AND account_type = #{accountType}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM <include refid="TableName"/>
+        WHERE #{account}
+        AND #{accountType}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE
+        <foreach collection="list" item="item" separator=" AND ">
+            (account = #{item.account} AND account_type = #{item.account_type})
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="AllColumns"/>
+        FROM <include refid="TableName"/>
+        WHERE account = #{id.account}
+        AND account_type = #{id.accountType}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="AllColumns"/>
+        FROM <include refid="TableName"/>
+        WHERE
+         <foreach collection="list" item="item" separator=" AND ">
+            (account = #{item.account} AND account_type = #{item.account_type})
+        </foreach>
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="AllColumns"/>
+                FROM
+        <include refid="TableName"/>
+    </select>
+
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+                FROM
+        <include refid="TableName"/>
+        WHERE user_id = #{userId}
+    </select>
+</mapper>

@@ -28,6 +28,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.UUID;
+
 /**
  * <p>
  * 所有测试的存储层的基类
@@ -55,5 +57,9 @@ class TestBaseRepository {
 
     protected Long nextSnowflakeId() {
         return SNOWFLAKE_ID_WORKER.nextId();
+    }
+
+    protected String getUUIDStr(int length) {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, length);
     }
 }

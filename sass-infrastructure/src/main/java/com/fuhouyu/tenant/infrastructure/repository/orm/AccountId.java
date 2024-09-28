@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model.account;
+package com.fuhouyu.tenant.infrastructure.repository.orm;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * <p>
  * 账号id
  * </p>
  *
- * @param account     账号
- * @param accountType 账号类型
  * @author fuhouyu
- * @since 2024/9/27 18:00
+ * @since 2024/9/28 12:50
  */
-public record AccountId(String account, String accountType) {
+public record AccountId(String account, String accountType) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
 }

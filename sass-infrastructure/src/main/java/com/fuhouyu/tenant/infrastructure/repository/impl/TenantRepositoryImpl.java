@@ -21,7 +21,7 @@ import com.fuhouyu.tenant.common.PageQuery;
 import com.fuhouyu.tenant.common.PageResult;
 import com.fuhouyu.tenant.domain.model.tenant.TenantEntity;
 import com.fuhouyu.tenant.domain.repository.TenantRepository;
-import com.fuhouyu.tenant.infrastructure.repository.convert.TenantAssembler;
+import com.fuhouyu.tenant.infrastructure.repository.assembler.TenantAssembler;
 import com.fuhouyu.tenant.infrastructure.repository.mapper.TenantMapper;
 import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
 import com.github.pagehelper.Page;
@@ -52,12 +52,12 @@ public class TenantRepositoryImpl implements TenantRepository {
 
     @Override
     public TenantEntity findByTenantCode(String tenantCode) {
-        return tenantAssembler.toModel(tenantMapper.queryByTenantCode(tenantCode));
+        return tenantAssembler.toEntity(tenantMapper.queryByTenantCode(tenantCode));
     }
 
     @Override
     public TenantEntity findById(Long id) {
-        return tenantAssembler.toModel(tenantMapper.queryById(id));
+        return tenantAssembler.toEntity(tenantMapper.queryById(id));
     }
 
     @Override
@@ -66,30 +66,30 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantEntity save(TenantEntity model) {
-        TenantDO tenantDO = tenantAssembler.toEntity(model);
+    public TenantEntity save(TenantEntity entity) {
+        TenantDO tenantDO = tenantAssembler.toDO(entity);
         // TODO 这里后面需要做其它的处理
         tenantMapper.insert(tenantDO);
-        return tenantAssembler.toModel(tenantDO);
+        return tenantAssembler.toEntity(tenantDO);
     }
 
     @Override
-    public TenantEntity edit(TenantEntity model) {
-        TenantDO tenantDO = tenantAssembler.toEntity(model);
+    public TenantEntity edit(TenantEntity entity) {
+        TenantDO tenantDO = tenantAssembler.toDO(entity);
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);
         if (count > 0) {
-            return model;
+            return entity;
         }
         throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
-                "租户: %s 修改失败", model.getTenantCode());
+                "租户: %s 修改失败", entity.getTenantCode());
     }
 
     @Override
     public <P extends PageQuery> PageResult<TenantEntity> pageList(P pageable) {
         try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
             List<TenantDO> tenantList = this.tenantMapper.queryList();
-            List<TenantEntity> modelList = this.tenantAssembler.toModel(tenantList);
+            List<TenantEntity> modelList = this.tenantAssembler.toEntity(tenantList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
         }
     }

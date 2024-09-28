@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.repository;
-
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
-
-import java.util.List;
+package com.fuhouyu.tenant.domain.model.account;
 
 /**
  * <p>
- * 账号存储库
+ * 账号id
  * </p>
  *
+ * @param account     账号
+ * @param accountType 账号类型
  * @author fuhouyu
- * @since 2024/9/27 18:13
+ * @since 2024/9/27 18:00
  */
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountIdEntity> {
-
-    /**
-     * 保存账号列表
-     *
-     * @param accounts 账号列表
-     * @return 账号列表
-     */
-    List<AccountEntity> save(List<AccountEntity> accounts);
+public record AccountIdEntity(String account, String accountType) {
 
 }

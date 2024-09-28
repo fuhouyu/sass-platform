@@ -15,9 +15,7 @@
  */
 package com.fuhouyu.tenant.infrastructure.repository.orm;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -30,9 +28,11 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2024/9/24 19:22
  */
-@ToString
 @Getter
 @Setter
+@ToString
+@Builder
+@AllArgsConstructor
 public class UserDO extends BaseDO {
 
     @Serial

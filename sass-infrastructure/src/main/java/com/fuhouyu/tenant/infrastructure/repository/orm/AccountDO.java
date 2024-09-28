@@ -13,37 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model.account;
+package com.fuhouyu.tenant.infrastructure.repository.orm;
 
-import com.fuhouyu.tenant.domain.model.BaseEntity;
 import lombok.*;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 账号实体
+ * 账号do对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 17:54
+ * @since 2024/9/27 23:32
  */
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-public class AccountEntity extends BaseEntity<AccountIdEntity> {
+@Builder
+@AllArgsConstructor
+public class AccountDO extends BaseDO {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 账号唯一标识
      */
-    private final AccountIdEntity accountIdEntity;
+    private String account;
+
+    /**
+     * 账号类型
+     */
+    private String accountType;
 
     /**
      * 用户id
      */
-    @Setter(AccessLevel.PRIVATE)
     private Long userId;
 
     /**
@@ -64,32 +71,5 @@ public class AccountEntity extends BaseEntity<AccountIdEntity> {
     /**
      * 是否启用标记
      */
-    @Setter(AccessLevel.PRIVATE)
     private Boolean isEnabled;
-
-    @Override
-    public AccountIdEntity getIdentifierId() {
-        return this.accountIdEntity;
-    }
-
-    @Override
-    public boolean sameIdentityAs(AccountIdEntity other) {
-        return EqualsBuilder.reflectionEquals(this, other);
-    }
-
-    public void disabled() {
-        this.isEnabled = false;
-    }
-
-    public void enabled() {
-        this.isEnabled = true;
-    }
-
-    public void attachUser(Long userId) {
-        this.userId = userId;
-    }
-
-    public void detachUser() {
-        this.userId = null;
-    }
 }
