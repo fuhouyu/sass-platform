@@ -19,7 +19,7 @@ import com.fuhouyu.framework.exception.WebServiceException;
 import com.fuhouyu.framework.response.ResponseCodeEnum;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountId;
+import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
 import com.fuhouyu.tenant.domain.model.user.UserEntity;
 import com.fuhouyu.tenant.domain.repository.AccountRepository;
@@ -66,15 +66,15 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccountEntity login(AccountId accountId) throws UserPrincipalNotFoundException {
-        AccountEntity accountEntity = this.accountRepository.findById(accountId);
+    public UserAccountEntity login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException {
+        AccountEntity accountEntity = this.accountRepository.findById(accountIdEntity);
         if (Objects.isNull(accountEntity)) {
             throw new UserPrincipalNotFoundException(
-                    String.format("%s 用户未找到", accountId.account()));
+                    String.format("%s 用户未找到", accountIdEntity.account()));
         }
         UserEntity userEntity = this.userRepository.findById(accountEntity.getUserId());
         if (Objects.isNull(userEntity)) {
-            throw new UserPrincipalNotFoundException(String.format("%s 账号关联的用户不存在", accountId.account()));
+            throw new UserPrincipalNotFoundException(String.format("%s 账号关联的用户不存在", accountIdEntity.account()));
         }
         UserAccountEntity userAccountEntity = new UserAccountEntity();
         BeanUtils.copyProperties(userEntity, userAccountEntity);

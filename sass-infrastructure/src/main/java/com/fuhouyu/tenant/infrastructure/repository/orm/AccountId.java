@@ -13,37 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.repository;
+package com.fuhouyu.tenant.infrastructure.repository.orm;
 
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
-
-import java.util.List;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * <p>
- * 账号存储库
+ * 账号id
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:13
+ * @since 2024/9/28 12:50
  */
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountIdEntity> {
+public record AccountId(String account, String accountType) implements Serializable {
 
-    /**
-     * 保存账号列表
-     *
-     * @param accounts 账号列表
-     * @return 账号列表
-     */
-    List<AccountEntity> save(List<AccountEntity> accounts);
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 通过用户id查询
-     *
-     * @param userId 用户id
-     * @return 账号实体集合
-     */
-    List<AccountEntity> findByUserId(Long userId);
 
 }

@@ -27,7 +27,10 @@ import org.apache.ibatis.plugin.Signature;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -46,13 +49,26 @@ import java.util.List;
 public class BaseDOValueHandle implements Interceptor {
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object intercept(Invocation invocation) throws Throwable {
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         Object parameter = invocation.getArgs()[1];
         // 获取 SQL 命令
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
 
+        if (parameter instanceof Map<?, ?> map) {
+            Set<Object> set = new HashSet<>(map.size());
+            map.forEach((k, v) -> {
+                set.add(v);
+            });
+            set.forEach(v -> this.doHandlerParam(v, sqlCommandType));
+        } else {
+            this.doHandlerParam(parameter, sqlCommandType);
+        }
+        return invocation.proceed();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void doHandlerParam(Object parameter, SqlCommandType sqlCommandType) {
         if (parameter instanceof List<?> list
                 && list.get(0) instanceof BaseDO) {
             List<? extends BaseDO> baseDOList = (List<? extends BaseDO>) parameter;
@@ -60,8 +76,6 @@ public class BaseDOValueHandle implements Interceptor {
         } else if (parameter instanceof BaseDO baseDO) {
             this.doHandlerBaseDO(baseDO, sqlCommandType);
         }
-
-        return invocation.proceed();
     }
 
     private void doHandlerBaseDO(BaseDO baseDO, SqlCommandType sqlCommandType) {
@@ -81,6 +95,13 @@ public class BaseDOValueHandle implements Interceptor {
     }
 
 
+    private void getParameter(Invocation invocation) {
+        Object parameter = invocation.getArgs()[1];
+
+
+    }
+
+
     /**
      * 创建时更新
      *
@@ -89,9 +110,9 @@ public class BaseDOValueHandle implements Interceptor {
     private void onInsert(BaseDO baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
         String username = UserContextHolder.getContext().getObject().getUsername();
-        baseDO.setCrateAt(nowTime);
+        baseDO.setCreateAt(nowTime);
         baseDO.setUpdateAt(nowTime);
-        baseDO.setCrateBy(username);
+        baseDO.setCreateBy(username);
         baseDO.setUpdateBy(username);
         baseDO.setIsDeleted(false);
     }

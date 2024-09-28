@@ -17,7 +17,7 @@ package com.fuhouyu.tenant.domain.service;
 
 import com.fuhouyu.framework.exception.WebServiceException;
 import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountId;
+import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
 import com.fuhouyu.tenant.domain.model.user.UserAccountEntity;
 import com.fuhouyu.tenant.domain.model.user.UserEntity;
 import com.fuhouyu.tenant.domain.repository.AccountRepository;
@@ -56,8 +56,8 @@ class TestUserAccountService extends TestBaseService {
         userAccountEntity.setUsername("username");
         userAccountEntity.setEmail("email");
 
-        AccountId accountId = new AccountId("admin", "password");
-        AccountEntity accountEntity = new AccountEntity(accountId);
+        AccountIdEntity accountIdEntity = new AccountIdEntity("admin", "password");
+        AccountEntity accountEntity = new AccountEntity(accountIdEntity);
 
         userAccountEntity.addAccount(accountEntity);
         accountEntity.enabled();
@@ -85,9 +85,9 @@ class TestUserAccountService extends TestBaseService {
 
     @Test
     void testLogin() throws UserPrincipalNotFoundException {
-        AccountId accountId = new AccountId("admin", "password");
+        AccountIdEntity accountIdEntity = new AccountIdEntity("admin", "password");
 
-        AccountEntity accountEntity = new AccountEntity(accountId);
+        AccountEntity accountEntity = new AccountEntity(accountIdEntity);
         accountEntity.enabled();
         accountEntity.attachUser(1L);
 
@@ -96,12 +96,12 @@ class TestUserAccountService extends TestBaseService {
         userEntity.setUsername("admin");
         userEntity.setGender("male");
 
-        when(this.accountRepository.findById(accountId))
+        when(this.accountRepository.findById(accountIdEntity))
                 .thenReturn(accountEntity);
 
         when(this.userRepository.findById(1L))
                 .thenReturn(userEntity);
-        UserAccountEntity userAccountEntity = this.userAccountService.login(accountId);
+        UserAccountEntity userAccountEntity = this.userAccountService.login(accountIdEntity);
         Assertions.assertNotNull(userAccountEntity);
 
     }

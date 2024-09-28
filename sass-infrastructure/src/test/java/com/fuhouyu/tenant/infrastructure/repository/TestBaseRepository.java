@@ -23,10 +23,13 @@ import com.fuhouyu.tenant.common.utils.SnowflakeIdWorker;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.UUID;
 
 /**
  * <p>
@@ -43,7 +46,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class TestBaseRepository {
 
-    private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER = new SnowflakeIdWorker();
+    @Autowired
+    private SnowflakeIdWorker snowflakeIdWorker;
 
     @BeforeAll
     static void setUp() {
@@ -54,6 +58,11 @@ class TestBaseRepository {
     }
 
     protected Long nextSnowflakeId() {
-        return SNOWFLAKE_ID_WORKER.nextId();
+        return snowflakeIdWorker.nextId();
     }
+
+    protected String getUUIDStr(int length) {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, length);
+    }
+
 }

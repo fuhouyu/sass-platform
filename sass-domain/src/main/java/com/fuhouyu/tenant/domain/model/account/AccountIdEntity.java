@@ -13,47 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model;
-
-import com.fuhouyu.tenant.common.Entity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+package com.fuhouyu.tenant.domain.model.account;
 
 /**
  * <p>
- * 基础模型
+ * 账号id
  * </p>
  *
+ * @param account     账号
+ * @param accountType 账号类型
  * @author fuhouyu
- * @since 2024/9/20 17:00
+ * @since 2024/9/27 18:00
  */
-@Getter
-@Setter
-@ToString
-public abstract class BaseEntity<ID> implements Serializable, Entity<ID> {
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createAt;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateAt;
-
-    /**
-     * 创建人
-     */
-    private String createBy;
-
-    /**
-     * 操作人
-     */
-    private String updateBy;
+public record AccountIdEntity(String account, String accountType) {
 
 }

@@ -13,37 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.repository;
+package com.fuhouyu.tenant.infrastructure.repository.assembler;
 
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
+import com.fuhouyu.tenant.domain.model.BaseEntity;
+import com.fuhouyu.tenant.infrastructure.repository.orm.BaseDO;
 
 import java.util.List;
 
 /**
  * <p>
- * 账号存储库
+ * 转换基类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:13
+ * @since 2024/9/28 16:47
  */
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountIdEntity> {
+public interface BaseAssembler<Entity extends BaseEntity<?>, DO extends BaseDO> {
 
-    /**
-     * 保存账号列表
-     *
-     * @param accounts 账号列表
-     * @return 账号列表
-     */
-    List<AccountEntity> save(List<AccountEntity> accounts);
+    DO toDO(Entity source);
 
-    /**
-     * 通过用户id查询
-     *
-     * @param userId 用户id
-     * @return 账号实体集合
-     */
-    List<AccountEntity> findByUserId(Long userId);
+    List<DO> toDO(List<Entity> sourceList);
 
+    Entity toEntity(DO source);
+
+    List<Entity> toEntity(List<DO> sourceList);
 }

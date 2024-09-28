@@ -13,34 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.infrastructure.repository.convert;
+package com.fuhouyu.tenant.infrastructure.repository.assembler;
 
-import com.fuhouyu.tenant.domain.model.tenant.TenantEntity;
-import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
+import com.fuhouyu.tenant.domain.model.user.UserEntity;
+import com.fuhouyu.tenant.infrastructure.repository.orm.UserDO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 /**
  * <p>
- * 租户model与do的互换转换
+ * 用户转换类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/21 16:29
+ * @since 2024/9/28 16:27
  */
 @Mapper(builder = @Builder(disableBuilder = true))
-public interface TenantAssembler {
+public interface UserAssembler extends BaseAssembler<UserEntity, UserDO> {
 
-    TenantAssembler INSTANCE = Mappers.getMapper(TenantAssembler.class);
+    UserAssembler INSTANCE = Mappers.getMapper(UserAssembler.class);
 
-    TenantEntity toModel(TenantDO tenantDO);
-
-    TenantDO toEntity(TenantEntity tenantModel);
-
-    List<TenantEntity> toModel(List<TenantDO> tenantDOList);
-
-    List<TenantDO> toEntity(List<TenantEntity> tenantModelList);
 }

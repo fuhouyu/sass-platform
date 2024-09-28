@@ -13,37 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.repository;
+package com.fuhouyu.tenant.infrastructure.repository.conf;
 
-import com.fuhouyu.tenant.domain.model.account.AccountEntity;
-import com.fuhouyu.tenant.domain.model.account.AccountIdEntity;
-
-import java.util.List;
+import com.fuhouyu.tenant.common.utils.SnowflakeIdWorker;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
- * 账号存储库
+ * 雪花算法id配置
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:13
+ * @since 2024/9/28 17:41
  */
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountIdEntity> {
+@Configuration
+public class SnowIdConfigure {
 
-    /**
-     * 保存账号列表
-     *
-     * @param accounts 账号列表
-     * @return 账号列表
-     */
-    List<AccountEntity> save(List<AccountEntity> accounts);
 
-    /**
-     * 通过用户id查询
-     *
-     * @param userId 用户id
-     * @return 账号实体集合
-     */
-    List<AccountEntity> findByUserId(Long userId);
-
+    @Bean
+    public SnowflakeIdWorker snowflakeIdWorker() {
+        return new SnowflakeIdWorker(0, 0);
+    }
 }

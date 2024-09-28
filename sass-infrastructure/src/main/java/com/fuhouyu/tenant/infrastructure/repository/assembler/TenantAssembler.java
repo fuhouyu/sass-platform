@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.tenant.domain.model.account;
+package com.fuhouyu.tenant.infrastructure.repository.assembler;
+
+import com.fuhouyu.tenant.domain.model.tenant.TenantEntity;
+import com.fuhouyu.tenant.infrastructure.repository.orm.TenantDO;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 账号id
+ * 租户model与do的互换转换
  * </p>
  *
- * @param account     账号
- * @param accountType 账号类型
  * @author fuhouyu
- * @since 2024/9/27 18:00
+ * @since 2024/9/21 16:29
  */
-public record AccountId(String account, String accountType) {
+@Mapper(builder = @Builder(disableBuilder = true))
+public interface TenantAssembler extends BaseAssembler<TenantEntity, TenantDO> {
+
+    TenantAssembler INSTANCE = Mappers.getMapper(TenantAssembler.class);
 
 }
