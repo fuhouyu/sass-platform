@@ -41,24 +41,24 @@ public class TenantServiceImpl implements TenantService {
 
 
     @Override
-    public TenantEntity createTenant(TenantEntity tenantEntity) {
+    public void createTenant(TenantEntity tenantEntity) {
         TenantEntity existsTenantModel = tenantRepository.findByTenantCode(tenantEntity.getTenantCode());
         if (Objects.nonNull(existsTenantModel)) {
             throw new WebServiceException(
                     ResponseCodeEnum.INVALID_PARAM,
                     "当前租户编码: %s 已存在.", existsTenantModel.getTenantCode());
         }
-        return tenantRepository.save(tenantEntity);
+        tenantRepository.save(tenantEntity);
     }
 
     @Override
-    public TenantEntity updateTenant(TenantEntity tenantEntity) {
+    public void updateTenant(TenantEntity tenantEntity) {
         TenantEntity exists = tenantRepository.findByTenantCode(tenantEntity.getTenantCode());
         if (Objects.isNull(exists)) {
             throw new WebServiceException(
                     ResponseCodeEnum.NOT_FOUND,
                     "当前租户不存在: %s.", tenantEntity.getTenantCode());
         }
-        return this.tenantRepository.edit(tenantEntity);
+        this.tenantRepository.edit(tenantEntity);
     }
 }

@@ -32,16 +32,14 @@ public interface TenantService {
      * 通过租户模型，创建一个租户
      *
      * @param tenantEntity 租户模型对象
-     * @return 租户模型对象
      */
-    TenantEntity createTenant(TenantEntity tenantEntity);
+    void createTenant(TenantEntity tenantEntity);
 
     /**
      * 修改租户模型对象
      *
      * @param tenantEntity 租户模型对象
-     * @return 租户模型对象
      */
-    TenantEntity updateTenant(TenantEntity tenantEntity);
+    void updateTenant(TenantEntity tenantEntity);
 
 }

@@ -23,7 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.util.Assert;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doAnswer;
 
 /**
  * <p>
@@ -49,13 +49,13 @@ class TestTenantService extends TestBaseService {
                 .contactNumber("test")
                 .contactPerson("test")
                 .build();
-        when(this.tenantRepository.save(tenantEntity))
-                .then((t) -> {
-                    tenantEntity.setId(1L);
-                    return tenantEntity;
-                });
-        TenantEntity result = tenantService.createTenant(tenantEntity);
-        Assert.notNull(result.getId(), "id is null");
+
+        doAnswer((res) -> {
+            tenantEntity.setId(1L);
+            return tenantEntity;
+        }).when(this.tenantRepository).save(tenantEntity);
+        tenantService.createTenant(tenantEntity);
+        Assert.notNull(tenantEntity.getId(), "id is null");
     }
 
     @Test

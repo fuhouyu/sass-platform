@@ -46,7 +46,7 @@ class TestTenantRepository extends TestBaseRepository {
     void testTenant() {
         // 保存
         TenantEntity tenantModel = this.generateTenantModel();
-        tenantModel = tenantRepository.save(tenantModel);
+        tenantRepository.save(tenantModel);
         // 根据id查询
         TenantEntity tenantModelQueryById = this.tenantRepository.findById(tenantModel.getId());
         this.compare(tenantModel, tenantModelQueryById);
@@ -55,8 +55,7 @@ class TestTenantRepository extends TestBaseRepository {
         this.compare(tenantModel, queryByTenantCode);
         // 修改
         tenantModel.setTenantName("update_tenant");
-        TenantEntity update = this.tenantRepository.edit(tenantModel);
-        this.compare(tenantModel, update);
+        this.tenantRepository.edit(tenantModel);
         // 批量查询
         PageQuery pageQuery = new PageQuery(1, 10);
         PageResult<TenantEntity> list = this.tenantRepository.pageList(pageQuery);

@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <p>
@@ -62,13 +62,13 @@ class TestUserAccountService extends TestBaseService {
         userAccountEntity.addAccount(accountEntity);
         accountEntity.enabled();
 
-        when(this.userRepository.save(userAccountEntity))
-                .then((res) -> {
-                    userAccountEntity.setId(1L);
-                    return userAccountEntity;
-                });
-        UserAccountEntity register = this.userAccountService.register(userAccountEntity);
-        Assertions.assertEquals(1L, (long) register.getId(), "Register failed");
+        doAnswer((res) -> {
+            userAccountEntity.setId(1L);
+            return userAccountEntity;
+        }).when(this.userRepository).save(userAccountEntity);
+
+        this.userAccountService.register(userAccountEntity);
+        Assertions.assertEquals(1L, (long) userAccountEntity.getId(), "Register failed");
         // 使用空账号注册
         userAccountEntity.getAccounts().clear();
         Assertions.assertThrowsExactly(WebServiceException.class, () -> {
@@ -76,11 +76,8 @@ class TestUserAccountService extends TestBaseService {
         });
         // 使注册账号时抛出异常
         userAccountEntity.addAccount(accountEntity);
-        when(this.accountRepository.save(userAccountEntity.getAccounts()))
-                .thenThrow(WebServiceException.class);
-        Assertions.assertThrowsExactly(WebServiceException.class, () -> {
-            this.userAccountService.register(userAccountEntity);
-        });
+        doThrow(WebServiceException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
+        Assertions.assertThrowsExactly(WebServiceException.class, () -> this.userAccountService.register(userAccountEntity));
     }
 
     @Test
@@ -101,8 +98,7 @@ class TestUserAccountService extends TestBaseService {
 
         when(this.userRepository.findById(1L))
                 .thenReturn(userEntity);
-        UserAccountEntity userAccountEntity = this.userAccountService.login(accountIdEntity);
-        Assertions.assertNotNull(userAccountEntity);
+        this.userAccountService.login(accountIdEntity);
 
     }
 

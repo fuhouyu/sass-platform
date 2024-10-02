@@ -43,26 +43,26 @@ class TestUserRepository extends TestBaseRepository {
     void testUserRepository() {
         // 保存
         UserEntity saveEntity = this.genertaeUserEntity();
-        UserEntity saveResult = this.userRepository.save(saveEntity);
-        Assertions.assertNotNull(saveResult.getId(), "返回的id为空");
+        this.userRepository.save(saveEntity);
+        Assertions.assertNotNull(saveEntity.getId(), "返回的id为空");
 
         Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.userRepository.save(saveEntity),
                 "二次保存，用户名冲突未正常抛出异常");
 
         // 修改
         UserEntity updateEntity = this.genertaeUserEntity();
-        updateEntity.setId(saveResult.getId());
-        UserEntity updateResult = this.userRepository.edit(updateEntity);
-        Assertions.assertNotEquals(updateResult.getRealName(), saveEntity.getRealName(), "修改未成功");
+        updateEntity.setId(saveEntity.getId());
+        this.userRepository.edit(updateEntity);
+        Assertions.assertNotEquals(updateEntity.getRealName(), saveEntity.getRealName(), "修改未成功");
 
         // 查询
-        UserEntity queryById = this.userRepository.findById(updateResult.getId());
+        UserEntity queryById = this.userRepository.findById(updateEntity.getId());
         Assertions.assertNotNull(queryById, "未查询到对应数据");
         UserEntity queryByUsername = this.userRepository.findByUsername(saveEntity.getUsername());
         Assertions.assertNotNull(queryByUsername, "未查询到对应数据");
 
         // 删除
-        int result = this.userRepository.removeById(updateResult.getId());
+        int result = this.userRepository.removeById(updateEntity.getId());
         Assertions.assertEquals(1, result, "数据删除不正常");
 
 

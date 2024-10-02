@@ -42,8 +42,8 @@ class TestAccountRepository extends TestBaseRepository {
     @Test
     void testInsertAccount() {
         AccountEntity accountEntity = this.getAccountEntity();
-        AccountEntity result = this.accountRepository.save(accountEntity);
-        Assertions.assertNotNull(result);
+        this.accountRepository.save(accountEntity);
+        Assertions.assertNotNull(accountEntity);
     }
 
     @Test
@@ -62,18 +62,18 @@ class TestAccountRepository extends TestBaseRepository {
 
         accountEntity.setRefAccountId("testUpdate");
         accountEntity.setCredentials("testUpdate");
-        AccountEntity updateResult = this.accountRepository.edit(accountEntity);
-        Assertions.assertEquals("testUpdate", updateResult.getRefAccountId(), "参数修改的返回结果有误");
+        this.accountRepository.edit(accountEntity);
+        Assertions.assertEquals("testUpdate", accountEntity.getRefAccountId(), "参数修改的返回结果有误");
     }
 
 
     @Test
     void testQueryAccount() {
         AccountEntity accountEntity = this.getAccountEntity();
-        AccountEntity result = this.accountRepository.save(accountEntity);
+        this.accountRepository.save(accountEntity);
 
         AccountEntity queryById = this.accountRepository.findById(accountEntity.getAccountIdEntity());
-        Assertions.assertEquals(result.getAccountIdEntity(), queryById.getAccountIdEntity(), "查询出的结果不一致");
+        Assertions.assertEquals(accountEntity.getAccountIdEntity(), queryById.getAccountIdEntity(), "查询出的结果不一致");
 
         AccountEntity isNull = this.accountRepository.findById(new AccountIdEntity("noExist", "noExist"));
         Assertions.assertNull(isNull, "查询到错误的结果");
