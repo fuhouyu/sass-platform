@@ -64,18 +64,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserEntity save(UserEntity entity) {
+    public void save(UserEntity entity) {
         UserDO userDO = USER_ASSEMBLER.toDO(entity);
         userDO.setId(snowflakeIdWorker.nextId());
         this.userMapper.insert(userDO);
-        return USER_ASSEMBLER.toEntity(userDO);
     }
 
     @Override
-    public UserEntity edit(UserEntity entity) {
+    public void edit(UserEntity entity) {
         UserDO userDO = USER_ASSEMBLER.toDO(entity);
         this.userMapper.update(userDO);
-        return USER_ASSEMBLER.toEntity(userDO);
     }
 
     @Override

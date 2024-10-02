@@ -63,23 +63,22 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public TenantEntity save(TenantEntity entity) {
+    public void save(TenantEntity entity) {
         TenantDO tenantDO = TENANT_ASSEMBLER.toDO(entity);
         // TODO 这里后面需要做其它的处理
         tenantMapper.insert(tenantDO);
-        return TENANT_ASSEMBLER.toEntity(tenantDO);
     }
 
     @Override
-    public TenantEntity edit(TenantEntity entity) {
+    public void edit(TenantEntity entity) {
         TenantDO tenantDO = TENANT_ASSEMBLER.toDO(entity);
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);
-        if (count > 0) {
-            return entity;
+        if (count < 1) {
+            throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
+                    "租户: %s 修改失败", entity.getTenantCode());
         }
-        throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
-                "租户: %s 修改失败", entity.getTenantCode());
+
     }
 
     @Override
