@@ -55,18 +55,16 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserRepository userRepository;
 
     @Override
-    public UserAccountEntity register(UserAccountEntity userAccountEntity) {
+    public void register(UserAccountEntity userAccountEntity) {
         // TODO 这里的用户名需要后期生成
-        UserEntity registeredUserEntity = this.userRepository.save(userAccountEntity);
-        List<AccountEntity> registeredAccountEntity =
-                this.saveAccounts(userAccountEntity.getAccounts(), registeredUserEntity.getId());
-        BeanUtils.copyProperties(registeredUserEntity, userAccountEntity);
-        userAccountEntity.addAccounts(registeredAccountEntity);
-        return userAccountEntity;
+        this.userRepository.save(userAccountEntity);
+        List<AccountEntity> accounts = userAccountEntity.getAccounts();
+        this.saveAccounts(accounts, userAccountEntity.getId());
+        userAccountEntity.addAccounts(accounts);
     }
 
     @Override
-    public UserAccountEntity login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException {
+    public void login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException {
         AccountEntity accountEntity = this.accountRepository.findById(accountIdEntity);
         if (Objects.isNull(accountEntity)) {
             throw new UserPrincipalNotFoundException(
@@ -79,7 +77,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccountEntity userAccountEntity = new UserAccountEntity();
         BeanUtils.copyProperties(userEntity, userAccountEntity);
         userAccountEntity.setLoginAccount(accountEntity);
-        return userAccountEntity;
     }
 
 
@@ -88,9 +85,8 @@ public class UserAccountServiceImpl implements UserAccountService {
      *
      * @param accounts 账号列表
      * @param userId   用户id
-     * @return 账号列表集合
      */
-    private List<AccountEntity> saveAccounts(List<AccountEntity> accounts,
+    private void saveAccounts(List<AccountEntity> accounts,
                                              Long userId) {
         if (CollectionUtils.isEmpty(accounts)) {
             throw new WebServiceException(ResponseCodeEnum.INVALID_PARAM,
@@ -98,7 +94,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
         accounts.forEach(accountEntity -> accountEntity.attachUser(userId));
         try {
-            return this.accountRepository.save(accounts);
+            this.accountRepository.save(accounts);
         } catch (Exception e) {
             LoggerUtil.error(logger, "用户账号注册失败: {}", accounts, e);
             throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
