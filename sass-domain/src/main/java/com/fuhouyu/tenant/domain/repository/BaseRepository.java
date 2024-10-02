@@ -48,18 +48,16 @@ public interface BaseRepository<T, ID> {
      * 将数据保存到存储库
      *
      * @param entity entity
-     * @return 保存后的entity对象
      */
-    T save(T entity);
+    void save(T entity);
 
 
     /**
      * 修改存储库中的模型
      *
      * @param entity entity
-     * @return 模型对象
      */
-    T edit(T entity);
+    void edit(T entity);
 
     /**
      * 分页查询对象

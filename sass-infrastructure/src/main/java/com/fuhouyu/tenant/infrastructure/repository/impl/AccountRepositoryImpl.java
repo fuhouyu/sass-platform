@@ -49,9 +49,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     
 
     @Override
-    public List<AccountEntity> save(List<AccountEntity> accounts) {
+    public void save(List<AccountEntity> accounts) {
         this.accountMapper.insertBatch(ACCOUNT_ASSEMBLER.toDO(accounts));
-        return accounts;
     }
 
     @Override
@@ -73,17 +72,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public AccountEntity save(AccountEntity entity) {
+    public void save(AccountEntity entity) {
         AccountDO accountDO = ACCOUNT_ASSEMBLER.toDO(entity);
         this.accountMapper.insert(accountDO);
-        return entity;
     }
 
     @Override
-    public AccountEntity edit(AccountEntity entity) {
+    public void edit(AccountEntity entity) {
         AccountDO accountDO = ACCOUNT_ASSEMBLER.toDO(entity);
         this.accountMapper.update(accountDO);
-        return entity;
     }
 
     @Override

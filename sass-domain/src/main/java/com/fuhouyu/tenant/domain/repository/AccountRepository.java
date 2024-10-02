@@ -34,9 +34,8 @@ public interface AccountRepository extends BaseRepository<AccountEntity, Account
      * 保存账号列表
      *
      * @param accounts 账号列表
-     * @return 账号列表
      */
-    List<AccountEntity> save(List<AccountEntity> accounts);
+    void save(List<AccountEntity> accounts);
 
     /**
      * 通过用户id查询
