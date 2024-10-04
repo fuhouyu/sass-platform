@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Copyright 2024-2024 the original author or authors.
-
+ 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-
+ 
        https://www.apache.org/licenses/LICENSE-2.0
-
+ 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,23 +22,21 @@
         <groupId>com.fuhouyu</groupId>
         <artifactId>sass-platform</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>sass-common</artifactId>
-    <name>Sass Common</name>
-    <description>Sass 平台公共租件</description>
-
+    <artifactId>sass-interfaces</artifactId>
+    <name>Sass Interfaces</name>
+    <description>Sass 平台应用接口层</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.fuhouyu</groupId>
-            <artifactId>base-framework-common</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>sass-domain</artifactId>
         </dependency>
     </dependencies>
 

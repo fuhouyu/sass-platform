@@ -26,8 +26,8 @@
     </parent>
 
     <artifactId>sass-domain</artifactId>
-    <name>Tenant Domain</name>
-    <description>租户领域实体</description>
+    <name>Sass Domain</name>
+    <description>Sass 平台领域实体</description>
 
 
     <dependencies>

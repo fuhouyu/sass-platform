@@ -26,8 +26,8 @@
     </parent>
 
     <artifactId>sass-infrastructure</artifactId>
-    <name>Tenant Repository</name>
-    <description>租户基础设施层实现</description>
+    <name>Sass Repository</name>
+    <description>Sass 平台基础设施层实现</description>
 
     <dependencies>
         <dependency>
