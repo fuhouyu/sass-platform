@@ -15,8 +15,8 @@
   limitations under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuhouyu.tenant.infrastructure.repository.mapper.UserMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO" extends="com.fuhouyu.tenant.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
+<mapper namespace="com.fuhouyu.sass.infrastructure.repository.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.infrastructure.repository.orm.UserDO" extends="com.fuhouyu.sass.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="real_name" property="realName" jdbcType="VARCHAR"/>
@@ -50,7 +50,7 @@
         update_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
+    <insert id="insert" parameterType="com.fuhouyu.sass.infrastructure.repository.orm.UserDO">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -102,7 +102,7 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.tenant.infrastructure.repository.orm.UserDO">
+    <update id="update" parameterType="com.fuhouyu.sass.infrastructure.repository.orm.UserDO">
         UPDATE
         <include refid="TableName"/>
         SET

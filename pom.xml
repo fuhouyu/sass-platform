@@ -39,6 +39,7 @@
         <module>sass-domain</module>
         <module>sass-common</module>
         <module>sass-infrastructure</module>
+        <module>sass-interfaces</module>
     </modules>
     <url>https://github.com/fuhouyu/sass-platform</url>
 

@@ -27,8 +27,8 @@
 
     <artifactId>sass-application</artifactId>
     <packaging>jar</packaging>
-    <name>Tenant Admin</name>
-    <description>租户后台运营管理系统</description>
+    <name>Sass Application</name>
+    <description>Sass 平台应用</description>
 
     <dependencies>
         <dependency>
