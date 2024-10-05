@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.domain.service.impl;
 
 import com.fuhouyu.framework.security.service.UserAuthService;
-import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
@@ -73,8 +72,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         AccountIdEntity accountIdEntity = account.getIdentifierId();
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(), account.getCredentials());
-        DefaultOAuth2Token defaultOAuth2Token = userAuthService.generatorToken(usernamePasswordAuthenticationToken);
-        return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(defaultOAuth2Token);
+        return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(userAuthService.generatorToken(usernamePasswordAuthenticationToken));
     }
 
 

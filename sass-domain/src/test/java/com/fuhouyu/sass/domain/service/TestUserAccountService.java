@@ -36,8 +36,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -93,13 +92,13 @@ class TestUserAccountService extends TestBaseService {
         Assertions.assertEquals(1L, (long) userAccountEntity.getId(), "Register failed");
         // 使用空账号注册
         userAccountEntity.getAccounts().clear();
-        Assertions.assertThrowsExactly(WebServiceException.class, () -> {
+        Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> {
             this.userAccountService.register(userAccountEntity);
         });
         // 使注册账号时抛出异常
         userAccountEntity.addAccount(accountEntity);
-        doThrow(WebServiceException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
-        Assertions.assertThrowsExactly(WebServiceException.class, () -> this.userAccountService.register(userAccountEntity));
+        doThrow(IllegalArgumentException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
+        Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> this.userAccountService.register(userAccountEntity));
     }
 
     @Test

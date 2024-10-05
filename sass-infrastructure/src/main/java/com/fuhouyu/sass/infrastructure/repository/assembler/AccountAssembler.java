@@ -17,10 +17,7 @@ package com.fuhouyu.sass.infrastructure.repository.assembler;
 
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.infrastructure.repository.orm.AccountDO;
-import org.mapstruct.Builder;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -56,6 +53,7 @@ public interface AccountAssembler extends BaseAssembler<AccountEntity, AccountDO
     @Mappings(value = {
             @Mapping(source = "account", target = "accountIdEntity.account"),
             @Mapping(source = "accountType", target = "accountIdEntity.accountType"),
+            @Mapping(target = "userId", ignore = true)
     })
     AccountEntity toEntity(AccountDO source);
 
@@ -66,4 +64,8 @@ public interface AccountAssembler extends BaseAssembler<AccountEntity, AccountDO
     })
     List<AccountEntity> toEntity(List<AccountDO> sourceList);
 
+    @AfterMapping
+    default void mapAccountEntity(AccountDO source, @MappingTarget AccountEntity accountEntity) {
+        accountEntity.attachUser(source.getUserId());
+    }
 }

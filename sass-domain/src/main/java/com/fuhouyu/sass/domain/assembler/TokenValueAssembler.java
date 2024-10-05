@@ -45,8 +45,8 @@ public interface TokenValueAssembler {
     @Mappings({
             @Mapping(source = "tokenExpireSeconds", target = "accessTokenExpireSeconds"),
             @Mapping(expression = """
-                    java(java.time.Duration.between(token.getAuth2RefreshToken().getExpiresAt(),
-                     token.getAuth2RefreshToken().getIssuedAt()).getSeconds())
+                    java(java.time.Duration.between(token.getAuth2RefreshToken().getIssuedAt(),
+                     token.getAuth2RefreshToken().getExpiresAt()).getSeconds())
                     """,
                     target = "refreshTokenExpireSeconds"),
             @Mapping(source = "tokenType.value", target = "tokenType"),

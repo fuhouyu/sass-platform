@@ -45,7 +45,8 @@ public interface UserLoginAssembler {
      */
     @Mappings({
             @Mapping(source = "loginType", target = "accountIdEntity.accountType"),
-            @Mapping(source = "username", target = "accountIdEntity.account")
+            @Mapping(source = "username", target = "accountIdEntity.account"),
+            @Mapping(source = "password", target = "credentials")
     })
     AccountEntity toAccountEntity(UserLoginCommand userLoginCommand);
 

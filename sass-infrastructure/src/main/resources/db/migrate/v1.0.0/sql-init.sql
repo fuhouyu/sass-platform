@@ -56,21 +56,21 @@ DROP TABLE IF EXISTS users;
 -- 用户表
 CREATE TABLE users
 (
-    id              BIGINT PRIMARY KEY NOT NULL,
-    username        VARCHAR(64)        NOT NULL,
-    real_name       VARCHAR(64),
-    nickname        VARCHAR(64),
-    email           VARCHAR(64),
-    gender          VARCHAR(8),
-    avatar          VARCHAR(32),
-    login_date      timestamp          NOT NULL,
-    login_ip        VARCHAR(64)        NOT NULL,
-    is_enabled      BOOLEAN DEFAULT TRUE,
-    is_deleted      BOOLEAN DEFAULT FALSE,
-    create_at       timestamp          NOT NULL,
-    create_by       VARCHAR(32)        NOT NULL,
-    update_at       timestamp          NOT NULL,
-    update_by       VARCHAR(32)        NOT NULL,
+    id         BIGINT PRIMARY KEY NOT NULL,
+    username   VARCHAR(64)        NOT NULL,
+    real_name  VARCHAR(64),
+    nickname   VARCHAR(64),
+    email      VARCHAR(64),
+    gender     VARCHAR(8),
+    avatar     VARCHAR(32),
+    login_date timestamp          NOT NULL,
+    login_ip   VARCHAR(64)        NOT NULL,
+    is_enabled BOOLEAN DEFAULT TRUE,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    create_at  timestamp          NOT NULL,
+    create_by  VARCHAR(32)        NOT NULL,
+    update_at  timestamp          NOT NULL,
+    update_by  VARCHAR(32)        NOT NULL,
     UNIQUE (username)
 );
 
@@ -91,6 +91,11 @@ COMMENT ON COLUMN users.create_at IS '创建时间';
 COMMENT ON COLUMN users.create_by IS '创建者';
 COMMENT ON COLUMN users.update_at IS '更新时间';
 COMMENT ON COLUMN users.update_by IS '更新者';
+
+INSERT INTO users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, create_at, create_by,
+                  update_at, update_by)
+VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'male',
+        null, now(), '127.0.0.1', now(), 'admin', now(), 'admin');
 
 DROP TABLE IF EXISTS tenant_has_user;
 -- 租户和用户关系表
@@ -260,6 +265,11 @@ COMMENT ON COLUMN accounts.create_at IS '创建时间';
 COMMENT ON COLUMN accounts.create_by IS '创建者';
 COMMENT ON COLUMN accounts.update_at IS '更新时间';
 COMMENT ON COLUMN accounts.update_by IS '更新者';
+
+INSERT INTO accounts(account, account_type, user_id, credentials, credentials_expiration_time, ref_account_id,
+                     create_at, create_by, update_at, update_by)
+VALUES ('admin', 'password', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
+        null, null, now(), 'admin', now(), 'admin');
 
 
 DROP TABLE IF EXISTS dict_type;

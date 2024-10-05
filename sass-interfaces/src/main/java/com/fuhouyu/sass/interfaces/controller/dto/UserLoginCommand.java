@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.interfaces.controller.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -27,23 +28,27 @@ import lombok.Data;
  * @since 2024/10/4 22:00
  */
 @Data
+@Schema(name = "UserLoginCommand", description = "用户登录操作")
 public class UserLoginCommand {
 
     /**
      * 用户名
      */
     @NotBlank(message = "用户名不能为空")
+    @Schema(name = "username", description = "用户名")
     private String username;
 
     /**
      * 密码
      */
+    @Schema(name = "password", description = "密码")
     private String password;
 
     /**
      * 账号类型
      */
     @NotBlank(message = "登录类型不能为空")
+    @Schema(name = "loginType", description = "登录类型")
     private String loginType;
 
 }

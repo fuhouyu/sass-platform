@@ -15,12 +15,20 @@
  */
 package com.fuhouyu.sass.interfaces.controller.config;
 
+import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.security.core.AbstractApplicationManager;
+import com.fuhouyu.framework.utils.JacksonUtil;
+import jakarta.servlet.ServletOutputStream;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
  * <p>
@@ -31,9 +39,10 @@ import org.springframework.security.web.SecurityFilterChain;
  * @since 2024/10/5 13:07
  */
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-//     private final ClientAuthenticationManager clientAuthenticationManager;
+    private final AbstractApplicationManager clientAuthenticationManager;
 
 
     @Bean
@@ -45,31 +54,24 @@ public class SecurityConfig {
                 )
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilter(this.initBasicAuthenticationFilter())
+                .addFilter(this.basicAuthenticationFilter())
                 .build();
     }
 
 
-//
-//    /**
-//     * 初始化基本认证过滤器
-//     * Basic Base64(clientId:clientSecret).
-//     *
-//     * @return 基本认证过滤器
-//     */
-//    private BasicAuthenticationFilter initBasicAuthenticationFilter() {
-//        return new BasicAuthenticationFilter(clientAuthenticationManager, (request, response, authException) -> {
-//            ErrorResponse error = ResponseHelper.error(ResponseCodeEnum.NO_AUTH_CODE, authException.getMessage());
-//            String body = ObjectMapperUtil.writeValueAsString(error);
-//            try (ServletOutputStream outputStream = response.getOutputStream()) {
-//                outputStream.write(body.getBytes(StandardCharsets.UTF_8));
-//                outputStream.flush();
-//            }
-//        });
-//    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactory.createDelegatingPasswordEncoder("sm3");
-//    }
+    /**
+     * 初始化基本认证过滤器
+     * Basic Base64(clientId:clientSecret).
+     *
+     * @return 基本认证过滤器
+     */
+    private BasicAuthenticationFilter basicAuthenticationFilter() {
+        return new BasicAuthenticationFilter(clientAuthenticationManager, (request, response, authException) -> {
+            RestResult<Void> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
+            try (ServletOutputStream outputStream = response.getOutputStream()) {
+                outputStream.write(JacksonUtil.writeValueAsBytes(restResult));
+                outputStream.flush();
+            }
+        });
+    }
 }

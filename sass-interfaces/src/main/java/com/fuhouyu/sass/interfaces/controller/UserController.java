@@ -27,8 +27,10 @@ import com.fuhouyu.sass.interfaces.controller.assembler.UserLoginAssembler;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
 import com.fuhouyu.sass.interfaces.controller.dto.UserTokenDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +50,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(WebConstant.USER_CONTROLLER_PATH)
-@Valid
-@Tag(name = "UserController", description = "用户前端控制层")
+@Validated
+@Tag(name = "用户前端控制层")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -67,6 +69,9 @@ public class UserController {
      * @return 响应
      */
     @PostMapping("/login")
+    @Operation(summary = "用户登录接口")
+    @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
+            example = "Basic dGVzdDE6cGFzc3dvcmQ=")
     public RestResult<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
         AccountEntity accountEntity = USER_LOGIN_ASSEMBLER.toAccountEntity(userLoginCommand);
         try {
@@ -75,7 +80,7 @@ public class UserController {
             return ResponseHelper.success(userTokenDTO);
         } catch (Exception e) {
             LoggerUtil.error(logger, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginCommand.getUsername(), userLoginCommand.getLoginType(), e.getMessage());
+                    userLoginCommand.getUsername(), userLoginCommand.getLoginType(), e.getMessage(), e);
             throw new WebServiceException(
                     ResponseCodeEnum.INVALID_PARAM,
                     "用户名或密码错误");
