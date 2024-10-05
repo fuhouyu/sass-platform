@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.interfaces.controller;
 
+import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.response.ResponseCodeEnum;
 import com.fuhouyu.framework.response.ResponseHelper;
 import com.fuhouyu.framework.response.RestResult;
@@ -22,11 +23,15 @@ import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
+import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.service.UserAccountService;
+import com.fuhouyu.sass.domain.service.UserService;
 import com.fuhouyu.sass.interfaces.controller.assembler.UserLoginAssembler;
+import com.fuhouyu.sass.interfaces.controller.assembler.UserinfoAssembler;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
 import com.fuhouyu.sass.interfaces.controller.dto.UserTokenDTO;
+import com.fuhouyu.sass.interfaces.controller.dto.UserinfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -35,10 +40,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -61,6 +63,8 @@ public class UserController {
             = UserLoginAssembler.INSTANCE;
 
     private final UserAccountService userAccountService;
+
+    private final UserService userService;
 
     /**
      * 用户登录
@@ -85,6 +89,19 @@ public class UserController {
                     ResponseCodeEnum.INVALID_PARAM,
                     "用户名或密码错误");
         }
+    }
 
+    /**
+     * 登录用户的用户详情
+     *
+     * @return 用户详情
+     */
+    @Operation(summary = "用户详情")
+    @GetMapping("/info")
+    public RestResult<UserinfoDTO> userinfo() {
+        Long userId = UserContextHolder.getContext().getObject().getId();
+        UserEntity userEntity = this.userService.findByUserId(userId);
+        UserinfoDTO userinfo = UserinfoAssembler.INSTANCE.toUserInfo(userEntity);
+        return ResponseHelper.success(userinfo);
     }
 }
