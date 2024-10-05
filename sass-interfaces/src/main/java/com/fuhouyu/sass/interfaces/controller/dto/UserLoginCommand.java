@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.interfaces.controller.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -31,6 +32,7 @@ public class UserLoginCommand {
     /**
      * 用户名
      */
+    @NotBlank(message = "用户名不能为空")
     private String username;
 
     /**
@@ -41,5 +43,7 @@ public class UserLoginCommand {
     /**
      * 账号类型
      */
-    private String accountType;
+    @NotBlank(message = "登录类型不能为空")
+    private String loginType;
+
 }

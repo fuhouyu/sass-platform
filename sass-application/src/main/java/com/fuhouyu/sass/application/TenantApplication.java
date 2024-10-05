@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.application;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -26,7 +27,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author fuhouyu
  * @since 2024/9/17 18:48
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "com.fuhouyu.sass"
+})
+@MapperScan("com.fuhouyu.sass.infrastructure.repository.mapper")
 public class TenantApplication {
 
     public static void main(String[] args) {

@@ -61,13 +61,13 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public AccountEntity findById(AccountIdEntity accountIdEntity) {
-        AccountId accountId = new AccountId(accountIdEntity.account(), accountIdEntity.accountType());
+        AccountId accountId = new AccountId(accountIdEntity.getAccount(), accountIdEntity.getAccountType());
         return ACCOUNT_ASSEMBLER.toEntity(this.accountMapper.queryById(accountId));
     }
 
     @Override
     public int removeById(AccountIdEntity accountIdEntity) {
-        AccountId accountId = new AccountId(accountIdEntity.account(), accountIdEntity.accountType());
+        AccountId accountId = new AccountId(accountIdEntity.getAccount(), accountIdEntity.getAccountType());
         return this.accountMapper.deleteById(accountId);
     }
 

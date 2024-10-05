@@ -40,11 +40,6 @@ import java.util.Objects;
 public class UserAccountEntity extends UserEntity {
 
     /**
-     * 登录的账号实体
-     */
-    private AccountEntity loginAccount;
-
-    /**
      * 用户关联的账号信息
      */
     @Setter(AccessLevel.PRIVATE)

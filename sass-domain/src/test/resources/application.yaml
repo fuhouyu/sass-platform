@@ -1,0 +1,5 @@
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: caffeine

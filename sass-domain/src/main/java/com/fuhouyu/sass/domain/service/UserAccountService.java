@@ -15,11 +15,10 @@
  */
 package com.fuhouyu.sass.domain.service;
 
-import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
+import com.fuhouyu.sass.domain.model.account.AccountEntity;
+import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import lombok.NonNull;
 
 /**
  * <p>
@@ -36,14 +35,13 @@ public interface UserAccountService {
      *
      * @param userAccountEntity 用户账号实体
      */
-    @Transactional(rollbackFor = Exception.class)
     void register(UserAccountEntity userAccountEntity);
 
     /**
      * 通过账号id进行登录
      *
-     * @param accountIdEntity 账号id
+     * @param account 账号实体
+     * @return token实体
      */
-    @Transactional(rollbackFor = Exception.class, readOnly = true)
-    void login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException;
+    TokenValueEntity login(@NonNull AccountEntity account) throws Exception;
 }

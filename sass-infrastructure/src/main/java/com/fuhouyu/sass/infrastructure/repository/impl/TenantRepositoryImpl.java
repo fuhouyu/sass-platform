@@ -15,8 +15,6 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.impl;
 
-import com.fuhouyu.framework.exception.WebServiceException;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
 import com.fuhouyu.sass.common.PageQuery;
 import com.fuhouyu.sass.common.PageResult;
 import com.fuhouyu.sass.domain.model.tenant.TenantEntity;
@@ -75,8 +73,7 @@ public class TenantRepositoryImpl implements TenantRepository {
         // TODO 这里后面需要做其它的处理
         int count = tenantMapper.update(tenantDO);
         if (count < 1) {
-            throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
-                    "租户: %s 修改失败", entity.getTenantCode());
+            throw new IllegalArgumentException("edit tenant error");
         }
 
     }

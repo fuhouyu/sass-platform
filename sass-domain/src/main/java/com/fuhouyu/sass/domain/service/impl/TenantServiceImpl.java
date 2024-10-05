@@ -15,8 +15,6 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.exception.WebServiceException;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
 import com.fuhouyu.sass.domain.model.tenant.TenantEntity;
 import com.fuhouyu.sass.domain.repository.TenantRepository;
 import com.fuhouyu.sass.domain.service.TenantService;
@@ -44,9 +42,7 @@ public class TenantServiceImpl implements TenantService {
     public void createTenant(TenantEntity tenantEntity) {
         TenantEntity existsTenantModel = tenantRepository.findByTenantCode(tenantEntity.getTenantCode());
         if (Objects.nonNull(existsTenantModel)) {
-            throw new WebServiceException(
-                    ResponseCodeEnum.INVALID_PARAM,
-                    "当前租户编码: %s 已存在.", existsTenantModel.getTenantCode());
+            throw new IllegalArgumentException("Tenant already exists!");
         }
         tenantRepository.save(tenantEntity);
     }
@@ -55,9 +51,7 @@ public class TenantServiceImpl implements TenantService {
     public void updateTenant(TenantEntity tenantEntity) {
         TenantEntity exists = tenantRepository.findByTenantCode(tenantEntity.getTenantCode());
         if (Objects.isNull(exists)) {
-            throw new WebServiceException(
-                    ResponseCodeEnum.NOT_FOUND,
-                    "当前租户不存在: %s.", tenantEntity.getTenantCode());
+            throw new IllegalArgumentException("Tenant does not exist!");
         }
         this.tenantRepository.edit(tenantEntity);
     }

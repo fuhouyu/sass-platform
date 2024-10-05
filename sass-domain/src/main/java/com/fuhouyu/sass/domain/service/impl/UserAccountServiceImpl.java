@@ -15,26 +15,27 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.exception.WebServiceException;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.security.service.UserAuthService;
+import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
+import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
-import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.domain.service.UserAccountService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -54,7 +55,11 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserRepository userRepository;
 
+    private static final TokenValueAssembler TOKEN_VALUE_ASSEMBLER = TokenValueAssembler.INSTANCE;
+    private final UserAuthService userAuthService;
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void register(UserAccountEntity userAccountEntity) {
         // TODO 这里的用户名需要后期生成
         this.userRepository.save(userAccountEntity);
@@ -64,19 +69,12 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void login(AccountIdEntity accountIdEntity) throws UserPrincipalNotFoundException {
-        AccountEntity accountEntity = this.accountRepository.findById(accountIdEntity);
-        if (Objects.isNull(accountEntity)) {
-            throw new UserPrincipalNotFoundException(
-                    String.format("%s 用户未找到", accountIdEntity.account()));
-        }
-        UserEntity userEntity = this.userRepository.findById(accountEntity.getUserId());
-        if (Objects.isNull(userEntity)) {
-            throw new UserPrincipalNotFoundException(String.format("%s 账号关联的用户不存在", accountIdEntity.account()));
-        }
-        UserAccountEntity userAccountEntity = new UserAccountEntity();
-        BeanUtils.copyProperties(userEntity, userAccountEntity);
-        userAccountEntity.setLoginAccount(accountEntity);
+    public TokenValueEntity login(@NonNull AccountEntity account) throws Exception {
+        AccountIdEntity accountIdEntity = account.getIdentifierId();
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(), account.getCredentials());
+        DefaultOAuth2Token defaultOAuth2Token = userAuthService.generatorToken(usernamePasswordAuthenticationToken);
+        return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(defaultOAuth2Token);
     }
 
 
@@ -87,18 +85,17 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @param userId   用户id
      */
     private void saveAccounts(List<AccountEntity> accounts,
-                                             Long userId) {
+                              Long userId) {
         if (CollectionUtils.isEmpty(accounts)) {
-            throw new WebServiceException(ResponseCodeEnum.INVALID_PARAM,
-                    "用户关联的账号为空，无法注册");
+            throw new IllegalArgumentException("account is empty");
         }
         accounts.forEach(accountEntity -> accountEntity.attachUser(userId));
         try {
             this.accountRepository.save(accounts);
         } catch (Exception e) {
             LoggerUtil.error(logger, "用户账号注册失败: {}", accounts, e);
-            throw new WebServiceException(ResponseCodeEnum.SERVER_ERROR,
-                    "用户注册失败");
+            throw new IllegalArgumentException("user register failed");
         }
     }
+
 }
