@@ -34,13 +34,8 @@ public class SpringdocConfig {
 
     @Bean
     public OpenApiCustomizer openApiCustomizer() {
-        return openApi -> {
-            openApi.getPaths().values().forEach(pathItem ->
-                    pathItem.readOperations().forEach(operation -> {
-
-                        operation.addParametersItem(new Parameter().in("header").name("Authorization").required(true).schema(new StringSchema()));
-                    }));
-        };
+        return openApi -> openApi.getPaths().values().forEach(pathItem ->
+                pathItem.readOperations().forEach(operation -> operation.addParametersItem(new Parameter().in("header").name("Authorization").required(true).schema(new StringSchema()))));
     }
 
 }

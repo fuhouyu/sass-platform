@@ -17,6 +17,7 @@ package com.fuhouyu.sass.interfaces.controller.assembler;
 
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.interfaces.controller.dto.UserinfoDTO;
+import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -27,6 +28,7 @@ import org.mapstruct.factory.Mappers;
  * @author fuhouyu
  * @since 2024/10/5 19:09
  */
+@Mapper
 public interface UserinfoAssembler {
 
     UserinfoAssembler INSTANCE = Mappers.getMapper(UserinfoAssembler.class);

@@ -16,7 +16,9 @@
 package com.fuhouyu.sass.interfaces.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,8 +32,9 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2024/10/5 19:05
  */
-@Data
-@Schema(name = "UserinfoDTO", description = "用户详情dto对象")
+@Getter
+@Setter
+@ToString
 public class UserinfoDTO implements Serializable {
 
     @Serial
