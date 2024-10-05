@@ -98,6 +98,11 @@
                 <artifactId>sass-infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>sass-interfaces</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

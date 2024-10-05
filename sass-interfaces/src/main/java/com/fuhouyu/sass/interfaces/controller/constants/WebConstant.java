@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.assembler;
-
-import com.fuhouyu.sass.domain.model.BaseEntity;
-
-import java.util.List;
+package com.fuhouyu.sass.interfaces.controller.constants;
 
 /**
  * <p>
- * 转换基类
+ * web常量前缀
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/28 16:47
+ * @since 2024/10/4 22:17
  */
-public interface BaseAssembler<DTO, Entity extends BaseEntity<?>> {
+public class WebConstant {
 
-    DTO toDTO(Entity source);
+    private static final String API_VERSION = "/v1/";
+    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
 
-    List<DTO> toDTO(List<Entity> sourceList);
+    private WebConstant() {
+    }
 
-    Entity toEntity(DTO source);
 
-    List<Entity> toEntity(List<DTO> sourceList);
 }

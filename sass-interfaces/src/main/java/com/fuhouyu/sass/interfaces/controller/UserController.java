@@ -15,6 +15,31 @@
  */
 package com.fuhouyu.sass.interfaces.controller;
 
+import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.web.exception.WebServiceException;
+import com.fuhouyu.sass.domain.model.account.AccountEntity;
+import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
+import com.fuhouyu.sass.domain.service.UserAccountService;
+import com.fuhouyu.sass.interfaces.controller.assembler.UserLoginAssembler;
+import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
+import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
+import com.fuhouyu.sass.interfaces.controller.dto.UserTokenDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
  * <p>
  * 用户控制层
@@ -23,5 +48,43 @@ package com.fuhouyu.sass.interfaces.controller;
  * @author fuhouyu
  * @since 2024/10/4 21:50
  */
+@RestController
+@RequestMapping(WebConstant.USER_CONTROLLER_PATH)
+@Validated
+@Tag(name = "用户前端控制层")
+@RequiredArgsConstructor
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    private static final UserLoginAssembler USER_LOGIN_ASSEMBLER
+            = UserLoginAssembler.INSTANCE;
+
+    private final UserAccountService userAccountService;
+
+    /**
+     * 用户登录
+     *
+     * @param userLoginCommand 用户登录操作
+     * @return 响应
+     */
+    @PostMapping("/login")
+    @Operation(summary = "用户登录接口")
+    @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
+            example = "Basic dGVzdDE6cGFzc3dvcmQ=")
+    public RestResult<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
+        AccountEntity accountEntity = USER_LOGIN_ASSEMBLER.toAccountEntity(userLoginCommand);
+        try {
+            TokenValueEntity tokenValueEntity = this.userAccountService.login(accountEntity);
+            UserTokenDTO userTokenDTO = USER_LOGIN_ASSEMBLER.toUserTokenDTO(tokenValueEntity);
+            return ResponseHelper.success(userTokenDTO);
+        } catch (Exception e) {
+            LoggerUtil.error(logger, "用户: {} 使用 {} 方式登录失败: {} ",
+                    userLoginCommand.getUsername(), userLoginCommand.getLoginType(), e.getMessage(), e);
+            throw new WebServiceException(
+                    ResponseCodeEnum.INVALID_PARAM,
+                    "用户名或密码错误");
+        }
+
+    }
 }

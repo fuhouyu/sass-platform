@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.assembler;
+package com.fuhouyu.sass.domain.assembler;
 
-import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
-import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
+import com.fuhouyu.sass.domain.model.user.SecurityUserDetailEntity;
+import com.fuhouyu.sass.domain.model.user.UserEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 用户登录
+ *
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 21:49
+ * @since 2024/10/5 10:41
  */
-public interface UserLoginCommandAssembler extends BaseAssembler<UserLoginCommand, UserAccountEntity> {
+@Mapper
+public interface SecurityUserDetailAssembler {
+
+    SecurityUserDetailAssembler INSTANCE = Mappers.getMapper(SecurityUserDetailAssembler.class);
+
+
+    SecurityUserDetailEntity toAuthUserDetailEntity(UserEntity userEntity);
+
 }

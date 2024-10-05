@@ -15,22 +15,29 @@
  */
 package com.fuhouyu.sass.domain.service;
 
-import com.fuhouyu.framework.exception.WebServiceException;
+import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
+import com.fuhouyu.framework.security.SecurityAutoConfigure;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
+import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.domain.repository.UserRepository;
+import com.fuhouyu.sass.domain.service.impl.SecurityApplicationImpl;
+import com.fuhouyu.sass.domain.service.impl.SecurityUserDetailServiceImpl;
 import com.fuhouyu.sass.domain.service.impl.UserAccountServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.mockito.Mockito.*;
+
 
 /**
  * <p>
@@ -40,14 +47,28 @@ import static org.mockito.Mockito.*;
  * @author fuhouyu
  * @since 2024/9/27 22:02
  */
+@SpringBootTest(classes = {
+        SecurityAutoConfigure.class,
+        CacheAutoConfiguration.class,
+        CaffeineCacheAutoconfigure.class,
+        UserAccountServiceImpl.class,
+        SecurityUserDetailServiceImpl.class,
+        SecurityApplicationImpl.class
+})
 class TestUserAccountService extends TestBaseService {
 
-    private final UserRepository userRepository = Mockito.mock(UserRepository.class);
+    @MockBean
+    private UserRepository userRepository;
 
-    private final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+    @MockBean
+    private AccountRepository accountRepository;
 
-    @InjectMocks
-    private UserAccountServiceImpl userAccountService;
+    @Autowired
+    private UserAccountService userAccountService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
 
     @Test
@@ -71,20 +92,21 @@ class TestUserAccountService extends TestBaseService {
         Assertions.assertEquals(1L, (long) userAccountEntity.getId(), "Register failed");
         // 使用空账号注册
         userAccountEntity.getAccounts().clear();
-        Assertions.assertThrowsExactly(WebServiceException.class, () -> {
+        Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> {
             this.userAccountService.register(userAccountEntity);
         });
         // 使注册账号时抛出异常
         userAccountEntity.addAccount(accountEntity);
-        doThrow(WebServiceException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
-        Assertions.assertThrowsExactly(WebServiceException.class, () -> this.userAccountService.register(userAccountEntity));
+        doThrow(IllegalArgumentException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
+        Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> this.userAccountService.register(userAccountEntity));
     }
 
     @Test
-    void testLogin() throws UserPrincipalNotFoundException {
+    void testLogin() throws Exception {
         AccountIdEntity accountIdEntity = new AccountIdEntity("admin", "password");
 
         AccountEntity accountEntity = new AccountEntity(accountIdEntity);
+        accountEntity.setCredentials("password");
         accountEntity.enabled();
         accountEntity.attachUser(1L);
 
@@ -93,12 +115,17 @@ class TestUserAccountService extends TestBaseService {
         userEntity.setUsername("admin");
         userEntity.setGender("male");
 
+        AccountEntity returnAccountEntity = new AccountEntity(accountIdEntity);
+        BeanUtils.copyProperties(accountEntity, returnAccountEntity);
+        returnAccountEntity.setCredentials(passwordEncoder.encode("password"));
+        returnAccountEntity.attachUser(1L);
         when(this.accountRepository.findById(accountIdEntity))
-                .thenReturn(accountEntity);
+                .thenReturn(returnAccountEntity);
 
         when(this.userRepository.findById(1L))
                 .thenReturn(userEntity);
-        this.userAccountService.login(accountIdEntity);
+        TokenValueEntity tokenValueEntity = this.userAccountService.login(accountEntity);
+        Assertions.assertNotNull(tokenValueEntity, "Login failed");
 
     }
 

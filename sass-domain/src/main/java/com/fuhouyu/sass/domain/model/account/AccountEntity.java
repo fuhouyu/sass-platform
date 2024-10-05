@@ -92,4 +92,5 @@ public class AccountEntity extends BaseEntity<AccountIdEntity> {
     public void detachUser() {
         this.userId = null;
     }
+
 }

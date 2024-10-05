@@ -13,42 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.domain.model.account;
+package com.fuhouyu.sass.domain.model.token;
 
+import com.fuhouyu.sass.common.ValueObject;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+
+import java.time.Instant;
 
 /**
  * <p>
- * 账号id
+ * token实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:00
+ * @since 2024/10/5 11:43
  */
 @Getter
+@Setter
 @ToString
-public class AccountIdEntity {
+public class TokenValueEntity implements ValueObject<TokenValueEntity> {
 
-    private static final String CONCAT_SEPARATOR = ":";
+    private long accessTokenExpireSeconds;
 
-    private final String account;
+    private long refreshTokenExpireSeconds;
 
-    private final String accountType;
+    private String tokenType;
 
-    /**
-     * account:accountType
-     */
-    private final String fullAccount;
+    private String accessToken;
 
-    public AccountIdEntity(String account, String accountType) {
-        this.account = account;
-        this.accountType = accountType;
-        this.fullAccount = account + CONCAT_SEPARATOR + accountType;
-    }
+    private String refreshToken;
 
-    public static AccountIdEntity fullAccountToAccountIdEntity(String fullAccount) {
-        String[] split = fullAccount.split(CONCAT_SEPARATOR);
-        return new AccountIdEntity(split[0], split[1]);
+    private Instant accessTokenIssuedAt;
+
+    private Instant refreshTokenIssuedAt;
+
+    private Instant accessTokenExpireAt;
+
+    private Instant refreshTokenExpireAt;
+
+    @Override
+    public boolean sameValueAs(TokenValueEntity other) {
+        return other.equals(this);
     }
 }
