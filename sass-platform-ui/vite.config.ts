@@ -28,5 +28,14 @@ export default defineConfig({
             '@': resolve(__dirname, 'src'),
             '@components': resolve(__dirname, 'src/components'),
         }
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080', // 后端服务地址
+                changeOrigin: true, // 是否允许跨域
+                rewrite: (path) => path.replace(/^\/api/, '') // 重写路径
+            }
+        }
     }
 })
