@@ -16,11 +16,11 @@
 
 import React from "react";
 import "./index.scss"
-import {Button, Form, Input, message} from "antd";
+import {Button, Form, Input} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
-import request from "@/utils/request/AxiosRequest";
-import localStoreToken, {TokenInterface} from "@/utils/token/TokenUtil";
+import {fetchLogin} from "@/store/modules/user";
+import {useAppDispatch} from "@/store";
 
 
 interface UserLogin {
@@ -32,20 +32,13 @@ interface UserLogin {
 const Login: React.FC = () => {
     const navigate = useNavigate();
 
+    const dispatch = useAppDispatch();
     const onFinish = (loginData: UserLogin) => {
         loginData.loginType = 'password'
-        request.post('v1/user/login', loginData, {
-            headers: {
-                'Authorization': 'Basic dGVzdDE6cGFzc3dvcmQ='
-            },
+        dispatch(fetchLogin(loginData, () => {
+            navigate('/')
+        }))
 
-        })
-            .then((res: TokenInterface) => {
-                localStoreToken.storeToken(res)
-                navigate("/")
-            }).catch((err: Error) => {
-            message.error(err.message);
-        })
     };
 
     return (

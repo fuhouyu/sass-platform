@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DesktopOutlined, HomeOutlined, UserOutlined} from '@ant-design/icons';
 import {Breadcrumb, Layout, Menu, MenuProps} from 'antd';
 import withAuth from "@/hooks/Auth";
@@ -22,6 +22,9 @@ import "./index.scss"
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import {Outlet, useNavigate} from "react-router-dom";
+import {fetchUserinfo} from "@/store/modules/user";
+import {Userinfo} from "@/model/user";
+import {useAppDispatch, useAppSelector} from "@/store";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -52,6 +55,12 @@ const Home: React.FC = withAuth(() => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
 
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(fetchUserinfo());
+    }, [dispatch])
+    const realName = useAppSelector((state: { user: { userinfo: Userinfo }; }) => state.user.userinfo.realName);
+
     // 点击菜单时进行跳转
     const onMenuClick = (item: MenuItem) => {
         const path = item?.key?.toLocaleString();
@@ -72,7 +81,7 @@ const Home: React.FC = withAuth(() => {
                         <Breadcrumb/>
                         <div className="header-userinfo">
                             <UserOutlined/>
-                            <p></p>
+                            <span>{realName}</span>
                             <i className="arrow"/>
                         </div>
                     </Header>

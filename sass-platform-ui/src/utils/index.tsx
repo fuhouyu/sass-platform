@@ -14,18 +14,7 @@
  * limitations under the License.
  */
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import {RouterProvider} from "react-router-dom";
-import Routers from "./routes";
-import "normalize.css"
-import {Provider} from "react-redux";
-import {store} from "@/store";
+import {request} from "./request/request";
+import {getToken, removeToken, storeToken} from "./token/token";
 
-createRoot(document.getElementById('root')!).render(
-        <>
-            <Provider store={store}>
-            <RouterProvider router={Routers}></RouterProvider>
-            </Provider>
-        </>
-)
+export {request, storeToken, getToken, removeToken};

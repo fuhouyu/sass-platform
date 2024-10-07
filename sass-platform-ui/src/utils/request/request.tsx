@@ -15,6 +15,7 @@
  */
 
 import axios, {AxiosInstance} from "axios";
+import {getToken, removeToken} from "@/utils";
 
 
 const request: AxiosInstance = axios.create({
@@ -28,14 +29,17 @@ request.interceptors.request.use(function (config) {
     if (!params) {
         config.params = {};
     }
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken && !url?.includes('/v1/user/login')) {
-        config.url = '/v1/user/login';
-    } else if (accessToken) {
-        headers.set('Authorization', `Bearer ${accessToken}`);
-        config.url = url?.includes('/v1/user/login') ? '/' : url;
+    // 登录，直接放行
+    if (url?.includes('/v1/user/login')) {
+        removeToken()
+        return config;
     }
-
+    const token = getToken()
+    console.log(token)
+    console.log(token.accessToken)
+    if (token) {
+        headers.Authorization = `Bearer ${token.accessToken}`;
+    }
     return config;
 }, function (error) {
     // 对请求错误做些什么
@@ -57,4 +61,4 @@ request.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 
-export default request;
+export {request};
