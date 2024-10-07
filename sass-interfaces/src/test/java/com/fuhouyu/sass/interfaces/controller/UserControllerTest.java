@@ -76,6 +76,6 @@ class UserControllerTest {
         assertEquals(200, response.getStatus());
         RestResult<UserTokenDTO> restResult = JacksonUtil.readValue(response.getContentAsByteArray(), new TypeReference<RestResult<UserTokenDTO>>() {
         });
-        Assertions.assertTrue(restResult.getSuccess());
+        Assertions.assertTrue(restResult.getIsSuccess());
     }
 }

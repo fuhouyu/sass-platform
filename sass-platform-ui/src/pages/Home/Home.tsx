@@ -72,7 +72,7 @@ const Home: React.FC = withAuth(() => {
                         <Breadcrumb/>
                         <div className="header-userinfo">
                             <UserOutlined/>
-                            fuhouyu
+                            <p></p>
                             <i className="arrow"/>
                         </div>
                     </Header>
