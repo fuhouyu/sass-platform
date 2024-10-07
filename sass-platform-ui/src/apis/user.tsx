@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import {RouterProvider} from "react-router-dom";
-import Routers from "./routes";
-import "normalize.css"
-import {Provider} from "react-redux";
-import {store} from "@/store";
 
-createRoot(document.getElementById('root')!).render(
-        <>
-            <Provider store={store}>
-            <RouterProvider router={Routers}></RouterProvider>
-            </Provider>
-        </>
-)
+import {request} from "@/utils";
+
+
+const baseUserUrl = '/v1/user'
+/**
+ * 用户登录
+ * @param loginData 登录的表单信息
+ */
+export const loginApi = (loginData: string) => {
+    return request.post(`${baseUserUrl}/login`, loginData, {
+        headers: {
+            'Authorization': 'Basic dGVzdDE6cGFzc3dvcmQ='
+        },
+    });
+}
+
+/**
+ * 获取用户详情
+ */
+export const getUserinfo = () => {
+    return request.get(`${baseUserUrl}/info`);
+}

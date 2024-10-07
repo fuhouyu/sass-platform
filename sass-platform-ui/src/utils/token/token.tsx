@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import {RouterProvider} from "react-router-dom";
-import Routers from "./routes";
-import "normalize.css"
-import {Provider} from "react-redux";
-import {store} from "@/store";
+import {UserToken} from "@/model/user";
 
-createRoot(document.getElementById('root')!).render(
-        <>
-            <Provider store={store}>
-            <RouterProvider router={Routers}></RouterProvider>
-            </Provider>
-        </>
-)
+const tokenKey: string = 'token';
+
+const storeToken = (token: UserToken) => {
+    localStorage.setItem(tokenKey, JSON.stringify(token));
+}
+
+const removeToken = () => {
+    localStorage.removeItem(tokenKey);
+}
+
+const getToken: UserToken = () => {
+    const token = localStorage.getItem(tokenKey);
+    if (!token) {
+        return null
+    }
+    return JSON.parse(token) as UserToken;
+}
+
+
+export {storeToken, removeToken, getToken}

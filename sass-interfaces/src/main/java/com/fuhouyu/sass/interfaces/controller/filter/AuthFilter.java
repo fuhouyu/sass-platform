@@ -21,6 +21,7 @@ import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.framework.web.handler.UserParseHandler;
+import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -55,8 +56,12 @@ public class AuthFilter implements UserParseHandler {
                                         @NonNull HttpServletResponse response,
                                         @NonNull Class<T> userSubClass) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (Objects.isNull(bearerToken) || !bearerToken.startsWith(BEARER_TOKEN_HEADER)) {
+        if (request.getRequestURI().equals(WebConstant.USER_CONTROLLER_PATH + "/login")) {
             return null;
+        }
+        if (Objects.isNull(bearerToken)) {
+            throw new WebServiceException(ResponseCodeEnum.NOT_AUTH,
+                    "用户登录状态已失效");
         }
         String token = bearerToken.substring(BEARER_TOKEN_HEADER.length()).trim();
         Authentication authentication = this.tokenStore.readAuthentication(token);

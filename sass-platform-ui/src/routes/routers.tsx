@@ -18,7 +18,7 @@ import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
-import User from "@/pages/System/User/User.tsx";
+import User from "@/pages/System/User/user.tsx";
 
 
 const Routes: Router = createBrowserRouter([

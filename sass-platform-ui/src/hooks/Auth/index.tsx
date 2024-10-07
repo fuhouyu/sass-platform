@@ -15,4 +15,4 @@
  */
 
 
-export {default} from './WithAuth.tsx'
+export {default} from './withAuth.tsx'
