@@ -56,7 +56,8 @@ public class AuthFilter implements UserParseHandler {
                                         @NonNull HttpServletResponse response,
                                         @NonNull Class<T> userSubClass) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (request.getRequestURI().equals(WebConstant.USER_CONTROLLER_PATH + "/login")) {
+        if (request.getRequestURI().equals(WebConstant.USER_CONTROLLER_PATH + "/login")
+                || request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }
         if (Objects.isNull(bearerToken)) {
