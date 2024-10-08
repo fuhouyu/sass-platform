@@ -60,7 +60,7 @@ export interface UserToken {
 /**
  * 用户详情
  */
-export interface Userinfo {
+export interface UserinfoInterface {
     /**
      * 头像地址
      */
@@ -76,7 +76,7 @@ export interface Userinfo {
     /**
      * 主键id
      */
-    id?: string;
+    id: string;
     /**
      * 登录时间
      */

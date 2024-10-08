@@ -23,7 +23,7 @@ import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import {Outlet, useNavigate} from "react-router-dom";
 import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
-import {Userinfo} from "@/model/user";
+import {UserinfoInterface} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
 
@@ -72,7 +72,9 @@ const Home: React.FC = withAuth(() => {
     useEffect(() => {
         dispatch(fetchUserinfo());
     }, [dispatch])
-    const realName = useAppSelector((state: { user: { userinfo: Userinfo }; }) => state.user.userinfo.realName);
+    const realName = useAppSelector<UserinfoInterface>((state: {
+        user: { userinfo: UserinfoInterface };
+    }) => state.user.userinfo.realName);
 
     // 点击菜单时进行跳转
     const onMenuClick = (item: MenuItem) => {

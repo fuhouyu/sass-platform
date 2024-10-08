@@ -13,7 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.application;
+
+import org.jasypt.encryption.StringEncryptor;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+/**
+ * <p>
+ * 密码加解密测试类
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/10/8 20:11
+ */
+@SpringBootTest
+class JasyptPasswordTest {
+
+    @Autowired
+    private StringEncryptor stringEncryptor;
 
 
-export {User} from 'PersonCenter/personCenter.tsx';
- 
+    @Test
+    void testPasswordEnc() {
+        System.out.println(stringEncryptor.encrypt("jdbc:postgresql://116.62.66.23:5432/tenant_admin"));
+    }
+}

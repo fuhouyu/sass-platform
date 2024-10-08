@@ -17,7 +17,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {message} from "antd";
 import {storeToken, TokenInterface} from "@/utils/Token/token";
-import {Userinfo} from "@/model/user";
+import {UserinfoInterface} from "@/model/user";
 import {getUserinfo, loginApi, logout} from "@/apis/user";
 
 
@@ -32,7 +32,7 @@ const userStore = createSlice({
             state.token = action.payload;
             storeToken(state.token)
         },
-        storeUserinfo: (state, action: PayloadAction<Userinfo>) => {
+        storeUserinfo: (state, action: PayloadAction<UserinfoInterface>) => {
             state.userinfo = action.payload;
         },
         logout: (state, action) => {
@@ -65,11 +65,9 @@ const fetchLogin = (loginForm: string, callback: () => void) => {
  * 用户详情接口
  */
 const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: PayloadAction<Userinfo>; type: `user/${string}` }) => void) => {
-        await getUserinfo()
-            .then((res: Userinfo) => {
-                dispatch(userStore.actions.storeUserinfo(res))
-            })
+    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
+        const res = await getUserinfo();
+        dispatch(userStore.actions.storeUserinfo(res))
     }
 }
 
