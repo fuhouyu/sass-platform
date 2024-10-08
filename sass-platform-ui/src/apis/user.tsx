@@ -37,3 +37,10 @@ export const loginApi = (loginData: string) => {
 export const getUserinfo = () => {
     return request.get(`${baseUserUrl}/info`);
 }
+
+/**
+ * 退出登录
+ */
+export const logout = () => {
+    return request.post(`${baseUserUrl}/logout`);
+}

@@ -16,9 +16,9 @@
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {message} from "antd";
-import {storeToken, TokenInterface} from "@/utils/token/token";
+import {storeToken, TokenInterface} from "@/utils/Token/token";
 import {Userinfo} from "@/model/user";
-import {getUserinfo, loginApi} from "@/apis/user";
+import {getUserinfo, loginApi, logout} from "@/apis/user";
 
 
 const userStore = createSlice({
@@ -34,8 +34,13 @@ const userStore = createSlice({
         },
         storeUserinfo: (state, action: PayloadAction<Userinfo>) => {
             state.userinfo = action.payload;
+        },
+        logout: (state, action) => {
+            console.log(action.payload);
+            state.userinfo = {};
+            state.token = {};
         }
-    }
+    },
 });
 
 /**
@@ -68,6 +73,22 @@ const fetchUserinfo = () => {
     }
 }
 
-export {fetchLogin, fetchUserinfo};
+/**
+ * 用户退出登录
+ */
+const fetchLogout = () => {
+    return async (dispatch: (arg0: { payload: PayloadAction<void>; type: `user/${string}` }) => void) => {
+        await logout();
+        dispatch(userStore.actions.logout(null))
+
+    }
+}
+
+
+export {
+    fetchLogin,
+    fetchLogout,
+    fetchUserinfo,
+};
 
 export default userStore.reducer;

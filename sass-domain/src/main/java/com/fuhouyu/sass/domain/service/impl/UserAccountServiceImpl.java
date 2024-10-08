@@ -15,7 +15,10 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.security.service.UserAuthService;
+import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.context.request.RequestContextHolder;
+import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
+import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
@@ -27,9 +30,12 @@ import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.domain.service.UserAccountService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -46,16 +52,20 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserAccountServiceImpl implements UserAccountService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserAccountServiceImpl.class);
 
     private final AccountRepository accountRepository;
 
     private final UserRepository userRepository;
 
     private static final TokenValueAssembler TOKEN_VALUE_ASSEMBLER = TokenValueAssembler.INSTANCE;
-    private final UserAuthService userAuthService;
+
+    private final TokenStore tokenStore;
+
+    private final AuthenticationManager authenticationManager;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -68,13 +78,21 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public TokenValueEntity login(@NonNull AccountEntity account) throws Exception {
+    public TokenValueEntity login(@NonNull AccountEntity account) {
         AccountIdEntity accountIdEntity = account.getIdentifierId();
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(), account.getCredentials());
-        return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(userAuthService.generatorToken(usernamePasswordAuthenticationToken));
+        Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        return this.getAccessToken(authenticate);
     }
 
+    @Override
+    public void logout() {
+        Request request = RequestContextHolder.getContext().getObject();
+        String authorization = request.getAuthorization();
+        String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
+        this.tokenStore.removeAllToken(token);
+    }
 
     /**
      * 保存账号列表
@@ -91,9 +109,28 @@ public class UserAccountServiceImpl implements UserAccountService {
         try {
             this.accountRepository.save(accounts);
         } catch (Exception e) {
-            LoggerUtil.error(logger, "用户账号注册失败: {}", accounts, e);
+            LoggerUtil.error(log, "用户账号注册失败: {}", accounts, e);
             throw new IllegalArgumentException("user register failed");
         }
+    }
+
+
+    /**
+     * 用户登录，获取token.
+     *
+     * @param authentication 认证详情
+     * @return dto对象
+     */
+    private TokenValueEntity getAccessToken(Authentication authentication) {
+        ApplicationDTO contextApplication = (ApplicationDTO) SecurityContextHolder.getContext().getAuthentication()
+                .getDetails();
+
+        int accessTokenValidity = contextApplication.getAccessTokenExpireTime();
+        int refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
+
+        return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(tokenStore.createToken(authentication,
+                accessTokenValidity,
+                refreshTokenValidity));
     }
 
 }

@@ -96,6 +96,19 @@ public class UserController {
         }
     }
 
+
+    /**
+     * 退出登录
+     *
+     * @return 响应
+     */
+    @Operation(summary = "退出登录")
+    @PostMapping("/logout")
+    public RestResult<Void> logout() {
+        this.userAccountService.logout();
+        return ResponseHelper.success();
+    }
+
     /**
      * 登录用户的用户详情
      *

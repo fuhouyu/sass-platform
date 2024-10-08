@@ -43,5 +43,10 @@ public interface UserAccountService {
      * @param account 账号实体
      * @return token实体
      */
-    TokenValueEntity login(@NonNull AccountEntity account) throws Exception;
+    TokenValueEntity login(@NonNull AccountEntity account);
+
+    /**
+     * 退出登录
+     */
+    void logout();
 }

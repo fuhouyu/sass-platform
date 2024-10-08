@@ -19,7 +19,7 @@ import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {message} from "antd";
 import {getToken} from "@/utils";
-import {TokenInterface} from "@/utils/token/token";
+import {TokenInterface} from "@/utils/Token/token";
 
 // 使用具名函数组件来创建高阶组件
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
@@ -31,6 +31,7 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
             if (!token) {
                 message.warning("当前用户登录状态已失效");
                 navigate('/login'); // 未登录则重定向
+                window.location.reload();
             }
         }, [navigate]);
 
