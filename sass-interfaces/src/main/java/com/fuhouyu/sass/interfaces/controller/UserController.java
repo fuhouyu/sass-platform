@@ -76,7 +76,9 @@ public class UserController {
      * @return 响应
      */
     @PostMapping("/login")
-    @Operation(summary = "用户登录接口")
+    @Operation(summary = "用户登录接口", responses = {
+            @ApiResponse(content = @Content(schema = @Schema(implementation = UserTokenDTO.class)))
+    })
     @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
             example = "Basic dGVzdDE6cGFzc3dvcmQ=")
     public RestResult<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
@@ -92,6 +94,19 @@ public class UserController {
                     ResponseCodeEnum.INVALID_PARAM,
                     "用户名或密码错误");
         }
+    }
+
+
+    /**
+     * 退出登录
+     *
+     * @return 响应
+     */
+    @Operation(summary = "退出登录")
+    @PostMapping("/logout")
+    public RestResult<Void> logout() {
+        this.userAccountService.logout();
+        return ResponseHelper.success();
     }
 
     /**

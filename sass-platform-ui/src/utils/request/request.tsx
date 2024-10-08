@@ -16,6 +16,7 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getToken, removeToken} from "@/utils";
+import routers from "@/routes";
 
 
 const request: AxiosInstance = axios.create({
@@ -53,6 +54,11 @@ request.interceptors.response.use(function (response) {
         return response.data.data;
     } else {
         // 如果 isSuccess 为 false，抛出异常
+        if (response.data.code === 401) {
+            removeToken();
+            routers.navigate('/login')
+            window.location.reload();
+        }
         const error = new Error(response.data.message || '请求失败');
         return Promise.reject(error);
     }

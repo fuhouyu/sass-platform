@@ -15,16 +15,17 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {DesktopOutlined, HomeOutlined, UserOutlined} from '@ant-design/icons';
-import {Breadcrumb, Layout, Menu, MenuProps} from 'antd';
-import withAuth from "@/hooks/Auth";
+import {DesktopOutlined, DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
+import {Breadcrumb, Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
+import withAuth from "@/components/withAuth";
 import "./index.scss"
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import {Outlet, useNavigate} from "react-router-dom";
-import {fetchUserinfo} from "@/store/modules/user";
+import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
 import {Userinfo} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
+import {MenuInfo} from "rc-menu/lib/interface";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -49,6 +50,18 @@ const MENU_ITEMS: MenuItem[] = [
     ]),
 ];
 
+const menus: MenuProps['items'] = [
+    {
+        key: 'userinfo',
+        label: '个人中心',
+        icon: <UserOutlined/>,
+    },
+    {
+        key: 'logout',
+        label: '退出',
+        icon: <LogoutOutlined/>,
+    },
+];
 
 const Home: React.FC = withAuth(() => {
 
@@ -68,6 +81,19 @@ const Home: React.FC = withAuth(() => {
     }
 
 
+    const onDropDownClick: MenuProps['onClick'] = (e: MenuInfo) => {
+        switch (e.key) {
+            case 'logout':
+                dispatch(fetchLogout());
+                navigate('/login')
+                break;
+            case 'userinfo':
+                navigate('/userinfo')
+                break
+        }
+    };
+
+
     return (
         <div className="container">
             <Layout className="layout-container">
@@ -79,10 +105,17 @@ const Home: React.FC = withAuth(() => {
                 <Layout>
                     <Header className="layout-header">
                         <Breadcrumb/>
-                        <div className="header-userinfo">
-                            <UserOutlined/>
-                            <span>{realName}</span>
-                            <i className="arrow"/>
+                        <div>
+                            <Dropdown menu={{
+                                items: menus,
+                                onClick: onDropDownClick
+                            }}>
+                           <span>
+                                <Space>
+                                    你好, {realName} <DownOutlined/>
+                                </Space>
+                           </span>
+                            </Dropdown>
                         </div>
                     </Header>
                     <Content className="layout-content">

@@ -15,5 +15,5 @@
  */
 
 
-export {User} from 'User/user.tsx';
+export {User} from 'Userinfo/userinfo.tsx';
  

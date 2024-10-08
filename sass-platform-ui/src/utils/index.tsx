@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {request} from "./request/request";
-import {getToken, removeToken, storeToken} from "./token/token";
+import {request} from "@/utils/Request/request";
+import {getToken, removeToken, storeToken} from "@/utils/Token/token";
 
 export {request, storeToken, getToken, removeToken};
