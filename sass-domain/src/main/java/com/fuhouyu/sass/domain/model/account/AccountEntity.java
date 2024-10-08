@@ -19,6 +19,7 @@ import com.fuhouyu.sass.domain.model.BaseEntity;
 import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
@@ -34,6 +35,9 @@ import java.time.LocalDateTime;
 @ToString
 @RequiredArgsConstructor
 public class AccountEntity extends BaseEntity<AccountIdEntity> {
+
+    @Serial
+    private static final long serialVersionUID = 1542351123152841231L;
 
     /**
      * 账号唯一标识

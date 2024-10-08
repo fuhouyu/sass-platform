@@ -15,8 +15,12 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.request.RequestContextHolder;
+import com.fuhouyu.framework.context.user.DefaultUserDetail;
+import com.fuhouyu.framework.context.user.User;
+import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.LoggerUtil;
@@ -24,7 +28,9 @@ import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
+import com.fuhouyu.sass.domain.model.user.SecurityUserDetailEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
+import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.domain.service.UserAccountService;
@@ -83,6 +89,16 @@ public class UserAccountServiceImpl implements UserAccountService {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(), account.getCredentials());
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        // 设置用户上下文
+        if (authenticate.getPrincipal() instanceof SecurityUserDetailEntity securityUserDetailEntity) {
+            Context<User> emptyContext = UserContextHolder.createEmptyContext();
+            DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
+            defaultUserDetail.setUsername(securityUserDetailEntity.getUsername());
+            defaultUserDetail.setId(securityUserDetailEntity.getId());
+            emptyContext.setObject(defaultUserDetail);
+        }
+        UserEntity userEntity = UserEntity.generateLoginUserEntity(account.getUserId());
+        this.userRepository.edit(userEntity);
         return this.getAccessToken(authenticate);
     }
 

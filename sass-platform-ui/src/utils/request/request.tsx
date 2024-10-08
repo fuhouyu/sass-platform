@@ -36,8 +36,6 @@ request.interceptors.request.use(function (config) {
         return config;
     }
     const token = getToken()
-    console.log(token)
-    console.log(token.accessToken)
     if (token) {
         headers.Authorization = `Bearer ${token.accessToken}`;
     }
@@ -58,6 +56,7 @@ request.interceptors.response.use(function (response) {
             removeToken();
             routers.navigate('/login')
             window.location.reload();
+            return
         }
         const error = new Error(response.data.message || '请求失败');
         return Promise.reject(error);

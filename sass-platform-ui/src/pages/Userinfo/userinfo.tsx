@@ -15,7 +15,7 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useAppSelector} from "@/store";
 import {UserinfoInterface} from "@/model/user";
 import {Button, Form, Input, Radio} from "antd";
@@ -38,7 +38,6 @@ export const Userinfo: React.FC = () => {
         user: { userinfo: UserinfoInterface }
     }) => state.user.userinfo)
 
-
     const formItem: UserinfoFormInterface[] = [
         {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
         {key: 'realName', label: '真实姓名', value: userinfo.realName, disabled: false},
@@ -47,27 +46,27 @@ export const Userinfo: React.FC = () => {
         {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate, disabled: true},
         {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp, disabled: true},
     ]
+    const [form] = Form.useForm();
 
-    const [formValues, setFormValues] = useState<UserinfoFormInterface[]>(formItem);
+    const [formValues, setFormValues] = useState<UserinfoInterface[]>(formItem);
 
-    useEffect(() => {
+    const onCancel = (): void => {
+        form.resetFields();
+    }
 
-    }, [formValues])
-
-    const handleInputClick = (item: UserinfoFormInterface) => {
-        item.value = '';
-        setFormValues(formValues);
+    const onFinish = (values: UserinfoInterface): void => {
+        console.log(values)
     }
 
     return (
         <>
             <Form className="userinfo-form"
+                  form={form}
                   name="basic"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 16}}
                   style={{maxWidth: 600}}
-                // initialValues={{remember: true}}
-                // onFinish={onFinish}
+                  onFinish={onFinish}
                 // onFinishFailed={onFinishFailed}
                   autoComplete="off"
             >
@@ -78,8 +77,7 @@ export const Userinfo: React.FC = () => {
                         key={item.key}
                         initialValue={item.value}
                     >
-                        <Input disabled={item.disabled} key={item.key}
-                               onClick={() => handleInputClick(item)}/>
+                        <Input disabled={item.disabled} key={item.key} value={item.value}/>
                     </Form.Item>
                 ))}
 
@@ -89,14 +87,15 @@ export const Userinfo: React.FC = () => {
                         <Radio value='female'>女</Radio>
                     </Radio.Group>
                 </Form.Item>
-                <div className="userinfo-submit text-align-center">
+
+                <Form.Item className="userinfo-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
                     <Button type="primary" htmlType="submit">
                         保存
                     </Button>
-                    <Button type="primary" htmlType="submit" danger>
+                    <Button type="primary" htmlType="submit" danger onClick={onCancel}>
                         取消
                     </Button>
-                </div>
+                </Form.Item>
             </Form>
         </>
     );

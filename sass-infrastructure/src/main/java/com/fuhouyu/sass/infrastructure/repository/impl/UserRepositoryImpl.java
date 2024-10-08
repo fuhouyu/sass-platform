@@ -52,6 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
         return USER_ASSEMBLER.toEntity(userDO);
     }
 
+
     @Override
     public UserEntity findById(Long id) {
         UserDO userDO = this.userMapper.queryById(id);
