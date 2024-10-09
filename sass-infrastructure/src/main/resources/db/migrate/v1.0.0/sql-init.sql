@@ -126,6 +126,7 @@ CREATE TABLE roles
     data_scope        VARCHAR(32)        NOT NULL,
     is_enabled        BOOLEAN                     DEFAULT TRUE,
     is_deleted        BOOLEAN                     DEFAULT FALSE,
+    is_systemd BOOLEAN DEFAULT FALSE,
     is_allow_modified BOOLEAN DEFAULT TRUE,
     create_at         timestamp          NOT NULL,
     create_by         VARCHAR(32)        NOT NULL,
@@ -142,12 +143,16 @@ COMMENT ON COLUMN roles.display_order IS '显示顺序';
 COMMENT ON COLUMN roles.data_scope IS '数据权限，字典项';
 COMMENT ON COLUMN roles.is_enabled IS '启用/禁用';
 COMMENT ON COLUMN roles.is_deleted IS '删除标记';
-COMMENT ON COLUMN roles.is_deleted IS '删除标记：false 未删除';
+COMMENT ON COLUMN roles.is_systemd IS '是否为系统角色';
 COMMENT ON COLUMN roles.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN roles.create_at IS '创建时间';
 COMMENT ON COLUMN roles.create_by IS '创建者';
 COMMENT ON COLUMN roles.update_at IS '更新时间';
 COMMENT ON COLUMN roles.update_by IS '更新者';
+
+INSERT INTO roles(id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
+VALUES (1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'admin');
+
 
 -- 用户角色表
 DROP TABLE IF EXISTS user_has_role;
@@ -166,6 +171,8 @@ COMMENT ON COLUMN user_has_role.role_id IS '角色id';
 COMMENT ON COLUMN user_has_role.create_at IS '创建时间';
 COMMENT ON COLUMN user_has_role.create_by IS '创建人';
 
+INSERT INTO user_has_role(user_id, role_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin');
 
 DROP TABLE IF EXISTS tenant_has_role;
 -- 租户角色关联关系表
@@ -200,6 +207,7 @@ CREATE TABLE permissions
     is_frame        BOOLEAN DEFAULT false NOT NULL,
     permission_type VARCHAR(16)           NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE,
+    is_systemd BOOLEAN DEFAULT FALSE,
     is_visible      BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted      BOOLEAN DEFAULT FALSE,
     create_at       timestamp             NOT NULL,
@@ -227,12 +235,46 @@ COMMENT ON COLUMN permissions.permission_type IS '权限类型字典项';
 COMMENT ON COLUMN permissions.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN permissions.is_visible IS '是否显示标记';
 COMMENT ON COLUMN permissions.is_deleted IS '删除标记';
-COMMENT ON COLUMN permissions.is_deleted IS '删除标记：false 未删除';
+COMMENT ON COLUMN permissions.is_systemd IS '是否为系统权限';
 COMMENT ON COLUMN permissions.create_at IS '创建时间';
 COMMENT ON COLUMN permissions.create_by IS '创建者';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
 COMMENT ON COLUMN permissions.update_by IS '更新者';
 
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_systemd,
+                         is_visible, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (1, -1, '系统设置', 'system', 1, 'icon-setting-fill', '/system',
+        null, '', false, 'M', false, true, true, false, now(), 'admin', now(), 'admin'),
+       (2, 1, '用户管理', 'system:user', 1, '', '/system/user',
+        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
+       (3, 1, '角色管理', 'system:role', 1, '', '/system/role',
+        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
+       (4, 1, '权限管理', 'system:permission', 1, '', '/system/permission',
+        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin');
+
+-- 角色关联的权限
+DROP TABLE IF EXISTS role_has_permission;
+CREATE TABLE role_has_permission
+(
+    role_id       BIGINT      NOT NULL,
+    permission_id BIGINT      NOT NULL,
+    create_at     timestamp   NOT NULL,
+    create_by     VARCHAR(32) NOT NULL,
+    PRIMARY KEY (role_id, permission_id)
+);
+
+COMMENT ON TABLE role_has_permission IS '角色和权限的关联关系表';
+COMMENT ON COLUMN role_has_permission.role_id IS '角色id';
+COMMENT ON COLUMN role_has_permission.permission_id IS '权限id';
+COMMENT ON COLUMN role_has_permission.create_at IS '创建时间';
+COMMENT ON COLUMN role_has_permission.create_by IS '创建人';
+
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin'),
+       (1, 2, now(), 'admin'),
+       (1, 3, now(), 'admin'),
+       (1, 4, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
