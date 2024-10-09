@@ -21,47 +21,37 @@ import lombok.ToString;
 
 import java.io.Serial;
 
+
 /**
  * <p>
- * 权限do对象
+ * 角色实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:58
+ * @since 2024/10/9 20:50
  */
 @Getter
 @Setter
 @ToString
-public class PermissionDO extends BaseDO {
+public class RoleDO extends BaseDO {
 
     @Serial
-    private static final long serialVersionUID = 1123897912371561223L;
+    private static final long serialVersionUID = 1231239807123812611L;
 
     private Long id;
 
-    private Long parentId;
+    private String roleName;
 
-    private String permissionName;
-
-    private String permissionCode;
-
-    private String permissionType;
+    private String roleCode;
 
     private Integer displayOrder;
 
-    private String icon;
-
-    private String routePath;
-
-    private String componentPath;
-
-    private String urlParams;
-
-    private Boolean isFrame;
-
-    private Boolean isAllowModified;
+    private String dataScope;
 
     private Boolean isSystemd;
 
-    private Boolean isVisible;
+    private Boolean isEnabled;
+
+    private Boolean isAllowModified;
+
 }

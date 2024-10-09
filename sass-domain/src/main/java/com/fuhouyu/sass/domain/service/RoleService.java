@@ -13,36 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.infrastructure.repository.mapper;
+package com.fuhouyu.sass.domain.service;
 
-import com.fuhouyu.sass.infrastructure.repository.orm.PermissionDO;
-import org.apache.ibatis.annotations.Param;
+import com.fuhouyu.sass.domain.model.role.RoleEntity;
 
 import java.util.List;
 
 /**
  * <p>
- * 权限mapper对象
+ * 角色接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 18:00
+ * @since 2024/10/9 20:47
  */
-public interface PermissionMapper extends BaseMapper<PermissionDO, Long> {
+public interface RoleService {
 
     /**
-     * 通过权限编码查询权限
+     * 通过用户id查询角色集合
      *
-     * @param permissionCode 权限编码
-     * @return 权限do对象
+     * @param userId 用户id
+     * @return 角色实体集合
      */
-    PermissionDO queryByPermissionCode(String permissionCode);
-
-    /**
-     * 通过角色id集合查询出权限集合
-     *
-     * @param roleIdList 角色id集合
-     * @return 权限集合
-     */
-    List<PermissionDO> queryListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
+    List<RoleEntity> findRoleListByUserId(Long userId);
 }

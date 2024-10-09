@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.orm;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -31,8 +33,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
 public class UserDO extends BaseDO {
 
     @Serial

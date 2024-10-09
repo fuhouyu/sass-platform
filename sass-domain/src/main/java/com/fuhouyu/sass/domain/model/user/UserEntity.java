@@ -22,7 +22,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * <p>
@@ -90,11 +89,6 @@ public class UserEntity extends BaseEntity<Long> {
     @Override
     public Long getIdentifierId() {
         return this.id;
-    }
-
-    @Override
-    public boolean sameIdentityAs(Long other) {
-        return Objects.equals(id, other);
     }
 
     /**

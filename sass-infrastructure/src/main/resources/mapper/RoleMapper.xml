@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing roles and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.infrastructure.repository.mapper.RoleMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.infrastructure.repository.orm.RoleDO" extends="com.fuhouyu.sass.infrastructure.repository.mapper.BaseMapper.BaseResultMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="role_code" property="roleCode" jdbcType="VARCHAR"/>
+        <result column="display_order" property="displayOrder" jdbcType="INTEGER"/>
+        <result column="data_scope" property="dataScope" jdbcType="VARCHAR"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+        <result column="is_systemd" property="isSystemd" jdbcType="BOOLEAN"/>
+        <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="TableName">
+        roles
+    </sql>
+
+    <sql id="AllColumns" >
+        id,
+       role_name,
+       role_code,
+       display_order,
+       data_scope,
+       is_enabled,
+       is_systemd,
+       is_allow_modified,
+       is_deleted,
+       create_at,
+       update_at,
+       create_by,
+       update_by
+    </sql>
+
+    <sql id="QueryColumns" >
+        r.id,
+       r.role_name,
+       r.role_code,
+       r.display_order,
+       r.data_scope,
+       r.is_enabled,
+       r.is_systemd,
+       r.is_allow_modified,
+       r.is_deleted,
+       r.create_at,
+       r.update_at,
+       r.create_by,
+       r.update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.infrastructure.repository.orm.RoleDO">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{id},
+            #{roleName},
+            #{roleCode},
+            #{displayOrder},
+            #{dataScope},
+            #{isEnabled},
+            #{isSystemd},
+            #{isAllowModified},
+            #{isDeleted},
+            #{createAt},
+            #{updateAt},
+            #{createBy},
+            #{updateBy},
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.id},
+                #{entity.roleName},
+                #{entity.roleCode},
+                #{entity.displayOrder},
+                #{entity.dataScope},
+                #{entity.isEnabled},
+                #{entity.isSystemd},
+                #{entity.isAllowModified},
+                #{entity.isDeleted},
+                #{entity.createAt},
+                #{entity.updateAt},
+                #{entity.createBy},
+                #{entity.updateBy},
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.sass.infrastructure.repository.orm.RoleDO">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+
+        <if test="roleName != null and roleName != ''">
+            role_name = #{roleName},
+        </if>
+        <if test="displayOrder != null ">
+            display_order = #{displayOrder},
+        </if>
+        <if test="isEnabled != null ">
+            is_enabled = #{isEnabled},
+        </if>
+
+        update_at = #{updateAt},
+        update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE r.id = #{id}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE r.id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="queryByRoleCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE r.role_code = #{roleCode}
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="QueryColumns"/>
+                FROM
+        <include refid="TableName"/> r
+    </select>
+
+    <select id="findSystemRoleListByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        user_has_role uhr
+        LEFT JOIN
+        <include refid="TableName"/> r ON r.id = uhr.role_id
+    WHERE uhr.user_id = #{userId}
+        AND r.is_systemd = true
+    </select>
+</mapper>

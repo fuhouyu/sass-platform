@@ -15,34 +15,33 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.mapper;
 
-import com.fuhouyu.sass.infrastructure.repository.orm.PermissionDO;
-import org.apache.ibatis.annotations.Param;
+import com.fuhouyu.sass.infrastructure.repository.orm.RoleDO;
 
 import java.util.List;
 
 /**
  * <p>
- * 权限mapper对象
+ * 角色mapper对象
  * </p>
  *
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface PermissionMapper extends BaseMapper<PermissionDO, Long> {
+public interface RoleMapper extends BaseMapper<RoleDO, Long> {
 
     /**
-     * 通过权限编码查询权限
+     * 通过角色编码查询出角色对象
      *
-     * @param permissionCode 权限编码
-     * @return 权限do对象
+     * @param roleCode 角色编码
+     * @return 角色do对象
      */
-    PermissionDO queryByPermissionCode(String permissionCode);
+    RoleDO queryByRoleCode(String roleCode);
 
     /**
-     * 通过角色id集合查询出权限集合
+     * 通过用户id查询系统级的角色集合
      *
-     * @param roleIdList 角色id集合
-     * @return 权限集合
+     * @param userId 用户id
+     * @return 角色实体对象集合
      */
-    List<PermissionDO> queryListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
+    List<RoleDO> findSystemRoleListByUserId(Long userId);
 }
