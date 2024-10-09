@@ -35,4 +35,11 @@ public interface UserService {
      * @return 用户实体详情
      */
     UserEntity findByUserId(Long userId);
+
+    /**
+     * 修改用户
+     *
+     * @param userEntity 用户实体对象
+     */
+    void editUser(UserEntity userEntity);
 }

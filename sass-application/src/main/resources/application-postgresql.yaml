@@ -5,10 +5,10 @@ spring:
     username: postgres
     password: ENC(xZ2Wj+sKHpJsl2AnKm2klATW28QaI12vG3Tv5uxJSeBY4g1mlkg9t5dTRjKfDw0c)
     type: com.alibaba.druid.pool.DruidDataSource
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath*:db/migrate/v1.0.0/sql-init.sql
+  #  sql:
+  #    init:
+  #      mode: always
+  #      schema-locations: classpath*:db/migrate/v1.0.0/sql-init.sql
   h2:
     console:
       enabled: true

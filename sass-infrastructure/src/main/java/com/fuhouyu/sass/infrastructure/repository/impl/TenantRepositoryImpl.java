@@ -23,7 +23,7 @@ import com.fuhouyu.sass.infrastructure.repository.assembler.TenantAssembler;
 import com.fuhouyu.sass.infrastructure.repository.mapper.TenantMapper;
 import com.fuhouyu.sass.infrastructure.repository.orm.TenantDO;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -80,7 +80,7 @@ public class TenantRepositoryImpl implements TenantRepository {
 
     @Override
     public <P extends PageQuery> PageResult<TenantEntity> pageList(P pageable) {
-        try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
             List<TenantDO> tenantList = this.tenantMapper.queryList(pageable);
             List<TenantEntity> modelList = TENANT_ASSEMBLER.toEntity(tenantList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);

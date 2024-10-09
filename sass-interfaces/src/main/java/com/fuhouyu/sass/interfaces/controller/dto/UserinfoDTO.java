@@ -40,10 +40,10 @@ public class UserinfoDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1238912361L;
 
-    @Schema(name = "id", description = "主键id")
+    @Schema(name = "id", description = "主键id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
-    @Schema(name = "username", description = "用户名")
+    @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
 
     @Schema(name = "realName", description = "真实姓名")
@@ -61,10 +61,10 @@ public class UserinfoDTO implements Serializable {
     @Schema(name = "avatar", description = "头像地址")
     private String avatar;
 
-    @Schema(name = "loginDate", description = "登录时间")
+    @Schema(name = "loginDate", description = "登录时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime loginDate;
 
-    @Schema(name = "loginIp", description = "登录ip")
+    @Schema(name = "loginIp", description = "登录ip", requiredMode = Schema.RequiredMode.REQUIRED)
     private String loginIp;
 
 

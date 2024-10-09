@@ -15,11 +15,12 @@
  */
 
 
-import React, {useState} from "react";
-import {useAppSelector} from "@/store";
+import React, {useEffect, useState} from "react";
+import {useAppDispatch, useAppSelector} from "@/store";
 import {UserinfoInterface} from "@/model/user";
 import {Button, Form, Input, Radio} from "antd";
 import './index.scss'
+import {fetchEditUserinfo} from "@/store/modules/user";
 
 interface UserinfoFormInterface {
     label: string;
@@ -38,6 +39,10 @@ export const Userinfo: React.FC = () => {
         user: { userinfo: UserinfoInterface }
     }) => state.user.userinfo)
 
+    useEffect(() => {
+    }, [userinfo])
+
+
     const formItem: UserinfoFormInterface[] = [
         {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
         {key: 'realName', label: '真实姓名', value: userinfo.realName, disabled: false},
@@ -48,14 +53,27 @@ export const Userinfo: React.FC = () => {
     ]
     const [form] = Form.useForm();
 
-    const [formValues, setFormValues] = useState<UserinfoInterface[]>(formItem);
+    const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
     const onCancel = (): void => {
+        console.log('onCancel');
+        setButtonLoading(true)
         form.resetFields();
+        setButtonLoading(false);
     }
 
+    const dispatch = useAppDispatch<UserinfoInterface>();
     const onFinish = (values: UserinfoInterface): void => {
-        console.log(values)
+        console.log('onFinish');
+        if (JSON.stringify(values) === JSON.stringify(userinfo)) {
+            return;
+        }
+        setButtonLoading(true);
+
+        dispatch(fetchEditUserinfo(values))
+            .then(() => {
+                setButtonLoading(false);
+            })
     }
 
     return (
@@ -67,10 +85,10 @@ export const Userinfo: React.FC = () => {
                   wrapperCol={{span: 16}}
                   style={{maxWidth: 600}}
                   onFinish={onFinish}
-                // onFinishFailed={onFinishFailed}
+                  disabled={buttonLoading}
                   autoComplete="off"
             >
-                {formValues.map((item: UserinfoFormInterface,) => (
+                {formItem.map((item: UserinfoFormInterface,) => (
                     <Form.Item<UserinfoInterface>
                         label={item.label}
                         name={item.key}
@@ -89,10 +107,10 @@ export const Userinfo: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item className="userinfo-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" loading={buttonLoading}>
                         保存
                     </Button>
-                    <Button type="primary" htmlType="submit" danger onClick={onCancel}>
+                    <Button type="primary" danger onClick={onCancel}>
                         取消
                     </Button>
                 </Form.Item>

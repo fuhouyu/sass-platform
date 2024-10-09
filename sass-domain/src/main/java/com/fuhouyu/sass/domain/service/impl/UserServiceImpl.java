@@ -40,4 +40,9 @@ public class UserServiceImpl implements UserService {
     public UserEntity findByUserId(Long userId) {
         return userRepository.findById(userId);
     }
+
+    @Override
+    public void editUser(UserEntity userEntity) {
+        this.userRepository.edit(userEntity);
+    }
 }

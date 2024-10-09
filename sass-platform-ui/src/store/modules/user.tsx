@@ -18,7 +18,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {message} from "antd";
 import {storeToken, TokenInterface} from "@/utils/Token/token";
 import {UserinfoInterface} from "@/model/user";
-import {getUserinfo, loginApi, logout} from "@/apis/user";
+import {editUserinfoApi, getUserinfoApi, loginApi, logoutApi} from "@/apis/user";
 
 
 const userStore = createSlice({
@@ -66,7 +66,7 @@ const fetchLogin = (loginForm: string, callback: () => void) => {
  */
 const fetchUserinfo = () => {
     return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
-        const res = await getUserinfo();
+        const res = await getUserinfoApi();
         dispatch(userStore.actions.storeUserinfo(res))
     }
 }
@@ -76,17 +76,29 @@ const fetchUserinfo = () => {
  */
 const fetchLogout = () => {
     return async (dispatch: (arg0: { payload: PayloadAction<void>; type: `user/${string}` }) => void) => {
-        await logout();
+        await logoutApi();
         dispatch(userStore.actions.logout(null))
 
     }
 }
 
+/**
+ * 修改用户详情
+ * @param editUserinfo 用户详情接口修改
+ */
+const fetchEditUserinfo = (editUserinfo: UserinfoInterface) => {
+    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
+        editUserinfoApi(editUserinfo);
+        const res = await getUserinfoApi();
+        dispatch(userStore.actions.storeUserinfo(res))
+    }
+}
 
 export {
     fetchLogin,
     fetchLogout,
     fetchUserinfo,
+    fetchEditUserinfo
 };
 
 export default userStore.reducer;

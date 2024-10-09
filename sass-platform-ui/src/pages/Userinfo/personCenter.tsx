@@ -20,7 +20,7 @@ import "./index.scss"
 import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
-import {UserinfoInterface as UserDetail} from "@/model/user";
+import {UserinfoInterface} from "@/model/user";
 import {Userinfo} from "@/pages/Userinfo/userinfo";
 
 interface MenuLiInterface {
@@ -35,7 +35,9 @@ interface MenuLiInterface {
  */
 export const PersonCenter: React.FC = () => {
 
-    const realName = useAppSelector((state: { user: { userinfo: UserDetail }; }) => state.user.userinfo.realName);
+    const userinfo = useAppSelector<UserinfoInterface>((state: {
+        user: { userinfo: UserinfoInterface };
+    }) => state.user.userinfo);
 
     const menuItems: MenuLiInterface[] = [
         {key: 'userinfo', icon: <UserOutlined/>, label: '个人资料'},
@@ -58,10 +60,11 @@ export const PersonCenter: React.FC = () => {
                     <div>
                         <Avatar
                             size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
+                            src={userinfo.avatar}
                             icon={<AntDesignOutlined/>}
                         />
                         <p className="text-align-center">
-                            您好，{realName}
+                            您好，{userinfo.realName}
                         </p>
                     </div>
                     <ul className="userinfo-menu">
