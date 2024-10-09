@@ -15,39 +15,33 @@
  */
 package com.fuhouyu.sass.interfaces.controller.assembler;
 
-import com.fuhouyu.sass.domain.model.user.UserEntity;
-import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoDTO;
-import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoEditCommand;
+import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+import com.fuhouyu.sass.interfaces.controller.dto.permission.PermissionInfoTreeDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
+
 /**
  * <p>
- * 用户详情转换接口
+ * 权限转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/5 19:09
+ * @since 2024/10/9 17:26
  */
 @Mapper
-public interface UserinfoAssembler {
+public interface PermissionAssembler {
 
-    UserinfoAssembler INSTANCE = Mappers.getMapper(UserinfoAssembler.class);
-
-    /**
-     * 用户实体转换为用户详情
-     *
-     * @param userEntity 用户实体
-     * @return 用户详情
-     */
-    UserinfoDTO toUserInfo(UserEntity userEntity);
+    PermissionAssembler INSTANCE = Mappers.getMapper(PermissionAssembler.class);
 
     /**
-     * 转换为用户实体
+     * 实体转换为权限树dto对象
      *
-     * @param userinfoEditCommand 用户详情修改的dto对象
-     * @return 用户实体对象
+     * @param permissionEntity 权限实体
+     * @return 权限详情dto对象
      */
-    UserEntity toUserEntity(UserinfoEditCommand userinfoEditCommand);
+    List<PermissionInfoTreeDTO> toPermissionInfoTreeDTOList(List<PermissionEntity> permissionEntity);
 
 }

@@ -17,8 +17,8 @@ package com.fuhouyu.sass.interfaces.controller.assembler;
 
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
-import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
-import com.fuhouyu.sass.interfaces.controller.dto.UserTokenDTO;
+import com.fuhouyu.sass.interfaces.controller.dto.user.UserLoginCommand;
+import com.fuhouyu.sass.interfaces.controller.dto.user.UserTokenDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

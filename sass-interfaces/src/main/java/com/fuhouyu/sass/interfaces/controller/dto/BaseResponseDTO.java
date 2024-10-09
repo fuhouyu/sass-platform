@@ -19,32 +19,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
- * 用户详情修改命令
+ * 基类dto响应
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 09:18
+ * @since 2024/10/9 16:55
  */
-@Schema(name = "UserinfoEditCommand", description = "用户详情修改操作")
+@Schema(name = "BaseResponseDTO", description = "基类响应dto对象")
 @Data
-public class UserinfoEditCommand implements Serializable {
+public class BaseResponseDTO implements Serializable {
 
-    @Schema(name = "id", description = "用户id，如果修改当前自己用户详情，该值不需要传递")
-    private Long id;
+    @Schema(name = "createAt", description = "创建人", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String createAt;
 
-    @Schema(name = "realName", description = "用户真实姓名")
-    private String realName;
+    @Schema(name = "updateAt", description = "操作人", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String updateAt;
 
-    @Schema(name = "nickname", description = "昵称")
-    private String nickname;
+    @Schema(name = "createTime", description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime createTime;
 
-    @Schema(name = "email", description = "邮箱")
-    private String email;
-
-    @Schema(name = "gender", description = "性别")
-    private String gender;
-
+    @Schema(name = "updateTime", description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime updateTime;
 }

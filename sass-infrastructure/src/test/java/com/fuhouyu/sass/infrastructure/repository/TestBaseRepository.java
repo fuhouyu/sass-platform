@@ -20,10 +20,12 @@ import com.fuhouyu.framework.context.user.DefaultUserDetail;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.sass.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.domain.service.impl.SecurityUserDetailServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -40,9 +42,12 @@ import java.util.UUID;
  * @since 2024/9/24 20:42
  */
 @ExtendWith({SpringExtension.class})
-@SpringBootTest
+@SpringBootTest(classes = {
+        SecurityUserDetailServiceImpl.class
+})
+@SpringBootConfiguration
 @SpringBootApplication
-@MapperScan(basePackages = "com.fuhouyu.tenant.infrastructure.repository.mapper")
+@MapperScan(basePackages = "com.fuhouyu.sass.infrastructure.repository.mapper")
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class TestBaseRepository {
 

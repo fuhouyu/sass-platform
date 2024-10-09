@@ -15,10 +15,14 @@
  */
 package com.fuhouyu.sass.domain.service;
 
+import com.fuhouyu.sass.domain.repository.AccountRepository;
+import com.fuhouyu.sass.domain.repository.TenantRepository;
+import com.fuhouyu.sass.domain.repository.UserRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * <p>
@@ -28,10 +32,18 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author fuhouyu
  * @since 2024/9/27 19:50
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@SpringBootConfiguration
+@SpringBootApplication
 class TestBaseService {
 
+    @MockBean
+    protected AccountRepository accountRepository;
+
+    @MockBean
+    protected UserRepository userRepository;
+
+    @MockBean
+    protected TenantRepository tenantRepository;
 
 }

@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.infrastructure.repository.assembler;
+
+import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+import com.fuhouyu.sass.infrastructure.repository.orm.PermissionDO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * web常量前缀
+ * 权限转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 17:58
  */
-public class WebConstant {
+@Mapper
+public interface PermissionAssembler extends BaseAssembler<PermissionEntity, PermissionDO> {
 
-    private static final String API_VERSION = "/v1/";
-
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
+    PermissionAssembler INSTANCE = Mappers.getMapper(PermissionAssembler.class);
 
 }
