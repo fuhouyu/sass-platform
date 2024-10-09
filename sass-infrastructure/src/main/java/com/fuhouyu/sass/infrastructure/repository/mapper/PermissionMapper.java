@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.infrastructure.repository.mapper;
+
+import com.fuhouyu.sass.infrastructure.repository.orm.PermissionDO;
 
 /**
  * <p>
- * web常量前缀
+ * 权限mapper对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 18:00
  */
-public class WebConstant {
+public interface PermissionMapper extends BaseMapper<PermissionDO, Long> {
 
-    private static final String API_VERSION = "/v1/";
-
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
-
+    /**
+     * 通过权限编码查询权限
+     *
+     * @param permissionCode 权限编码
+     * @return 权限do对象
+     */
+    PermissionDO queryByPermissionCode(String permissionCode);
 }

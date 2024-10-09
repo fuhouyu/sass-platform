@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.domain.service;
+
+import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+
+import java.util.List;
 
 /**
  * <p>
- * web常量前缀
+ * 权限接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 17:12
  */
-public class WebConstant {
+public interface PermissionService {
 
-    private static final String API_VERSION = "/v1/";
-
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
-
+    /**
+     * 获取当前用户的
+     *
+     * @param isSystemd 查询的是否为系统的角色权限
+     * @return 权限实体
+     */
+    List<PermissionEntity> findPermissionListByMe(Boolean isSystemd);
 }

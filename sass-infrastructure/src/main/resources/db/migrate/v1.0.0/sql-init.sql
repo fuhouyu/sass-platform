@@ -248,9 +248,9 @@ VALUES (1, -1, '系统设置', 'system', 1, 'icon-setting-fill', '/system',
         null, '', false, 'M', false, true, true, false, now(), 'admin', now(), 'admin'),
        (2, 1, '用户管理', 'system:user', 1, '', '/system/user',
         null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
-       (3, 1, '角色管理', 'system:role', 1, '', '/system/role',
+       (3, 1, '角色管理', 'system:role', 2, '', '/system/role',
         null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
-       (4, 1, '权限管理', 'system:permission', 1, '', '/system/permission',
+       (4, 1, '权限管理', 'system:permission', 3, '', '/system/permission',
         null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限

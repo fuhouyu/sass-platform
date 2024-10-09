@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.domain.repository;
+
+import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
 
 /**
  * <p>
- * web常量前缀
+ * 权限存储接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 17:57
  */
-public class WebConstant {
+public interface PermissionRepository extends BaseRepository<PermissionEntity, Long> {
 
-    private static final String API_VERSION = "/v1/";
 
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
+    /**
+     * 通过权限编码查询权限实体
+     *
+     * @param permissionCode 权限编码
+     * @return 权限实体
+     */
+    PermissionEntity findByPermissionCode(String permissionCode);
 
 }

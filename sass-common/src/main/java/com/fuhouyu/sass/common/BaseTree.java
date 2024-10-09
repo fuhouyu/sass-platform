@@ -13,26 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.common;
+
+import java.util.List;
 
 /**
  * <p>
- * web常量前缀
+ * 树接口基类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 17:35
  */
-public class WebConstant {
+public interface BaseTree<T extends BaseTree<T>> {
 
-    private static final String API_VERSION = "/v1/";
+    /**
+     * 主键id
+     *
+     * @return id
+     */
+    Long getId();
 
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
+    /**
+     * 父类id
+     *
+     * @return 父级id
+     */
+    Long getParentId();
 
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
+    /**
+     * 获取子集
+     *
+     * @return 子集
+     */
+    List<T> getChildren();
 
-    private WebConstant() {
-    }
-
+    /**
+     * 设置子集
+     *
+     * @param children 子集
+     */
+    void setChildren(List<T> children);
 
 }
+

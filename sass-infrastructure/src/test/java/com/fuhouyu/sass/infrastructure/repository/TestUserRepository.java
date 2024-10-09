@@ -42,7 +42,7 @@ class TestUserRepository extends TestBaseRepository {
     @Test
     void testUserRepository() {
         // 保存
-        UserEntity saveEntity = this.genertaeUserEntity();
+        UserEntity saveEntity = this.generteUserEntity();
         this.userRepository.save(saveEntity);
         Assertions.assertNotNull(saveEntity.getId(), "返回的id为空");
 
@@ -50,7 +50,7 @@ class TestUserRepository extends TestBaseRepository {
                 "二次保存，用户名冲突未正常抛出异常");
 
         // 修改
-        UserEntity updateEntity = this.genertaeUserEntity();
+        UserEntity updateEntity = this.generteUserEntity();
         updateEntity.setId(saveEntity.getId());
         this.userRepository.edit(updateEntity);
         Assertions.assertNotEquals(updateEntity.getRealName(), saveEntity.getRealName(), "修改未成功");
@@ -69,7 +69,7 @@ class TestUserRepository extends TestBaseRepository {
     }
 
 
-    private UserEntity genertaeUserEntity() {
+    private UserEntity generteUserEntity() {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(super.getUUIDStr(8));
         userEntity.setRealName(super.getUUIDStr(8));

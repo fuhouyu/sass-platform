@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.interfaces.controller.constants;
+package com.fuhouyu.sass.domain.service.impl;
+
+import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+import com.fuhouyu.sass.domain.service.PermissionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
- * web常量前缀
+ * permission实现类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/10/9 17:56
  */
-public class WebConstant {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class PermissionServiceImpl implements PermissionService {
 
-    private static final String API_VERSION = "/v1/";
 
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
+    @Override
+    public List<PermissionEntity> findPermissionListByMe(Boolean isSystemd) {
+        return List.of();
     }
-
-
 }
