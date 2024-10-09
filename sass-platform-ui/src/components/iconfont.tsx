@@ -15,13 +15,8 @@
  */
 
 
-import {request} from "@/utils";
+import {createFromIconfontCN} from "@ant-design/icons";
 
-const basePermissionUrl = '/v1/permission'
-
-const getUserPermissionApi = () => request.get(`${basePermissionUrl}/me`);
-
-
-export {
-    getUserPermissionApi
-}
+export const Iconfont = createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/c/font_4705439_2h72ln81yip.js',
+});
