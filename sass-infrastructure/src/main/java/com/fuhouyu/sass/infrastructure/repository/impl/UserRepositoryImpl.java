@@ -24,7 +24,7 @@ import com.fuhouyu.sass.infrastructure.repository.assembler.UserAssembler;
 import com.fuhouyu.sass.infrastructure.repository.mapper.UserMapper;
 import com.fuhouyu.sass.infrastructure.repository.orm.UserDO;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -52,6 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
         return USER_ASSEMBLER.toEntity(userDO);
     }
 
+
     @Override
     public UserEntity findById(Long id) {
         UserDO userDO = this.userMapper.queryById(id);
@@ -78,7 +79,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public <P extends PageQuery> PageResult<UserEntity> pageList(P pageable) {
-        try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
             List<UserDO> userDOList = this.userMapper.queryList(pageable);
             List<UserEntity> modelList = USER_ASSEMBLER.toEntity(userDOList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);

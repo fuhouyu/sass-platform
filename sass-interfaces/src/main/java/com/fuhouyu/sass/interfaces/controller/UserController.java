@@ -32,6 +32,7 @@ import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import com.fuhouyu.sass.interfaces.controller.dto.UserLoginCommand;
 import com.fuhouyu.sass.interfaces.controller.dto.UserTokenDTO;
 import com.fuhouyu.sass.interfaces.controller.dto.UserinfoDTO;
+import com.fuhouyu.sass.interfaces.controller.dto.UserinfoEditCommand;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -64,6 +65,8 @@ public class UserController {
 
     private static final UserLoginAssembler USER_LOGIN_ASSEMBLER
             = UserLoginAssembler.INSTANCE;
+
+    private static final UserinfoAssembler USER_INFO_ASSEMBLER = UserinfoAssembler.INSTANCE;
 
     private final UserAccountService userAccountService;
 
@@ -121,7 +124,22 @@ public class UserController {
     public RestResult<UserinfoDTO> userinfo() {
         Long userId = UserContextHolder.getContext().getObject().getId();
         UserEntity userEntity = this.userService.findByUserId(userId);
-        UserinfoDTO userinfo = UserinfoAssembler.INSTANCE.toUserInfo(userEntity);
+        UserinfoDTO userinfo = USER_INFO_ASSEMBLER.toUserInfo(userEntity);
         return ResponseHelper.success(userinfo);
+    }
+
+    /**
+     * 修改当前用户的详情
+     *
+     * @param userinfoEditCommand 用户详情操作
+     * @return restResult
+     */
+    @PutMapping("/info")
+    @Operation(summary = "修改当前的用户详情")
+    public RestResult<Void> editUserinfo(@Validated @RequestBody UserinfoEditCommand userinfoEditCommand) {
+        UserEntity userEntity = USER_INFO_ASSEMBLER.toUserEntity(userinfoEditCommand);
+        userEntity.setId(UserContextHolder.getContext().getObject().getId());
+        this.userService.editUser(userEntity);
+        return ResponseHelper.success();
     }
 }

@@ -15,78 +15,106 @@
  */
 
 
-import React, {useState} from "react";
-import "./index.scss"
-import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
-import {Avatar} from "antd";
-import {useAppSelector} from "@/store";
-import {Userinfo as UserDetail} from "@/model/user";
+import React, {useEffect, useState} from "react";
+import {useAppDispatch, useAppSelector} from "@/store";
+import {UserinfoInterface} from "@/model/user";
+import {Button, Form, Input, Radio} from "antd";
+import './index.scss'
+import {fetchEditUserinfo} from "@/store/modules/user";
 
-interface MenuLiInterface {
-    key: string;
-    icon: React.ReactElement;
+interface UserinfoFormInterface {
     label: string;
+    key: string;
+    value: string;
+    disabled: boolean;
 }
 
 /**
- * 个人中心用户详情
+ * 用户详情
  * @constructor 构造函数
  */
 export const Userinfo: React.FC = () => {
 
-    const realName = useAppSelector((state: { user: { userinfo: UserDetail }; }) => state.user.userinfo.realName);
+    const userinfo: UserinfoInterface = useAppSelector<UserinfoInterface>((state: {
+        user: { userinfo: UserinfoInterface }
+    }) => state.user.userinfo)
 
-    const menuItems: MenuLiInterface[] = [
-        {key: 'userinfo', icon: <UserOutlined/>, label: '个人资料'},
-        {key: 'accountSettings', icon: <SettingOutlined/>, label: '账号设置'},
-        // 可以继续添加其他菜单项
-    ];
-
-    const [selectedMenuInterface, setSelectedMenuInterface] = useState<MenuLiInterface>(menuItems[0]);
+    useEffect(() => {
+    }, [userinfo])
 
 
-    const handleClick = (item: MenuLiInterface) => {
-        setSelectedMenuInterface(item); // 更新选中项的索引
-    };
+    const formItem: UserinfoFormInterface[] = [
+        {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
+        {key: 'realName', label: '真实姓名', value: userinfo.realName, disabled: false},
+        {key: 'nickname', label: '昵称', value: userinfo.nickname, disabled: false},
+        {key: 'email', label: '邮箱', value: userinfo.email, disabled: false},
+        {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate, disabled: true},
+        {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp, disabled: true},
+    ]
+    const [form] = Form.useForm();
 
+    const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+
+    const onCancel = (): void => {
+        console.log('onCancel');
+        setButtonLoading(true)
+        form.resetFields();
+        setButtonLoading(false);
+    }
+
+    const dispatch = useAppDispatch<UserinfoInterface>();
+    const onFinish = (values: UserinfoInterface): void => {
+        console.log('onFinish');
+        if (JSON.stringify(values) === JSON.stringify(userinfo)) {
+            return;
+        }
+        setButtonLoading(true);
+
+        dispatch(fetchEditUserinfo(values))
+            .then(() => {
+                setButtonLoading(false);
+            })
+    }
 
     return (
         <>
-            <div className="userinfo-container">
-                <div className="userinfo-left">
-                    <div>
-                        <Avatar
-                            size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                            icon={<AntDesignOutlined/>}
-                        />
-                        <p className="text-align-center">
-                            您好，{realName}
-                        </p>
-                    </div>
-                    <ul className="userinfo-menu">
-                        {
-                            menuItems.map((item: MenuLiInterface) => (
-                                <li key={item.key}
-                                    className={`menu-li ${selectedMenuInterface.key === item.key ? 'menu-li-selected' : ''}`}
-                                    onClick={() => {
-                                        handleClick(item)
-                                    }}
-                                >
-                                    <span>
-                                        {item.icon} {item.label}
-                                    </span>
+            <Form className="userinfo-form"
+                  form={form}
+                  name="basic"
+                  labelCol={{span: 8}}
+                  wrapperCol={{span: 16}}
+                  style={{maxWidth: 600}}
+                  onFinish={onFinish}
+                  disabled={buttonLoading}
+                  autoComplete="off"
+            >
+                {formItem.map((item: UserinfoFormInterface,) => (
+                    <Form.Item<UserinfoInterface>
+                        label={item.label}
+                        name={item.key}
+                        key={item.key}
+                        initialValue={item.value}
+                    >
+                        <Input disabled={item.disabled} key={item.key} value={item.value}/>
+                    </Form.Item>
+                ))}
 
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
-                <div className="userinfo-right">
-                    <div className="userinfo-right-title">
-                        {selectedMenuInterface.label}
-                    </div>
-                </div>
-            </div>
+                <Form.Item name="gender" key="gender" label="性别" initialValue={userinfo.gender}>
+                    <Radio.Group value={userinfo.gender}>
+                        <Radio value='male'>男</Radio>
+                        <Radio value='female'>女</Radio>
+                    </Radio.Group>
+                </Form.Item>
+
+                <Form.Item className="userinfo-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
+                    <Button type="primary" htmlType="submit" loading={buttonLoading}>
+                        保存
+                    </Button>
+                    <Button type="primary" danger onClick={onCancel}>
+                        取消
+                    </Button>
+                </Form.Item>
+            </Form>
         </>
-    )
+    );
 }

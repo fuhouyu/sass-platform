@@ -19,7 +19,7 @@ import type {Router} from "@remix-run/router/dist/router";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 import User from "@/pages/System/User/user.tsx";
-import {Userinfo} from "@/pages/Userinfo/userinfo";
+import {PersonCenter} from "@/pages/Userinfo/personCenter";
 
 
 const Routes: Router = createBrowserRouter([
@@ -33,7 +33,7 @@ const Routes: Router = createBrowserRouter([
         children: [
             {
                 path: '/userinfo',
-                element: <Userinfo/>
+                element: <PersonCenter/>
             },
             {
                 path: '/system',

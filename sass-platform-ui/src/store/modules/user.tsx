@@ -17,8 +17,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {message} from "antd";
 import {storeToken, TokenInterface} from "@/utils/Token/token";
-import {Userinfo} from "@/model/user";
-import {getUserinfo, loginApi, logout} from "@/apis/user";
+import {UserinfoInterface} from "@/model/user";
+import {editUserinfoApi, getUserinfoApi, loginApi, logoutApi} from "@/apis/user";
 
 
 const userStore = createSlice({
@@ -32,7 +32,7 @@ const userStore = createSlice({
             state.token = action.payload;
             storeToken(state.token)
         },
-        storeUserinfo: (state, action: PayloadAction<Userinfo>) => {
+        storeUserinfo: (state, action: PayloadAction<UserinfoInterface>) => {
             state.userinfo = action.payload;
         },
         logout: (state, action) => {
@@ -65,11 +65,9 @@ const fetchLogin = (loginForm: string, callback: () => void) => {
  * 用户详情接口
  */
 const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: PayloadAction<Userinfo>; type: `user/${string}` }) => void) => {
-        await getUserinfo()
-            .then((res: Userinfo) => {
-                dispatch(userStore.actions.storeUserinfo(res))
-            })
+    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
+        const res = await getUserinfoApi();
+        dispatch(userStore.actions.storeUserinfo(res))
     }
 }
 
@@ -78,17 +76,29 @@ const fetchUserinfo = () => {
  */
 const fetchLogout = () => {
     return async (dispatch: (arg0: { payload: PayloadAction<void>; type: `user/${string}` }) => void) => {
-        await logout();
+        await logoutApi();
         dispatch(userStore.actions.logout(null))
 
     }
 }
 
+/**
+ * 修改用户详情
+ * @param editUserinfo 用户详情接口修改
+ */
+const fetchEditUserinfo = (editUserinfo: UserinfoInterface) => {
+    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
+        editUserinfoApi(editUserinfo);
+        const res = await getUserinfoApi();
+        dispatch(userStore.actions.storeUserinfo(res))
+    }
+}
 
 export {
     fetchLogin,
     fetchLogout,
     fetchUserinfo,
+    fetchEditUserinfo
 };
 
 export default userStore.reducer;

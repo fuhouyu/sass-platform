@@ -16,39 +16,35 @@
 package com.fuhouyu.sass.interfaces.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * <p>
- * 用户登录操作
+ * 用户详情修改命令
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:00
+ * @since 2024/10/9 09:18
  */
+@Schema(name = "UserinfoEditCommand", description = "用户详情修改操作")
 @Data
-@Schema(name = "UserLoginCommand", description = "用户登录操作")
-public class UserLoginCommand {
+public class UserinfoEditCommand implements Serializable {
 
-    /**
-     * 用户名
-     */
-    @NotBlank(message = "用户名不能为空")
-    @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String username;
+    @Schema(name = "id", description = "用户id，如果修改当前自己用户详情，该值不需要传递")
+    private Long id;
 
-    /**
-     * 密码
-     */
-    @Schema(name = "password", description = "密码")
-    private String password;
+    @Schema(name = "realName", description = "用户真实姓名")
+    private String realName;
 
-    /**
-     * 账号类型
-     */
-    @NotBlank(message = "登录类型不能为空")
-    @Schema(name = "loginType", description = "登录类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String loginType;
+    @Schema(name = "nickname", description = "昵称")
+    private String nickname;
+
+    @Schema(name = "email", description = "邮箱")
+    private String email;
+
+    @Schema(name = "gender", description = "性别")
+    private String gender;
 
 }

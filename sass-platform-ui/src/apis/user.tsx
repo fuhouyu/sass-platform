@@ -16,6 +16,7 @@
 
 
 import {request} from "@/utils";
+import {UserinfoInterface} from "@/model/user";
 
 
 const baseUserUrl = '/v1/user'
@@ -23,24 +24,35 @@ const baseUserUrl = '/v1/user'
  * 用户登录
  * @param loginData 登录的表单信息
  */
-export const loginApi = (loginData: string) => {
-    return request.post(`${baseUserUrl}/login`, loginData, {
+const loginApi = (loginData: string) =>
+    request.post(`${baseUserUrl}/login`, loginData, {
         headers: {
             'Authorization': 'Basic dGVzdDE6cGFzc3dvcmQ='
         },
-    });
-}
+    })
 
 /**
  * 获取用户详情
  */
-export const getUserinfo = () => {
-    return request.get(`${baseUserUrl}/info`);
-}
+const getUserinfoApi = () => request.get(`${baseUserUrl}/info`);
+
+
+/**
+ * 用户详情修改api
+ * @param editUserinfo 修改用户详情
+ */
+const editUserinfoApi =
+    (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info`, editUserinfo, {})
 
 /**
  * 退出登录
  */
-export const logout = () => {
-    return request.post(`${baseUserUrl}/logout`);
+const logoutApi = () => request.post(`${baseUserUrl}/logout`);
+
+
+export {
+    loginApi,
+    logoutApi,
+    editUserinfoApi,
+    getUserinfoApi
 }

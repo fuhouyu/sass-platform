@@ -17,6 +17,7 @@ package com.fuhouyu.sass.interfaces.controller.assembler;
 
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.interfaces.controller.dto.UserinfoDTO;
+import com.fuhouyu.sass.interfaces.controller.dto.UserinfoEditCommand;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -40,5 +41,13 @@ public interface UserinfoAssembler {
      * @return 用户详情
      */
     UserinfoDTO toUserInfo(UserEntity userEntity);
+
+    /**
+     * 转换为用户实体
+     *
+     * @param userinfoEditCommand 用户详情修改的dto对象
+     * @return 用户实体对象
+     */
+    UserEntity toUserEntity(UserinfoEditCommand userinfoEditCommand);
 
 }

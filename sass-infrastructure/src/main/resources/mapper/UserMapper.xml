@@ -106,6 +106,9 @@
         UPDATE
         <include refid="TableName"/>
         SET
+        <if test="avatar != null">
+            avatar = #{avatar},
+        </if>
         <if test="realName != null and realName != ''">
             real_name = #{realName},
         </if>

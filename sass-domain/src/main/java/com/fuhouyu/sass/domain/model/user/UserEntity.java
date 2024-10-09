@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.domain.model.user;
 
+import com.fuhouyu.framework.context.request.RequestContextHolder;
 import com.fuhouyu.sass.domain.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -94,5 +95,19 @@ public class UserEntity extends BaseEntity<Long> {
     @Override
     public boolean sameIdentityAs(Long other) {
         return Objects.equals(id, other);
+    }
+
+    /**
+     * 生成登录的用户实体
+     *
+     * @param userId 用户id
+     * @return 用户实体对象
+     */
+    public static UserEntity generateLoginUserEntity(Long userId) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
+        userEntity.setLoginDate(LocalDateTime.now());
+        userEntity.setLoginIp(RequestContextHolder.getContext().getObject().getRequestIp());
+        return userEntity;
     }
 }

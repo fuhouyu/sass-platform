@@ -25,7 +25,7 @@ import com.fuhouyu.sass.infrastructure.repository.mapper.AccountMapper;
 import com.fuhouyu.sass.infrastructure.repository.orm.AccountDO;
 import com.fuhouyu.sass.infrastructure.repository.orm.AccountId;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -85,7 +85,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public <P extends PageQuery> PageResult<AccountEntity> pageList(P pageable) {
-        try (Page<Object> result = PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
             List<AccountDO> accountDOList = this.accountMapper.queryList(pageable);
             List<AccountEntity> entityList = ACCOUNT_ASSEMBLER.toEntity(accountDOList);
             return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), entityList);

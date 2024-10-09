@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ENC(s12dMpQbt/5LNBhrQ1wqag7rfz6Snmd/8MQOy9ebxQCpx3nasIv9LZ3Edu4lTi/W1Jps1jbloMJfj0rK+lk+rUFzPcVr4YsJVAGHQLTi9nsK/feZnREATl1Tkd9edPKa)
+    username: postgres
+    password: ENC(xZ2Wj+sKHpJsl2AnKm2klATW28QaI12vG3Tv5uxJSeBY4g1mlkg9t5dTRjKfDw0c)
+    type: com.alibaba.druid.pool.DruidDataSource
+  #  sql:
+  #    init:
+  #      mode: always
+  #      schema-locations: classpath*:db/migrate/v1.0.0/sql-init.sql
+  h2:
+    console:
+      enabled: true
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

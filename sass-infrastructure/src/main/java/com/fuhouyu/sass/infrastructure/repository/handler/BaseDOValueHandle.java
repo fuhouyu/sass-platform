@@ -95,12 +95,6 @@ public class BaseDOValueHandle implements Interceptor {
     }
 
 
-    private void getParameter(Invocation invocation) {
-        Object parameter = invocation.getArgs()[1];
-
-
-    }
-
 
     /**
      * 创建时更新

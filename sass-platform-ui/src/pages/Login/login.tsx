@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, {useState} from "react";
 import "./index.scss"
 import {Button, Form, Input} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
@@ -31,14 +31,14 @@ interface UserLogin {
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
-
+    const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const onFinish = (loginData: UserLogin) => {
+        setLoginButtonLoading(true)
         loginData.loginType = 'password'
         dispatch(fetchLogin(loginData, () => {
             navigate('/')
         }))
-
     };
 
     return (
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button block type="primary" htmlType="submit">
+                        <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
                             登录
                         </Button>
                     </Form.Item>

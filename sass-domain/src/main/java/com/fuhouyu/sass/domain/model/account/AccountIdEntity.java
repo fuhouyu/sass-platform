@@ -18,6 +18,9 @@ package com.fuhouyu.sass.domain.model.account;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * <p>
  * 账号id
@@ -28,7 +31,10 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class AccountIdEntity {
+public class AccountIdEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 112398812371L;
 
     private static final String CONCAT_SEPARATOR = ":";
 
