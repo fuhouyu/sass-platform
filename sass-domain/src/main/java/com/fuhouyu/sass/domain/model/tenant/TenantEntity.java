@@ -18,8 +18,6 @@ package com.fuhouyu.sass.domain.model.tenant;
 import com.fuhouyu.sass.domain.model.BaseEntity;
 import lombok.*;
 
-import java.util.Objects;
-
 /**
  * <p>
  * 租户模型类
@@ -91,8 +89,4 @@ public class TenantEntity extends BaseEntity<Long> {
         return this.getId();
     }
 
-    @Override
-    public boolean sameIdentityAs(Long other) {
-        return Objects.equals(other, this.getId());
-    }
 }

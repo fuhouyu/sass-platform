@@ -150,9 +150,8 @@ COMMENT ON COLUMN roles.create_by IS '创建者';
 COMMENT ON COLUMN roles.update_at IS '更新时间';
 COMMENT ON COLUMN roles.update_by IS '更新者';
 
-INSERT INTO roles(id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
-VALUES (1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'admin');
-
+INSERT INTO roles(id, role_name, role_code, data_scope, is_systemd, create_at, create_by, update_at, update_by)
+VALUES (1, '超级管理员', 'super_admin', 'ALL', true, now(), 'admin', now(), 'admin');
 
 -- 用户角色表
 DROP TABLE IF EXISTS user_has_role;

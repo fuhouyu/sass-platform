@@ -72,8 +72,4 @@ public class PermissionEntity extends BaseEntity<Long> {
         return this.id;
     }
 
-    @Override
-    public boolean sameIdentityAs(Long other) {
-        return this.id.equals(other);
-    }
 }

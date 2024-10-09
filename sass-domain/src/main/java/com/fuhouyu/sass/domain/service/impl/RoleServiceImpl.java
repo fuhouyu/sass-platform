@@ -13,36 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.domain.repository;
+package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+import com.fuhouyu.sass.domain.model.role.RoleEntity;
+import com.fuhouyu.sass.domain.repository.RoleRepository;
+import com.fuhouyu.sass.domain.service.RoleService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * <p>
- * 权限存储接口
+ * 角色接口实现
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:57
+ * @since 2024/10/9 20:57
  */
-public interface PermissionRepository extends BaseRepository<PermissionEntity, Long> {
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class RoleServiceImpl implements RoleService {
 
+    private final RoleRepository roleRepository;
 
-    /**
-     * 通过权限编码查询权限实体
-     *
-     * @param permissionCode 权限编码
-     * @return 权限实体
-     */
-    PermissionEntity findByPermissionCode(String permissionCode);
-
-    /**
-     * 通过角色id查询出权限集合
-     *
-     * @param roleIdList 角色id集合
-     * @return 权限集合
-     */
-    List<PermissionEntity> findPermissionListByRoleIdList(List<Long> roleIdList);
+    @Override
+    public List<RoleEntity> findRoleListByUserId(Long userId) {
+        return this.roleRepository.findSystemRoleListByUserId(userId);
+    }
 }

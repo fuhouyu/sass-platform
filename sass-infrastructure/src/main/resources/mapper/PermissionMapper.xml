@@ -59,6 +59,28 @@
         update_by
     </sql>
 
+    <sql id="QueryColumns">
+        p.id,
+        p.parent_id,
+        p.permission_name,
+        p.permission_code,
+        p.permission_type,
+        p.display_order,
+        p.icon,
+        p.route_path,
+        p.component_path,
+        p.url_params,
+        p.is_frame,
+        p.is_allow_modified,
+        p.is_systemd,
+        p.is_visible,
+        p.is_deleted,
+        p.create_at,
+        p.update_at,
+        p.create_by,
+        p.update_by
+    </sql>
+
     <insert id="insert" parameterType="com.fuhouyu.sass.infrastructure.repository.orm.PermissionDO">
         INSERT INTO
         <include refid="TableName"/>
@@ -147,12 +169,6 @@
         <if test="isFrame != null">
             is_frame = #{isFrame},
         </if>
-        <if test="isAllowModified != null">
-            is_allow_modified = #{isAllowModified},
-        </if>
-        <if test="isSystemd != null">
-            is_systemd = #{isSystemd},
-        </if>
          <if test="isVisible != null">
             is_visible = #{isVisible},
         </if>
@@ -182,9 +198,9 @@
 
 
     <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE id IN
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> p
+        WHERE p.id IN
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
@@ -192,15 +208,27 @@
 
 
     <select id="queryByPermissionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE permission_code = #{permissionCOde}
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> p
+        WHERE p.permission_code = #{permissionCode}
     </select>
 
     <select id="queryList" resultMap="BaseResultMap" >
         SELECT
-        <include refid="AllColumns"/>
+        <include refid="QueryColumns"/>
                 FROM
-        <include refid="TableName"/>
+        <include refid="TableName"/> p
+    </select>
+
+    <select id="queryListByRoleIdList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        role_has_permission rhp
+        LEFT JOIN <include refid="TableName"/> p ON p.id = rhp.permission_id
+        WHERE
+        <foreach collection="roleIdList" separator="," item="roleId" open="rhp.role_id IN (" close=")">
+            #{roleId}
+        </foreach>
     </select>
 </mapper>

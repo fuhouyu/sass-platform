@@ -15,7 +15,7 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {DesktopOutlined, DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
+import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {Breadcrumb, Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
 import withAuth from "@/components/withAuth";
 import "./index.scss"
@@ -26,29 +26,11 @@ import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
 import {UserinfoInterface} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
+import {PermissionInterface} from "@/model/permission";
+import {getUserPermissionApi} from "@/apis/permission";
+import {Iconfont} from "@components/iconfont";
 
 type MenuItem = Required<MenuProps>['items'][number];
-
-function getMenuItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
-}
-
-const MENU_ITEMS: MenuItem[] = [
-    getMenuItem('首页', '/', <HomeOutlined/>),
-    getMenuItem('系统管理', 'system', <DesktopOutlined/>, [
-        getMenuItem('用户管理', 'system/user', <UserOutlined/>)
-    ]),
-];
 
 const menus: MenuProps['items'] = [
     {
@@ -65,6 +47,35 @@ const menus: MenuProps['items'] = [
 
 const Home: React.FC = withAuth(() => {
 
+    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+    const convertMenuItem = (permissionInterfaces: PermissionInterface[]): MenuItem[] | null => {
+        if (permissionInterfaces.length === 0) {
+            return null
+        }
+        return permissionInterfaces.map((item: PermissionInterface) => {
+            return {
+                key: item.routePath,
+                label: item.permissionName,
+                icon: item.icon ?
+                    <Iconfont type={item.icon}/> : undefined,
+                children: convertMenuItem(item.children)
+            }
+        })
+    }
+
+    useEffect(() => {
+        getUserPermissionApi().then((res: PermissionInterface[]) => {
+            let itemMenus = convertMenuItem(res);
+            itemMenus = itemMenus ? itemMenus : [];
+            itemMenus.unshift({
+                key: 'home',
+                label: '首页',
+                icon: <HomeOutlined/>,
+            })
+            setMenuItems(itemMenus);
+        });
+    }, [])
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -102,7 +113,7 @@ const Home: React.FC = withAuth(() => {
                 <Sider className='layout-sider' collapsible collapsed={collapsed}
                        onCollapse={(value) => setCollapsed(value)}>
                     <Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"
-                          items={MENU_ITEMS} onClick={onMenuClick}/>
+                          items={menuItems} onClick={onMenuClick}/>
                 </Sider>
                 <Layout>
                     <Header className="layout-header">

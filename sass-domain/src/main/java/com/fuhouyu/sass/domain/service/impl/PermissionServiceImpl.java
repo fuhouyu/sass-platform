@@ -15,12 +15,19 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.framework.context.user.User;
+import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
+import com.fuhouyu.sass.domain.model.role.RoleEntity;
+import com.fuhouyu.sass.domain.repository.PermissionRepository;
+import com.fuhouyu.sass.domain.repository.RoleRepository;
 import com.fuhouyu.sass.domain.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,9 +43,24 @@ import java.util.List;
 @Slf4j
 public class PermissionServiceImpl implements PermissionService {
 
+    private final PermissionRepository permissionRepository;
+
+    private final RoleRepository roleRepository;
+
 
     @Override
     public List<PermissionEntity> findPermissionListByMe(Boolean isSystemd) {
-        return List.of();
+        User user = UserContextHolder.getContext().getObject();
+        Long userId = user.getId();
+        // 这里先直接返回
+        if (Boolean.FALSE.equals(isSystemd)) {
+            return Collections.emptyList();
+        }
+        List<RoleEntity> roleEntityList = this.roleRepository.findSystemRoleListByUserId(userId);
+        if (CollectionUtils.isEmpty(roleEntityList)) {
+            return Collections.emptyList();
+        }
+        List<Long> roleIdList = roleEntityList.stream().map(RoleEntity::getId).toList();
+        return this.permissionRepository.findPermissionListByRoleIdList(roleIdList);
     }
 }

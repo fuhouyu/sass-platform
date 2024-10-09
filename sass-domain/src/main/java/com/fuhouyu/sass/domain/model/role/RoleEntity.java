@@ -13,55 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.infrastructure.repository.orm;
+package com.fuhouyu.sass.domain.model.role;
 
+import com.fuhouyu.sass.domain.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serial;
 
+
 /**
  * <p>
- * 权限do对象
+ * 角色实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:58
+ * @since 2024/10/9 20:50
  */
 @Getter
 @Setter
 @ToString
-public class PermissionDO extends BaseDO {
+public class RoleEntity extends BaseEntity<Long> {
 
     @Serial
-    private static final long serialVersionUID = 1123897912371561223L;
+    private static final long serialVersionUID = 6123532123415612311L;
 
     private Long id;
 
-    private Long parentId;
+    private String roleName;
 
-    private String permissionName;
-
-    private String permissionCode;
-
-    private String permissionType;
+    private String roleCode;
 
     private Integer displayOrder;
 
-    private String icon;
-
-    private String routePath;
-
-    private String componentPath;
-
-    private String urlParams;
-
-    private Boolean isFrame;
-
-    private Boolean isAllowModified;
+    private String dataScope;
 
     private Boolean isSystemd;
 
-    private Boolean isVisible;
+    private Boolean isEnabled;
+
+    private Boolean isAllowModified;
+
+    @Override
+    public Long getIdentifierId() {
+        return this.id;
+    }
+
 }

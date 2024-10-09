@@ -44,13 +44,13 @@ public class TreeConvertUtil {
      * @param <T>      树泛型
      * @return 树集合
      */
-    public static <T extends BaseTree> List<T> buildTree(List<T> treeList) {
+    public static <T extends BaseTree<T>> List<T> buildTree(List<T> treeList) {
         Map<Long, List<T>> groupedByParent = treeList.stream().collect(Collectors.groupingBy(BaseTree::getParentId));
         return buildSubTree(-1L, groupedByParent);
     }
 
 
-    private static <T extends BaseTree> List<T> buildSubTree(Long parentId, Map<Long, List<T>> groupedByParent) {
+    private static <T extends BaseTree<T>> List<T> buildSubTree(Long parentId, Map<Long, List<T>> groupedByParent) {
         // 获取当前父节点的子节点列表
         List<T> subTree = groupedByParent.getOrDefault(parentId, Collections.emptyList());
 

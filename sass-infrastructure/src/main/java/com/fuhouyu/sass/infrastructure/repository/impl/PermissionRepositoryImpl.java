@@ -86,4 +86,10 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     public PermissionEntity findByPermissionCode(String permissionCode) {
         return PERMISSION_ASSEMBLER.toEntity(this.permissionMapper.queryByPermissionCode(permissionCode));
     }
+
+    @Override
+    public List<PermissionEntity> findPermissionListByRoleIdList(List<Long> roleIdList) {
+        List<PermissionDO> list = this.permissionMapper.queryListByRoleIdList(roleIdList);
+        return PERMISSION_ASSEMBLER.toEntity(list);
+    }
 }

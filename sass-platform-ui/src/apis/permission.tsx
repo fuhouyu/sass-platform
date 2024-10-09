@@ -15,4 +15,13 @@
  */
 
 
-// const getUserPermissionApi = () => request.get()
+import {request} from "@/utils";
+
+const basePermissionUrl = '/v1/permission'
+
+const getUserPermissionApi = () => request.get(`${basePermissionUrl}/me`);
+
+
+export {
+    getUserPermissionApi
+}

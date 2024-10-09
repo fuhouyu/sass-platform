@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.orm;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -28,8 +30,6 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
 public class TenantDO extends BaseDO {
 
 

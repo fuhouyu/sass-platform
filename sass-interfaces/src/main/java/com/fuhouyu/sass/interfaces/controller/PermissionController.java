@@ -54,6 +54,7 @@ import java.util.List;
 public class PermissionController {
 
     private static final PermissionAssembler PERMISSION_ASSEMBLER = PermissionAssembler.INSTANCE;
+
     private final PermissionService permissionService;
 
     /**

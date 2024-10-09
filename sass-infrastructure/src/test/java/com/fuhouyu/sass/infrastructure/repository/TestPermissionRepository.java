@@ -43,11 +43,11 @@ class TestPermissionRepository extends TestBaseRepository {
 
         PermissionEntity saveEntity = this.generatePermissionEntity();
         this.permissionRepository.save(saveEntity);
-        long onceId = saveEntity.getId();
+        Long onceId = saveEntity.getId();
         Assertions.assertNotNull(onceId, "返回的id为空");
 
         Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.permissionRepository.save(saveEntity),
-                "二次保存，权限编码冲突冲突未正常抛出异常");
+                "二次保存，权限编码冲突未抛出异常");
 
         // 修改
         PermissionEntity updateEntity = this.generatePermissionEntity();
@@ -58,8 +58,8 @@ class TestPermissionRepository extends TestBaseRepository {
         // 查询
         PermissionEntity queryById = this.permissionRepository.findById(onceId);
         Assertions.assertNotNull(queryById, "未查询到对应数据");
-        PermissionEntity queryByUsername = this.permissionRepository.findByPermissionCode(saveEntity.getPermissionCode());
-        Assertions.assertNotNull(queryByUsername, "未查询到对应数据");
+        PermissionEntity permissionByQuery = this.permissionRepository.findByPermissionCode(saveEntity.getPermissionCode());
+        Assertions.assertNotNull(permissionByQuery, "未查询到对应数据");
 
         // 删除
         int result = this.permissionRepository.removeById(updateEntity.getId());

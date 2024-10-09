@@ -13,35 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.common;
 
-import java.io.Serializable;
-import java.util.Objects;
 
-/**
- * <p>
- * 实体接口
- * </p>
- *
- * @author fuhouyu
- * @since 2024/9/24 16:49
- */
-public interface Entity<ID> extends Serializable {
+import {createFromIconfontCN} from "@ant-design/icons";
 
-    /**
-     * 获取唯一标识符id
-     *
-     * @return 标识id
-     */
-    ID getIdentifierId();
-
-    /**
-     * 判断实体中的标识是否一致
-     *
-     * @param other 标识符
-     * @return 标识符相同时返回true
-     */
-    default boolean sameIdentityAs(ID other) {
-        return Objects.equals(other, this.getIdentifierId());
-    }
-}
+export const Iconfont = createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/c/font_4705439_2h72ln81yip.js',
+});
