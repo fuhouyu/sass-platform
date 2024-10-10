@@ -18,7 +18,7 @@ import React, {useState} from "react";
 import "./index.scss"
 import {Button, Form, Input} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 
@@ -32,12 +32,15 @@ interface UserLogin {
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
+    const location = useLocation();
     const dispatch = useAppDispatch();
+
     const onFinish = (loginData: UserLogin) => {
         setLoginButtonLoading(true)
         loginData.loginType = 'password'
         dispatch(fetchLogin(loginData, () => {
-            navigate('/')
+            const from = location.state?.from || '/';
+            navigate(from)
         }))
     };
 

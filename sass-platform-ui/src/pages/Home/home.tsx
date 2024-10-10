@@ -50,15 +50,15 @@ const Home: React.FC = withAuth(() => {
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
     const convertMenuItem = (permissionInterfaces: PermissionInterface[]): MenuItem[] | null => {
-        if (permissionInterfaces.length === 0) {
-            return null
+        if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
+            return null;
         }
-        return permissionInterfaces.map((item: PermissionInterface) => {
+        return permissionInterfaces?.map((item: PermissionInterface) => {
             return {
                 key: item.routePath,
                 label: item.permissionName,
                 icon: item.icon ?
-                    <Iconfont type={item.icon}/> : undefined,
+                    <Iconfont type="i-setting-copy" spin/> : undefined,
                 children: convertMenuItem(item.children)
             }
         })
@@ -85,7 +85,7 @@ const Home: React.FC = withAuth(() => {
     }, [dispatch])
     const realName = useAppSelector<UserinfoInterface>((state: {
         user: { userinfo: UserinfoInterface };
-    }) => state.user.userinfo.realName);
+    }) => state.user.userinfo?.realName);
 
     // 点击菜单时进行跳转
     const onMenuClick = (item: MenuItem) => {

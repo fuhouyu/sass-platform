@@ -22,6 +22,7 @@ import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
 import {UserinfoInterface} from "@/model/user";
 import {Userinfo} from "@/pages/Userinfo/userinfo";
+import withAuth from "@components/withAuth";
 
 interface MenuLiInterface {
     key: string;
@@ -33,7 +34,7 @@ interface MenuLiInterface {
  * 个人中心用户详情
  * @constructor 构造函数
  */
-export const PersonCenter: React.FC = () => {
+export const PersonCenter: React.FC = withAuth(() => {
 
     const userinfo = useAppSelector<UserinfoInterface>((state: {
         user: { userinfo: UserinfoInterface };
@@ -94,4 +95,5 @@ export const PersonCenter: React.FC = () => {
             </div>
         </>
     )
-}
+})
+

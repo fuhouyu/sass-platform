@@ -18,7 +18,7 @@
 import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {UserinfoInterface} from "@/model/user";
-import {Button, Form, Input, Radio} from "antd";
+import {Button, Form, Input, message, Radio} from "antd";
 import './index.scss'
 import {fetchEditUserinfo} from "@/store/modules/user";
 
@@ -37,11 +37,7 @@ export const Userinfo: React.FC = () => {
 
     const userinfo: UserinfoInterface = useAppSelector<UserinfoInterface>((state: {
         user: { userinfo: UserinfoInterface }
-    }) => state.user.userinfo)
-
-    useEffect(() => {
-    }, [userinfo])
-
+    }) => state.user.userinfo);
 
     const formItem: UserinfoFormInterface[] = [
         {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
@@ -51,29 +47,32 @@ export const Userinfo: React.FC = () => {
         {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate, disabled: true},
         {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp, disabled: true},
     ]
+    const dispatch = useAppDispatch<UserinfoInterface>();
     const [form] = Form.useForm();
+    useEffect(() => {
+        form.setFieldsValue({...userinfo});
+    }, [userinfo]);
 
     const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
     const onCancel = (): void => {
-        console.log('onCancel');
         setButtonLoading(true)
-        form.resetFields();
+        form.setFieldsValue({...userinfo});
         setButtonLoading(false);
     }
 
-    const dispatch = useAppDispatch<UserinfoInterface>();
-    const onFinish = (values: UserinfoInterface): void => {
-        console.log('onFinish');
-        if (JSON.stringify(values) === JSON.stringify(userinfo)) {
-            return;
-        }
-        setButtonLoading(true);
 
+    const onFinish = (values: UserinfoInterface): void => {
+        setButtonLoading(true);
         dispatch(fetchEditUserinfo(values))
             .then(() => {
+                form.setFieldsValue({...values});
                 setButtonLoading(false);
-            })
+                message.success('修改成功');
+            }).catch((error: Error) => {
+            console.log('用户修改失败: ', error);
+            message.error('用户修改失败');
+        })
     }
 
     return (
@@ -93,14 +92,13 @@ export const Userinfo: React.FC = () => {
                         label={item.label}
                         name={item.key}
                         key={item.key}
-                        initialValue={item.value}
                     >
-                        <Input disabled={item.disabled} key={item.key} value={item.value}/>
+                        <Input disabled={item.disabled} key={item.key}/>
                     </Form.Item>
                 ))}
 
-                <Form.Item name="gender" key="gender" label="性别" initialValue={userinfo.gender}>
-                    <Radio.Group value={userinfo.gender}>
+                <Form.Item name="gender" key="gender" label="性别">
+                    <Radio.Group>
                         <Radio value='male'>男</Radio>
                         <Radio value='female'>女</Radio>
                     </Radio.Group>

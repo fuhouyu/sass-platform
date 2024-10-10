@@ -142,4 +142,12 @@ public class UserController {
         this.userService.editUser(userEntity);
         return ResponseHelper.success();
     }
+
+//    /**
+//     * 分页查询用户列表
+//     * @return 用户列表集合
+//     */
+//    public RestResult<PageResult<UserinfoDTO>> pageUserinfo() {
+//
+//    }
 }

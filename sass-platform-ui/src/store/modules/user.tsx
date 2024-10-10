@@ -24,7 +24,7 @@ import {editUserinfoApi, getUserinfoApi, loginApi, logoutApi} from "@/apis/user"
 const userStore = createSlice({
     name: "user",
     initialState: {
-        token: {},
+        token: null,
         userinfo: {}
     },
     reducers: {
@@ -38,7 +38,7 @@ const userStore = createSlice({
         logout: (state, action) => {
             console.log(action.payload);
             state.userinfo = {};
-            state.token = {};
+            state.token = null;
         }
     },
 });
@@ -67,7 +67,7 @@ const fetchLogin = (loginForm: string, callback: () => void) => {
 const fetchUserinfo = () => {
     return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
         const res = await getUserinfoApi();
-        dispatch(userStore.actions.storeUserinfo(res))
+        dispatch(userStore.actions.storeUserinfo(res ? res : {}))
     }
 }
 
