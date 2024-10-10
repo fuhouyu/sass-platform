@@ -28,7 +28,7 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
 import {PermissionInterface} from "@/model/permission";
 import {getUserPermissionApi} from "@/apis/permission";
-import {Iconfont} from "@components/iconfont";
+import {IconFont} from "@components/iconFont";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -45,6 +45,7 @@ const menus: MenuProps['items'] = [
     },
 ];
 
+
 const Home: React.FC = withAuth(() => {
 
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -58,7 +59,7 @@ const Home: React.FC = withAuth(() => {
                 key: item.routePath,
                 label: item.permissionName,
                 icon: item.icon ?
-                    <Iconfont type="i-setting-copy" spin/> : undefined,
+                    <IconFont type="i-setting" style={{fontSize: '16px'}}/> : undefined,
                 children: convertMenuItem(item.children)
             }
         })
@@ -71,7 +72,7 @@ const Home: React.FC = withAuth(() => {
             itemMenus.unshift({
                 key: 'home',
                 label: '首页',
-                icon: <HomeOutlined/>,
+                icon: <HomeOutlined style={{fontSize: '16px'}}/>,
             })
             setMenuItems(itemMenus);
         });

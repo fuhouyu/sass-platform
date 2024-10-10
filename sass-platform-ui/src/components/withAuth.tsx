@@ -19,6 +19,7 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {message} from "antd";
 import {getToken} from "@/utils";
+import Login from "@/pages/Login";
 
 // 使用具名函数组件来创建高阶组件
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
@@ -27,16 +28,18 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
         const navigate = useNavigate();
         const location = useLocation();
         const pathname = location.pathname;
+        const token = getToken();
         useEffect(() => {
-            const token = getToken();
             if (!token) {
                 message.warning("当前用户登录状态已失效");
                 navigate('/login', {state: {from: pathname}});
             }
-        }, [pathname]);
-
-        // 渲染传入的组件
-        return <WrappedComponent {...props} />;
+        }, [navigate])
+        if (token) {
+            return <WrappedComponent {...props} />;
+        } else {
+            return <Login {...props} />;
+        }
     };
 
     // 为 AuthenticatedComponent 设置 displayName
