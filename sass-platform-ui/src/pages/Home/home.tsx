@@ -58,7 +58,7 @@ const Home: React.FC = withAuth(() => {
                 key: item.routePath,
                 label: item.permissionName,
                 icon: item.icon ?
-                    <Iconfont type={item.icon}/> : undefined,
+                    <Iconfont type="i-setting-copy" spin/> : undefined,
                 children: convertMenuItem(item.children)
             }
         })
