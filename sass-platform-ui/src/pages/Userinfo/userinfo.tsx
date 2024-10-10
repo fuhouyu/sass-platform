@@ -35,9 +35,9 @@ interface UserinfoFormInterface {
  */
 export const Userinfo: React.FC = () => {
 
-    let userinfo: UserinfoInterface = useAppSelector<UserinfoInterface>((state: {
+    const userinfo: UserinfoInterface = useAppSelector<UserinfoInterface>((state: {
         user: { userinfo: UserinfoInterface }
-    }) => state.user.userinfo)
+    }) => state.user.userinfo);
 
     const formItem: UserinfoFormInterface[] = [
         {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
@@ -57,7 +57,6 @@ export const Userinfo: React.FC = () => {
 
     const onCancel = (): void => {
         setButtonLoading(true)
-        form.resetFields();
         form.setFieldsValue({...userinfo});
         setButtonLoading(false);
     }

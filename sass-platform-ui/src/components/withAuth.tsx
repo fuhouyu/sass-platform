@@ -16,24 +16,24 @@
 
 
 import React, {useEffect} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {message} from "antd";
 import {getToken} from "@/utils";
-import {TokenInterface} from "@/utils/Token/token";
 
 // 使用具名函数组件来创建高阶组件
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     // 具名函数组件
     const AuthenticatedComponent: React.FC<P> = (props) => {
         const navigate = useNavigate();
+        const location = useLocation();
+        const pathname = location.pathname;
         useEffect(() => {
-            const token: TokenInterface = getToken();
+            const token = getToken();
             if (!token) {
                 message.warning("当前用户登录状态已失效");
-                navigate('/login'); // 未登录则重定向
-                window.location.reload();
+                navigate('/login', {state: {from: pathname}});
             }
-        }, [navigate]);
+        }, [pathname]);
 
         // 渲染传入的组件
         return <WrappedComponent {...props} />;
