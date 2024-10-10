@@ -54,8 +54,7 @@ request.interceptors.response.use(function (response) {
         // 如果 isSuccess 为 false，抛出异常
         if (response.data.code === 401) {
             removeToken();
-            routers.navigate('/login')
-            window.location.reload();
+            routers.navigate('/login', {state: {from: routers.state.location.pathname}});
             return
         }
         const error = new Error(response.data.message || '请求失败');
