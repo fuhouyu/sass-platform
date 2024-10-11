@@ -17,6 +17,7 @@
 
 import {request} from "@/utils";
 import {UserinfoInterface} from "@/model/user";
+import {PageQuery} from "@/model/page";
 
 
 const baseUserUrl = '/v1/user'
@@ -45,6 +46,14 @@ const editUserinfoApi =
     (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info`, editUserinfo, {})
 
 /**
+ * 获取用户列表
+ */
+const getUserListApi = <P extends PageQuery>(pageQuery: P) =>
+    request.get(`${baseUserUrl}/list`, {
+        params: {...pageQuery}
+    });
+
+/**
  * 退出登录
  */
 const logoutApi = () => request.post(`${baseUserUrl}/logout`);
@@ -54,5 +63,6 @@ export {
     loginApi,
     logoutApi,
     editUserinfoApi,
-    getUserinfoApi
+    getUserinfoApi,
+    getUserListApi
 }

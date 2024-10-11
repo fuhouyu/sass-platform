@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.common;
-
-import lombok.*;
-
-import java.io.Serializable;
+package com.fuhouyu.sass.interfaces.controller.enums;
 
 /**
  * <p>
- * 基础的查询model对象
+ * 分页查询的排序顺序类型枚举
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 17:49
+ * @since 2024/10/11 20:13
  */
-@ToString
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class PageQuery implements Serializable {
+public enum PageQueryDirectionEnum {
 
-    private int pageNumber;
+    /**
+     * 顺序
+     */
+    ASC,
 
-    private int pageSize;
-
-
+    /**
+     * 倒序
+     */
+    DESC,
 }

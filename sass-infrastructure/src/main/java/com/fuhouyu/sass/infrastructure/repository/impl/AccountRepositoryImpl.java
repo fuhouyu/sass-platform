@@ -15,10 +15,10 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.impl;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.infrastructure.repository.assembler.AccountAssembler;
 import com.fuhouyu.sass.infrastructure.repository.mapper.AccountMapper;
@@ -84,11 +84,12 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public <P extends PageQuery> PageResult<AccountEntity> pageList(P pageable) {
-        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+    public <P extends PageQueryValue> PageResultEntity<AccountEntity> pageList(P pageable) {
+        try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
+            page.setOrderBy(pageable.getOrderBy());
             List<AccountDO> accountDOList = this.accountMapper.queryList(pageable);
             List<AccountEntity> entityList = ACCOUNT_ASSEMBLER.toEntity(accountDOList);
-            return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), entityList);
+            return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), page.getTotal(), entityList);
         }
     }
 }

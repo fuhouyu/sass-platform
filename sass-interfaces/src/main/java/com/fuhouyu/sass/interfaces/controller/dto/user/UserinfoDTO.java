@@ -15,13 +15,14 @@
  */
 package com.fuhouyu.sass.interfaces.controller.dto.user;
 
+import com.fuhouyu.sass.interfaces.controller.dto.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -35,7 +36,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class UserinfoDTO implements Serializable {
+@Schema(name = "UserinfoDTO", description = "用户详情dto对象")
+@EqualsAndHashCode(callSuper = true)
+public class UserinfoDTO extends BaseResponseDTO {
 
     @Serial
     private static final long serialVersionUID = 1238912361L;

@@ -15,86 +15,150 @@
  */
 
 
-import React from "react";
-import {Table, TableColumnsType, TableProps} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
 import "./index.scss"
-
-interface DataType {
-    key: React.Key;
-    name: string;
-    age: number;
-    address: string;
-}
-
-const columns: TableColumnsType<DataType> = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        showSorterTooltip: {target: 'full-header'},
-        onFilter: (value, record) => record.name.indexOf(value as string) === 0,
-        sorter: (a, b) => a.name.length - b.name.length,
-        sortDirections: ['descend'],
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        defaultSortOrder: 'descend',
-        // sorter: (a, b) => {
-        //     console.log(a)
-        //     console.log(b)
-        // },
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        onFilter: (value, record) => record.address.indexOf(value as string) === 0,
-    },
-];
-
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-    {
-        key: '4',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-];
-
-const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-};
+import {PageQuery, PageResult} from "@/model/page";
+import {getUserListApi} from "@/apis/user";
+import {UserinfoInterface} from "@/model/user";
+import {SearchOutlined} from "@ant-design/icons";
+import {SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 
 
 const User: React.FC = () => {
+    const [userPageQuery, setUserPageQuery] = useState<PageQuery>({
+        pageNum: 1,
+        pageSize: 10,
+    });
+
+    const [keyword, setKeyword] = useState<string>('');
+    const [loading, setLoading] = useState(false);
+    const [pageResult, setPageResult] = useState<PageResult<UserinfoInterface>>({});
+
+    const columns: TableColumnsType = [
+        {
+            title: '用户名',
+            dataIndex: 'username',
+            showSorterTooltip: {target: 'full-header'},
+        },
+        {
+            title: '真实姓名',
+            dataIndex: 'realName',
+            defaultSortOrder: 'descend',
+        },
+        {
+            title: '昵称',
+            dataIndex: 'nickname',
+        },
+        {
+            title: '性别',
+            dataIndex: 'gender',
+        },
+        {
+            title: '登录时间',
+            dataIndex: 'loginDate',
+        },
+        {
+            title: '登录ip',
+            dataIndex: 'loginIp',
+        },
+        {
+            title: '创建时间',
+            dataIndex: 'createAt',
+            sorter: true,
+            showSorterTooltip: false
+        },
+        {
+            title: '创建人',
+            dataIndex: 'createBy'
+        },
+        {
+            title: '更新时间',
+            dataIndex: 'updateAt',
+            sorter: true,
+            defaultSortOrder: "descend",
+            showSorterTooltip: false
+        },
+        {
+            title: '操作人',
+            dataIndex: 'updateBy',
+        },
+
+    ];
+
+    const getUserList = (userPageQuery: PageQuery) => {
+        setLoading(true)
+        getUserListApi(userPageQuery)
+            .then((res: PageResult<UserinfoInterface>) => {
+                setPageResult({
+                    pageNum: res.pageNum,
+                    pageSize: res.pageSize,
+                    list: res.list,
+                });
+                setLoading(false)
+            }).catch((err: Error) => {
+            message.error(err.message);
+        })
+    }
+
+    const camelToSnake = (str: string): string => {
+        return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
+    };
+
+    const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, sorter: SorterResult) => {
+        console.log(sorter)
+        setUserPageQuery({
+            pageNum: pagination.current,
+            pageSize: pagination.pageSize,
+            sortColumn: camelToSnake(sorter.field.toString),
+            direction: sorter.order?.replace("end", "").toUpperCase()
+            // direction: sorter.
+        })
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            setUserPageQuery({keyword})
+        }
+    };
+
+    useEffect(() => {
+        getUserList(userPageQuery);
+    }, [userPageQuery])
+
+
     return (
         <>
             <div className="user-container">
                 <div className="search-header">
-
+                    <div className="search-info">
+                        <span>关键字查询</span>
+                        <Input
+                            value={keyword}
+                            onKeyDown={handleKeyDown}
+                            placeholder="请输入用户关键字"
+                            onChange={(e) => setKeyword(e.target.value)}/>
+                    </div>
+                    <div className="search-submit">
+                        <Button type="primary" icon={<SearchOutlined/>}
+                                onClick={() => setUserPageQuery({keyword})}>搜索</Button>
+                    </div>
                 </div>
+                <div className="divide"/>
                 <div className="user-list">
-                    <Table<DataType>
+                    <Table
                         columns={columns}
-                        dataSource={data}
+                        rowKey="id"
+                        dataSource={pageResult.list}
                         onChange={onChange}
+                        loading={loading}
+                        pagination={{
+                            total: pageResult.total,
+                            hideOnSinglePage: false,
+                            showSizeChanger: true,
+                            defaultPageSize: userPageQuery.pageSize,
+                            locale: {items_per_page: '条/页'}
+                        }}
                         showSorterTooltip={{target: 'sorter-icon'}}
                     />
                 </div>

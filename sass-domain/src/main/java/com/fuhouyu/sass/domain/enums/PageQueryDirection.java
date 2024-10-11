@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.common;
-
-import lombok.*;
-
-import java.util.List;
+package com.fuhouyu.sass.domain.enums;
 
 /**
  * <p>
- * 分页结果集的model对象
+ * 分页查询排序方向
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/21 21:27
+ * @since 2024/10/11 12:50
  */
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class PageResult<T> {
+public enum PageQueryDirection {
 
-    private int pageNum;
+    /**
+     * 顺序
+     */
+    ASC,
 
-    private int pageSize;
+    /**
+     * 倒序
+     */
+    DESC;
 
-    private long total;
-
-    private List<T> list;
+    PageQueryDirection() {
+    }
 }

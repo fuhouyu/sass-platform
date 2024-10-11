@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-.search-header {
-  display: flex;
-  margin: 15px;
-  justify-content: space-between;
 
-
-  .search-info input {
-    margin-left: 15px;
-    width: 60%;
-  }
+export interface PageQuery {
+    pageNum: number;
+    pageSize: number;
+    keyword?: string;
+    sortColumn?: string;
+    direction?: string;
 }
 
-.divide {
-  padding: 10px 0;
-  background-color: #F5F5F5;
+
+/**
+ * 分页查询的结果集
+ */
+export interface PageResult<T> {
+    pageNum: number;
+    pageSize: number;
+    total: number;
+    list: T[];
 }

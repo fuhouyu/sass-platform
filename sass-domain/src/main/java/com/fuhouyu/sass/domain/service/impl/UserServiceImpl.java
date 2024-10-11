@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.domain.service.UserService;
@@ -44,5 +46,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(UserEntity userEntity) {
         this.userRepository.edit(userEntity);
+    }
+
+    @Override
+    public PageResultEntity<UserEntity> pageUserList(PageQueryValue pageQueryValue) {
+        return this.userRepository.pageList(pageQueryValue);
     }
 }

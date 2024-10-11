@@ -171,7 +171,16 @@
     <select id="queryList" resultMap="BaseResultMap" >
         SELECT
         <include refid="AllColumns"/>
-                FROM
+        FROM
         <include refid="TableName"/>
+        <where>
+            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
+                username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                OR
+                real_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                OR
+                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+            </if>
+        </where>
     </select>
 </mapper>

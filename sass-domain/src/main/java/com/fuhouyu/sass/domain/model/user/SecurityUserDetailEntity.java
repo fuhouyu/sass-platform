@@ -54,4 +54,5 @@ public class SecurityUserDetailEntity extends UserEntity implements UserDetails 
     public String getUsername() {
         return this.account.getIdentifierId().getFullAccount();
     }
+
 }

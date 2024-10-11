@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.mapper;
 
-import com.fuhouyu.sass.common.PageQuery;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -93,5 +93,5 @@ public interface BaseMapper<T, ID> {
      * @param <P> 范围查询的类型
      * @return 批量查询
      */
-    <P extends PageQuery> List<T> queryList(PageQuery pageQuery);
+    <P extends PageQueryValue> List<T> queryList(@Param("pageQuery") P pageQuery);
 }

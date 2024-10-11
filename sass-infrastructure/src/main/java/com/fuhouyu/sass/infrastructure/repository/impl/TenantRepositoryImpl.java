@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.impl;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.tenant.TenantEntity;
 import com.fuhouyu.sass.domain.repository.TenantRepository;
 import com.fuhouyu.sass.infrastructure.repository.assembler.TenantAssembler;
@@ -79,11 +79,12 @@ public class TenantRepositoryImpl implements TenantRepository {
     }
 
     @Override
-    public <P extends PageQuery> PageResult<TenantEntity> pageList(P pageable) {
-        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+    public <P extends PageQueryValue> PageResultEntity<TenantEntity> pageList(P pageable) {
+        try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
+            page.setOrderBy(pageable.getOrderBy());
             List<TenantDO> tenantList = this.tenantMapper.queryList(pageable);
             List<TenantEntity> modelList = TENANT_ASSEMBLER.toEntity(tenantList);
-            return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
+            return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), page.getTotal(), modelList);
         }
     }
 }

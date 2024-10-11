@@ -13,43 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.domain.service;
+package com.fuhouyu.sass.interfaces.controller.assembler;
 
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
-import com.fuhouyu.sass.domain.model.page.PageResultEntity;
-import com.fuhouyu.sass.domain.model.user.UserEntity;
+import com.fuhouyu.sass.interfaces.controller.dto.BasePageQueryDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 用户接口
+ * 分页查询转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/5 19:17
+ * @since 2024/10/11 12:22
  */
-public interface UserService {
+@Mapper
+public interface PageQueryAssembler {
 
-
-    /**
-     * 通过用户id查询用户的实体详情
-     *
-     * @param userId 用户id
-     * @return 用户实体详情
-     */
-    UserEntity findByUserId(Long userId);
+    PageQueryAssembler INSTANCE = Mappers.getMapper(PageQueryAssembler.class);
 
     /**
-     * 修改用户
+     * 将controller层的查询对象，转换为domain层对象
      *
-     * @param userEntity 用户实体对象
+     * @param basePageQueryDTO 分页查询dto对象
+     * @return 分页查询对象
      */
-    void editUser(UserEntity userEntity);
+    PageQueryValue toPageQuery(BasePageQueryDTO basePageQueryDTO);
 
-    /**
-     * 分页查询用户集合
-     *
-     * @param pageQueryValue 分页查询对象
-     * @return 用户实体列表
-     */
-    PageResultEntity<UserEntity> pageUserList(PageQueryValue pageQueryValue);
 }

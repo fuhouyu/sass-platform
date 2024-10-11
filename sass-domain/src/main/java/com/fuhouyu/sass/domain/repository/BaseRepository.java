@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.domain.repository;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 
 /**
  * <p>
@@ -66,5 +66,5 @@ public interface BaseRepository<T, ID> {
      * @param <P>      具体的分页查询类型，由子类定义传入
      * @return 分页查询的entity
      */
-    <P extends PageQuery> PageResult<T> pageList(P pageable);
+    <P extends PageQueryValue> PageResultEntity<T> pageList(P pageable);
 }
