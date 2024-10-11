@@ -22,9 +22,9 @@ import {getToken} from "@/utils";
 import Login from "@/pages/Login";
 
 // 使用具名函数组件来创建高阶组件
-const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+const withAuth = (WrappedComponent: React.FC): React.FC => {
     // 具名函数组件
-    const AuthenticatedComponent: React.FC<P> = (props) => {
+    const AuthenticatedComponent: React.FC = () => {
         const navigate = useNavigate();
         const location = useLocation();
         const pathname = location.pathname;
@@ -36,16 +36,14 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
             }
         }, [navigate])
         if (token) {
-            return <WrappedComponent {...props} />;
+            return <WrappedComponent/>;
         } else {
-            return <Login {...props} />;
+            return <Login/>;
         }
     };
 
-    // 为 AuthenticatedComponent 设置 displayName
-    AuthenticatedComponent.displayName = `Authenticated(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
-
-    return React.memo(AuthenticatedComponent); // 使用 React.memo 包裹以优化性能
+// 使用 React.memo 包裹以优化性能
+    return React.memo(AuthenticatedComponent);
 };
 
 export default withAuth;

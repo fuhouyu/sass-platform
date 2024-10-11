@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-.search-header {
-  margin: 15px;
-}
 
-.divide {
-  padding: 10px 0;
-  background-color: #F5F5F5;
-}
-
-.search-header span {
-  padding: 0 15px;
-}
-
-.search-header input {
-  width: 10%;
+export interface PageQuery {
+    pageNum: number;
+    pageSize: number;
+    keyword?: string;
 }

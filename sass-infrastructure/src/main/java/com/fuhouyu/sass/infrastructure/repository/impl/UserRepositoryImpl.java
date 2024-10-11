@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.impl;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
 import com.fuhouyu.sass.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.infrastructure.repository.assembler.UserAssembler;
@@ -78,11 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public <P extends PageQuery> PageResult<UserEntity> pageList(P pageable) {
-        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+    public <P extends PageQueryValue> PageResultEntity<UserEntity> pageList(P pageable) {
+        try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
+            page.setOrderBy(pageable.getOrderBy());
             List<UserDO> userDOList = this.userMapper.queryList(pageable);
             List<UserEntity> modelList = USER_ASSEMBLER.toEntity(userDOList);
-            return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
+            return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), page.getTotal(), modelList);
         }
     }
 }

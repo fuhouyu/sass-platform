@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.infrastructure.repository;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.tenant.TenantEntity;
 import com.fuhouyu.sass.domain.repository.TenantRepository;
 import org.junit.jupiter.api.Test;
@@ -57,8 +57,8 @@ class TestTenantRepository extends TestBaseRepository {
         tenantModel.setTenantName("update_tenant");
         this.tenantRepository.edit(tenantModel);
         // 批量查询
-        PageQuery pageQuery = new PageQuery(1, 10);
-        PageResult<TenantEntity> list = this.tenantRepository.pageList(pageQuery);
+        PageQueryValue pageQueryValue = new PageQueryValue(1, 10);
+        PageResultEntity<TenantEntity> list = this.tenantRepository.pageList(pageQueryValue);
         for (TenantEntity model : list.getList()) {
             this.compare(tenantModel, model);
         }

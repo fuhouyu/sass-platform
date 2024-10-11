@@ -21,6 +21,8 @@ import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoEditCommand;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户详情转换接口
@@ -41,6 +43,14 @@ public interface UserinfoAssembler {
      * @return 用户详情
      */
     UserinfoDTO toUserInfo(UserEntity userEntity);
+
+    /**
+     * 用户实体集合转换为用户详情集合
+     *
+     * @param userEntityList 用户实体集合
+     * @return 用户详情集合
+     */
+    List<UserinfoDTO> toUserInfoList(List<UserEntity> userEntityList);
 
     /**
      * 转换为用户实体

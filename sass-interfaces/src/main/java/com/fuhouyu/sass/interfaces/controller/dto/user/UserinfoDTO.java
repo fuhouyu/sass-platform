@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Schema(name = "UserinfoDTO", description = "用户详情dto对象")
 public class UserinfoDTO implements Serializable {
 
     @Serial

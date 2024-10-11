@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.impl;
 
-import com.fuhouyu.sass.common.PageQuery;
-import com.fuhouyu.sass.common.PageResult;
 import com.fuhouyu.sass.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.role.RoleEntity;
 import com.fuhouyu.sass.domain.repository.RoleRepository;
 import com.fuhouyu.sass.infrastructure.repository.assembler.RoleAssembler;
@@ -83,11 +83,12 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public <P extends PageQuery> PageResult<RoleEntity> pageList(P pageable) {
-        try (Page<Object> result = PageMethod.startPage(pageable.getPageNumber(), pageable.getPageSize())) {
+    public <P extends PageQueryValue> PageResultEntity<RoleEntity> pageList(P pageable) {
+        try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
+            page.setOrderBy(pageable.getOrderBy());
             List<RoleDO> roleList = this.roleMapper.queryList(pageable);
             List<RoleEntity> modelList = ROLE_ASSEMBLER.toEntity(roleList);
-            return new PageResult<>(pageable.getPageNumber(), pageable.getPageSize(), result.getTotal(), modelList);
+            return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), (int) page.getTotal(), modelList);
         }
     }
 }

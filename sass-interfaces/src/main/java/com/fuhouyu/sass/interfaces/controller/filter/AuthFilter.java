@@ -60,7 +60,7 @@ public class AuthFilter implements UserParseHandler {
                 || request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }
-        if (Objects.isNull(bearerToken)) {
+        if (Objects.isNull(bearerToken) || bearerToken.isEmpty()) {
             throw new WebServiceException(ResponseCodeEnum.NOT_AUTH,
                     "用户登录状态已失效");
         }

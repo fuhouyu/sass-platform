@@ -22,13 +22,18 @@ import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
+import com.fuhouyu.sass.domain.model.page.PageQueryValue;
+import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.service.UserAccountService;
 import com.fuhouyu.sass.domain.service.UserService;
+import com.fuhouyu.sass.interfaces.controller.assembler.PageQueryAssembler;
 import com.fuhouyu.sass.interfaces.controller.assembler.UserLoginAssembler;
 import com.fuhouyu.sass.interfaces.controller.assembler.UserinfoAssembler;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
+import com.fuhouyu.sass.interfaces.controller.dto.BasePageQueryDTO;
+import com.fuhouyu.sass.interfaces.controller.dto.PageQueryResultDTO;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserLoginCommand;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoDTO;
@@ -36,9 +41,6 @@ import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoEditCommand;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -68,9 +70,12 @@ public class UserController {
 
     private static final UserinfoAssembler USER_INFO_ASSEMBLER = UserinfoAssembler.INSTANCE;
 
+    private static final PageQueryAssembler PAGE_QUERY_ASSEMBLER = PageQueryAssembler.INSTANCE;
+
     private final UserAccountService userAccountService;
 
     private final UserService userService;
+
 
     /**
      * 用户登录
@@ -79,9 +84,7 @@ public class UserController {
      * @return 响应
      */
     @PostMapping("/login")
-    @Operation(summary = "用户登录接口", responses = {
-            @ApiResponse(content = @Content(schema = @Schema(implementation = UserTokenDTO.class)))
-    })
+    @Operation(summary = "用户登录接口")
     @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
             example = "Basic dGVzdDE6cGFzc3dvcmQ=")
     public RestResult<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
@@ -117,9 +120,7 @@ public class UserController {
      *
      * @return 用户详情
      */
-    @Operation(summary = "用户详情", responses = {
-            @ApiResponse(content = @Content(schema = @Schema(implementation = UserinfoDTO.class)))
-    })
+    @Operation(summary = "用户详情")
     @GetMapping("/info")
     public RestResult<UserinfoDTO> userinfo() {
         Long userId = UserContextHolder.getContext().getObject().getId();
@@ -143,11 +144,20 @@ public class UserController {
         return ResponseHelper.success();
     }
 
-//    /**
-//     * 分页查询用户列表
-//     * @return 用户列表集合
-//     */
-//    public RestResult<PageResult<UserinfoDTO>> pageUserinfo() {
-//
-//    }
+    /**
+     * 分页查询用户列表
+     *
+     * @param basePageQuery 颁
+     * @return 用户列表集合
+     */
+    @GetMapping("/list")
+    @Operation(summary = "获取用户列表")
+    public RestResult<PageQueryResultDTO<UserinfoDTO>> pageUserinfo(BasePageQueryDTO basePageQuery) {
+        PageQueryValue pageQueryValue = PAGE_QUERY_ASSEMBLER.toPageQuery(basePageQuery);
+        PageResultEntity<UserEntity> pageUserEntityResult = this.userService.pageUserList(pageQueryValue);
+        PageQueryResultDTO<UserinfoDTO> pageQueryResultDTO = new PageQueryResultDTO<>(pageUserEntityResult.getPageNum(),
+                pageUserEntityResult.getPageSize(), pageUserEntityResult.getTotal(),
+                USER_INFO_ASSEMBLER.toUserInfoList(pageUserEntityResult.getList()));
+        return ResponseHelper.success(pageQueryResultDTO);
+    }
 }
