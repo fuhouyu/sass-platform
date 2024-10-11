@@ -15,18 +15,18 @@
  */
 
 .search-header {
+  display: flex;
   margin: 15px;
+  justify-content: space-between;
+
+
+  .search-info input {
+    margin-left: 15px;
+    width: 60%;
+  }
 }
 
 .divide {
   padding: 10px 0;
   background-color: #F5F5F5;
-}
-
-.search-header span {
-  padding: 0 15px;
-}
-
-.search-header input {
-  width: 10%;
 }

@@ -19,4 +19,17 @@ export interface PageQuery {
     pageNum: number;
     pageSize: number;
     keyword?: string;
+    sortColumn?: string;
+    direction?: string;
+}
+
+
+/**
+ * 分页查询的结果集
+ */
+export interface PageResult<T> {
+    pageNum: number;
+    pageSize: number;
+    total: number;
+    list: T[];
 }

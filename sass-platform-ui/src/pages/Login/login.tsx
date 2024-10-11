@@ -40,6 +40,7 @@ const Login: React.FC = () => {
         loginData.loginType = 'password'
         dispatch(fetchLogin(loginData, () => {
             const from = location.state?.from || '/';
+            console.log(from)
             navigate(from)
         }))
     };

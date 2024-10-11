@@ -93,5 +93,5 @@ public interface BaseMapper<T, ID> {
      * @param <P> 范围查询的类型
      * @return 批量查询
      */
-    <P extends PageQueryValue> List<T> queryList(P pageQuery);
+    <P extends PageQueryValue> List<T> queryList(@Param("pageQuery") P pageQuery);
 }

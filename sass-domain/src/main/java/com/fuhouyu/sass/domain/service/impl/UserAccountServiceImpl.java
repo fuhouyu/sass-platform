@@ -93,7 +93,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (authenticate.getPrincipal() instanceof SecurityUserDetailEntity securityUserDetailEntity) {
             Context<User> emptyContext = UserContextHolder.createEmptyContext();
             DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
-            defaultUserDetail.setUsername(securityUserDetailEntity.getUsername());
+            defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
             defaultUserDetail.setId(securityUserDetailEntity.getId());
             emptyContext.setObject(defaultUserDetail);
         }
