@@ -16,9 +16,10 @@
 
 .search-header {
   display: flex;
-  margin: 15px;
   justify-content: space-between;
-
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
 
   .search-info input {
     margin-left: 15px;
@@ -26,7 +27,55 @@
   }
 }
 
-.divide {
-  padding: 10px 0;
-  background-color: #F5F5F5;
+.table-container {
+  background-color: #ffffff;
+  padding: 12px 16px;
+  flex-grow: 1;
+}
+
+
+.title-container {
+
+  // 表头标题相关
+  .title-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    line-height: 35px;
+
+    .title {
+      display: flex;
+      padding-left: 12px;
+      font-size: 16px;
+      line-height: 24px;
+      height: 24px;
+      font-weight: 700;
+    }
+
+    .title:before {
+      display: inline-block;
+      content: '';
+      width: 3px;
+      height: 15px;
+      background-color: #1677ff;
+      position: relative;
+      top: 5px;
+      left: -6px;
+    }
+
+  }
+
+  .checked-num {
+    line-height: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+    border: 1px solid #1578FF;
+    background-color: #E6F4FF;
+    border-radius: 4px;
+
+    span {
+      padding: 0 10px;
+    }
+  }
 }
