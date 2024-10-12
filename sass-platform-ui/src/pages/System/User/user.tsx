@@ -16,13 +16,14 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
+import {Button, Input, message, Space, Table, TableColumnsType, TableProps} from "antd";
 import "./index.scss"
 import {PageQuery, PageResult} from "@/model/page";
 import {getUserListApi} from "@/apis/user";
 import {UserinfoInterface} from "@/model/user";
 import {SearchOutlined} from "@ant-design/icons";
 import {SorterResult, TablePaginationConfig} from "antd/es/table/interface";
+import {IconFont} from "@components/iconfont";
 
 
 const User: React.FC = () => {
@@ -83,6 +84,18 @@ const User: React.FC = () => {
             title: '操作人',
             dataIndex: 'updateBy',
         },
+        {
+            title: '操作',
+            dataIndex: 'action',
+            render: () => {
+                return (<>
+                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+                        <a>修改</a>
+                        <a>详情</a>
+                    </Space>
+                </>)
+            }
+        }
 
     ];
 
@@ -101,7 +114,8 @@ const User: React.FC = () => {
         })
     }
 
-    const camelToSnake = (str: string): string => {
+    const camelToSnake = (str: string | undefined): string | undefined => {
+        if (!str) return str;
         return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
     };
 
@@ -110,7 +124,7 @@ const User: React.FC = () => {
         setUserPageQuery({
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
-            sortColumn: camelToSnake(sorter.field.toString),
+            sortColumn: camelToSnake(sorter?.field?.toLocaleString()),
             direction: sorter.order?.replace("end", "").toUpperCase()
             // direction: sorter.
         })
@@ -144,23 +158,42 @@ const User: React.FC = () => {
                                 onClick={() => setUserPageQuery({keyword})}>搜索</Button>
                     </div>
                 </div>
-                <div className="divide"/>
-                <div className="user-list">
-                    <Table
-                        columns={columns}
-                        rowKey="id"
-                        dataSource={pageResult.list}
-                        onChange={onChange}
-                        loading={loading}
-                        pagination={{
-                            total: pageResult.total,
-                            hideOnSinglePage: false,
-                            showSizeChanger: true,
-                            defaultPageSize: userPageQuery.pageSize,
-                            locale: {items_per_page: '条/页'}
-                        }}
-                        showSorterTooltip={{target: 'sorter-icon'}}
-                    />
+                <div className="table-container">
+                    <div className="title-container">
+                        <div className="title-line">
+                            <div className="title">
+                                个人用户列表
+                            </div>
+                            <div className="buttons">
+                                <Button icon={<IconFont type="i-add" style={{color: 'white'}}/>}>
+                                    新增
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="checked-num">
+                            <IconFont type="i-tips" style={{color: 'white'}}/>
+                            选择列表数据后可进行批量操作
+                        </div>
+                    </div>
+                    <div className="user-list">
+                        <Table
+                            scroll={{x: '100%'}}
+                            columns={columns}
+                            style={{tableLayout: 'fixed'}}
+                            rowKey="id"
+                            dataSource={pageResult.list}
+                            onChange={onChange}
+                            loading={loading}
+                            pagination={{
+                                total: pageResult.total,
+                                hideOnSinglePage: false,
+                                showSizeChanger: true,
+                                defaultPageSize: userPageQuery.pageSize,
+                                locale: {items_per_page: '条/页'}
+                            }}
+                            showSorterTooltip={{target: 'sorter-icon'}}
+                        />
+                    </div>
                 </div>
             </div>
         </>
