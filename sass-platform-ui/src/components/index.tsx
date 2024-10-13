@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-.ant-modal-header {
-  height: 56px;
-  //background: linear-gradient(135deg,var(--main--color6) 0,var(--main--color7) 100%)
-  //background-color: red;
-  z-index: inherit;
-}
+import {IconFont} from "./Iconfont/iconfont";
+import {PageList} from "./List/PageList";
 
-.modal-header:before {
-  content: '';
-  height: 6px;
-
+export {
+    IconFont,
+    PageList
 }
