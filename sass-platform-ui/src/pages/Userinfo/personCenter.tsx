@@ -22,7 +22,7 @@ import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
 import {UserinfoInterface} from "@/model/user";
 import {Userinfo} from "@/pages/Userinfo/userinfo";
-import withAuth from "@components/withAuth";
+import withAuth from "@components/Auth/withAuth";
 
 interface MenuLiInterface {
     key: string;

@@ -15,26 +15,16 @@
  */
 
 
-import React, {useEffect, useState} from "react";
-import {Button, Input, message, Space, Table, TableColumnsType, TableProps} from "antd";
-import "./index.scss"
-import {PageQuery, PageResult} from "@/model/page";
+import React, {useState} from "react";
+import {Modal, Space, TableColumnsType} from "antd";
 import {getUserListApi} from "@/apis/user";
-import {UserinfoInterface} from "@/model/user";
-import {SearchOutlined} from "@ant-design/icons";
-import {SorterResult, TablePaginationConfig} from "antd/es/table/interface";
-import {IconFont} from "@components/iconfont";
-
+import {PageList} from "@components";
+import './index.scss'
 
 const User: React.FC = () => {
-    const [userPageQuery, setUserPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-    });
 
-    const [keyword, setKeyword] = useState<string>('');
-    const [loading, setLoading] = useState(false);
-    const [pageResult, setPageResult] = useState<PageResult<UserinfoInterface>>({});
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
 
     const columns: TableColumnsType = [
         {
@@ -91,111 +81,28 @@ const User: React.FC = () => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a>修改</a>
-                        <a>详情</a>
+                        <a onClick={() => setIsModalOpen(true)}>详情</a>
                     </Space>
                 </>)
             }
         }
-
     ];
-
-    const getUserList = (userPageQuery: PageQuery) => {
-        setLoading(true)
-        getUserListApi(userPageQuery)
-            .then((res: PageResult<UserinfoInterface>) => {
-                setPageResult({
-                    pageNum: res.pageNum,
-                    pageSize: res.pageSize,
-                    list: res.list,
-                });
-                setLoading(false)
-            }).catch((err: Error) => {
-            message.error(err.message);
-        })
-    }
-
-    const camelToSnake = (str: string | undefined): string | undefined => {
-        if (!str) return str;
-        return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
-    };
-
-    const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, sorter: SorterResult) => {
-        console.log(sorter)
-        setUserPageQuery({
-            pageNum: pagination.current,
-            pageSize: pagination.pageSize,
-            sortColumn: camelToSnake(sorter?.field?.toLocaleString()),
-            direction: sorter.order?.replace("end", "").toUpperCase()
-            // direction: sorter.
-        })
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            setUserPageQuery({keyword})
-        }
-    };
-
-    useEffect(() => {
-        getUserList(userPageQuery);
-    }, [userPageQuery])
-
 
     return (
         <>
-            <div className="user-container">
-                <div className="search-header">
-                    <div className="search-info">
-                        <span>关键字查询</span>
-                        <Input
-                            value={keyword}
-                            onKeyDown={handleKeyDown}
-                            placeholder="请输入用户关键字"
-                            onChange={(e) => setKeyword(e.target.value)}/>
-                    </div>
-                    <div className="search-submit">
-                        <Button type="primary" icon={<SearchOutlined/>}
-                                onClick={() => setUserPageQuery({keyword})}>搜索</Button>
-                    </div>
-                </div>
-                <div className="table-container">
-                    <div className="title-container">
-                        <div className="title-line">
-                            <div className="title">
-                                个人用户列表
-                            </div>
-                            <div className="buttons">
-                                <Button icon={<IconFont type="i-add" style={{color: 'white'}}/>}>
-                                    新增
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="checked-num">
-                            <IconFont type="i-tips" style={{color: 'white'}}/>
-                            选择列表数据后可进行批量操作
-                        </div>
-                    </div>
-                    <div className="user-list">
-                        <Table
-                            scroll={{x: '100%'}}
-                            columns={columns}
-                            style={{tableLayout: 'fixed'}}
-                            rowKey="id"
-                            dataSource={pageResult.list}
-                            onChange={onChange}
-                            loading={loading}
-                            pagination={{
-                                total: pageResult.total,
-                                hideOnSinglePage: false,
-                                showSizeChanger: true,
-                                defaultPageSize: userPageQuery.pageSize,
-                                locale: {items_per_page: '条/页'}
-                            }}
-                            showSorterTooltip={{target: 'sorter-icon'}}
-                        />
-                    </div>
-                </div>
-            </div>
+            <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}/>
+            <Modal
+                title="用户详情"
+                className="ant-modal-header"
+                open={isModalOpen}
+                onOk={() => setIsModalOpen(false)}
+                onCancel={() => setIsModalOpen(false)}
+                footer="Footer"
+            >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+            </Modal>
         </>
     )
 }

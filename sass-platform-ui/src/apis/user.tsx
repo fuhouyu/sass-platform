@@ -17,7 +17,7 @@
 
 import {request} from "@/utils";
 import {UserinfoInterface} from "@/model/user";
-import {PageQuery} from "@/model/page";
+import {PageQuery, PageResult} from "@/model/page";
 
 
 const baseUserUrl = '/v1/user'
@@ -48,7 +48,7 @@ const editUserinfoApi =
 /**
  * 获取用户列表
  */
-const getUserListApi = <P extends PageQuery>(pageQuery: P) =>
+const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
     request.get(`${baseUserUrl}/list`, {
         params: {...pageQuery}
     });

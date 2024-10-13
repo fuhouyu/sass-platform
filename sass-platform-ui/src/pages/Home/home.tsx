@@ -17,7 +17,7 @@
 import React, {useEffect, useState} from 'react';
 import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {Breadcrumb, Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
-import withAuth from "@/components/withAuth";
+import withAuth from "@/components/Auth/withAuth";
 import "./index.scss"
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
@@ -28,7 +28,7 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
 import {PermissionInterface} from "@/model/permission";
 import {getUserPermissionApi} from "@/apis/permission";
-import {IconFont} from "@components/iconFont";
+import {IconFont} from "@/components";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
