@@ -20,6 +20,7 @@ import {Modal, Space, TableColumnsType} from "antd";
 import {getUserListApi} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
+import {IconFont} from "@/components";
 
 const User: React.FC = () => {
 
@@ -98,6 +99,7 @@ const User: React.FC = () => {
                 onOk={() => setIsModalOpen(false)}
                 onCancel={() => setIsModalOpen(false)}
                 footer="Footer"
+                closeIcon={<IconFont type="i-close-circle" style={{fontSize: '24px'}}/>}
             >
                 <p>Some contents...</p>
                 <p>Some contents...</p>
