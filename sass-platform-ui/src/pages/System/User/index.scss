@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-.ant-modal-header {
+
+.ant-modal-close-x {
+  display: block;
+  width: 54px;
+  height: 54px;
+  text-align: center;
+  line-height: 54px;
+}
+
+.ant-modal-header .ant-modal-title {
+  display: flex;
+  align-items: center;
+  vertical-align: baseline;
   height: 56px;
-  //background: linear-gradient(135deg,var(--main--color6) 0,var(--main--color7) 100%)
-  //background-color: red;
-  z-index: inherit;
+  background: linear-gradient(135deg, #2476FE, #1F5BDD 100%);
+}
+
+.ant-modal {
+  padding: 0;
 }
 
 .modal-header:before {
