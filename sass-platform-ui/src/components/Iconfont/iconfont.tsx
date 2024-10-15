@@ -18,6 +18,6 @@
 import {createFromIconfontCN} from "@ant-design/icons";
 
 export const IconFont = createFromIconfontCN({
-    // scriptUrl: '//at.alicdn.com/t/c/font_4705439_61wfh1u8ijo.js',
-    scriptUrl: '/iconfont.js',
+    scriptUrl: '//at.alicdn.com/t/c/font_4705439_2ruma8rgzwl.js',
+    // scriptUrl: '/iconfont.js',
 });

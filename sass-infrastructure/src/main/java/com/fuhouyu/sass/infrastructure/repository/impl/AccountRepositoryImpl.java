@@ -29,6 +29,7 @@ import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,5 +92,14 @@ public class AccountRepositoryImpl implements AccountRepository {
             List<AccountEntity> entityList = ACCOUNT_ASSEMBLER.toEntity(accountDOList);
             return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), page.getTotal(), entityList);
         }
+    }
+
+    @Override
+    public void removeByIds(List<AccountIdEntity> ids) {
+        List<AccountId> list = new ArrayList<>();
+        for (AccountIdEntity id : ids) {
+            list.add(new AccountId(id.getAccount(), id.getAccountType()));
+        }
+        this.accountMapper.deleteByIds(list);
     }
 }

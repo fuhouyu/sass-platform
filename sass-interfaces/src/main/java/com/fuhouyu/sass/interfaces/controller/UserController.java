@@ -42,11 +42,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -159,5 +163,21 @@ public class UserController {
                 pageUserEntityResult.getPageSize(), pageUserEntityResult.getTotal(),
                 USER_INFO_ASSEMBLER.toUserInfoList(pageUserEntityResult.getList()));
         return ResponseHelper.success(pageQueryResultDTO);
+    }
+
+    /**
+     * 通过用户id删除用户
+     *
+     * @param ids 用户id集合
+     * @return 成功响应
+     */
+    @Operation(summary = "通过用户id删除用户")
+    @DeleteMapping
+    public RestResult<Void> removeUserList(
+            @RequestBody
+            @Size(min = 1, message = "需要删除的用户不能为空")
+            @NotNull(message = "需要删除的用户不能为空") List<Long> ids) {
+        this.userService.removeUserListByIds(ids);
+        return ResponseHelper.success();
     }
 }

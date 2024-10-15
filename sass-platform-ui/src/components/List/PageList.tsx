@@ -15,7 +15,7 @@
  */
 
 
-import {Button, Input, Table, TableColumnsType, TableProps} from "antd";
+import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
 import React, {useEffect, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
@@ -33,20 +33,38 @@ export interface PageListInterface {
 
 }
 
+/**
+ * 处理_转换为驼峰
+ * @param str 下划线字符
+ */
+const camelToSnake = (str: string | undefined): string | undefined => {
+    if (!str) return str;
+    return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
+};
+
 const PageList: React.FC<{
     pageListInterface: PageListInterface,
     pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
-}> = ({pageListInterface, pageRequestApi}) => {
+    deleteButtonApi: (ids: React.Key[]) => Promise<void>
+}> = ({pageListInterface, pageRequestApi, deleteButtonApi}) => {
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
+
     const [keyword, setKeyword] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [pageResult, setPageResult] = useState<PageResult<UserinfoInterface>>({});
-    const camelToSnake = (str: string | undefined): string | undefined => {
-        if (!str) return str;
-        return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
+    const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
+
+    const rowSelection: TableProps['rowSelection'] = {
+        onChange: (selectedRowKeys: React.Key[]) => {
+            if (selectedRowKeys === undefined || selectedRowKeys.length === 0) {
+                setDeleteIds([]);
+                return;
+            }
+            setDeleteIds(selectedRowKeys);
+        },
     };
 
     useEffect(() => {
@@ -57,6 +75,8 @@ const PageList: React.FC<{
             })
         setLoading(false);
     }, [pageQuery])
+
+
     const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, sorter: SorterResult) => {
         console.log(sorter)
         setPageQuery({
@@ -72,6 +92,17 @@ const PageList: React.FC<{
             setPageQuery({keyword})
         }
     };
+
+    const onDeleteButtonClick = () => {
+        deleteButtonApi(deleteIds)
+            .then(() => {
+                message.success("删除成功");
+                setDeleteIds([]);
+            })
+            .catch((error: Error) => {
+                message.error(error.message);
+            })
+    }
     return (
         <div className="list-container">
             <div className="search-header">
@@ -98,6 +129,11 @@ const PageList: React.FC<{
                             <Button icon={<IconFont type="i-add" style={{color: 'white'}}/>}>
                                 新增
                             </Button>
+                            <Button disabled={deleteIds.length === 0}
+                                    onClick={onDeleteButtonClick}
+                                    icon={<IconFont type="i-delete" style={{color: 'white'}}/>}>
+                                删除
+                            </Button>
                         </div>
                     </div>
                     <div className="checked-num">
@@ -107,6 +143,7 @@ const PageList: React.FC<{
                 </div>
                 <div className="list">
                     <Table
+                        rowSelection={{type: 'checkbox', ...rowSelection}}
                         scroll={{x: '100%'}}
                         columns={pageListInterface.columns}
                         style={{tableLayout: 'fixed'}}

@@ -58,11 +58,20 @@ const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Pr
  */
 const logoutApi = () => request.post(`${baseUserUrl}/logout`);
 
+/**
+ * 通过id删除用户
+ * @param ids 用户集合
+ *
+ */
+const removeUserApi = (ids: string[]) => request.delete(`${baseUserUrl}`, {
+    data: ids
+});
 
 export {
     loginApi,
     logoutApi,
     editUserinfoApi,
     getUserinfoApi,
-    getUserListApi
+    getUserListApi,
+    removeUserApi
 }

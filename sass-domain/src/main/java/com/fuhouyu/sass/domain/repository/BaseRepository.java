@@ -18,6 +18,8 @@ package com.fuhouyu.sass.domain.repository;
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 
+import java.util.List;
+
 /**
  * <p>
  * 基础存储库，定义curd
@@ -67,4 +69,11 @@ public interface BaseRepository<T, ID> {
      * @return 分页查询的entity
      */
     <P extends PageQueryValue> PageResultEntity<T> pageList(P pageable);
+
+    /**
+     * 通过id集合
+     *
+     * @param ids ids集合
+     */
+    void removeByIds(List<ID> ids);
 }

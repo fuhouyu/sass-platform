@@ -92,4 +92,9 @@ public class PermissionRepositoryImpl implements PermissionRepository {
         List<PermissionDO> list = this.permissionMapper.queryListByRoleIdList(roleIdList);
         return PERMISSION_ASSEMBLER.toEntity(list);
     }
+
+    @Override
+    public void removeByIds(List<Long> longs) {
+        this.permissionMapper.deleteByIds(longs);
+    }
 }
