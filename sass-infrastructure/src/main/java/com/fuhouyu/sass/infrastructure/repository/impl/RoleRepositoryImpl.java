@@ -91,4 +91,9 @@ public class RoleRepositoryImpl implements RoleRepository {
             return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), (int) page.getTotal(), modelList);
         }
     }
+
+    @Override
+    public void removeByIds(List<Long> longs) {
+        this.roleMapper.deleteByIds(longs);
+    }
 }

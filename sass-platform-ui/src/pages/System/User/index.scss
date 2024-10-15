@@ -15,12 +15,11 @@
  */
 
 
-.ant-modal-close-x {
-  display: block;
+.ant-modal-close {
   width: 54px;
   height: 54px;
-  text-align: center;
-  line-height: 54px;
+  top: 28px;
+  inset-inline-end: 50px;
 }
 
 .ant-modal-header .ant-modal-title {
@@ -31,12 +30,4 @@
   background: linear-gradient(135deg, #2476FE, #1F5BDD 100%);
 }
 
-.ant-modal {
-  padding: 0;
-}
 
-.modal-header:before {
-  content: '';
-  height: 6px;
-
-}

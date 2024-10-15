@@ -19,6 +19,8 @@ import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户接口
@@ -52,4 +54,11 @@ public interface UserService {
      * @return 用户实体列表
      */
     PageResultEntity<UserEntity> pageUserList(PageQueryValue pageQueryValue);
+
+    /**
+     * 通过用户id删除用户
+     *
+     * @param ids 用户id集合
+     */
+    void removeUserListByIds(List<Long> ids);
 }

@@ -17,7 +17,7 @@
 
 import React, {useState} from "react";
 import {Modal, Space, TableColumnsType} from "antd";
-import {getUserListApi} from "@/apis/user";
+import {getUserListApi, removeUserApi} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
 import {IconFont} from "@/components";
@@ -91,7 +91,8 @@ const User: React.FC = () => {
 
     return (
         <>
-            <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}/>
+            <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}
+                      deleteButtonApi={removeUserApi}/>
             <Modal
                 title="用户详情"
                 className="ant-modal-header"

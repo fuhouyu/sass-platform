@@ -71,6 +71,7 @@ public class AuthFilter implements UserParseHandler {
                     "用户登录状态已失效");
         }
         return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getPrincipal(), userSubClass));
+
     }
 
 }

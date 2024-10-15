@@ -15,6 +15,10 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.framework.context.user.User;
+import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
@@ -22,6 +26,8 @@ import com.fuhouyu.sass.domain.repository.UserRepository;
 import com.fuhouyu.sass.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -51,5 +57,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResultEntity<UserEntity> pageUserList(PageQueryValue pageQueryValue) {
         return this.userRepository.pageList(pageQueryValue);
+    }
+
+    @Override
+    public void removeUserListByIds(List<Long> ids) {
+        User user = UserContextHolder.getContext().getObject();
+        if (ids.contains(user.getId())) {
+            throw new WebServiceException(ResponseCodeEnum.INVALID_PARAM,
+                    String.format("不允许操作当前登录账号: %s", user.getUsername()));
+        }
+        this.userRepository.removeByIds(ids);
     }
 }

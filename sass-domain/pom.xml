@@ -60,6 +60,10 @@
             <groupId>com.fuhouyu</groupId>
             <artifactId>base-framework-security-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-web-starter</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

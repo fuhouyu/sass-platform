@@ -87,4 +87,9 @@ public class TenantRepositoryImpl implements TenantRepository {
             return new PageResultEntity<>(pageable.getPageNum(), pageable.getPageSize(), page.getTotal(), modelList);
         }
     }
+
+    @Override
+    public void removeByIds(List<Long> ids) {
+        this.tenantMapper.deleteByIds(ids);
+    }
 }

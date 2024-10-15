@@ -52,7 +52,7 @@ public class SecurityUserDetailEntity extends UserEntity implements UserDetails 
 
     @Override
     public String getUsername() {
-        return this.account.getIdentifierId().getFullAccount();
+        return this.account.getIdentifierId().getAccount();
     }
 
 }
