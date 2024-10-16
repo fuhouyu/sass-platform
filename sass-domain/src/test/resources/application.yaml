@@ -3,3 +3,7 @@ base:
     cache:
       service:
         cache-service-type: caffeine
+
+spring:
+  application:
+    name: 'test-name'

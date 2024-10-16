@@ -51,6 +51,14 @@ public class PageQueryValue implements ValueObject<PageQueryValue> {
 
     private String sortColumn;
 
+    public PageQueryValue() {
+    }
+
+    public PageQueryValue(Integer pageNum, Integer pageSize) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+    }
+
     @Override
     public boolean sameValueAs(PageQueryValue other) {
         return EqualsBuilder.reflectionEquals(this, other);

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.domain.model.user;
 
-import com.fuhouyu.framework.context.request.RequestContextHolder;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.domain.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -101,7 +101,7 @@ public class UserEntity extends BaseEntity<Long> {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(userId);
         userEntity.setLoginDate(LocalDateTime.now());
-        userEntity.setLoginIp(RequestContextHolder.getContext().getObject().getRequestIp());
+        userEntity.setLoginIp(ContextHolderStrategy.getContext().getRequest().getRequestIp());
         return userEntity;
     }
 }

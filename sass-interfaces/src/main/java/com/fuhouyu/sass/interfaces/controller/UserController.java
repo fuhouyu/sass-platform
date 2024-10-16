@@ -15,12 +15,12 @@
  */
 package com.fuhouyu.sass.interfaces.controller;
 
-import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
@@ -91,7 +91,7 @@ public class UserController {
     @Operation(summary = "用户登录接口")
     @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
             example = "Basic dGVzdDE6cGFzc3dvcmQ=")
-    public RestResult<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
+    public BaseResponse<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
         AccountEntity accountEntity = USER_LOGIN_ASSEMBLER.toAccountEntity(userLoginCommand);
         try {
             TokenValueEntity tokenValueEntity = this.userAccountService.login(accountEntity);
@@ -114,7 +114,7 @@ public class UserController {
      */
     @Operation(summary = "退出登录")
     @PostMapping("/logout")
-    public RestResult<Void> logout() {
+    public BaseResponse<Void> logout() {
         this.userAccountService.logout();
         return ResponseHelper.success();
     }
@@ -126,8 +126,8 @@ public class UserController {
      */
     @Operation(summary = "用户详情")
     @GetMapping("/info")
-    public RestResult<UserinfoDTO> userinfo() {
-        Long userId = UserContextHolder.getContext().getObject().getId();
+    public BaseResponse<UserinfoDTO> userinfo() {
+        Long userId = ContextHolderStrategy.getContext().getUser().getId();
         UserEntity userEntity = this.userService.findByUserId(userId);
         UserinfoDTO userinfo = USER_INFO_ASSEMBLER.toUserInfo(userEntity);
         return ResponseHelper.success(userinfo);
@@ -141,9 +141,9 @@ public class UserController {
      */
     @PutMapping("/info")
     @Operation(summary = "修改当前的用户详情")
-    public RestResult<Void> editUserinfo(@Validated @RequestBody UserinfoEditCommand userinfoEditCommand) {
+    public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserinfoEditCommand userinfoEditCommand) {
         UserEntity userEntity = USER_INFO_ASSEMBLER.toUserEntity(userinfoEditCommand);
-        userEntity.setId(UserContextHolder.getContext().getObject().getId());
+        userEntity.setId(ContextHolderStrategy.getContext().getUser().getId());
         this.userService.editUser(userEntity);
         return ResponseHelper.success();
     }
@@ -156,7 +156,7 @@ public class UserController {
      */
     @GetMapping("/list")
     @Operation(summary = "获取用户列表")
-    public RestResult<PageQueryResultDTO<UserinfoDTO>> pageUserinfo(BasePageQueryDTO basePageQuery) {
+    public BaseResponse<PageQueryResultDTO<UserinfoDTO>> pageUserinfo(BasePageQueryDTO basePageQuery) {
         PageQueryValue pageQueryValue = PAGE_QUERY_ASSEMBLER.toPageQuery(basePageQuery);
         PageResultEntity<UserEntity> pageUserEntityResult = this.userService.pageUserList(pageQueryValue);
         PageQueryResultDTO<UserinfoDTO> pageQueryResultDTO = new PageQueryResultDTO<>(pageUserEntityResult.getPageNum(),
@@ -173,7 +173,7 @@ public class UserController {
      */
     @Operation(summary = "通过用户id删除用户")
     @DeleteMapping
-    public RestResult<Void> removeUserList(
+    public BaseResponse<Void> removeUserList(
             @RequestBody
             @Size(min = 1, message = "需要删除的用户不能为空")
             @NotNull(message = "需要删除的用户不能为空") List<Long> ids) {

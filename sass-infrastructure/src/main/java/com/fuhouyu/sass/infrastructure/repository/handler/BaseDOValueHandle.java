@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.infrastructure.repository.handler;
 
-import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.infrastructure.repository.orm.BaseDO;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -103,7 +103,7 @@ public class BaseDOValueHandle implements Interceptor {
      */
     private void onInsert(BaseDO baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = UserContextHolder.getContext().getObject().getUsername();
+        String username = ContextHolderStrategy.getContext().getUser().getUsername();
         baseDO.setCreateAt(nowTime);
         baseDO.setUpdateAt(nowTime);
         baseDO.setCreateBy(username);
@@ -118,7 +118,7 @@ public class BaseDOValueHandle implements Interceptor {
      */
     private void onUpdate(BaseDO baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = UserContextHolder.getContext().getObject().getUsername();
+        String username = ContextHolderStrategy.getContext().getUser().getUsername();
         baseDO.setUpdateAt(nowTime);
         baseDO.setUpdateBy(username);
     }

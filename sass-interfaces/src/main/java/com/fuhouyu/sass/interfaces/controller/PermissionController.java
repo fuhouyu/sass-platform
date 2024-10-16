@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.interfaces.controller;
 
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import com.fuhouyu.sass.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
 import com.fuhouyu.sass.domain.service.PermissionService;
@@ -65,7 +65,7 @@ public class PermissionController {
     @GetMapping("/me")
     @Operation(summary = "获取用户当前权限列表",
             responses = @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoTreeDTO.class))))
-    public RestResult<List<PermissionInfoTreeDTO>> getPermissionByMe() {
+    public BaseResponse<List<PermissionInfoTreeDTO>> getPermissionByMe() {
         List<PermissionEntity> permissionList = permissionService.findPermissionListByMe(true);
         List<PermissionInfoTreeDTO> treeList = PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionList);
         if (CollectionUtils.isEmpty(treeList)) {

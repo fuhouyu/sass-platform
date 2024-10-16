@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.User;
+import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeUserListByIds(List<Long> ids) {
-        User user = UserContextHolder.getContext().getObject();
+        User user = ContextHolderStrategy.getContext().getUser();
         if (ids.contains(user.getId())) {
             throw new WebServiceException(ResponseCodeEnum.INVALID_PARAM,
                     String.format("不允许操作当前登录账号: %s", user.getUsername()));
