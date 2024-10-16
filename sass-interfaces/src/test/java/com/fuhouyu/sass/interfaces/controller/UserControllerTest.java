@@ -16,8 +16,9 @@
 package com.fuhouyu.sass.interfaces.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.web.reponse.SuccessResponse;
 import com.fuhouyu.sass.domain.service.UserAccountService;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserLoginCommand;
@@ -74,7 +75,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         MockHttpServletResponse response = mockmvc.perform(builder).andReturn().getResponse();
         assertEquals(200, response.getStatus());
-        RestResult<UserTokenDTO> restResult = JacksonUtil.readValue(response.getContentAsByteArray(), new TypeReference<RestResult<UserTokenDTO>>() {
+        BaseResponse<UserTokenDTO> restResult = JacksonUtil.readValue(response.getContentAsByteArray(), new TypeReference<SuccessResponse<UserTokenDTO>>() {
         });
         Assertions.assertTrue(restResult.getIsSuccess());
     }

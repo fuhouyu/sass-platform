@@ -15,10 +15,8 @@
  */
 package com.fuhouyu.sass.infrastructure.repository;
 
-import com.fuhouyu.framework.context.Context;
-import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.web.entity.UserEntity;
 import com.fuhouyu.sass.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.domain.service.impl.SecurityUserDetailServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
@@ -56,10 +54,10 @@ class TestBaseRepository {
 
     @BeforeAll
     static void setUp() {
-        Context<User> emptyContext = UserContextHolder.createEmptyContext();
-        DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
-        defaultUserDetail.setUsername("admin");
-        emptyContext.setObject(defaultUserDetail);
+        ContextImpl context = new ContextImpl();
+        UserEntity user = new UserEntity();
+        user.setUsername("admin");
+        context.setUser(user);
     }
 
     protected Long nextSnowflakeId() {

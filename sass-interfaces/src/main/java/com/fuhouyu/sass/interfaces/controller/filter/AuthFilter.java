@@ -15,15 +15,15 @@
  */
 package com.fuhouyu.sass.interfaces.controller.filter;
 
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.context.User;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.web.entity.UserEntity;
+import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
-import com.fuhouyu.framework.web.handler.UserParseHandler;
+import com.fuhouyu.framework.web.handler.ParseHttpRequest;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,16 +45,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class AuthFilter implements UserParseHandler {
+public class AuthFilter implements ParseHttpRequest {
 
     private static final String BEARER_TOKEN_HEADER = OAuth2AccessToken.TokenType.BEARER.getValue();
 
     private final TokenStore tokenStore;
 
     @Override
-    public <T extends User> T parseUser(@NonNull HttpServletRequest request,
-                                        @NonNull HttpServletResponse response,
-                                        @NonNull Class<T> userSubClass) {
+    public User parseUser(@NonNull HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (request.getRequestURI().equals(WebConstant.USER_CONTROLLER_PATH + "/login")
                 || request.getRequestURI().startsWith("/v3/api-docs")) {
@@ -70,8 +68,7 @@ public class AuthFilter implements UserParseHandler {
             throw new WebServiceException(ResponseCodeEnum.NOT_AUTH,
                     "用户登录状态已失效");
         }
-        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getPrincipal(), userSubClass));
-
+        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getPrincipal(),
+                UserEntity.class));
     }
-
 }

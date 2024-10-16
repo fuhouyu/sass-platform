@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.User;
 import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
 import com.fuhouyu.sass.domain.model.role.RoleEntity;
 import com.fuhouyu.sass.domain.repository.PermissionRepository;
@@ -50,7 +50,8 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<PermissionEntity> findPermissionListByMe(Boolean isSystemd) {
-        User user = UserContextHolder.getContext().getObject();
+        User user = ContextHolderStrategy.getContext().getUser();
+
         Long userId = user.getId();
         // 这里先直接返回
         if (Boolean.FALSE.equals(isSystemd)) {

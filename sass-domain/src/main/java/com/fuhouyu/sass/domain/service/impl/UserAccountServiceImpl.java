@@ -15,12 +15,9 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.context.Context;
-import com.fuhouyu.framework.context.request.Request;
-import com.fuhouyu.framework.context.request.RequestContextHolder;
-import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.context.Request;
 import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.LoggerUtil;
@@ -91,11 +88,12 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         // 设置用户上下文
         if (authenticate.getPrincipal() instanceof SecurityUserDetailEntity securityUserDetailEntity) {
-            Context<User> emptyContext = UserContextHolder.createEmptyContext();
-            DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
+            ContextImpl context = new ContextImpl();
+            com.fuhouyu.framework.web.entity.UserEntity defaultUserDetail = new com.fuhouyu.framework.web.entity.UserEntity();
             defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
             defaultUserDetail.setId(securityUserDetailEntity.getId());
-            emptyContext.setObject(defaultUserDetail);
+            context.setUser(defaultUserDetail);
+            ContextHolderStrategy.setContext(context);
         }
         UserEntity userEntity = UserEntity.generateLoginUserEntity(account.getUserId());
         this.userRepository.edit(userEntity);
@@ -104,7 +102,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public void logout() {
-        Request request = RequestContextHolder.getContext().getObject();
+        Request request = ContextHolderStrategy.getContext().getRequest();
         String authorization = request.getAuthorization();
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
         this.tokenStore.removeAllToken(token);

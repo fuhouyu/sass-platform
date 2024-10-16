@@ -15,11 +15,11 @@
  */
 package com.fuhouyu.sass.interfaces.controller.config;
 
-import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.security.core.AbstractApplicationManager;
 import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import jakarta.servlet.ServletOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -67,7 +67,7 @@ public class SecurityConfig {
      */
     private BasicAuthenticationFilter basicAuthenticationFilter() {
         return new BasicAuthenticationFilter(clientAuthenticationManager, (request, response, authException) -> {
-            RestResult<Void> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
+            BaseResponse<Void> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
             try (ServletOutputStream outputStream = response.getOutputStream()) {
                 outputStream.write(JacksonUtil.writeValueAsBytes(restResult));
                 outputStream.flush();

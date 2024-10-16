@@ -54,7 +54,6 @@ class TestUserAccountService extends TestBaseService {
     private UserDetailsService userDetailsService;
 
 
-
     @Test
     void testRegister() {
         UserAccountEntity userAccountEntity = new UserAccountEntity();

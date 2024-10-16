@@ -15,9 +15,7 @@
  */
 package com.fuhouyu.sass.domain.service;
 
-import com.fuhouyu.sass.domain.repository.AccountRepository;
-import com.fuhouyu.sass.domain.repository.TenantRepository;
-import com.fuhouyu.sass.domain.repository.UserRepository;
+import com.fuhouyu.sass.domain.repository.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,5 +43,10 @@ class TestBaseService {
 
     @MockBean
     protected TenantRepository tenantRepository;
+
+    @MockBean
+    protected RoleRepository roleRepository;
+    @MockBean
+    private PermissionRepository permissionRepository;
 
 }
