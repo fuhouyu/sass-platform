@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.sass.domain.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
@@ -23,6 +24,7 @@ import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,6 +42,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityUserDetailServiceImpl implements UserDetailsService {
 
     private static final SecurityUserDetailAssembler USER_DETAIL_ASSEMBLER = SecurityUserDetailAssembler.INSTANCE;
@@ -53,6 +56,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         AccountIdEntity accountIdEntity = AccountIdEntity.fullAccountToAccountIdEntity(username);
         AccountEntity accountEntity = this.accountRepository.findById(accountIdEntity);
         if (Objects.isNull(accountEntity)) {
+            LoggerUtil.warn(log, "{} login failed,未找到对应账号", username);
             throw new UsernameNotFoundException(
                     String.format("%s 用户未找到", accountIdEntity.getAccount()));
         }

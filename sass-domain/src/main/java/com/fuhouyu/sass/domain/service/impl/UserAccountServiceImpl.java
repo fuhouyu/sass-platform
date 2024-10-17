@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
+import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.ContextImpl;
 import com.fuhouyu.framework.context.Request;
@@ -44,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -88,12 +90,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         // 设置用户上下文
         if (authenticate.getPrincipal() instanceof SecurityUserDetailEntity securityUserDetailEntity) {
-            ContextImpl context = new ContextImpl();
-            com.fuhouyu.framework.web.entity.UserEntity defaultUserDetail = new com.fuhouyu.framework.web.entity.UserEntity();
-            defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
-            defaultUserDetail.setId(securityUserDetailEntity.getId());
-            context.setUser(defaultUserDetail);
-            ContextHolderStrategy.setContext(context);
+            setContext(securityUserDetailEntity);
         }
         UserEntity userEntity = UserEntity.generateLoginUserEntity(account.getUserId());
         this.userRepository.edit(userEntity);
@@ -136,15 +133,33 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @return dto对象
      */
     private TokenValueEntity getAccessToken(Authentication authentication) {
-        ApplicationDTO contextApplication = (ApplicationDTO) SecurityContextHolder.getContext().getAuthentication()
-                .getDetails();
 
-        int accessTokenValidity = contextApplication.getAccessTokenExpireTime();
-        int refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
+        int accessTokenValidity = 6000;
+        int refreshTokenValidity = 6000;
+        if (Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())) {
+            ApplicationDTO contextApplication = (ApplicationDTO) SecurityContextHolder.getContext().getAuthentication()
+                    .getDetails();
+            accessTokenValidity = contextApplication.getAccessTokenExpireTime();
+            refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
+        }
 
         return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(tokenStore.createToken(authentication,
                 accessTokenValidity,
                 refreshTokenValidity));
     }
 
+    /**
+     * 设置上下文
+     *
+     * @param securityUserDetailEntity 上下文entity
+     */
+    private void setContext(SecurityUserDetailEntity securityUserDetailEntity) {
+        Context context = Objects.isNull(ContextHolderStrategy.getContext()) ?
+                new ContextImpl() : ContextHolderStrategy.getContext();
+        com.fuhouyu.framework.web.entity.UserEntity defaultUserDetail = new com.fuhouyu.framework.web.entity.UserEntity();
+        defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
+        defaultUserDetail.setId(securityUserDetailEntity.getId());
+        context.setUser(defaultUserDetail);
+        ContextHolderStrategy.setContext(context);
+    }
 }
