@@ -15,19 +15,28 @@
  */
 package com.fuhouyu.sass.domain.service;
 
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.web.entity.RequestEntity;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
+import com.fuhouyu.sass.domain.repository.AccountRepository;
+import com.fuhouyu.sass.domain.repository.UserRepository;
+import com.fuhouyu.sass.domain.service.impl.SecurityApplicationImpl;
 import com.fuhouyu.sass.domain.service.impl.UserAccountServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Objects;
 
 import static org.mockito.Mockito.*;
 
@@ -40,9 +49,12 @@ import static org.mockito.Mockito.*;
  * @author fuhouyu
  * @since 2024/9/27 22:02
  */
-@SpringBootTest
+@SpringBootTest(classes = SecurityApplicationImpl.class)
 class TestUserAccountService extends TestBaseService {
 
+
+    @MockBean
+    protected UserRepository userRepository;
 
     @Autowired
     private UserAccountServiceImpl userAccountService;
@@ -50,9 +62,17 @@ class TestUserAccountService extends TestBaseService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    @MockBean
+    protected AccountRepository accountRepository;
 
+    @BeforeEach
+    void setUp() {
+        ContextImpl context = new ContextImpl();
+        RequestEntity requestEntity = new RequestEntity();
+        requestEntity.setRequestIp("127.0.0.1");
+        context.setRequest(requestEntity);
+        ContextHolderStrategy.setContext(context);
+    }
 
     @Test
     void testRegister() {
@@ -69,7 +89,7 @@ class TestUserAccountService extends TestBaseService {
         doAnswer((res) -> {
             userAccountEntity.setId(1L);
             return userAccountEntity;
-        }).when(super.userRepository).save(userAccountEntity);
+        }).when(this.userRepository).save(userAccountEntity);
 
         this.userAccountService.register(userAccountEntity);
         Assertions.assertEquals(1L, (long) userAccountEntity.getId(), "Register failed");
@@ -80,7 +100,7 @@ class TestUserAccountService extends TestBaseService {
         });
         // 使注册账号时抛出异常
         userAccountEntity.addAccount(accountEntity);
-        doThrow(IllegalArgumentException.class).when(super.accountRepository).save(userAccountEntity.getAccounts());
+        doThrow(IllegalArgumentException.class).when(this.accountRepository).save(userAccountEntity.getAccounts());
         Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> this.userAccountService.register(userAccountEntity));
     }
 
@@ -102,11 +122,14 @@ class TestUserAccountService extends TestBaseService {
         BeanUtils.copyProperties(accountEntity, returnAccountEntity);
         returnAccountEntity.setCredentials(passwordEncoder.encode("admin"));
         returnAccountEntity.attachUser(1L);
-        when(super.accountRepository.findById(accountIdEntity))
+
+        when(this.accountRepository.findById(argThat(argument -> Objects.equals(argument.getAccount(), accountIdEntity.getAccount())
+                && Objects.equals(argument.getAccountType(), accountIdEntity.getAccountType()))))
                 .thenReturn(returnAccountEntity);
 
         when(this.userRepository.findById(1L))
                 .thenReturn(userEntity);
+
         TokenValueEntity tokenValueEntity = this.userAccountService.login(accountEntity);
         Assertions.assertNotNull(tokenValueEntity, "Login failed");
 
