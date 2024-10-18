@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.domain.service;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.web.entity.RequestEntity;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
@@ -67,7 +67,7 @@ class TestUserAccountService extends TestBaseService {
 
     @BeforeEach
     void setUp() {
-        ContextImpl context = new ContextImpl();
+        DefaultListableContextFactory context = new DefaultListableContextFactory();
         RequestEntity requestEntity = new RequestEntity();
         requestEntity.setRequestIp("127.0.0.1");
         context.setRequest(requestEntity);

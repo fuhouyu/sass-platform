@@ -15,9 +15,8 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.Request;
 import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -154,12 +153,14 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @param securityUserDetailEntity 上下文entity
      */
     private void setContext(SecurityUserDetailEntity securityUserDetailEntity) {
-        Context context = Objects.isNull(ContextHolderStrategy.getContext()) ?
-                new ContextImpl() : ContextHolderStrategy.getContext();
-        com.fuhouyu.framework.web.entity.UserEntity defaultUserDetail = new com.fuhouyu.framework.web.entity.UserEntity();
-        defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
-        defaultUserDetail.setId(securityUserDetailEntity.getId());
-        context.setUser(defaultUserDetail);
-        ContextHolderStrategy.setContext(context);
+        DefaultListableContextFactory defaultListableFactory = new DefaultListableContextFactory();
+        com.fuhouyu.framework.web.entity.UserEntity contextUserEntity = new com.fuhouyu.framework.web.entity.UserEntity();
+        contextUserEntity.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
+        contextUserEntity.setId(securityUserDetailEntity.getId());
+        defaultListableFactory.setUser(contextUserEntity);
+        if (Objects.nonNull(ContextHolderStrategy.getContext())) {
+            defaultListableFactory.setRequest(ContextHolderStrategy.getContext().getRequest());
+        }
+        ContextHolderStrategy.setContext(defaultListableFactory);
     }
 }
