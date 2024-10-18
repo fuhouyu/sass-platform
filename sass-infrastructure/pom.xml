@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>sass-infrastructure</artifactId>
-    <name>Sass Repository</name>
+    <name>Sass Infrastructure</name>
     <description>Sass 平台基础设施层实现</description>
 
     <dependencies>

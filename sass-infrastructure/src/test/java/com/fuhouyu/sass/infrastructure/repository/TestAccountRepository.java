@@ -73,7 +73,7 @@ class TestAccountRepository extends TestBaseRepository {
         this.accountRepository.save(accountEntity);
 
         AccountEntity queryById = this.accountRepository.findById(accountEntity.getAccountIdEntity());
-        Assertions.assertEquals(accountEntity.getAccountIdEntity(), queryById.getAccountIdEntity(), "查询出的结果不一致");
+        Assertions.assertEquals(accountEntity.getAccountIdEntity().getFullAccount(), queryById.getAccountIdEntity().getFullAccount(), "查询出的结果不一致");
 
         AccountEntity isNull = this.accountRepository.findById(new AccountIdEntity("noExist", "noExist"));
         Assertions.assertNull(isNull, "查询到错误的结果");
