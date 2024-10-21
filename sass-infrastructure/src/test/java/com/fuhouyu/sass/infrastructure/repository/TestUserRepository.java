@@ -44,14 +44,15 @@ class TestUserRepository extends TestBaseRepository {
         // 保存
         UserEntity saveEntity = this.generteUserEntity();
         this.userRepository.save(saveEntity);
-        Assertions.assertNotNull(saveEntity.getId(), "返回的id为空");
+        Long saveId = saveEntity.getId();
+        Assertions.assertNotNull(saveId, "返回的id为空");
 
         Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.userRepository.save(saveEntity),
                 "二次保存，用户名冲突未正常抛出异常");
 
         // 修改
         UserEntity updateEntity = this.generteUserEntity();
-        updateEntity.setId(saveEntity.getId());
+        updateEntity.setId(saveId);
         this.userRepository.edit(updateEntity);
         Assertions.assertNotEquals(updateEntity.getRealName(), saveEntity.getRealName(), "修改未成功");
 

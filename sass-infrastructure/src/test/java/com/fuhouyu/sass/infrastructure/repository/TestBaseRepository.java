@@ -15,7 +15,8 @@
  */
 package com.fuhouyu.sass.infrastructure.repository;
 
-import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.web.entity.UserEntity;
 import com.fuhouyu.sass.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.domain.service.impl.SecurityUserDetailServiceImpl;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -43,7 +43,6 @@ import java.util.UUID;
 @SpringBootTest(classes = {
         SecurityUserDetailServiceImpl.class
 })
-@SpringBootConfiguration
 @SpringBootApplication
 @MapperScan(basePackages = "com.fuhouyu.sass.infrastructure.repository.mapper")
 @TestPropertySource(locations = {"classpath:application.yaml"})
@@ -54,10 +53,11 @@ class TestBaseRepository {
 
     @BeforeAll
     static void setUp() {
-        ContextImpl context = new ContextImpl();
+        DefaultListableContextFactory context = new DefaultListableContextFactory();
         UserEntity user = new UserEntity();
         user.setUsername("admin");
         context.setUser(user);
+        ContextHolderStrategy.setContext(context);
     }
 
     protected Long nextSnowflakeId() {

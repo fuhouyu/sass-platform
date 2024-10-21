@@ -15,9 +15,8 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.ContextImpl;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.Request;
 import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -102,7 +101,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Request request = ContextHolderStrategy.getContext().getRequest();
         String authorization = request.getAuthorization();
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
-        this.tokenStore.removeAllToken(token);
+        this.tokenStore.readTokenEntity(token);
     }
 
     /**
@@ -142,7 +141,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             accessTokenValidity = contextApplication.getAccessTokenExpireTime();
             refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
         }
-
         return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(tokenStore.createToken(authentication,
                 accessTokenValidity,
                 refreshTokenValidity));
@@ -154,12 +152,14 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @param securityUserDetailEntity 上下文entity
      */
     private void setContext(SecurityUserDetailEntity securityUserDetailEntity) {
-        Context context = Objects.isNull(ContextHolderStrategy.getContext()) ?
-                new ContextImpl() : ContextHolderStrategy.getContext();
-        com.fuhouyu.framework.web.entity.UserEntity defaultUserDetail = new com.fuhouyu.framework.web.entity.UserEntity();
-        defaultUserDetail.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
-        defaultUserDetail.setId(securityUserDetailEntity.getId());
-        context.setUser(defaultUserDetail);
-        ContextHolderStrategy.setContext(context);
+        DefaultListableContextFactory defaultListableFactory = new DefaultListableContextFactory();
+        com.fuhouyu.framework.web.entity.UserEntity contextUserEntity = new com.fuhouyu.framework.web.entity.UserEntity();
+        contextUserEntity.setUsername(securityUserDetailEntity.getAccount().getIdentifierId().getAccount());
+        contextUserEntity.setId(securityUserDetailEntity.getId());
+        defaultListableFactory.setUser(contextUserEntity);
+        if (Objects.nonNull(ContextHolderStrategy.getContext())) {
+            defaultListableFactory.setRequest(ContextHolderStrategy.getContext().getRequest());
+        }
+        ContextHolderStrategy.setContext(defaultListableFactory);
     }
 }
