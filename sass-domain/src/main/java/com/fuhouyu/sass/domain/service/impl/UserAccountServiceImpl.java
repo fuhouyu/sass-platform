@@ -101,7 +101,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Request request = ContextHolderStrategy.getContext().getRequest();
         String authorization = request.getAuthorization();
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
-        this.tokenStore.removeAllToken(token);
+        this.tokenStore.readTokenEntity(token);
     }
 
     /**
@@ -141,7 +141,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             accessTokenValidity = contextApplication.getAccessTokenExpireTime();
             refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
         }
-
         return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(tokenStore.createToken(authentication,
                 accessTokenValidity,
                 refreshTokenValidity));

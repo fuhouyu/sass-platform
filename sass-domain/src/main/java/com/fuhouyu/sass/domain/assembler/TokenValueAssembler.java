@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.domain.assembler;
 
-import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
+import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -39,24 +39,27 @@ public interface TokenValueAssembler {
     /**
      * 将token值转换为实体
      *
-     * @param token token对象
+     * @param tokenEntity token实体对象
      * @return 实体对象
      */
     @Mappings({
-            @Mapping(source = "tokenExpireSeconds", target = "accessTokenExpireSeconds"),
             @Mapping(expression = """
-                    java(java.time.Duration.between(token.getAuth2RefreshToken().getIssuedAt(),
-                     token.getAuth2RefreshToken().getExpiresAt()).getSeconds())
+                    java(java.time.Duration.between(tokenEntity.getAccessToken().getIssuedAt(),
+                     tokenEntity.getAccessToken().getExpiresAt()).getSeconds())
+                    """, target = "accessTokenExpireSeconds"),
+            @Mapping(expression = """
+                    java(java.time.Duration.between(tokenEntity.getRefreshToken().getIssuedAt(),
+                     tokenEntity.getRefreshToken().getExpiresAt()).getSeconds())
                     """,
                     target = "refreshTokenExpireSeconds"),
-            @Mapping(source = "tokenType.value", target = "tokenType"),
-            @Mapping(source = "tokenValue", target = "accessToken"),
-            @Mapping(source = "auth2RefreshToken.tokenValue", target = "refreshToken"),
-            @Mapping(source = "issuedAt", target = "accessTokenIssuedAt"),
-            @Mapping(source = "auth2RefreshToken.issuedAt", target = "refreshTokenIssuedAt"),
-            @Mapping(source = "expiresAt", target = "accessTokenExpireAt"),
-            @Mapping(source = "auth2RefreshToken.expiresAt", target = "refreshTokenExpireAt"),
+            @Mapping(source = "tokenEntity.accessToken.tokenType.value", target = "tokenType"),
+            @Mapping(source = "tokenEntity.accessToken.tokenValue", target = "accessToken"),
+            @Mapping(source = "tokenEntity.refreshToken.tokenValue", target = "refreshToken"),
+            @Mapping(source = "tokenEntity.accessToken.issuedAt", target = "accessTokenIssuedAt"),
+            @Mapping(source = "tokenEntity.refreshToken.issuedAt", target = "refreshTokenIssuedAt"),
+            @Mapping(source = "tokenEntity.accessToken.expiresAt", target = "accessTokenExpireAt"),
+            @Mapping(source = "tokenEntity.refreshToken.expiresAt", target = "refreshTokenExpireAt"),
     })
-    TokenValueEntity toTokenValueEntity(DefaultOAuth2Token token);
+    TokenValueEntity toTokenValueEntity(TokenEntity tokenEntity);
 
 }
