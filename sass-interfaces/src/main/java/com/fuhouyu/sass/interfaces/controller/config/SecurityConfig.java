@@ -15,12 +15,6 @@
  */
 package com.fuhouyu.sass.interfaces.controller.config;
 
-import com.fuhouyu.framework.response.BaseResponse;
-import com.fuhouyu.framework.security.core.AbstractApplicationManager;
-import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
-import com.fuhouyu.framework.web.reponse.ResponseHelper;
-import jakarta.servlet.ServletOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +22,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
  * <p>
@@ -42,9 +35,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AbstractApplicationManager clientAuthenticationManager;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
@@ -54,24 +44,6 @@ public class SecurityConfig {
                 )
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(this.basicAuthenticationFilter())
                 .build();
-    }
-
-
-    /**
-     * 初始化基本认证过滤器
-     * Basic Base64(clientId:clientSecret).
-     *
-     * @return 基本认证过滤器
-     */
-    private BasicAuthenticationFilter basicAuthenticationFilter() {
-        return new BasicAuthenticationFilter(clientAuthenticationManager, (request, response, authException) -> {
-            BaseResponse<Void> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
-            try (ServletOutputStream outputStream = response.getOutputStream()) {
-                outputStream.write(JacksonUtil.writeValueAsBytes(restResult));
-                outputStream.flush();
-            }
-        });
     }
 }

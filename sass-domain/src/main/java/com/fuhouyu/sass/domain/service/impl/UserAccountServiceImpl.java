@@ -18,7 +18,6 @@ package com.fuhouyu.sass.domain.service.impl;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.Request;
-import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
@@ -37,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,15 +130,9 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @return dto对象
      */
     private TokenValueEntity getAccessToken(Authentication authentication) {
-
+        // 先固定
         int accessTokenValidity = 6000;
         int refreshTokenValidity = 6000;
-        if (Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())) {
-            ApplicationDTO contextApplication = (ApplicationDTO) SecurityContextHolder.getContext().getAuthentication()
-                    .getDetails();
-            accessTokenValidity = contextApplication.getAccessTokenExpireTime();
-            refreshTokenValidity = contextApplication.getRefreshTokenExpireTime();
-        }
         return TOKEN_VALUE_ASSEMBLER.toTokenValueEntity(tokenStore.createToken(authentication,
                 accessTokenValidity,
                 refreshTokenValidity));

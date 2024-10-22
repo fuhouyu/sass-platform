@@ -25,7 +25,6 @@ import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
 import com.fuhouyu.sass.domain.model.user.UserEntity;
 import com.fuhouyu.sass.domain.repository.AccountRepository;
 import com.fuhouyu.sass.domain.repository.UserRepository;
-import com.fuhouyu.sass.domain.service.impl.SecurityApplicationImpl;
 import com.fuhouyu.sass.domain.service.impl.UserAccountServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +48,7 @@ import static org.mockito.Mockito.*;
  * @author fuhouyu
  * @since 2024/9/27 22:02
  */
-@SpringBootTest(classes = SecurityApplicationImpl.class)
+@SpringBootTest
 class TestUserAccountService extends TestBaseService {
 
 
