@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.domain.service.impl;
 
-import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.domain.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;

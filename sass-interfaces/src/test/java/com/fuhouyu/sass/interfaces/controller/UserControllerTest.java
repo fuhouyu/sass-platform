@@ -16,9 +16,9 @@
 package com.fuhouyu.sass.interfaces.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fuhouyu.framework.response.BaseResponse;
-import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.web.reponse.SuccessResponse;
+import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.web.response.SuccessResponse;
 import com.fuhouyu.sass.domain.service.UserAccountService;
 import com.fuhouyu.sass.interfaces.controller.constants.WebConstant;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserLoginCommand;

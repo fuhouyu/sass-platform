@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.interfaces.controller;
 
-import com.fuhouyu.framework.response.BaseResponse;
-import com.fuhouyu.framework.web.reponse.ResponseHelper;
+import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.web.response.ResponseHelper;
 import com.fuhouyu.sass.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.domain.model.permission.PermissionEntity;
 import com.fuhouyu.sass.domain.service.PermissionService;
