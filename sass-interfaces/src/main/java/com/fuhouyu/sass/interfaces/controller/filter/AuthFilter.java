@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.interfaces.controller.filter;
 
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.context.User;
 import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.web.entity.UserEntity;
 import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
