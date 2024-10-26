@@ -15,13 +15,12 @@
  */
 package com.fuhouyu.sass.interfaces.controller.assembler;
 
-import com.fuhouyu.sass.domain.model.account.AccountEntity;
+import com.fuhouyu.sass.domain.model.account.LoginAccountEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserLoginCommand;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserTokenDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -43,12 +42,11 @@ public interface UserLoginAssembler {
      * @param userLoginCommand 用户登录操作
      * @return 账号实体
      */
-    @Mappings({
-            @Mapping(source = "loginType", target = "accountIdEntity.accountType"),
-            @Mapping(source = "username", target = "accountIdEntity.account"),
-            @Mapping(source = "password", target = "credentials")
-    })
-    AccountEntity toAccountEntity(UserLoginCommand userLoginCommand);
+    @Mapping(source = "loginType", target = "accountType")
+    @Mapping(source = "username", target = "account")
+    @Mapping(source = "password", target = "password")
+    @Mapping(source = "tenantCode", target = "tenantCode")
+    LoginAccountEntity toLoginAccountEntity(UserLoginCommand userLoginCommand);
 
     /**
      * token value转为dto对象

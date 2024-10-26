@@ -21,7 +21,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.framework.web.response.ResponseHelper;
-import com.fuhouyu.sass.domain.model.account.AccountEntity;
+import com.fuhouyu.sass.domain.model.account.LoginAccountEntity;
 import com.fuhouyu.sass.domain.model.page.PageQueryValue;
 import com.fuhouyu.sass.domain.model.page.PageResultEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
@@ -39,8 +39,6 @@ import com.fuhouyu.sass.interfaces.controller.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoDTO;
 import com.fuhouyu.sass.interfaces.controller.dto.user.UserinfoEditCommand;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -89,12 +87,10 @@ public class UserController {
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录接口")
-    @Parameter(in = ParameterIn.HEADER, name = "Authorization", required = true,
-            example = "Basic dGVzdDE6cGFzc3dvcmQ=")
     public BaseResponse<UserTokenDTO> login(@RequestBody @Validated UserLoginCommand userLoginCommand) {
-        AccountEntity accountEntity = USER_LOGIN_ASSEMBLER.toAccountEntity(userLoginCommand);
+        LoginAccountEntity loginAccountEntity = USER_LOGIN_ASSEMBLER.toLoginAccountEntity(userLoginCommand);
         try {
-            TokenValueEntity tokenValueEntity = this.userAccountService.login(accountEntity);
+            TokenValueEntity tokenValueEntity = this.userAccountService.login(loginAccountEntity);
             UserTokenDTO userTokenDTO = USER_LOGIN_ASSEMBLER.toUserTokenDTO(tokenValueEntity);
             return ResponseHelper.success(userTokenDTO);
         } catch (Exception e) {
