@@ -13,40 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.domain.service;
+package com.fuhouyu.sass.domain.model.account;
 
-import com.fuhouyu.sass.domain.model.account.LoginAccountEntity;
-import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
-import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
-import lombok.NonNull;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * <p>
- * 账号接口
+ * 登录的实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:10
+ * @since 2024/10/26 20:22
  */
-public interface UserAccountService {
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+public class LoginAccountEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 8971235643112314512L;
 
     /**
-     * 注册用户
-     *
-     * @param userAccountEntity 用户账号实体
+     * 账号
      */
-    void register(UserAccountEntity userAccountEntity);
+    private final String account;
 
     /**
-     * 通过账号id进行登录
-     *
-     * @param loginAccountEntity 账号实体
-     * @return token实体
+     * 账号类型
      */
-    TokenValueEntity login(@NonNull LoginAccountEntity loginAccountEntity);
+    private final String accountType;
 
     /**
-     * 退出登录
+     * 登录的密码
      */
-    void logout();
+    private final String password;
+
+    /**
+     * 租户编码
+     */
+    private String tenantCode;
+
 }

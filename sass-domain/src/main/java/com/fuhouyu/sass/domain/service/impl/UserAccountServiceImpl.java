@@ -23,6 +23,7 @@ import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.domain.assembler.TokenValueAssembler;
 import com.fuhouyu.sass.domain.model.account.AccountEntity;
 import com.fuhouyu.sass.domain.model.account.AccountIdEntity;
+import com.fuhouyu.sass.domain.model.account.LoginAccountEntity;
 import com.fuhouyu.sass.domain.model.token.TokenValueEntity;
 import com.fuhouyu.sass.domain.model.user.SecurityUserDetailEntity;
 import com.fuhouyu.sass.domain.model.user.UserAccountEntity;
@@ -80,17 +81,19 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public TokenValueEntity login(@NonNull AccountEntity account) {
-        AccountIdEntity accountIdEntity = account.getIdentifierId();
+    public TokenValueEntity login(@NonNull LoginAccountEntity loginAccount) {
+        AccountIdEntity accountIdEntity = new AccountIdEntity(loginAccount.getAccount(), loginAccount.getAccountType());
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(), account.getCredentials());
+                new UsernamePasswordAuthenticationToken(accountIdEntity.getFullAccount(),
+                        loginAccount.getPassword());
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         // 设置用户上下文
         if (authenticate.getPrincipal() instanceof SecurityUserDetailEntity securityUserDetailEntity) {
             setContext(securityUserDetailEntity);
+            UserEntity userEntity =
+                    UserEntity.generateLoginUserEntity(securityUserDetailEntity.getAccount().getUserId());
+            this.userRepository.edit(userEntity);
         }
-        UserEntity userEntity = UserEntity.generateLoginUserEntity(account.getUserId());
-        this.userRepository.edit(userEntity);
         return this.getAccessToken(authenticate);
     }
 

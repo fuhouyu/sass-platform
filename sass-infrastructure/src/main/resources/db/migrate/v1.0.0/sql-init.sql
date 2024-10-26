@@ -65,6 +65,7 @@ CREATE TABLE users
     avatar     VARCHAR(32),
     login_date timestamp          NOT NULL,
     login_ip   VARCHAR(64)        NOT NULL,
+    is_systemd BOOLEAN DEFAULT FALSE,
     is_enabled BOOLEAN DEFAULT TRUE,
     is_deleted BOOLEAN DEFAULT FALSE,
     create_at  timestamp          NOT NULL,
@@ -84,6 +85,7 @@ COMMENT ON COLUMN users.email IS '邮箱地址';
 COMMENT ON COLUMN users.gender IS '性别';
 COMMENT ON COLUMN users.avatar IS '头像地址';
 COMMENT ON COLUMN users.login_date IS '登录日期';
+COMMENT ON COLLATION users.is_systemed IS '是否为系统用户';
 COMMENT ON COLUMN users.login_ip IS '登录ip';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
