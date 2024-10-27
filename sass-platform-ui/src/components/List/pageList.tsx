@@ -126,12 +126,12 @@ const PageList: React.FC<{
                             {pageListInterface.listName}列表
                         </div>
                         <div className="buttons">
-                            <Button icon={<IconFont type="i-add" style={{color: 'white'}}/>}>
+                            <Button className="add-button" icon={<IconFont type="i-add"/>}>
                                 新增
                             </Button>
-                            <Button disabled={deleteIds.length === 0}
+                            <Button className="del-button" disabled={deleteIds.length === 0}
                                     onClick={onDeleteButtonClick}
-                                    icon={<IconFont type="i-delete" style={{color: 'white'}}/>}>
+                                    icon={<IconFont type="i-delete"/>}>
                                 删除
                             </Button>
                         </div>

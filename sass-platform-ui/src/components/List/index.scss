@@ -44,8 +44,32 @@
     margin-bottom: 12px;
     line-height: 35px;
 
+    // button 
     .buttons button {
       margin-right: 15px;
+    }
+
+    // 添加按钮
+    .add-button {
+      color: #2090FF;
+      background-color: #E8F4FF;
+    }
+
+    .add-button:hover {
+      color: white;
+      background-color: #1890ff;
+    }
+
+
+    // 删除按钮
+    .del-button {
+      color: #FF5E5E;
+      background-color: #FFEDED;
+    }
+
+    .del-button:hover {
+      color: white;
+      background-color: #FF4949;
     }
 
     .title {

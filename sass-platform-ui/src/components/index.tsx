@@ -15,7 +15,7 @@
  */
 
 import {IconFont} from "./Iconfont/iconfont";
-import {PageList} from "./List/PageList";
+import {PageList} from "./List/pageList";
 
 export {
     IconFont,

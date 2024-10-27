@@ -15,17 +15,25 @@
  */
 
 
-import React, {useState} from "react";
-import {Modal, Space, TableColumnsType} from "antd";
-import {getUserListApi, removeUserApi} from "@/apis/user";
+import React, {useEffect, useState} from "react";
+import {Modal, Space, Table, TableColumnsType} from "antd";
+import {getUserinfoByIdApi, getUserListApi, removeUserApi} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
 import {IconFont} from "@/components";
+import {UserinfoInterface} from "@/model/user";
+import {Userinfo} from "@/pages/Userinfo/userinfo";
 
 const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [userId, setUserId] = useState<number | null>(null);
 
+    const modalHandle = (isModalOpen?: boolean = false,
+                         id?: number | null) => {
+        setIsModalOpen(isModalOpen);
+        setUserId(id)
+    }
 
     const columns: TableColumnsType = [
         {
@@ -78,33 +86,60 @@ const User: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: () => {
+            render: (_, record: UserinfoInterface) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a>修改</a>
-                        <a onClick={() => setIsModalOpen(true)}>详情</a>
+                        <a onClick={() => modalHandle(true, record.id)}>修改</a>
                     </Space>
                 </>)
             }
         }
     ];
 
+    const [detailDataSource, setDetailDataSource] = useState<object[]>([]);
+
+    const userDetailColumns = [
+        {
+            dataIndex: 'attribute',
+            key: 'attribute',
+            render: (text: string) => <strong>{text}：</strong>, // 增加冒号和加粗
+        },
+        {
+            dataIndex: 'value',
+            key: 'value',
+        },
+    ];
+
+    useEffect(() => {
+        if (!isModalOpen) {
+            return
+        }
+        getUserinfoByIdApi(userId)
+            .then((res: UserinfoInterface) => {
+                setDetailDataSource([
+                    {
+                        "key": "username",
+                        "attribute": "用户名",
+                        "value": res.username
+                    }
+                ])
+            })
+    }, [isModalOpen]);
     return (
         <>
             <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}
                       deleteButtonApi={removeUserApi}/>
             <Modal
-                title="用户详情"
+                title="用户修改"
                 className="ant-modal-header"
                 open={isModalOpen}
-                onOk={() => setIsModalOpen(false)}
-                onCancel={() => setIsModalOpen(false)}
+                onOk={() => modalHandle(false)}
+                onCancel={() => modalHandle(false)}
                 footer="Footer"
-                closeIcon={<IconFont type="i-close-circle" style={{fontSize: '24px'}}/>}
+                closeIcon={<IconFont type="i-close-circle" style={{
+                    fontSize: '24px',
+                }}/>}
             >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
             </Modal>
         </>
     )
