@@ -54,6 +54,11 @@ const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Pr
     });
 
 /**
+ * 通过用户id获取用户详情
+ */
+const getUserinfoByIdApi = (id: number): Promise<UserinfoInterface> => request.get(`${baseUserUrl}/info/${id}`);
+
+/**
  * 退出登录
  */
 const logoutApi = () => request.post(`${baseUserUrl}/logout`);
@@ -73,5 +78,6 @@ export {
     editUserinfoApi,
     getUserinfoApi,
     getUserListApi,
+    getUserinfoByIdApi,
     removeUserApi
 }
