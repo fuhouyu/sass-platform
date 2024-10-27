@@ -129,6 +129,20 @@ public class UserController {
         return ResponseHelper.success(userinfo);
     }
 
+
+    /**
+     * 通过id获取用户详情
+     *
+     * @return 用户详情
+     */
+    @Operation(summary = "用户详情")
+    @GetMapping("/info/{id}")
+    public BaseResponse<UserinfoDTO> userinfo(@PathVariable("id") Long id) {
+        UserEntity userEntity = this.userService.findByUserId(id);
+        UserinfoDTO userinfo = USER_INFO_ASSEMBLER.toUserInfo(userEntity);
+        return ResponseHelper.success(userinfo);
+    }
+
     /**
      * 修改当前用户的详情
      *
