@@ -35,11 +35,9 @@
 
     <inceptionYear>2024</inceptionYear>
     <modules>
-        <module>sass-application</module>
-        <module>sass-domain</module>
-        <module>sass-common</module>
-        <module>sass-infrastructure</module>
-        <module>sass-interfaces</module>
+        <module>sass-platform-common</module>
+        <module>sass-platform-admin</module>
+        <module>sass-platform-system</module>
     </modules>
     <url>https://github.com/fuhouyu/sass-platform</url>
 
@@ -85,22 +83,12 @@
             <!--内部依赖-->
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>sass-common</artifactId>
+                <artifactId>sass-platform-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>sass-domain</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>sass-infrastructure</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>sass-interfaces</artifactId>
+                <artifactId>sass-platform-system</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

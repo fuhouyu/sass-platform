@@ -1,0 +1,71 @@
+/*
+ * Copyright 2024-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.fuhouyu.sass.platform.system.service.impl;
+
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
+import com.fuhouyu.sass.platform.common.exception.ServiceException;
+import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
+import com.fuhouyu.sass.platform.system.dto.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.SecurityUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+
+/**
+ * <p>
+ * 用户详情实现
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/2 23:38
+ */
+@RequiredArgsConstructor
+@Slf4j
+@Service
+public class DefaultUserDetailService implements UserDetailsService {
+
+    private final AccountService accountService;
+
+    private final UserService userService;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AccountIdDTO accountIdDTO = AccountIdDTO.parseFullAccount(username);
+        AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
+        if (Objects.isNull(accountDTO)) {
+            LoggerUtil.warn(log, "{} 登录失败,未找到对应账号", username);
+            throw new ServiceException(ResponseCodeEnum.NOT_AUTH, "用户名或密码错误");
+        }
+        UserDTO userDTO = this.userService.findById(accountDTO.getUserId());
+        if (Objects.isNull(userDTO)) {
+            LoggerUtil.error(log, "{} 账号关联的用户不存在", accountDTO.getAccount());
+            throw new ServiceException(ResponseCodeEnum.NOT_AUTH, "用户名或密码错误");
+        }
+        SecurityUserDetailDTO securityUserDetail = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(userDTO);
+        securityUserDetail.setAccount(accountDTO);
+        return securityUserDetail;
+    }
+}

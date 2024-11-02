@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: sass-admin
+  profiles:
+    include:
+      - postgresql
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: caffeine
+    kms-national:
+      sm2:
+        auto-generate: true
