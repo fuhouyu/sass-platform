@@ -27,9 +27,9 @@ public class WebConstant {
 
     private static final String API_VERSION = "/v1/";
 
-    public final static String USER_CONTROLLER_PATH = API_VERSION + "user";
+    public static final String USER_CONTROLLER_PATH = API_VERSION + "user";
 
-    public final static String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
+    public static final String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
 
     private WebConstant() {
     }
