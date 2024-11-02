@@ -39,8 +39,8 @@ const Login: React.FC = () => {
         setLoginButtonLoading(true)
         loginData.loginType = 'password'
         dispatch(fetchLogin(loginData, () => {
-            const from = location.state?.from || '/';
-            console.log(from)
+            const fromRouter = location.state?.from;
+            const from = fromRouter || fromRouter.endsWith('login') ? '/' : fromRouter;
             navigate(from)
         }))
     };
