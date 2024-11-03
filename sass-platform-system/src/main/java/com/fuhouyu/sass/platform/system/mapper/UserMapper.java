@@ -17,6 +17,9 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 
 import com.fuhouyu.sass.platform.system.entity.Users;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -35,4 +38,15 @@ public interface UserMapper extends BaseMapper<Users, Long> {
      * @return userEntity对象
      */
     Users queryByUsername(String username);
+
+    /**
+     * 记录用户登录信息
+     *
+     * @param userId    用户id
+     * @param loginIp   登录ip
+     * @param loginTime 登录时间
+     */
+    void recordLoginSuccess(@Param("userId") Long userId,
+                            @Param("loginIp") String loginIp,
+                            @Param("loginTime") LocalDateTime loginTime);
 }

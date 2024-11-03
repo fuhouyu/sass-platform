@@ -15,7 +15,6 @@
  */
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {message} from "antd";
 import {storeToken, TokenInterface} from "@/utils/Token/token";
 import {UserinfoInterface} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi, loginApi, logoutApi} from "@/apis/user";
@@ -46,17 +45,11 @@ const userStore = createSlice({
 /**
  * 用户登录接口
  * @param loginForm 表单参数
- * @param callback 登录完成的回调
  */
-const fetchLogin = (loginForm: string, callback: () => void) => {
+const fetchLogin = (loginForm: string) => {
     return async (dispatch: (arg0: { payload: PayloadAction<TokenInterface>; type: `user/${string}` }) => void) => {
-        await loginApi(loginForm).then((res: TokenInterface) => {
-            message.success('登录成功')
-            dispatch(userStore.actions.storeToken(res))
-            callback()
-        }).catch((err: Error) => {
-            message.error(err.message)
-        })
+        const token = await loginApi(loginForm);
+        dispatch(userStore.actions.storeToken(token))
     }
 }
 

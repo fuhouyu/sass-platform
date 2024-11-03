@@ -27,7 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author fuhouyu
  * @since 2024/11/3 00:05
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.fuhouyu.sass.platform")
 @MapperScan(basePackages = "com.fuhouyu.sass.platform.system.mapper")
 public class SassPlatformAdminApplication {
 

@@ -16,7 +16,7 @@
 
 import React, {useState} from "react";
 import "./index.scss"
-import {Button, Form, Input} from "antd";
+import {Button, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
@@ -38,11 +38,19 @@ const Login: React.FC = () => {
     const onFinish = (loginData: UserLogin) => {
         setLoginButtonLoading(true)
         loginData.loginType = 'password'
-        dispatch(fetchLogin(loginData, () => {
+        dispatch(fetchLogin(loginData)).then(() => {
+            setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
             const from = fromRouter || fromRouter.endsWith('login') ? '/' : fromRouter;
             navigate(from)
-        }))
+        }).catch((err: Error) => {
+            message.error(err.message)
+        }).finally(() => {
+            setTimeout(() => {
+                setLoginButtonLoading(false);
+            }, 1500)
+        })
+
     };
 
     return (

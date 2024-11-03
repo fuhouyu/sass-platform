@@ -19,45 +19,41 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * <p>
- * oauth2 用户详情
+ * token
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/5 10:13
+ * @since 2024/11/3 19:00
  */
-@Setter
 @Getter
-@ToString(callSuper = true)
+@Setter
+@ToString
 @RequiredArgsConstructor
-public class SecurityUserDetailDTO implements UserDetails {
+public class TokenAuthenticationDTO implements Authentication, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 185712368712364891L;
 
     /**
-     * 账号
+     * 用户详情
+     */
+    private final UserDTO userDetails;
+
+    /**
+     * 登录账号
      */
     private final String account;
 
-    /**
-     * 凭证
-     */
-    private final String credentials;
-
-    /**
-     * 是否启用
-     */
-    private final Boolean isEnabled;
-
-    /**
-     * 用户id
-     */
-    private final Long userId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -65,17 +61,32 @@ public class SecurityUserDetailDTO implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return this.getCredentials();
+    public Object getCredentials() {
+        return null;
     }
 
     @Override
-    public String getUsername() {
-        return this.getAccount();
+    public Object getDetails() {
+        return this.userDetails;
     }
 
     @Override
-    public boolean isEnabled() {
-        return this.isEnabled;
+    public Object getPrincipal() {
+        return this.account;
+    }
+
+    @Override
+    public boolean isAuthenticated() {
+        return true;
+    }
+
+    @Override
+    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public String getName() {
+        return this.account;
     }
 }

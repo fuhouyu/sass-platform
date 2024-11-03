@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.dto;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -48,7 +47,6 @@ public class AccountDTO extends BaseDTO {
     /**
      * 用户id
      */
-    @Setter(AccessLevel.PRIVATE)
     private Long userId;
 
     /**
@@ -69,24 +67,6 @@ public class AccountDTO extends BaseDTO {
     /**
      * 是否启用标记
      */
-    @Setter(AccessLevel.PRIVATE)
     private Boolean isEnabled;
-
-
-    public void disabled() {
-        this.isEnabled = false;
-    }
-
-    public void enabled() {
-        this.isEnabled = true;
-    }
-
-    public void attachUser(Long userId) {
-        this.userId = userId;
-    }
-
-    public void detachUser() {
-        this.userId = null;
-    }
 
 }
