@@ -47,7 +47,9 @@ import java.util.function.Function;
 public class UserServiceImpl implements UserService {
 
     private static final UsersAssembler USERS_ASSEMBLER = UsersAssembler.INSTANCE;
+
     private final UserMapper userMapper;
+
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     @Override
@@ -63,11 +65,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void recordLoginSuccess(Long userId) {
-        Users users = new Users();
-        users.setId(userId);
-        users.setLoginIp(ContextHolderStrategy.getContext().getRequest().getRequestIp());
-        users.setLoginDate(LocalDateTime.now());
-        this.userMapper.update(users);
+        this.userMapper.recordLoginSuccess(userId,
+                ContextHolderStrategy.getContext().getRequest().getRequestIp(),
+                LocalDateTime.now());
     }
 
     @Override

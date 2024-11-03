@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.conf;
+package com.fuhouyu.sass.platform.system.config;
 
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import org.springframework.context.annotation.Bean;

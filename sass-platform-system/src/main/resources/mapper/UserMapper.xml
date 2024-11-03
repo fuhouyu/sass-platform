@@ -183,4 +183,13 @@
             </if>
         </where>
     </select>
+
+    <update id="recordLoginSuccess">
+        UPDATE
+        <include refid="TableName"/>
+        SET login_ip = #{loginIp},
+        login_date = #{loginTime}
+        WHERE id = #{userId}
+
+    </update>
 </mapper>

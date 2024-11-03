@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
         AccountDTO dto = ACCOUNT_ASSEMBLER.toDTO(accounts);
-        dto.attachUser(accounts.getUserId());
+        dto.setUserId(accounts.getUserId());
         return dto;
     }
 

@@ -20,8 +20,6 @@ import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
 import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.SecurityUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
@@ -59,13 +57,6 @@ public class DefaultUserDetailService implements UserDetailsService {
             LoggerUtil.warn(log, "{} 登录失败,未找到对应账号", username);
             throw new ServiceException(ResponseCodeEnum.NOT_AUTH, "用户名或密码错误");
         }
-        UserDTO userDTO = this.userService.findById(accountDTO.getUserId());
-        if (Objects.isNull(userDTO)) {
-            LoggerUtil.error(log, "{} 账号关联的用户不存在", accountDTO.getAccount());
-            throw new ServiceException(ResponseCodeEnum.NOT_AUTH, "用户名或密码错误");
-        }
-        SecurityUserDetailDTO securityUserDetail = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(userDTO);
-        securityUserDetail.setAccount(accountDTO);
-        return securityUserDetail;
+        return SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
     }
 }

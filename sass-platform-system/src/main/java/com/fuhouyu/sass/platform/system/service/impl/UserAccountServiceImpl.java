@@ -17,15 +17,11 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.request.Request;
-import com.fuhouyu.framework.context.user.UserEntity;
+import com.fuhouyu.framework.security.entity.GrantTypeAuthenticationEntity;
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.LoginAccountDTO;
-import com.fuhouyu.sass.platform.system.dto.SecurityUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.UserAccountDTO;
+import com.fuhouyu.sass.platform.system.dto.*;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -34,7 +30,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
@@ -42,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -79,16 +73,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public TokenEntity login(@NonNull LoginAccountDTO loginAccount) {
         AccountIdDTO accountIdDTO = new AccountIdDTO(loginAccount.getAccount(), loginAccount.getAccountType());
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(accountIdDTO.getFullAccount(),
-                        loginAccount.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        // 设置用户上下文
-        if (authenticate.getPrincipal() instanceof SecurityUserDetailDTO securityUserDetailEntity) {
-            setContext(securityUserDetailEntity);
-            this.userService.recordLoginSuccess(securityUserDetailEntity.getId());
-        }
-        return this.getAccessToken(authenticate);
+        GrantTypeAuthenticationEntity grantTypeAuthenticationEntity = new GrantTypeAuthenticationEntity(accountIdDTO.getAccountType(),
+                accountIdDTO.getFullAccount(),
+                loginAccount.getPassword());
+        Authentication authentication = authenticationManager.authenticate(grantTypeAuthenticationEntity.createAuthenticationToken());
+        SecurityUserDetailDTO securityUserDetailDTO = (SecurityUserDetailDTO) authentication.getPrincipal();
+        this.userService.recordLoginSuccess(securityUserDetailDTO.getUserId());
+        return this.getAccessToken(new TokenAuthenticationDTO(this.userService.findById(securityUserDetailDTO.getUserId()),
+                loginAccount.getAccount()));
     }
 
     @Override
@@ -110,7 +102,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (CollectionUtils.isEmpty(accounts)) {
             throw new IllegalArgumentException("account is empty");
         }
-        accounts.forEach(account -> account.attachUser(userId));
+        accounts.forEach(account -> account.setUserId(userId));
         try {
             this.accountService.saveBatch(accounts);
         } catch (Exception e) {
@@ -133,23 +125,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         return tokenStore.createToken(authentication,
                 accessTokenValidity,
                 refreshTokenValidity);
-    }
-
-    /**
-     * 设置上下文
-     *
-     * @param securityUserDetailDTO 上下dto对象
-     */
-    private void setContext(SecurityUserDetailDTO securityUserDetailDTO) {
-        DefaultListableContextFactory defaultListableFactory = new DefaultListableContextFactory();
-        UserEntity contextUserEntity = new UserEntity();
-        contextUserEntity.setUsername(securityUserDetailDTO.getAccount().getAccount());
-        contextUserEntity.setId(securityUserDetailDTO.getId());
-        defaultListableFactory.setUser(contextUserEntity);
-        if (Objects.nonNull(ContextHolderStrategy.getContext())) {
-            defaultListableFactory.setRequest(ContextHolderStrategy.getContext().getRequest());
-        }
-        ContextHolderStrategy.setContext(defaultListableFactory);
     }
 
 }
