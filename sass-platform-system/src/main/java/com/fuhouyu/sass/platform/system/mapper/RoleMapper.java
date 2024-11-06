@@ -18,8 +18,6 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.sass.platform.system.entity.Roles;
 
-import java.util.List;
-
 /**
  * <p>
  * 角色mapper对象
@@ -37,12 +35,4 @@ public interface RoleMapper extends BaseMapper<Roles, Long> {
      * @return 角色do对象
      */
     Roles queryByRoleCode(String roleCode);
-
-    /**
-     * 通过用户id查询系统级的角色集合
-     *
-     * @param userId 用户id
-     * @return 角色实体对象集合
-     */
-    List<Roles> findSystemRoleListByUserId(Long userId);
 }

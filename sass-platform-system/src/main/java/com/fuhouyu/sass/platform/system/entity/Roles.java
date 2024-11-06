@@ -48,8 +48,6 @@ public class Roles extends BaseEntity {
 
     private String dataScope;
 
-    private Boolean isSystemd;
-
     private Boolean isEnabled;
 
     private Boolean isAllowModified;

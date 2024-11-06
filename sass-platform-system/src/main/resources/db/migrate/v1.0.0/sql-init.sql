@@ -50,7 +50,11 @@ COMMENT ON COLUMN tenants.create_at IS '创建时间';
 COMMENT ON COLUMN tenants.create_by IS '创建人';
 COMMENT ON COLUMN tenants.update_at IS '更新时间';
 COMMENT ON COLUMN tenants.update_by IS '更新人';
-
+-- 内置租户
+INSERT INTO tenants(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person, contact_number, create_at,
+                    create_by, update_at, update_by)
+VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
+        now(), 'admin');
 
 DROP TABLE IF EXISTS users;
 -- 用户表
@@ -65,7 +69,6 @@ CREATE TABLE users
     avatar     VARCHAR(32),
     login_date timestamp          NOT NULL,
     login_ip   VARCHAR(64)        NOT NULL,
-    is_systemd BOOLEAN DEFAULT FALSE,
     is_enabled BOOLEAN DEFAULT TRUE,
     is_deleted BOOLEAN DEFAULT FALSE,
     create_at  timestamp          NOT NULL,
@@ -85,7 +88,6 @@ COMMENT ON COLUMN users.email IS '邮箱地址';
 COMMENT ON COLUMN users.gender IS '性别';
 COMMENT ON COLUMN users.avatar IS '头像地址';
 COMMENT ON COLUMN users.login_date IS '登录日期';
-COMMENT ON COLUMN users.is_systemd IS '是否为系统用户';
 COMMENT ON COLUMN users.login_ip IS '登录ip';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
@@ -116,6 +118,8 @@ COMMENT ON COLUMN tenant_has_user.user_id IS '用户id';
 COMMENT ON COLUMN tenant_has_user.create_at IS '创建时间';
 COMMENT ON COLUMN tenant_has_user.create_by IS '创建人';
 
+INSERT INTO tenant_has_user (tenant_id, user_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin');
 
 -- 角色表
 DROP TABLE IF EXISTS roles;
@@ -128,7 +132,6 @@ CREATE TABLE roles
     data_scope        VARCHAR(32)        NOT NULL,
     is_enabled        BOOLEAN                     DEFAULT TRUE,
     is_deleted        BOOLEAN                     DEFAULT FALSE,
-    is_systemd BOOLEAN DEFAULT FALSE,
     is_allow_modified BOOLEAN DEFAULT TRUE,
     create_at         timestamp          NOT NULL,
     create_by         VARCHAR(32)        NOT NULL,
@@ -145,15 +148,14 @@ COMMENT ON COLUMN roles.display_order IS '显示顺序';
 COMMENT ON COLUMN roles.data_scope IS '数据权限，字典项';
 COMMENT ON COLUMN roles.is_enabled IS '启用/禁用';
 COMMENT ON COLUMN roles.is_deleted IS '删除标记';
-COMMENT ON COLUMN roles.is_systemd IS '是否为系统角色';
 COMMENT ON COLUMN roles.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN roles.create_at IS '创建时间';
 COMMENT ON COLUMN roles.create_by IS '创建者';
 COMMENT ON COLUMN roles.update_at IS '更新时间';
 COMMENT ON COLUMN roles.update_by IS '更新者';
 
-INSERT INTO roles(id, role_name, role_code, data_scope, is_systemd, create_at, create_by, update_at, update_by)
-VALUES (1, '超级管理员', 'super_admin', 'ALL', true, now(), 'admin', now(), 'admin');
+INSERT INTO roles(id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
+VALUES (1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'admin');
 
 -- 用户角色表
 DROP TABLE IF EXISTS user_has_role;
@@ -192,6 +194,9 @@ COMMENT ON COLUMN tenant_has_role.role_id IS '角色id';
 COMMENT ON COLUMN tenant_has_role.create_at IS '创建时间';
 COMMENT ON COLUMN tenant_has_role.create_by IS '创建人';
 
+INSERT INTO tenant_has_role(tenant_id, role_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin');
+
 DROP TABLE IF EXISTS permissions;
 -- 权限表
 CREATE TABLE permissions
@@ -208,7 +213,6 @@ CREATE TABLE permissions
     is_frame        BOOLEAN DEFAULT false NOT NULL,
     permission_type VARCHAR(16)           NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE,
-    is_systemd BOOLEAN DEFAULT FALSE,
     is_visible      BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted      BOOLEAN DEFAULT FALSE,
     create_at       timestamp             NOT NULL,
@@ -236,23 +240,22 @@ COMMENT ON COLUMN permissions.permission_type IS '权限类型字典项';
 COMMENT ON COLUMN permissions.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN permissions.is_visible IS '是否显示标记';
 COMMENT ON COLUMN permissions.is_deleted IS '删除标记';
-COMMENT ON COLUMN permissions.is_systemd IS '是否为系统权限';
 COMMENT ON COLUMN permissions.create_at IS '创建时间';
 COMMENT ON COLUMN permissions.create_by IS '创建者';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
 COMMENT ON COLUMN permissions.update_by IS '更新者';
 
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_systemd,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified,
                          is_visible, is_deleted, create_at, create_by, update_at, update_by)
 VALUES (1, -1, '系统设置', 'system', 1, 'icon-setting-fill', '/system',
-        null, '', false, 'M', false, true, true, false, now(), 'admin', now(), 'admin'),
+        null, '', false, 'M', false, true, false, now(), 'admin', now(), 'admin'),
        (2, 1, '用户管理', 'system:user', 1, '', '/system/user',
-        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
+        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
        (3, 1, '角色管理', 'system:role', 2, '', '/system/role',
-        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin'),
+        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
        (4, 1, '权限管理', 'system:permission', 3, '', '/system/permission',
-        null, '', false, 'C', false, true, true, false, now(), 'admin', now(), 'admin');
+        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;

@@ -61,7 +61,5 @@ public class Permissions extends BaseEntity {
 
     private Boolean isAllowModified;
 
-    private Boolean isSystemd;
-
     private Boolean isVisible;
 }

@@ -18,8 +18,6 @@ package com.fuhouyu.sass.platform.system.service;
 import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.RoleDTO;
 
-import java.util.List;
-
 /**
  * <p>
  * 角色接口
@@ -37,12 +35,4 @@ public interface RoleService extends BaseService<PageQueryDTO, RoleDTO, Long> {
      * @return 角色dto对象
      */
     RoleDTO findByRoleCode(String roleCode);
-
-    /**
-     * 通过用户id查询角色集合
-     *
-     * @param userId 用户id
-     * @return 角色实体集合
-     */
-    List<RoleDTO> findRoleListByUserId(Long userId);
 }

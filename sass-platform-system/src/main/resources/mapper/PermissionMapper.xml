@@ -29,7 +29,6 @@
         <result column="url_params" property="urlParams" jdbcType="VARCHAR"/>
         <result column="is_frame" property="isFrame" jdbcType="BOOLEAN"/>
         <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
-        <result column="is_systemd" property="isSystemd" jdbcType="BOOLEAN"/>
         <result column="is_visible" property="isVisible" jdbcType="BOOLEAN"/>
     </resultMap>
 
@@ -50,7 +49,6 @@
         url_params,
         is_frame,
         is_allow_modified,
-        is_systemd,
         is_visible,
         is_deleted,
         create_at,
@@ -72,7 +70,6 @@
         p.url_params,
         p.is_frame,
         p.is_allow_modified,
-        p.is_systemd,
         p.is_visible,
         p.is_deleted,
         p.create_at,
@@ -101,7 +98,6 @@
             #{urlParams},
             #{isFrame},
             #{isAllowModified},
-            #{isSystemd},
             #{isVisible},
             #{isDeleted},
             #{createAt},
@@ -132,7 +128,6 @@
                 #{entity.urlParams},
                 #{entity.isFrame},
                 #{entity.isAllowModified},
-                #{entity.isSystemd},
                 #{entity.isVisible},
                 #{entity.isDeleted},
                 #{entity.createAt},
@@ -230,5 +225,20 @@
         <foreach collection="roleIdList" separator="," item="roleId" open="rhp.role_id IN (" close=")">
             #{roleId}
         </foreach>
+    </select>
+
+    <select id="queryUserPermissonList" resultMap="BaseResultMap">
+
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        tenant_has_role thr
+        LEFT JOIN user_has_role uhr ON uhr.role_id = thr.role_id
+        LEFT JOIN role_has_permission rhp ON thr.role_id = rhp.role_id
+        LEFT JOIN <include refid="TableName"/> p ON p.id = rhp.permission_id
+        WHERE
+        thr.tenant_id = #{tenantId}
+        AND
+        uhr.user_id = #{userId}
     </select>
 </mapper>

@@ -45,4 +45,14 @@ public interface PermissionMapper extends BaseMapper<Permissions, Long> {
      * @return 权限集合
      */
     List<Permissions> queryListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
+
+    /**
+     * 查询当前租户下的用户权限
+     *
+     * @param tenantId 租户id
+     * @param userId   用户id
+     * @return 权限列表
+     */
+    List<Permissions> queryUserPermissonList(@Param("tenantId") Long tenantId,
+                                             @Param("userId") Long userId);
 }
