@@ -23,7 +23,6 @@
         <result column="display_order" property="displayOrder" jdbcType="INTEGER"/>
         <result column="data_scope" property="dataScope" jdbcType="VARCHAR"/>
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
-        <result column="is_systemd" property="isSystemd" jdbcType="BOOLEAN"/>
         <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
     </resultMap>
 
@@ -38,7 +37,6 @@
        display_order,
        data_scope,
        is_enabled,
-       is_systemd,
        is_allow_modified,
        is_deleted,
        create_at,
@@ -54,7 +52,6 @@
        r.display_order,
        r.data_scope,
        r.is_enabled,
-       r.is_systemd,
        r.is_allow_modified,
        r.is_deleted,
        r.create_at,
@@ -77,7 +74,6 @@
             #{displayOrder},
             #{dataScope},
             #{isEnabled},
-            #{isSystemd},
             #{isAllowModified},
             #{isDeleted},
             #{createAt},
@@ -102,7 +98,6 @@
                 #{entity.displayOrder},
                 #{entity.dataScope},
                 #{entity.isEnabled},
-                #{entity.isSystemd},
                 #{entity.isAllowModified},
                 #{entity.isDeleted},
                 #{entity.createAt},
@@ -176,14 +171,4 @@
         <include refid="TableName"/> r
     </select>
 
-    <select id="findSystemRoleListByUserId" resultMap="BaseResultMap">
-        SELECT
-        <include refid="QueryColumns"/>
-        FROM
-        user_has_role uhr
-        LEFT JOIN
-        <include refid="TableName"/> r ON r.id = uhr.role_id
-    WHERE uhr.user_id = #{userId}
-        AND r.is_systemd = true
-    </select>
 </mapper>

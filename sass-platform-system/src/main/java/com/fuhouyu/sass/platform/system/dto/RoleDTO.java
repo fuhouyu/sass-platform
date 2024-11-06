@@ -43,8 +43,6 @@ public class RoleDTO extends BaseDTO {
 
     private String dataScope;
 
-    private Boolean isSystemd;
-
     private Boolean isEnabled;
 
     private Boolean isAllowModified;

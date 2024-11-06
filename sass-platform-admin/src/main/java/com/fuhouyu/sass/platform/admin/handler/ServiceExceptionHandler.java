@@ -36,6 +36,6 @@ public class ServiceExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
     public BaseResponse<String> handleSerialException(ServiceException e) {
-        return ResponseHelper.failed(e.getResponseStatus());
+        return ResponseHelper.failed(e.getResponseStatus(), e.getMessage());
     }
 }

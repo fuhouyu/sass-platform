@@ -56,7 +56,5 @@ public class PermissionDTO extends BaseDTO {
 
     private Boolean isAllowModified;
 
-    private Boolean isSystemd;
-
     private Boolean isVisible;
 }

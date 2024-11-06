@@ -68,7 +68,10 @@ public class AuthFilter implements ParseHttpRequest {
             throw new WebServiceException(ResponseCodeEnum.NOT_AUTH,
                     "用户登录状态已失效");
         }
-        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
+        UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
+        // 先固定为1L
+        userEntity.setTenantId(1L);
+        return userEntity;
     }
 }

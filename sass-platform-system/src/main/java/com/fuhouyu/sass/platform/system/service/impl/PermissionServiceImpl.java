@@ -23,7 +23,6 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.PermissionDTO;
-import com.fuhouyu.sass.platform.system.dto.RoleDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -71,12 +69,8 @@ public class PermissionServiceImpl implements PermissionService {
         User user = ContextHolderStrategy.getContext().getUser();
 
         Long userId = user.getId();
-        List<RoleDTO> roleList = this.roleService.findRoleListByUserId(userId);
-        if (CollectionUtils.isEmpty(roleList)) {
-            return Collections.emptyList();
-        }
-        List<Long> roleIdList = roleList.stream().map(RoleDTO::getId).toList();
-        return PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryListByRoleIdList(roleIdList));
+        List<Permissions> list = this.permissionMapper.queryUserPermissonList(user.getTenantId(), userId);
+        return PERMISSION_ASSEMBLER.toDTO(list);
     }
 
     @Override
