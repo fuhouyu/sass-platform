@@ -15,24 +15,37 @@
  */
 
 
-import React, {useEffect, useState} from "react";
-import {Modal, Space, Table, TableColumnsType} from "antd";
+import React, {useState} from "react";
+import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType} from "antd";
 import {getUserinfoByIdApi, getUserListApi, removeUserApi} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
 import {IconFont} from "@/components";
 import {UserinfoInterface} from "@/model/user";
-import {Userinfo} from "@/pages/Userinfo/userinfo";
 
 const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [userId, setUserId] = useState<number | null>(null);
+    const [form] = Form.useForm();
 
-    const modalHandle = (isModalOpen?: boolean = false,
-                         id?: number | null) => {
-        setIsModalOpen(isModalOpen);
-        setUserId(id)
+    /**
+     * 打开模态组
+     * @param userId 用户id
+     */
+    const openModal = (userId: number) => {
+        setIsModalOpen(true);
+        getUserinfoByIdApi(userId)
+            .then((res: UserinfoInterface) => form.setFieldsValue({...res}))
+            .catch((err: Error) => {
+                message.error(err.message)
+            })
+    }
+
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
     }
 
     const columns: TableColumnsType = [
@@ -89,42 +102,15 @@ const User: React.FC = () => {
             render: (_, record: UserinfoInterface) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => modalHandle(true, record.id)}>修改</a>
+                        <a onClick={() => openModal(record.id)}>修改</a>
                     </Space>
                 </>)
             }
         }
     ];
 
-    const [detailDataSource, setDetailDataSource] = useState<object[]>([]);
 
-    const userDetailColumns = [
-        {
-            dataIndex: 'attribute',
-            key: 'attribute',
-            render: (text: string) => <strong>{text}：</strong>, // 增加冒号和加粗
-        },
-        {
-            dataIndex: 'value',
-            key: 'value',
-        },
-    ];
 
-    useEffect(() => {
-        if (!isModalOpen) {
-            return
-        }
-        getUserinfoByIdApi(userId)
-            .then((res: UserinfoInterface) => {
-                setDetailDataSource([
-                    {
-                        "key": "username",
-                        "attribute": "用户名",
-                        "value": res.username
-                    }
-                ])
-            })
-    }, [isModalOpen]);
     return (
         <>
             <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}
@@ -133,13 +119,82 @@ const User: React.FC = () => {
                 title="用户修改"
                 className="ant-modal-header"
                 open={isModalOpen}
-                onOk={() => modalHandle(false)}
-                onCancel={() => modalHandle(false)}
-                footer="Footer"
+                onOk={() => closeModal}
+                onCancel={() => closeModal}
+                width={600}
+                footer={[
+                    <Button key='onOk' type="primary" onClick={closeModal}>确定</Button>,
+                    <Button key='onCancel' onClick={closeModal}>取消</Button>
+                ]}
                 closeIcon={<IconFont type="i-close-circle" style={{
                     fontSize: '24px',
                 }}/>}
             >
+                <Form
+                    name="basic"
+                    form={form}
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
+                    style={{maxWidth: 600}}
+                    // onFinish={onFinish}
+                    // onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="真实姓名"
+                                name="realName"
+                                key="realName"
+                                wrapperCol={{offset: 1}}
+                                colon={false}
+                                rules={[{required: true, message: '真实姓名未填写'}]}
+                            >
+                                <Input placeholder='请输入真实姓名'/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="用户昵称"
+                                name="nickname"
+                                key="nickname"
+                                wrapperCol={{offset: 1}}
+                                colon={false}
+                                rules={[{required: true}]}
+                            >
+                                <Input placeholder='请输入用户昵称'/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="邮箱"
+                                name="email"
+                                key="email"
+                                wrapperCol={{offset: 1}}
+                                colon={false}
+                            >
+                                <Input placeholder='请输入邮箱地址'/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="性别"
+                                name="gender"
+                                key="gender"
+                                wrapperCol={{offset: 1}}
+                                colon={false}
+                                rules={[{required: true}]}
+                            >
+                                <Radio.Group>
+                                    <Radio value="male">男</Radio>
+                                    <Radio value="female">女</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
             </Modal>
         </>
     )

@@ -49,9 +49,4 @@ public class LoginAccountDTO extends BaseDTO {
      */
     private final String password;
 
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
-
 }
