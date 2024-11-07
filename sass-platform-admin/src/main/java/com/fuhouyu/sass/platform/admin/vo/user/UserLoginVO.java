@@ -45,12 +45,6 @@ public class UserLoginVO {
     private String password;
 
     /**
-     * 租户编码，如果为空，将登录系统级用户
-     */
-    @Schema(name = "tenantCode", description = "租户编码，如果为空，将登录系统级用户", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String tenantCode;
-
-    /**
      * 账号类型
      */
     @NotBlank(message = "登录类型不能为空")

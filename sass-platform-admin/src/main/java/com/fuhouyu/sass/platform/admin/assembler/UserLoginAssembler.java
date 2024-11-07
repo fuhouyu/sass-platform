@@ -45,7 +45,6 @@ public interface UserLoginAssembler {
     @Mapping(source = "loginType", target = "accountType")
     @Mapping(source = "username", target = "account")
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "tenantCode", target = "tenantCode")
     LoginAccountDTO toLoginAccountDTO(UserLoginVO userLoginVO);
 
     /**
