@@ -46,13 +46,6 @@ const editUserinfoApi =
     (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info`, editUserinfo, {})
 
 /**
- * 通过用户id修改详请
- * @param editUserinfo 修改用户详情
- */
-const editUserinfoByIdApi =
-    (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
-
-/**
  * 获取用户列表
  */
 const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
@@ -83,7 +76,6 @@ export {
     loginApi,
     logoutApi,
     editUserinfoApi,
-    editUserinfoByIdApi,
     getUserinfoApi,
     getUserListApi,
     getUserinfoByIdApi,

@@ -15,9 +15,9 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType} from "antd";
-import {editUserinfoByIdApi, getUserinfoByIdApi, getUserListApi, removeUserApi} from "@/apis/user";
+import {getUserinfoByIdApi, getUserListApi, removeUserApi} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
 import {IconFont} from "@/components";
@@ -26,8 +26,6 @@ import {UserinfoInterface} from "@/model/user";
 const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const pageListRef = useRef<PageList>(null);
-    const [isUpdateButtonLoading, setIsUpdateButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
 
     /**
@@ -37,31 +35,17 @@ const User: React.FC = () => {
     const openModal = (userId: number) => {
         setIsModalOpen(true);
         getUserinfoByIdApi(userId)
-            .then((res: UserinfoInterface) => {
-                form.setFieldsValue({...res})
-            })
+            .then((res: UserinfoInterface) => form.setFieldsValue({...res}))
             .catch((err: Error) => {
-                message.error(err.message).then()
+                message.error(err.message)
             })
     }
 
-
     /**
-     * 修改用户详情
+     * 关闭模态组
      */
-    const updateUserDetail = () => {
-        setIsUpdateButtonLoading(true);
-        const userDetail = form.getFieldsValue();
-        editUserinfoByIdApi(userDetail)
-            .then(() => {
-                message.success("修改成功").then()
-                setIsModalOpen(false);
-                pageListRef.current?.refresh();
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            }).finally(() => setIsUpdateButtonLoading(false))
-
+    const closeModal = () => {
+        setIsModalOpen(false);
     }
 
     const columns: TableColumnsType = [
@@ -126,23 +110,21 @@ const User: React.FC = () => {
     ];
 
 
+
     return (
         <>
-            <PageList
-                ref={pageListRef}
-                listName='用户'
-                columns={columns}
-                pageRequestApi={getUserListApi}
-                deleteButtonApi={removeUserApi}/>
+            <PageList pageListInterface={{listName: '用户', columns: columns}} pageRequestApi={getUserListApi}
+                      deleteButtonApi={removeUserApi}/>
             <Modal
                 title="用户修改"
                 className="ant-modal-header"
                 open={isModalOpen}
+                onOk={() => closeModal}
+                onCancel={() => closeModal}
                 width={600}
                 footer={[
-                    <Button key='onOk' type="primary" loading={isUpdateButtonLoading}
-                            onClick={updateUserDetail}>确定</Button>,
-                    <Button key='onCancel' onClick={() => setIsModalOpen(false)}>取消</Button>
+                    <Button key='onOk' type="primary" onClick={closeModal}>确定</Button>,
+                    <Button key='onCancel' onClick={closeModal}>取消</Button>
                 ]}
                 closeIcon={<IconFont type="i-close-circle" style={{
                     fontSize: '24px',
@@ -154,13 +136,11 @@ const User: React.FC = () => {
                     labelCol={{span: 8}}
                     wrapperCol={{span: 16}}
                     style={{maxWidth: 600}}
+                    // onFinish={onFinish}
+                    // onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <Row gutter={24}>
-                        <Form.Item name="id" hidden>
-                            <Input/>
-                        </Form.Item>
-
                         <Col span={12}>
                             <Form.Item
                                 label="真实姓名"

@@ -17,7 +17,7 @@
 
 import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
-import React, {forwardRef, ForwardRefExoticComponent, useEffect, useImperativeHandle, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {SorterResult, TablePaginationConfig} from "antd/es/table/interface";
@@ -25,16 +25,13 @@ import {UserinfoInterface} from "@/model/user";
 import './index.scss'
 
 export interface PageListInterface {
+    /**
+     * 列表名称
+     */
     listName: string;
     columns: TableColumnsType;
-    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
-    deleteButtonApi: (ids: React.Key[]) => Promise<void>
-}
 
-interface PageListHandler {
-    refresh: () => void;
 }
-
 
 /**
  * 处理_转换为驼峰
@@ -45,14 +42,15 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageListHandler, PageListInterface>((props, ref) => {
-
-    const {listName, columns, pageRequestApi, deleteButtonApi} = props
+const PageList: React.FC<{
+    pageListInterface: PageListInterface,
+    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
+    deleteButtonApi: (ids: React.Key[]) => Promise<void>
+}> = ({pageListInterface, pageRequestApi, deleteButtonApi}) => {
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
-
 
     const [keyword, setKeyword] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -71,24 +69,16 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
 
     useEffect(() => {
         setLoading(true);
-        console.log(props)
         pageRequestApi(pageQuery)
             .then((pageResult: PageResult<UserinfoInterface>) => {
                 setPageResult({...pageResult});
             })
         setLoading(false);
-    }, [pageRequestApi, pageQuery])
+    }, [pageQuery])
 
-    useImperativeHandle(ref, () => ({
-        refresh: () => {
-            pageRequestApi(pageQuery)
-                .then((pageResult: PageResult<UserinfoInterface>) => {
-                    setPageResult({...pageResult});
-                })
-        },
-    }));
 
     const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, sorter: SorterResult) => {
+        console.log(sorter)
         setPageQuery({
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
@@ -133,7 +123,7 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
                 <div className="title-container">
                     <div className="title-line">
                         <div className="title">
-                            {listName}列表
+                            {pageListInterface.listName}列表
                         </div>
                         <div className="buttons">
                             <Button className="add-button" icon={<IconFont type="i-add"/>}>
@@ -155,7 +145,7 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
                     <Table
                         rowSelection={{type: 'checkbox', ...rowSelection}}
                         scroll={{x: '100%'}}
-                        columns={columns}
+                        columns={pageListInterface.columns}
                         style={{tableLayout: 'fixed'}}
                         rowKey="id"
                         dataSource={pageResult.list}
@@ -174,7 +164,7 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
             </div>
         </div>
     )
-})
+}
 
 export {
     PageList
