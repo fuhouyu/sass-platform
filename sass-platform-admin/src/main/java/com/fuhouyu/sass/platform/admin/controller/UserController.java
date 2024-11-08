@@ -155,6 +155,24 @@ public class UserController {
     }
 
     /**
+     * 修改当前用户的详情
+     *
+     * @param userVO 用户详情操作
+     * @param id     主键id
+     * @return restResult
+     */
+    @PutMapping("/info/{id}")
+    @Operation(summary = "修改当前的用户详情")
+    public BaseResponse<Void> editUserinfo(
+            @PathVariable("id") Long id,
+            @Validated @RequestBody UserVO userVO) {
+        UserDTO userDTO = USER_ASSEMBLER.toUserDTO(userVO);
+        userDTO.setId(id);
+        this.userService.edit(userDTO);
+        return ResponseHelper.success();
+    }
+
+    /**
      * 分页查询用户列表
      *
      * @param basePageQuery 颁
