@@ -19,6 +19,7 @@ import com.fuhouyu.sass.platform.system.dto.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,4 +40,10 @@ public interface AccountService extends BaseService<PageQueryDTO, AccountDTO, Ac
      */
     List<AccountDTO> findByUserId(Long userId);
 
+    /**
+     * 通过用户id进行删除
+     *
+     * @param userIds 用户id
+     */
+    void removeByUserIds(Collection<Long> userIds);
 }

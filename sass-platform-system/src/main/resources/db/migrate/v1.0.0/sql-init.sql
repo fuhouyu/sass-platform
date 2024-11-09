@@ -67,8 +67,8 @@ CREATE TABLE users
     email      VARCHAR(64),
     gender     VARCHAR(8),
     avatar     VARCHAR(32),
-    login_date timestamp          NOT NULL,
-    login_ip   VARCHAR(64)        NOT NULL,
+    login_date timestamp,
+    login_ip   VARCHAR(64),
     is_enabled BOOLEAN DEFAULT TRUE,
     is_deleted BOOLEAN DEFAULT FALSE,
     create_at  timestamp          NOT NULL,
@@ -314,7 +314,7 @@ COMMENT ON COLUMN accounts.update_by IS '更新者';
 
 INSERT INTO accounts(account, account_type, user_id, credentials, credentials_expiration_time, ref_account_id,
                      create_at, create_by, update_at, update_by)
-VALUES ('admin', 'password', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
+VALUES ('admin', 'PASSWORD', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
         null, null, now(), 'admin', now(), 'admin');
 
 

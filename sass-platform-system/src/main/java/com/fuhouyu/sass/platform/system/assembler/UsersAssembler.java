@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -29,7 +29,7 @@ import org.mapstruct.factory.Mappers;
  * @since 2024/11/2 19:48
  */
 @Mapper
-public interface UsersAssembler extends BaseAssembler<Users, UserDTO> {
+public interface UsersAssembler extends BaseAssembler<Users, UserinfoDTO> {
 
     UsersAssembler INSTANCE = Mappers.getMapper(UsersAssembler.class);
 }

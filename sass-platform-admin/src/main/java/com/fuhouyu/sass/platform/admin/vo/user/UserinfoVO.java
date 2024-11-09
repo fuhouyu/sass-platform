@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.vo.user;
 
 import com.fuhouyu.sass.platform.admin.vo.BaseResponseVO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +37,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Schema(name = "UserinfoDTO", description = "用户详情dto对象")
+@Schema(name = "UserinfoVO", description = "用户详情vo对象")
 @EqualsAndHashCode(callSuper = true)
-public class UserVO extends BaseResponseVO {
+public class UserinfoVO extends BaseResponseVO {
 
     @Serial
     private static final long serialVersionUID = 1238912361L;
@@ -47,12 +48,14 @@ public class UserVO extends BaseResponseVO {
     private Long id;
 
     @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[A-Za-z\\d!@#$%^&*()_+]{8,20}$",
+            message = "用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。")
     private String username;
 
     @Schema(name = "realName", description = "真实姓名")
     private String realName;
 
-    @Schema(name = "id", description = "主键id")
+    @Schema(name = "nickname", description = "昵称")
     private String nickname;
 
     @Schema(name = "email", description = "邮件地址")

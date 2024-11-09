@@ -155,4 +155,13 @@
         <include refid="TableName"/>
         WHERE user_id = #{userId}
     </select>
+
+    <delete id="deleteByUserIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE  user_id in
+        <foreach collection="userIds" item="userId" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
+    </delete>
 </mapper>

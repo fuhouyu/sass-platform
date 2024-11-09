@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.admin.vo.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-export interface PageQuery {
-    pageNum: number;
-    pageSize: number;
-    keyword?: string;
-    sortColumn?: string;
-    isAsc?: boolean;
-}
-
+import java.io.Serial;
 
 /**
- * 分页查询的结果集
+ * <p>
+ * 保存用户的详情信息
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/9 21:18
  */
-export interface PageResult<T> {
-    pageNum: number;
-    pageSize: number;
-    total: number;
-    list: T[];
+@Schema(name = "SaveUserinfoVO", description = "保存用户的详情")
+@Getter
+@Setter
+@ToString
+public class SaveUserinfoVO extends UserinfoVO {
+
+    @Serial
+    private static final long serialVersionUID = 8917239612498712387L;
+
+    @Schema(name = "password", description = "用户密码")
+    private String password;
 }

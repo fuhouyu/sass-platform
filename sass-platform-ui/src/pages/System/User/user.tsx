@@ -17,25 +17,40 @@
 
 import React, {useRef, useState} from "react";
 import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType} from "antd";
-import {editUserinfoByIdApi, getUserinfoByIdApi, getUserListApi, removeUserApi} from "@/apis/user";
+import {
+    editUserinfoByIdApi,
+    getUserinfoByIdApi,
+    getUserListApi,
+    removeUserApi,
+    saveUserInfoApi,
+    validUsernameExistsApi
+} from "@/apis/user";
 import {PageList} from "@components";
 import './index.scss'
 import {IconFont} from "@/components";
 import {UserinfoInterface} from "@/model/user";
+import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
 
 const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const pageListRef = useRef<PageList>(null);
-    const [isUpdateButtonLoading, setIsUpdateButtonLoading] = useState<boolean>(false);
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
+    const [isAdded, setIsAdded] = useState<boolean>(false);
     const [form] = Form.useForm();
 
     /**
      * 打开模态组
      * @param userId 用户id
+     * @param isAddUser 是否添加用户
      */
-    const openModal = (userId: number) => {
+    const openModal = (userId?: number,
+                       isAddUser?: boolean) => {
         setIsModalOpen(true);
+        if (isAddUser) {
+            setIsAdded(isAddUser)
+            return;
+        }
         getUserinfoByIdApi(userId)
             .then((res: UserinfoInterface) => {
                 form.setFieldsValue({...res})
@@ -45,23 +60,47 @@ const User: React.FC = () => {
             })
     }
 
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+    }
+
+    /**
+     * 处理用户表单
+     */
+    const handlerUserForm = () => {
+        setIsModalButtonLoading(true);
+        const promise = isAdded ? saveUserDetail() : updateUserDetail();
+        promise.then(() => {
+            message.success("修改成功").then()
+            setIsModalOpen(false);
+            pageListRef.current?.refresh();
+        })
+            .catch((err: Error) => {
+                message.error(err.message).then()
+            }).finally(() => {
+            setIsModalButtonLoading(false);
+            form.resetFields();
+        })
+    }
+
+    /**
+     * 保存用户详情
+     */
+    const saveUserDetail: () => Promise<void> = () => {
+        const userDetail = form.getFieldsValue();
+        return saveUserInfoApi(userDetail)
+    }
 
     /**
      * 修改用户详情
      */
-    const updateUserDetail = () => {
-        setIsUpdateButtonLoading(true);
+    const updateUserDetail: () => Promise<void> = () => {
         const userDetail = form.getFieldsValue();
-        editUserinfoByIdApi(userDetail)
-            .then(() => {
-                message.success("修改成功").then()
-                setIsModalOpen(false);
-                pageListRef.current?.refresh();
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            }).finally(() => setIsUpdateButtonLoading(false))
-
+        return editUserinfoByIdApi(userDetail)
     }
 
     const columns: TableColumnsType = [
@@ -133,18 +172,22 @@ const User: React.FC = () => {
                 listName='用户'
                 columns={columns}
                 pageRequestApi={getUserListApi}
+                addCallback={() => {
+                    openModal(undefined, true)
+                }}
                 deleteButtonApi={removeUserApi}/>
             <Modal
-                title="用户修改"
+                title={isAdded ? "新增用户" : "修改用户"}
                 className="ant-modal-header"
                 open={isModalOpen}
+                onCancel={() => closeModal()}
                 width={600}
                 footer={[
-                    <Button key='onOk' type="primary" loading={isUpdateButtonLoading}
-                            onClick={updateUserDetail}>确定</Button>,
-                    <Button key='onCancel' onClick={() => setIsModalOpen(false)}>取消</Button>
+                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                            onClick={handlerUserForm}>确定</Button>,
+                    <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
                 ]}
-                closeIcon={<IconFont type="i-close-circle" style={{
+                closeIcon={<IconFont type="i-Close" style={{
                     fontSize: '24px',
                 }}/>}
             >
@@ -156,6 +199,60 @@ const User: React.FC = () => {
                     style={{maxWidth: 600}}
                     autoComplete="off"
                 >
+                    {isAdded &&
+                        <Row gutter={24}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="用户名"
+                                    name="username"
+                                    validateTrigger="onBlur"
+                                    key="username"
+                                    wrapperCol={{offset: 1}}
+                                    colon={false}
+                                    required={true}
+                                    hasFeedback
+                                    rules={[{
+                                        required: true,
+                                        type: "string",
+                                        message: USERNAME_REGEX.message,
+                                        max: 20,
+                                    },
+                                        () => ({
+                                            validator: async (_, value: string) => {
+                                                if (!USERNAME_REGEX.regex.test(value)) {
+                                                    return Promise.reject(new Error("用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
+                                                }
+                                                const exists: boolean = await validUsernameExistsApi(value);
+                                                if (exists) {
+                                                    return Promise.reject(new Error('用户名已存在'));
+                                                }
+
+                                            }
+                                        })
+                                    ]}
+                                >
+                                    <Input placeholder='请输入用户名' maxLength={20}/>
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="密码"
+                                    name="password"
+                                    key="password"
+                                    hasFeedback
+                                    wrapperCol={{offset: 1}}
+                                    colon={false}
+
+                                    rules={[{
+                                        required: true,
+                                        pattern: PASSWORD_REGEX.regex,
+                                        message: PASSWORD_REGEX.message,
+                                    }]}
+                                >
+                                    <Input placeholder='请输入用户密码' type='password'/>
+                                </Form.Item>
+                            </Col>
+                        </Row>}
                     <Row gutter={24}>
                         <Form.Item name="id" hidden>
                             <Input/>
@@ -180,7 +277,6 @@ const User: React.FC = () => {
                                 key="nickname"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
-                                rules={[{required: true}]}
                             >
                                 <Input placeholder='请输入用户昵称'/>
                             </Form.Item>
@@ -194,6 +290,10 @@ const User: React.FC = () => {
                                 key="email"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
+                                rules={[{
+                                    type: 'email',
+                                    message: "请输入正确的邮箱账号"
+                                }]}
                             >
                                 <Input placeholder='请输入邮箱地址'/>
                             </Form.Item>
@@ -206,6 +306,7 @@ const User: React.FC = () => {
                                 wrapperCol={{offset: 1}}
                                 colon={false}
                                 rules={[{required: true}]}
+                                initialValue={'male'}
                             >
                                 <Radio.Group>
                                     <Radio value="male">男</Radio>
@@ -214,6 +315,7 @@ const User: React.FC = () => {
                             </Form.Item>
                         </Col>
                     </Row>
+
                 </Form>
             </Modal>
         </>

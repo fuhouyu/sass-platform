@@ -18,7 +18,7 @@
 /**
  * 用户token对象
  */
-export interface UserToken {
+export interface UserTokenInterface {
     /**
      * 认证令牌
      */

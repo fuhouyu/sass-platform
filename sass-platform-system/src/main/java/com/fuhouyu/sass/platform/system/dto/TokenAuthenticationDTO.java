@@ -47,7 +47,7 @@ public class TokenAuthenticationDTO implements Authentication, Serializable {
     /**
      * 用户详情
      */
-    private final UserDTO userDetails;
+    private final UserinfoDTO userDetails;
 
     /**
      * 登录账号

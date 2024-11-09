@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {UserToken} from "@/model/user";
+import {UserTokenInterface} from "@/model/user";
 
 const tokenKey: string = 'token';
 
-const storeToken = (token: UserToken) => {
+const storeToken = (token: UserTokenInterface) => {
     localStorage.setItem(tokenKey, JSON.stringify(token));
 }
 
@@ -26,12 +26,12 @@ const removeToken = () => {
     localStorage.removeItem(tokenKey);
 }
 
-const getToken: UserToken = () => {
+const getToken: UserTokenInterface = () => {
     const token = localStorage.getItem(tokenKey);
     if (!token) {
         return null
     }
-    return JSON.parse(token) as UserToken;
+    return JSON.parse(token) as UserTokenInterface;
 }
 
 

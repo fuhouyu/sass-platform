@@ -15,8 +15,10 @@
  */
 package com.fuhouyu.sass.platform.admin.assembler;
 
-import com.fuhouyu.sass.platform.admin.vo.user.UserVO;
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.admin.vo.user.SaveUserinfoVO;
+import com.fuhouyu.sass.platform.admin.vo.user.UserinfoVO;
+import com.fuhouyu.sass.platform.system.dto.SaveUserinfoDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -38,10 +40,10 @@ public interface UserAssembler {
     /**
      * 用户dto转换为用户vo
      *
-     * @param userDTO 用户dto对象
+     * @param userinfoDTO 用户dto对象
      * @return 用户详情
      */
-    UserVO toUserVO(UserDTO userDTO);
+    UserinfoVO toUserVO(UserinfoDTO userinfoDTO);
 
     /**
      * 用户实体集合转换为用户详情集合
@@ -49,14 +51,23 @@ public interface UserAssembler {
      * @param userEntityList 用户dto集合
      * @return 用户详情集合
      */
-    List<UserVO> toUserInfoList(List<UserDTO> userEntityList);
+    List<UserinfoVO> toUserInfoList(List<UserinfoDTO> userEntityList);
 
     /**
      * 转换为用户实体
      *
-     * @param userVO 用户vo对象
+     * @param userinfoVO 用户vo对象
      * @return 用户实体对象
      */
-    UserDTO toUserDTO(UserVO userVO);
+    UserinfoDTO toUserDTO(UserinfoVO userinfoVO);
+
+
+    /**
+     * 转换vo对dto对象
+     *
+     * @param saveUserinfoVO 保存的用户灵对象
+     * @return dto对象
+     */
+    SaveUserinfoDTO toUserDTO(SaveUserinfoVO saveUserinfoVO);
 
 }

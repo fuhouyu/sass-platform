@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.UserDTO;
  * @author fuhouyu
  * @since 2024/10/5 19:17
  */
-public interface UserService extends BaseService<PageQueryDTO, UserDTO, Long> {
+public interface UserService extends BaseService<PageQueryDTO, UserinfoDTO, Long> {
 
     /**
      * 通过用户名称查询
@@ -34,7 +34,7 @@ public interface UserService extends BaseService<PageQueryDTO, UserDTO, Long> {
      * @param username 用户名
      * @return 用户dto对象
      */
-    UserDTO findByUsername(String username);
+    UserinfoDTO findByUsername(String username);
 
     /**
      * 登录成功后，记录用户的登录信息

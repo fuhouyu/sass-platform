@@ -22,7 +22,6 @@ import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.AccountDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
-import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,8 +45,6 @@ import java.util.Objects;
 public class DefaultUserDetailService implements UserDetailsService {
 
     private final AccountService accountService;
-
-    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

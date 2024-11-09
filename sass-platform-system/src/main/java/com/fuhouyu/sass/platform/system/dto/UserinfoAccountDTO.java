@@ -36,7 +36,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class UserAccountDTO extends UserDTO {
+public class UserinfoAccountDTO extends UserinfoDTO {
 
     /**
      * 用户关联的账号信息

@@ -15,32 +15,31 @@
  */
 package com.fuhouyu.sass.platform.admin.assembler;
 
-import com.fuhouyu.sass.platform.admin.vo.BasePageQueryVO;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
+import com.fuhouyu.sass.platform.admin.vo.user.SaveUserinfoVO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoAccountDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 分页查询转换
+ * 用户账号转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/11 12:22
+ * @since 2024/10/4 21:49
  */
 @Mapper
-public interface PageQueryAssembler {
+public interface UserAccountAssembler {
 
-    PageQueryAssembler INSTANCE = Mappers.getMapper(PageQueryAssembler.class);
+    UserAccountAssembler INSTANCE = Mappers.getMapper(UserAccountAssembler.class);
 
     /**
-     * 将controller层的查询对象，转换为domain层对象
+     * 转换用户账号dto对象
      *
-     * @param basePageQueryDTO 分页查询dto对象
-     * @return 分页查询对象
+     * @param userinfoVO 用户账号vo对象
+     * @return 账号dto对象
      */
-    @Mapping(source = "isAsc", target = "asc")
-    PageQueryDTO toPageQuery(BasePageQueryVO basePageQueryDTO);
+    UserinfoAccountDTO toUserinfoAccountDTO(SaveUserinfoVO userinfoVO);
 
 }
+
