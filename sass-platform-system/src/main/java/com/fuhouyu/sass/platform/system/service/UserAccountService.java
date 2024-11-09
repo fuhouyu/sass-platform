@@ -17,7 +17,7 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.sass.platform.system.dto.LoginAccountDTO;
-import com.fuhouyu.sass.platform.system.dto.UserAccountDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoAccountDTO;
 import lombok.NonNull;
 
 /**
@@ -35,7 +35,7 @@ public interface UserAccountService {
      *
      * @param userAccountDTO 用户账号dto对象
      */
-    void register(UserAccountDTO userAccountDTO);
+    void register(UserinfoAccountDTO userAccountDTO);
 
     /**
      * 通过账号id进行登录

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system;
 
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,24 +42,24 @@ class TestUserService extends TestBaseService {
     @Test
     void testUserRepository() {
         // 保存
-        UserDTO userDTO = this.generateUserDTO();
-        this.userService.save(userDTO);
-        Long saveId = userDTO.getId();
+        UserinfoDTO userinfoDTO = this.generateUserDTO();
+        this.userService.save(userinfoDTO);
+        Long saveId = userinfoDTO.getId();
         Assertions.assertNotNull(saveId, "返回的id为空");
 
-        Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.userService.save(userDTO),
+        Assertions.assertThrowsExactly(DuplicateKeyException.class, () -> this.userService.save(userinfoDTO),
                 "二次保存，用户名冲突未正常抛出异常");
 
         // 修改
-        String realName = userDTO.getRealName();
-        userDTO.setRealName(super.getUUIDStr(8));
-        this.userService.edit(userDTO);
-        Assertions.assertNotEquals(realName, userDTO.getRealName(), "修改未成功");
+        String realName = userinfoDTO.getRealName();
+        userinfoDTO.setRealName(super.getUUIDStr(8));
+        this.userService.edit(userinfoDTO);
+        Assertions.assertNotEquals(realName, userinfoDTO.getRealName(), "修改未成功");
 
         // 查询
-        UserDTO queryById = this.userService.findById(saveId);
+        UserinfoDTO queryById = this.userService.findById(saveId);
         Assertions.assertNotNull(queryById, "未查询到对应数据");
-        UserDTO queryByUsername = this.userService.findByUsername(userDTO.getUsername());
+        UserinfoDTO queryByUsername = this.userService.findByUsername(userinfoDTO.getUsername());
         Assertions.assertNotNull(queryByUsername, "未查询到对应数据");
 
         // 删除
@@ -70,8 +70,8 @@ class TestUserService extends TestBaseService {
     }
 
 
-    private UserDTO generateUserDTO() {
-        UserDTO userEntity = new UserDTO();
+    private UserinfoDTO generateUserDTO() {
+        UserinfoDTO userEntity = new UserinfoDTO();
         userEntity.setUsername(super.getUUIDStr(8));
         userEntity.setRealName(super.getUUIDStr(8));
         userEntity.setNickname(super.getUUIDStr(8));

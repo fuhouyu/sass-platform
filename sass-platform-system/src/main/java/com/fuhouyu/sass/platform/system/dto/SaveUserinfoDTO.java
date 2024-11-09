@@ -19,68 +19,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-
 /**
  * <p>
- * 用户实体
+ * 保存用户时的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 18:06
+ * @since 2024/11/9 21:21
  */
 @Getter
 @Setter
-@ToString(callSuper = true)
-public class UserDTO extends BaseDTO {
+@ToString
+public class SaveUserinfoDTO extends UserinfoDTO {
 
-    /**
-     * 主键id
-     */
-    private Long id;
 
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 真实姓名
-     */
-    private String realName;
-
-    /**
-     * 昵称
-     */
-    private String nickname;
-
-    /**
-     * 邮件地址
-     */
-    private String email;
-
-    /**
-     * 性别
-     */
-    private String gender;
-
-    /**
-     * 头像地址
-     */
-    private String avatar;
-
-    /**
-     * 登录时间
-     */
-    private LocalDateTime loginDate;
-
-    /**
-     * 登录ip
-     */
-    private String loginIp;
-
-    /**
-     * 是否删除标记
-     */
-    private Boolean isDeleted;
+    private String password;
 }

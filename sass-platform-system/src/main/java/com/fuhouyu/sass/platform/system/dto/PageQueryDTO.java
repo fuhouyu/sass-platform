@@ -15,10 +15,12 @@
  */
 package com.fuhouyu.sass.platform.system.dto;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.github.pagehelper.util.SqlSafeUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -35,6 +37,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Getter
 @Setter
+@Slf4j
 public class PageQueryDTO implements Serializable {
 
     @Serial
@@ -70,8 +73,9 @@ public class PageQueryDTO implements Serializable {
         }
         String orderBy = sortColumn + " " + (isAsc ? "ASC" : "DESC");
         if (SqlSafeUtil.check(orderBy)) {
-            return orderBy;
+            LoggerUtil.error(log, "排序字段不正确:{}", sortColumn);
+            throw new IllegalArgumentException("排序字段设置错误！");
         }
-        throw new IllegalArgumentException("排序不正确!");
+        return orderBy;
     }
 }

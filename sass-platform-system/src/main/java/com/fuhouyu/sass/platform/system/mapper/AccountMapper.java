@@ -18,7 +18,9 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.sass.platform.system.entity.AccountId;
 import com.fuhouyu.sass.platform.system.entity.Accounts;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,4 +41,11 @@ public interface AccountMapper extends BaseMapper<Accounts, AccountId> {
      * @return 账号集合
      */
     List<Accounts> queryByUserId(Long userId);
+
+    /**
+     * 通过用户id集合删除账号
+     *
+     * @param userIds 用户id集合
+     */
+    void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
 }

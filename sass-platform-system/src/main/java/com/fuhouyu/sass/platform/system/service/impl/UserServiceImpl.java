@@ -22,9 +22,10 @@ import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UsersAssembler;
 import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
+import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -50,16 +52,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
 
+    private final AccountService accountService;
+
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     @Override
-    public void save(UserDTO userDTO) {
-        userDTO.setId(snowflakeIdWorker.nextId());
-        this.userMapper.insert(USERS_ASSEMBLER.toEntity(userDTO));
+    public void save(UserinfoDTO userinfoDTO) {
+        this.validUsernameExists(userinfoDTO.getUsername());
+        userinfoDTO.setId(snowflakeIdWorker.nextId());
+        this.userMapper.insert(USERS_ASSEMBLER.toEntity(userinfoDTO));
     }
 
     @Override
-    public UserDTO findByUsername(String username) {
+    public UserinfoDTO findByUsername(String username) {
         return USERS_ASSEMBLER.toDTO(this.userMapper.queryByUsername(username));
     }
 
@@ -71,18 +76,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long userId) {
+    public UserinfoDTO findById(Long userId) {
         Users users = this.userMapper.queryById(userId);
         return USERS_ASSEMBLER.toDTO(users);
     }
 
     @Override
-    public void edit(UserDTO userDTO) {
-        this.userMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
+    public void edit(UserinfoDTO userinfoDTO) {
+        this.userMapper.update(USERS_ASSEMBLER.toEntity(userinfoDTO));
     }
 
     @Override
-    public void saveBatch(List<UserDTO> dtoList) {
+    public void saveBatch(List<UserinfoDTO> dtoList) {
         List<Users> list = dtoList.stream().map(dto -> {
             dto.setId(snowflakeIdWorker.nextId());
             return USERS_ASSEMBLER.toEntity(dto);
@@ -107,11 +112,27 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
                     "不允许操作当前登录账号: %s", user.getUsername());
         }
-        return this.userMapper.deleteByIds(ids);
+        int deleteUserCount = this.userMapper.deleteByIds(ids);
+        this.accountService.removeByUserIds(ids);
+        return deleteUserCount;
     }
 
     @Override
-    public Function<PageQueryDTO, List<UserDTO>> getPageResult() {
+    public Function<PageQueryDTO, List<UserinfoDTO>> getPageResult() {
         return (pageQuery) -> USERS_ASSEMBLER.toDTO(this.userMapper.queryList(pageQuery));
+    }
+
+    /**
+     * 验证用户名是否存在
+     * 存在则抛出异常
+     *
+     * @param username 用户名
+     */
+    private void validUsernameExists(String username) {
+        Users users = this.userMapper.queryByUsername(username);
+        if (Objects.nonNull(users)) {
+            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
+                    "%s 用户名已存在", username);
+        }
     }
 }

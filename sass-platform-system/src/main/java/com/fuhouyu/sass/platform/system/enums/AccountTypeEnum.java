@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-export interface PageQuery {
-    pageNum: number;
-    pageSize: number;
-    keyword?: string;
-    sortColumn?: string;
-    isAsc?: boolean;
-}
-
+package com.fuhouyu.sass.platform.system.enums;
 
 /**
- * 分页查询的结果集
+ * <p>
+ * 账号类型枚举
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/9 21:27
  */
-export interface PageResult<T> {
-    pageNum: number;
-    pageSize: number;
-    total: number;
-    list: T[];
+public enum AccountTypeEnum {
+
+    /**
+     * 密码
+     */
+    PASSWORD,
+
+    /**
+     * email
+     */
+    EMAIL,
+
+
+    ;
+
 }

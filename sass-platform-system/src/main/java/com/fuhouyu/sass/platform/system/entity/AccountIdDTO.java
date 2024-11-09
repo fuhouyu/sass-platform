@@ -20,6 +20,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Locale;
+
 /**
  * <p>
  * 账号id实体
@@ -61,6 +63,6 @@ public class AccountIdDTO {
         if (accountAndType.length != 2) {
             throw new IllegalArgumentException(String.format("账号不正确: %s", fullAccount));
         }
-        return new AccountIdDTO(accountAndType[0], accountAndType[1]);
+        return new AccountIdDTO(accountAndType[0], accountAndType[1].toUpperCase(Locale.ROOT));
     }
 }

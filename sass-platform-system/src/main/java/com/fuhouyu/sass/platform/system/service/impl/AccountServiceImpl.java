@@ -25,7 +25,9 @@ import com.fuhouyu.sass.platform.system.mapper.AccountMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,8 +51,12 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountMapper accountMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public void save(AccountDTO accountDTO) {
+        accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
+        accountDTO.setIsEnabled(true);
         this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
     }
 
@@ -90,6 +96,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountDTO> findByUserId(Long userId) {
         return ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryByUserId(userId));
+    }
+
+    @Override
+    public void removeByUserIds(Collection<Long> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return;
+        }
+        this.accountMapper.deleteByUserIds(userIds);
     }
 
     @Override

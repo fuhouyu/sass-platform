@@ -16,7 +16,7 @@
 
 
 import {request} from "@/utils";
-import {UserinfoInterface} from "@/model/user";
+import {UserinfoInterface, UserTokenInterface} from "@/model/user";
 import {PageQuery, PageResult} from "@/model/page";
 
 
@@ -25,7 +25,7 @@ const baseUserUrl = '/v1/user'
  * 用户登录
  * @param loginData 登录的表单信息
  */
-const loginApi = (loginData: string) =>
+const loginApi = (loginData: string): Promise<UserTokenInterface> =>
     request.post(`${baseUserUrl}/login`, loginData, {
         headers: {
             'Authorization': 'Basic dGVzdDE6cGFzc3dvcmQ='
@@ -35,7 +35,7 @@ const loginApi = (loginData: string) =>
 /**
  * 获取用户详情
  */
-const getUserinfoApi = () => request.get(`${baseUserUrl}/info`);
+const getUserinfoApi = (): Promise<UserinfoInterface> => request.get(`${baseUserUrl}/info`);
 
 
 /**
@@ -43,14 +43,20 @@ const getUserinfoApi = () => request.get(`${baseUserUrl}/info`);
  * @param editUserinfo 修改用户详情
  */
 const editUserinfoApi =
-    (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info`, editUserinfo, {})
+    (editUserinfo: UserinfoInterface): Promise<void> => request.put(`${baseUserUrl}/info`, editUserinfo, {})
 
 /**
  * 通过用户id修改详请
  * @param editUserinfo 修改用户详情
  */
 const editUserinfoByIdApi =
-    (editUserinfo: UserinfoInterface) => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
+    (editUserinfo: UserinfoInterface): Promise<void> => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
+
+/**
+ * 保存用户详情
+ * @param userinfo 用户详情
+ */
+const saveUserInfoApi = (userinfo: UserinfoInterface): Promise<void> => request.post(`${baseUserUrl}/info`, userinfo, {})
 
 /**
  * 获取用户列表
@@ -68,24 +74,32 @@ const getUserinfoByIdApi = (id: number): Promise<UserinfoInterface> => request.g
 /**
  * 退出登录
  */
-const logoutApi = () => request.post(`${baseUserUrl}/logout`);
+const logoutApi = (): Promise<void> => request.post(`${baseUserUrl}/logout`);
 
 /**
  * 通过id删除用户
  * @param ids 用户集合
  *
  */
-const removeUserApi = (ids: string[]) => request.delete(`${baseUserUrl}`, {
+const removeUserApi = (ids: string[]): Promise<void> => request.delete(`${baseUserUrl}`, {
     data: ids
 });
+
+/**
+ * 验证用户名是否存在
+ * @param username 用户名称
+ */
+const validUsernameExistsApi = (username: string): Promise<boolean> => request.get(`${baseUserUrl}/exists?username=${username}`, {})
 
 export {
     loginApi,
     logoutApi,
+    saveUserInfoApi,
     editUserinfoApi,
     editUserinfoByIdApi,
     getUserinfoApi,
     getUserListApi,
     getUserinfoByIdApi,
-    removeUserApi
+    removeUserApi,
+    validUsernameExistsApi
 }

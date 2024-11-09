@@ -20,7 +20,7 @@ import {PageQuery, PageResult} from "@/model/page";
 import React, {forwardRef, ForwardRefExoticComponent, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
-import {SorterResult, TablePaginationConfig} from "antd/es/table/interface";
+import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import {UserinfoInterface} from "@/model/user";
 import './index.scss'
 
@@ -28,6 +28,7 @@ export interface PageListInterface {
     listName: string;
     columns: TableColumnsType;
     pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
+    addCallback: () => Promise<void>
     deleteButtonApi: (ids: React.Key[]) => Promise<void>
 }
 
@@ -46,8 +47,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 };
 
 const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageListHandler, PageListInterface>((props, ref) => {
-
-    const {listName, columns, pageRequestApi, deleteButtonApi} = props
+    const {listName, columns, addCallback, pageRequestApi, deleteButtonApi} = props
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
@@ -71,13 +71,20 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
 
     useEffect(() => {
         setLoading(true);
-        console.log(props)
+        refreshList(pageQuery);
+        setLoading(false);
+    }, [pageRequestApi, pageQuery])
+
+    /**
+     * 刷新列表
+     * @param pageQuery 分页查询
+     */
+    const refreshList = (pageQuery: PageQuery) => {
         pageRequestApi(pageQuery)
             .then((pageResult: PageResult<UserinfoInterface>) => {
                 setPageResult({...pageResult});
             })
-        setLoading(false);
-    }, [pageRequestApi, pageQuery])
+    }
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
@@ -88,13 +95,18 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         },
     }));
 
-    const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, sorter: SorterResult) => {
+    const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
+        const sorter = Array.isArray(sorters) ? sorters[0] : sorters;
+        let isAsc = true;
+        if (sorter.order) {
+            isAsc = sorter.order.toLowerCase() === 'ascend';
+        }
         setPageQuery({
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
             sortColumn: camelToSnake(sorter?.field?.toLocaleString()),
-            direction: sorter.order?.replace("end", "").toUpperCase()
-        })
+            isAsc: isAsc
+        });
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -136,11 +148,15 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
                             {listName}列表
                         </div>
                         <div className="buttons">
-                            <Button className="add-button" icon={<IconFont type="i-add"/>}>
+                            <Button className="add-button" onClick={() => addCallback()} icon={<IconFont type="i-add"/>}
+                            >
                                 新增
                             </Button>
                             <Button className="del-button" disabled={deleteIds.length === 0}
-                                    onClick={onDeleteButtonClick}
+                                    onClick={() => {
+                                        onDeleteButtonClick()
+                                        refreshList(pageQuery)
+                                    }}
                                     icon={<IconFont type="i-delete"/>}>
                                 删除
                             </Button>

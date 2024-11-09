@@ -31,12 +31,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -59,15 +61,14 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void register(UserAccountDTO userAccountDTO) {
-        // TODO 这里的用户名需要后期生成
+    public void register(UserinfoAccountDTO userAccountDTO) {
         this.userService.save(userAccountDTO);
-        List<AccountDTO> accounts = userAccountDTO.getAccounts();
-        this.saveAccounts(accounts, userAccountDTO.getId());
-        userAccountDTO.addAccounts(accounts);
+        this.saveAccounts(userAccountDTO);
     }
 
     @Override
@@ -94,15 +95,21 @@ public class UserAccountServiceImpl implements UserAccountService {
     /**
      * 保存账号列表
      *
-     * @param accounts 账号列表
-     * @param userId   用户id
+     * @param userinfoDTO 用户详情dto
      */
-    private void saveAccounts(List<AccountDTO> accounts,
-                              Long userId) {
+    private void saveAccounts(UserinfoAccountDTO userinfoDTO) {
+        List<AccountDTO> accounts = userinfoDTO.getAccounts();
         if (CollectionUtils.isEmpty(accounts)) {
             throw new IllegalArgumentException("account is empty");
         }
-        accounts.forEach(account -> account.setUserId(userId));
+        accounts.forEach(account -> {
+            account.setUserId(userinfoDTO.getId());
+            account.setIsEnabled(true);
+            String credentials = account.getCredentials();
+            if (Objects.nonNull(credentials)) {
+                account.setCredentials(this.passwordEncoder.encode(credentials));
+            }
+        });
         try {
             this.accountService.saveBatch(accounts);
         } catch (Exception e) {
