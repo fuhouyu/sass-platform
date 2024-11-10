@@ -175,7 +175,11 @@ const User: React.FC = () => {
                 addCallback={() => {
                     openModal(undefined, true)
                 }}
-                deleteButtonApi={removeUserApi}/>
+                deleteCallback={(ids: React.Key[]) => removeUserApi(ids)}
+                searchHeaders={[
+                    {name: '用户名查询', value: 'username', searchComment: Input}
+                ]}
+            />
             <Modal
                 title={isAdded ? "新增用户" : "修改用户"}
                 className="ant-modal-header"

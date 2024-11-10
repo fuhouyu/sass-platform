@@ -15,21 +15,68 @@
  */
 
 
-import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
+import {Button, Col, Input, message, Row, Table, TableColumnsType, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
-import React, {forwardRef, ForwardRefExoticComponent, useEffect, useImperativeHandle, useState} from "react";
+import React, {
+    forwardRef,
+    ForwardRefExoticComponent,
+    KeyboardEventHandler,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useState
+} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import {UserinfoInterface} from "@/model/user";
 import './index.scss'
 
+/**
+ * 搜索
+ */
+export interface SearchHeaderInterface {
+    name: string
+    /**
+     * 映射值
+     */
+    value: string
+    searchComment: React.ComponentType<{
+        value: string;
+        onKeyDown: KeyboardEventHandler
+        placeholder: string
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    }>;
+}
+
 export interface PageListInterface {
+    /**
+     * 列表名称
+     */
     listName: string;
+    /**
+     * 列名
+     */
     columns: TableColumnsType;
+    /**
+     * 分页查询api接口
+     * @param pageQuery 查询api
+     */
     pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
+    /**
+     *  新增数据的回调
+     */
     addCallback: () => Promise<void>
-    deleteButtonApi: (ids: React.Key[]) => Promise<void>
+    /**
+     * 删除数据的回调
+     * @param ids 需要删除的ids
+     */
+    deleteCallback: (ids: React.Key[]) => Promise<void>
+    /**
+     * 搜索组件
+     */
+    searchHeaders: SearchHeaderInterface[]
+
 }
 
 interface PageListHandler {
@@ -47,14 +94,14 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 };
 
 const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageListHandler, PageListInterface>((props, ref) => {
-    const {listName, columns, addCallback, pageRequestApi, deleteButtonApi} = props
+    const {listName, searchHeaders, columns, deleteCallback, addCallback, pageRequestApi} = props
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
 
 
-    const [keyword, setKeyword] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const [pageResult, setPageResult] = useState<PageResult<UserinfoInterface>>({});
     const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
@@ -69,22 +116,23 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         },
     };
 
-    useEffect(() => {
-        setLoading(true);
-        refreshList(pageQuery);
-        setLoading(false);
-    }, [pageRequestApi, pageQuery])
-
     /**
      * 刷新列表
      * @param pageQuery 分页查询
      */
-    const refreshList = (pageQuery: PageQuery) => {
+    const refreshList = useCallback((pageQuery: PageQuery) => {
         pageRequestApi(pageQuery)
             .then((pageResult: PageResult<UserinfoInterface>) => {
                 setPageResult({...pageResult});
             })
-    }
+    }, [pageRequestApi, setPageResult])
+
+    useEffect(() => {
+        setLoading(true);
+        refreshList(pageQuery);
+        setLoading(false);
+    }, [pageQuery, refreshList])
+
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
@@ -95,6 +143,12 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         },
     }));
 
+    /**
+     * change 事件
+     * @param pagination 分页
+     * @param _ 过滤，暂不使用
+     * @param sorters 排序
+     */
     const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
         const sorter = Array.isArray(sorters) ? sorters[0] : sorters;
         let isAsc = true;
@@ -109,37 +163,74 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         });
     };
 
+    /**
+     * 处理回车键
+     * @param e key事件
+     */
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            setPageQuery({keyword})
+            setPageQuery({...searchValue})
         }
     };
 
+    /**
+     * 删除事件
+     */
     const onDeleteButtonClick = () => {
-        deleteButtonApi(deleteIds)
+        deleteCallback(deleteIds)
             .then(() => {
-                message.success("删除成功");
+                message.success("删除成功").then()
                 setDeleteIds([]);
             })
             .catch((error: Error) => {
-                message.error(error.message);
+                message.error(error.message).then()
             })
     }
+
     return (
         <div className="list-container">
             <div className="search-header">
-                <div className="search-info">
-                    <span>关键字查询</span>
-                    <Input
-                        value={keyword}
-                        onKeyDown={handleKeyDown}
-                        placeholder="请输入关键字查询"
-                        onChange={(e) => setKeyword(e.target.value)}/>
-                </div>
-                <div className="search-submit">
-                    <Button type="primary" icon={<SearchOutlined/>}
-                            onClick={() => setPageQuery({keyword})}>搜索</Button>
-                </div>
+                <Row gutter={10}>
+                    <Col>
+                        <span>关键字查询</span>
+                    </Col>
+                    <Col>
+                        <Input
+                            value={searchValue.keyword}
+                            onKeyDown={handleKeyDown}
+                            placeholder="请输入关键字查询"
+                            onChange={(e) => setSearchValue({
+                                ...searchValue,
+                                keyword: e.target.value
+                            })}/>
+                    </Col>
+                    {searchHeaders.map((searchHeader) => {
+                        return (
+                            <>
+                                <Col>
+                                    <span>{searchHeader.name}</span>
+                                </Col>
+                                <Col>
+                                    <searchHeader.searchComment
+                                        value={searchValue[searchHeader.value]}
+                                        onKeyDown={handleKeyDown}
+                                        placeholder={"请输入" + searchHeader.name}
+                                        onChange={(e) => setSearchValue({
+                                            ...searchValue,
+                                            [searchHeader.value]: e.target.value
+                                        })}
+                                    >
+
+                                    </searchHeader.searchComment>
+                                </Col>
+                            </>
+                        )
+                    })}
+                    <Col className="search-button">
+                        <Button type="primary" icon={<SearchOutlined/>}
+                                onClick={() => setPageQuery({...searchValue})}>搜索</Button>
+                    </Col>
+                </Row>
             </div>
             <div className="table-container">
                 <div className="title-container">

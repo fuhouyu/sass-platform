@@ -15,15 +15,17 @@
  */
 
 .search-header {
-  display: flex;
-  justify-content: space-between;
   padding: 12px 16px;
   margin-bottom: 15px;
   background-color: #ffffff;
 
-  .search-info input {
-    margin-left: 15px;
-    width: 60%;
+  span {
+    line-height: 32px;
+  }
+
+  .search-button {
+    font-size: 12px;
+    margin-left: auto;
   }
 }
 
