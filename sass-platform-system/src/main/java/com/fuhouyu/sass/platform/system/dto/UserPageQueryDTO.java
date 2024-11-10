@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.dto;
 
-
-export interface PageQuery {
-    pageNum: number | undefined;
-    pageSize: number | undefined;
-    keyword?: string;
-    sortColumn?: string;
-    isAsc?: boolean;
-}
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * 分页查询的结果集
+ * <p>
+ * 用户分页查询的dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/10 21:38
  */
-export interface PageResult<T> {
-    pageNum: number;
-    pageSize: number;
-    total: number;
-    list: T[];
+@Getter
+@Setter
+@ToString(callSuper = true)
+public class UserPageQueryDTO extends PageQueryDTO {
+
+    /**
+     * 性别检索项
+     */
+    private String gender;
 }

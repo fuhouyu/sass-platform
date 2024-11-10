@@ -15,29 +15,32 @@
  */
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {storeToken, TokenInterface} from "@/utils/Token/token";
-import {UserinfoInterface} from "@/model/user";
+import {storeToken} from "@/utils/Token/token";
+import {UserinfoInterface, UserLogin, UserTokenInterface} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi, loginApi, logoutApi} from "@/apis/user";
 
 
 const userStore = createSlice({
     name: "user",
     initialState: {
-        token: null,
+        token: {},
         userinfo: {}
     },
     reducers: {
-        storeToken: (state, action: PayloadAction<TokenInterface>) => {
+        storeToken: (state, action: PayloadAction<UserTokenInterface>) => {
             state.token = action.payload;
-            storeToken(state.token)
+            storeToken(state.token!)
+            return state;
         },
         storeUserinfo: (state, action: PayloadAction<UserinfoInterface>) => {
             state.userinfo = action.payload;
+            return state;
         },
         logout: (state, action) => {
             console.log(action.payload);
             state.userinfo = {};
-            state.token = null;
+            state.token = {};
+            return state;
         }
     },
 });
@@ -46,10 +49,11 @@ const userStore = createSlice({
  * 用户登录接口
  * @param loginForm 表单参数
  */
-const fetchLogin = (loginForm: string) => {
-    return async (dispatch: (arg0: { payload: PayloadAction<TokenInterface>; type: `user/${string}` }) => void) => {
+const fetchLogin = (loginForm: UserLogin) => {
+    return async (dispatch: (arg0: { payload: UserTokenInterface; type: `user/${string}` }) => void) => {
         const token = await loginApi(loginForm);
         dispatch(userStore.actions.storeToken(token))
+
     }
 }
 
@@ -58,9 +62,9 @@ const fetchLogin = (loginForm: string) => {
  * 用户详情接口
  */
 const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
-        const res = await getUserinfoApi();
-        dispatch(userStore.actions.storeUserinfo(res ? res : {}))
+    return async (dispatch: (arg0: { payload: UserinfoInterface; type: `user/${string}` }) => void) => {
+        const res: UserinfoInterface = await getUserinfoApi();
+        dispatch(userStore.actions.storeUserinfo(res))
     }
 }
 
@@ -80,8 +84,8 @@ const fetchLogout = () => {
  * @param editUserinfo 用户详情接口修改
  */
 const fetchEditUserinfo = (editUserinfo: UserinfoInterface) => {
-    return async (dispatch: (arg0: { payload: PayloadAction<UserinfoInterface>; type: `user/${string}` }) => void) => {
-        editUserinfoApi(editUserinfo);
+    return async (dispatch: (arg0: { payload: UserinfoInterface; type: `user/${string}` }) => void) => {
+        await editUserinfoApi(editUserinfo);
         const res = await getUserinfoApi();
         dispatch(userStore.actions.storeUserinfo(res))
     }

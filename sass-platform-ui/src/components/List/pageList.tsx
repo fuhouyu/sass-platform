@@ -15,27 +15,14 @@
  */
 
 
-import {Button, Input, message, Table, TableColumnsType, TableProps} from "antd";
+import {Button, Col, Input, message, Row, Table, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
-import React, {forwardRef, ForwardRefExoticComponent, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
-import {UserinfoInterface} from "@/model/user";
 import './index.scss'
-
-export interface PageListInterface {
-    listName: string;
-    columns: TableColumnsType;
-    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
-    addCallback: () => Promise<void>
-    deleteButtonApi: (ids: React.Key[]) => Promise<void>
-}
-
-interface PageListHandler {
-    refresh: () => void;
-}
-
+import {PageListHandler, PageListParams} from "@components/List/pageModel";
 
 /**
  * 处理_转换为驼峰
@@ -46,17 +33,17 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageListHandler, PageListInterface>((props, ref) => {
-    const {listName, columns, addCallback, pageRequestApi, deleteButtonApi} = props
+const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
+    const {listName, searchComments, columns, deleteCallback, addCallback, pageRequestApi} = props
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
 
 
-    const [keyword, setKeyword] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const [pageResult, setPageResult] = useState<PageResult<UserinfoInterface>>({});
+    const [pageResult, setPageResult] = useState<PageResult<object>>();
     const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
 
     const rowSelection: TableProps['rowSelection'] = {
@@ -69,32 +56,39 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         },
     };
 
-    useEffect(() => {
-        setLoading(true);
-        refreshList(pageQuery);
-        setLoading(false);
-    }, [pageRequestApi, pageQuery])
-
     /**
      * 刷新列表
      * @param pageQuery 分页查询
      */
-    const refreshList = (pageQuery: PageQuery) => {
+    const refreshList = useCallback((pageQuery: PageQuery) => {
         pageRequestApi(pageQuery)
-            .then((pageResult: PageResult<UserinfoInterface>) => {
+            .then((pageResult: PageResult<object>) => {
                 setPageResult({...pageResult});
             })
-    }
+    }, [pageRequestApi, setPageResult])
+
+    useEffect(() => {
+        setLoading(true);
+        refreshList(pageQuery);
+        setLoading(false);
+    }, [pageQuery, refreshList])
+
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
             pageRequestApi(pageQuery)
-                .then((pageResult: PageResult<UserinfoInterface>) => {
+                .then((pageResult: PageResult<object>) => {
                     setPageResult({...pageResult});
                 })
         },
     }));
 
+    /**
+     * change 事件
+     * @param pagination 分页
+     * @param _ 过滤，暂不使用
+     * @param sorters 排序
+     */
     const onChange: TableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
         const sorter = Array.isArray(sorters) ? sorters[0] : sorters;
         let isAsc = true;
@@ -109,37 +103,78 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
         });
     };
 
+    /**
+     * 处理回车键
+     * @param e key事件
+     */
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            setPageQuery({keyword})
+            setPageQuery({...pageQuery, ...searchValue})
         }
     };
 
+    /**
+     * 删除事件
+     */
     const onDeleteButtonClick = () => {
-        deleteButtonApi(deleteIds)
+        deleteCallback(deleteIds.map(id => String(id)))
             .then(() => {
-                message.success("删除成功");
+                message.success("删除成功").then()
                 setDeleteIds([]);
             })
             .catch((error: Error) => {
-                message.error(error.message);
+                message.error(error.message).then()
             })
     }
+
     return (
         <div className="list-container">
             <div className="search-header">
-                <div className="search-info">
-                    <span>关键字查询</span>
-                    <Input
-                        value={keyword}
-                        onKeyDown={handleKeyDown}
-                        placeholder="请输入关键字查询"
-                        onChange={(e) => setKeyword(e.target.value)}/>
-                </div>
-                <div className="search-submit">
-                    <Button type="primary" icon={<SearchOutlined/>}
-                            onClick={() => setPageQuery({keyword})}>搜索</Button>
-                </div>
+                <Row gutter={10}>
+                    <Col>
+                        <span>关键字查询</span>
+                    </Col>
+                    <Col>
+                        <Input
+                            key={'keyword'}
+                            value={searchValue.keyword}
+                            onKeyDown={handleKeyDown}
+                            placeholder="请输入关键字查询"
+                            onChange={(e) => setSearchValue({
+                                ...searchValue,
+                                keyword: e.target.value
+                            })}/>
+                    </Col>
+                    {searchComments.map((searchComment) =>
+                        (
+                            <React.Fragment key={searchComment.key}>
+                                <Col>
+                                    <span>{searchComment.name}</span>
+                                </Col>
+                                <Col>
+                                    <searchComment.comment
+                                        key={searchComment.key}
+                                        value={searchValue[searchComment.key]}
+                                        options={searchComment.options}
+                                        onKeyDown={handleKeyDown}
+                                        placeholder={searchComment.placeholder ?? ""}
+                                        onChange={(e) => {
+                                            const value = e.target ? e.target.value : e;
+                                            setSearchValue({
+                                                ...searchValue,
+                                                [searchComment.key]: value as string
+                                            })
+                                        }}
+                                    />
+                                </Col>
+                            </React.Fragment>
+                        )
+                    )}
+                    <Col className="search-button">
+                        <Button type="primary" icon={<SearchOutlined/>}
+                                onClick={() => setPageQuery({...pageQuery, ...searchValue})}>搜索</Button>
+                    </Col>
+                </Row>
             </div>
             <div className="table-container">
                 <div className="title-container">
@@ -174,11 +209,11 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
                         columns={columns}
                         style={{tableLayout: 'fixed'}}
                         rowKey="id"
-                        dataSource={pageResult.list}
+                        dataSource={pageResult?.list}
                         onChange={onChange}
                         loading={loading}
                         pagination={{
-                            total: pageResult.total,
+                            total: pageResult?.total,
                             hideOnSinglePage: false,
                             showSizeChanger: true,
                             defaultPageSize: pageQuery.pageSize,
@@ -189,7 +224,7 @@ const PageList: ForwardRefExoticComponent<PageListInterface> = forwardRef<PageLi
                 </div>
             </div>
         </div>
-    )
+    );
 })
 
 export {

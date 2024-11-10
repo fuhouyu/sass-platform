@@ -17,11 +17,15 @@
       "@components/*": [
         "src/components/*"
       ]
-    }
+    },
+    "types": [
+      "vite/client"
+    ]
   },
   "include": [
     "src/**/*.tsx",
+    "src/**/*.ts",
     "src/**/*.d.tsx",
-    "src/**/*.tsx"
+    "src/**/*.d.ts"
   ]
 }

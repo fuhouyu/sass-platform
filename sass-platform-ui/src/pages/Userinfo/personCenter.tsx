@@ -36,7 +36,7 @@ interface MenuLiInterface {
  */
 export const PersonCenter: React.FC = withAuth(() => {
 
-    const userinfo = useAppSelector<UserinfoInterface>((state: {
+    const userinfo = useAppSelector((state: {
         user: { userinfo: UserinfoInterface };
     }) => state.user.userinfo);
 

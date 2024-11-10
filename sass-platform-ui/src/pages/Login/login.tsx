@@ -21,13 +21,8 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
+import {UserLogin} from "@/model/user";
 
-
-interface UserLogin {
-    username: string;
-    password: string;
-    loginType: string;
-}
 
 const Login: React.FC = () => {
     const navigate = useNavigate();

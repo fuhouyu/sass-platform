@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {Breadcrumb, Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
@@ -50,20 +50,20 @@ const Home: React.FC = withAuth(() => {
 
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-    const convertMenuItem = (permissionInterfaces: PermissionInterface[]): MenuItem[] | null => {
+    const convertMenuItem = useCallback((permissionInterfaces: PermissionInterface[]): MenuItem[] | null => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return null;
         }
         return permissionInterfaces?.map((item: PermissionInterface) => {
             return {
-                key: item.routePath,
+                key: item.routePath!,
                 label: item.permissionName,
                 icon: item.icon ?
                     <IconFont type="i-setting" style={{fontSize: '16px'}}/> : undefined,
-                children: convertMenuItem(item.children)
+                children: item.children ? convertMenuItem(item.children) ?? null : null
             }
         })
-    }
+    }, [])
 
     useEffect(() => {
         getUserPermissionApi().then((res: PermissionInterface[]) => {
@@ -76,7 +76,7 @@ const Home: React.FC = withAuth(() => {
             })
             setMenuItems(itemMenus);
         });
-    }, [])
+    }, [convertMenuItem])
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -84,7 +84,7 @@ const Home: React.FC = withAuth(() => {
     useEffect(() => {
         dispatch(fetchUserinfo());
     }, [dispatch])
-    const realName = useAppSelector<UserinfoInterface>((state: {
+    const realName = useAppSelector((state: {
         user: { userinfo: UserinfoInterface };
     }) => state.user.userinfo?.realName);
 

@@ -16,7 +16,7 @@
 
 
 import {request} from "@/utils";
-import {UserinfoInterface, UserTokenInterface} from "@/model/user";
+import {UserinfoInterface, UserLogin, UserTokenInterface} from "@/model/user";
 import {PageQuery, PageResult} from "@/model/page";
 
 
@@ -25,7 +25,7 @@ const baseUserUrl = '/v1/user'
  * 用户登录
  * @param loginData 登录的表单信息
  */
-const loginApi = (loginData: string): Promise<UserTokenInterface> =>
+const loginApi = (loginData: UserLogin): Promise<UserTokenInterface> =>
     request.post(`${baseUserUrl}/login`, loginData, {
         headers: {
             'Authorization': 'Basic dGVzdDE6cGFzc3dvcmQ='
@@ -69,7 +69,7 @@ const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Pr
 /**
  * 通过用户id获取用户详情
  */
-const getUserinfoByIdApi = (id: number): Promise<UserinfoInterface> => request.get(`${baseUserUrl}/info/${id}`);
+const getUserinfoByIdApi = (id: string): Promise<UserinfoInterface> => request.get(`${baseUserUrl}/info/${id}`);
 
 /**
  * 退出登录

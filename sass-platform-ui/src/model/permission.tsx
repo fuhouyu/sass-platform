@@ -19,7 +19,7 @@ export interface PermissionInterface {
     /**
      * 权限树子集
      */
-    children?: Response[];
+    children?: PermissionInterface[];
     /**
      * 组件路径
      */

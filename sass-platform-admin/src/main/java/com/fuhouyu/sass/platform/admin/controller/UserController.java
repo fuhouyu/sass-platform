@@ -27,12 +27,8 @@ import com.fuhouyu.sass.platform.admin.assembler.UserAccountAssembler;
 import com.fuhouyu.sass.platform.admin.assembler.UserAssembler;
 import com.fuhouyu.sass.platform.admin.assembler.UserLoginAssembler;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
-import com.fuhouyu.sass.platform.admin.vo.BasePageQueryVO;
 import com.fuhouyu.sass.platform.admin.vo.PageQueryResultVO;
-import com.fuhouyu.sass.platform.admin.vo.user.SaveUserinfoVO;
-import com.fuhouyu.sass.platform.admin.vo.user.UserLoginVO;
-import com.fuhouyu.sass.platform.admin.vo.user.UserTokenVO;
-import com.fuhouyu.sass.platform.admin.vo.user.UserinfoVO;
+import com.fuhouyu.sass.platform.admin.vo.user.*;
 import com.fuhouyu.sass.platform.system.dto.*;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -179,14 +175,14 @@ public class UserController {
     /**
      * 分页查询用户列表
      *
-     * @param basePageQuery 颁
+     * @param userPageQueryVO 用户分页查询对象
      * @return 用户列表集合
      */
     @GetMapping("/list")
     @Operation(summary = "获取用户列表")
-    public BaseResponse<PageQueryResultVO<UserinfoVO>> pageUserinfo(BasePageQueryVO basePageQuery) {
-        PageQueryDTO pageQuery = PAGE_QUERY_ASSEMBLER.toPageQuery(basePageQuery);
-        PageInfo<UserinfoDTO> pageUserEntityResult = this.userService.pageList(pageQuery);
+    public BaseResponse<PageQueryResultVO<UserinfoVO>> pageUserinfo(UserPageQueryVO userPageQueryVO) {
+        UserPageQueryDTO userPageQueryDTO = USER_ASSEMBLER.toUserPageQueryDTO(userPageQueryVO);
+        PageInfo<UserinfoDTO> pageUserEntityResult = this.userService.pageList(userPageQueryDTO);
         PageQueryResultVO<UserinfoVO> pageQueryResultVO = new PageQueryResultVO<>(pageUserEntityResult.getPageNum(),
                 pageUserEntityResult.getPageSize(), pageUserEntityResult.getTotal(),
                 USER_ASSEMBLER.toUserInfoList(pageUserEntityResult.getList()));

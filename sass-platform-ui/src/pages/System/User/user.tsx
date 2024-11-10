@@ -25,16 +25,16 @@ import {
     saveUserInfoApi,
     validUsernameExistsApi
 } from "@/apis/user";
-import {PageList} from "@components";
+import {IconFont, PageList} from "@/components";
 import './index.scss'
-import {IconFont} from "@/components";
 import {UserinfoInterface} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
+import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageModel";
 
 const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const pageListRef = useRef<PageList>(null);
+    const pageListRef = useRef<PageListHandler>();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [isAdded, setIsAdded] = useState<boolean>(false);
     const [form] = Form.useForm();
@@ -44,14 +44,14 @@ const User: React.FC = () => {
      * @param userId 用户id
      * @param isAddUser 是否添加用户
      */
-    const openModal = (userId?: number,
+    const openModal = (userId?: string,
                        isAddUser?: boolean) => {
         setIsModalOpen(true);
         if (isAddUser) {
             setIsAdded(isAddUser)
             return;
         }
-        getUserinfoByIdApi(userId)
+        getUserinfoByIdApi(userId!)
             .then((res: UserinfoInterface) => {
                 form.setFieldsValue({...res})
             })
@@ -168,14 +168,33 @@ const User: React.FC = () => {
     return (
         <>
             <PageList
-                ref={pageListRef}
+                // ref={pageListRef}
                 listName='用户'
                 columns={columns}
                 pageRequestApi={getUserListApi}
                 addCallback={() => {
                     openModal(undefined, true)
                 }}
-                deleteButtonApi={removeUserApi}/>
+                searchComments={[
+                    {
+                        name: '用户名查询',
+                        key: 'username',
+                        placeholder: '请输入用户名查询',
+                        comment: SearchInput
+                    },
+                    {
+                        name: '性别筛选',
+                        key: 'gender',
+                        comment: SearchSelection,
+                        placeholder: '用户性别',
+                        options: [
+                            {label: '男', value: 'male'},
+                            {label: '女', value: 'female'},
+                        ]
+                    }
+                ]}
+                deleteCallback={(ids: string[]) => removeUserApi(ids)}
+            />
             <Modal
                 title={isAdded ? "新增用户" : "修改用户"}
                 className="ant-modal-header"
