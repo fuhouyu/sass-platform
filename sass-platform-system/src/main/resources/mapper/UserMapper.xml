@@ -181,6 +181,9 @@
                 OR
                 nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%')
             </if>
+            <if test="pageQuery.gender != null and pageQuery.gender != ''">
+                AND gender = #{pageQuery.gender}
+            </if>
         </where>
     </select>
 

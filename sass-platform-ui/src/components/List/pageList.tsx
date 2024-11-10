@@ -15,68 +15,14 @@
  */
 
 
-import {Button, Col, Input, message, Row, Table, TableColumnsType, TableProps} from "antd";
+import {Button, Col, Input, message, Row, Table, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
-import React, {forwardRef, KeyboardEventHandler, useCallback, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
-
-/**
- * 搜索
- */
-export interface SearchHeaderInterface {
-    name: string
-    /**
-     * 映射值
-     */
-    value: string
-    searchComment: React.ComponentType<{
-        value: string | undefined
-        onKeyDown: KeyboardEventHandler
-        placeholder: string
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    }>;
-}
-
-export interface PageListInterface {
-    /**
-     * 列表名称
-     */
-    listName: string;
-    /**
-     * 列名
-     */
-    columns: TableColumnsType;
-    /**
-     * 分页查询api接口
-     * @param pageQuery 查询api
-     */
-    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
-    /**
-     *  新增数据的回调
-     */
-    addCallback: () => void
-    /**
-     * 删除数据的回调
-     * @param ids 需要删除的ids
-     */
-    deleteCallback: (ids: string[]) => Promise<void>
-    /**
-     * 搜索组件
-     */
-    searchHeaders: SearchHeaderInterface[]
-    /**
-     * ref
-     */
-    ref?: React.Ref<PageListHandler>
-}
-
-export type PageListHandler = {
-    refresh: () => void;
-    // 具体的属性和方法定义
-} | undefined;
+import {PageListHandler, PageListParams} from "@components/List/pageModel";
 
 /**
  * 处理_转换为驼峰
@@ -87,8 +33,8 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-const PageList = forwardRef<PageListHandler, PageListInterface>((props, ref) => {
-    const {listName, searchHeaders, columns, deleteCallback, addCallback, pageRequestApi} = props
+const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
+    const {listName, searchComments, columns, deleteCallback, addCallback, pageRequestApi} = props
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
@@ -199,26 +145,29 @@ const PageList = forwardRef<PageListHandler, PageListInterface>((props, ref) => 
                                 keyword: e.target.value
                             })}/>
                     </Col>
-                    {searchHeaders.map((searchHeader) =>
+                    {searchComments.map((searchComment) =>
                         (
-                            <>
+                            <React.Fragment key={searchComment.key}>
                                 <Col>
-                                    <span>{searchHeader.name}</span>
+                                    <span>{searchComment.name}</span>
                                 </Col>
                                 <Col>
-                                    <searchHeader.searchComment
-                                        key={searchHeader.value}
-                                        value={searchValue[searchHeader.value]}
+                                    <searchComment.comment
+                                        key={searchComment.key}
+                                        value={searchValue[searchComment.key]}
+                                        options={searchComment.options}
                                         onKeyDown={handleKeyDown}
-                                        placeholder={"请输入" + searchHeader.name}
-                                        onChange={(e) => setSearchValue({
-                                            ...searchValue,
-                                            [searchHeader.value]: e.target.value
-                                        })}
-                                    >
-                                    </searchHeader.searchComment>
+                                        placeholder={searchComment.placeholder ?? ""}
+                                        onChange={(e) => {
+                                            const value = e.target ? e.target.value : e;
+                                            setSearchValue({
+                                                ...searchValue,
+                                                [searchComment.key]: value as string
+                                            })
+                                        }}
+                                    />
                                 </Col>
-                            </>
+                            </React.Fragment>
                         )
                     )}
                     <Col className="search-button">

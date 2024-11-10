@@ -29,7 +29,7 @@ import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {UserinfoInterface} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
-import {PageListHandler} from "@components/List/pageList";
+import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageModel";
 
 const User: React.FC = () => {
 
@@ -175,13 +175,25 @@ const User: React.FC = () => {
                 addCallback={() => {
                     openModal(undefined, true)
                 }}
-                deleteCallback={(ids: string[]) => removeUserApi(ids)}
-                searchHeaders={[
+                searchComments={[
                     {
-                        name: '用户名查询', value: 'username',
-                        searchComment: Input
+                        name: '用户名查询',
+                        key: 'username',
+                        placeholder: '请输入用户名查询',
+                        comment: SearchInput
+                    },
+                    {
+                        name: '性别筛选',
+                        key: 'gender',
+                        comment: SearchSelection,
+                        placeholder: '用户性别',
+                        options: [
+                            {label: '男', value: 'male'},
+                            {label: '女', value: 'female'},
+                        ]
                     }
                 ]}
+                deleteCallback={(ids: string[]) => removeUserApi(ids)}
             />
             <Modal
                 title={isAdded ? "新增用户" : "修改用户"}

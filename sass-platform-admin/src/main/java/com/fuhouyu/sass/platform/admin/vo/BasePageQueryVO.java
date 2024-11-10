@@ -32,7 +32,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString
 @Schema(name = "BasePageQuery", description = "基类分页查询")
 public class BasePageQueryVO implements Serializable {
 

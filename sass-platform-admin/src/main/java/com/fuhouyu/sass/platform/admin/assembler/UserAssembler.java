@@ -16,8 +16,10 @@
 package com.fuhouyu.sass.platform.admin.assembler;
 
 import com.fuhouyu.sass.platform.admin.vo.user.SaveUserinfoVO;
+import com.fuhouyu.sass.platform.admin.vo.user.UserPageQueryVO;
 import com.fuhouyu.sass.platform.admin.vo.user.UserinfoVO;
 import com.fuhouyu.sass.platform.system.dto.SaveUserinfoDTO;
+import com.fuhouyu.sass.platform.system.dto.UserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -69,5 +71,14 @@ public interface UserAssembler {
      * @return dto对象
      */
     SaveUserinfoDTO toUserDTO(SaveUserinfoVO saveUserinfoVO);
+
+
+    /**
+     * 转换为用户查询dto对象
+     *
+     * @param userPageQueryVO 用户分页查询的vo对象
+     * @return 分页查询的dto对象
+     */
+    UserPageQueryDTO toUserPageQueryDTO(UserPageQueryVO userPageQueryVO);
 
 }
