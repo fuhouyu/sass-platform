@@ -35,19 +35,19 @@ interface UserinfoFormInterface {
  */
 export const Userinfo: React.FC = () => {
 
-    const userinfo: UserinfoInterface = useAppSelector<UserinfoInterface>((state: {
+    const userinfo: UserinfoInterface = useAppSelector((state: {
         user: { userinfo: UserinfoInterface }
     }) => state.user.userinfo);
 
     const formItem: UserinfoFormInterface[] = [
-        {key: 'username', label: '登录名', value: userinfo.username, disabled: true},
-        {key: 'realName', label: '真实姓名', value: userinfo.realName, disabled: false},
-        {key: 'nickname', label: '昵称', value: userinfo.nickname, disabled: false},
-        {key: 'email', label: '邮箱', value: userinfo.email, disabled: false},
-        {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate, disabled: true},
-        {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp, disabled: true},
+        {key: 'username', label: '登录名', value: userinfo.username!, disabled: true},
+        {key: 'realName', label: '真实姓名', value: userinfo.realName!, disabled: false},
+        {key: 'nickname', label: '昵称', value: userinfo.nickname!, disabled: false},
+        {key: 'email', label: '邮箱', value: userinfo.email!, disabled: false},
+        {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate!, disabled: true},
+        {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp!, disabled: true},
     ]
-    const dispatch = useAppDispatch<UserinfoInterface>();
+    const dispatch = useAppDispatch();
     const [form] = Form.useForm();
     useEffect(() => {
         form.setFieldsValue({...userinfo});
@@ -88,7 +88,7 @@ export const Userinfo: React.FC = () => {
                   autoComplete="off"
             >
                 {formItem.map((item: UserinfoFormInterface,) => (
-                    <Form.Item<UserinfoInterface>
+                    <Form.Item
                         label={item.label}
                         name={item.key}
                         key={item.key}

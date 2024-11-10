@@ -26,7 +26,7 @@ const removeToken = () => {
     localStorage.removeItem(tokenKey);
 }
 
-const getToken: UserTokenInterface = () => {
+const getToken: () => (null | UserTokenInterface) = () => {
     const token = localStorage.getItem(tokenKey);
     if (!token) {
         return null

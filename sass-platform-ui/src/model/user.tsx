@@ -16,6 +16,16 @@
 
 
 /**
+ * 用户登录
+ */
+export interface UserLogin {
+    username: string;
+    password: string;
+    loginType: string;
+}
+
+
+/**
  * 用户token对象
  */
 export interface UserTokenInterface {
@@ -76,11 +86,11 @@ export interface UserinfoInterface {
     /**
      * 主键id
      */
-    id: string;
+    id?: string;
     /**
      * 登录时间
      */
-    loginDate?: Date;
+    loginDate?: string;
     /**
      * 登录ip
      */
@@ -89,6 +99,10 @@ export interface UserinfoInterface {
      * 真实姓名
      */
     realName?: string;
+    /**
+     * 昵称
+     */
+    nickname?: string;
     /**
      * 用户名
      */

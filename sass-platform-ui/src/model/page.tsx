@@ -16,8 +16,8 @@
 
 
 export interface PageQuery {
-    pageNum: number;
-    pageSize: number;
+    pageNum: number | undefined;
+    pageSize: number | undefined;
     keyword?: string;
     sortColumn?: string;
     isAsc?: boolean;

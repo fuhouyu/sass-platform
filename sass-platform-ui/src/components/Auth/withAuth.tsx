@@ -34,7 +34,7 @@ const withAuth = (WrappedComponent: React.FC): React.FC => {
                 message.warning("当前用户登录状态已失效");
                 navigate('/login', {state: {from: pathname}});
             }
-        }, [navigate])
+        }, [navigate, pathname, token])
         if (token) {
             return <WrappedComponent/>;
         } else {
