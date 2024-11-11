@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
-import com.fuhouyu.sass.platform.common.exception.ServiceException;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.RolesAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
@@ -62,8 +62,8 @@ public class RoleServiceImpl implements RoleService {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);
         if (Objects.nonNull(roles)) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
-                    String.format("角色编码: %s 已存在", roleCode));
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "角色编码: %s 已存在", roleCode);
         }
         dto.setId(snowflakeIdWorker.nextId());
         Roles entity = ROLES_ASSEMBLER.toEntity(dto);

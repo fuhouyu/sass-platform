@@ -18,46 +18,46 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
-import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
-import com.fuhouyu.sass.platform.system.service.PermissionService;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
+import com.fuhouyu.sass.platform.system.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  * <p>
- * 权限控制层
+ * 租户控制器
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:08
+ * @since 2024/11/11 21:45
  */
 @RestController
-@RequestMapping(WebConstant.PERMISSION_CONTROLLER_PATH)
-@Tag(name = "权限前端控制层")
-@Validated
+@RequestMapping(WebConstant.TENANT_CONTROLLER_PATH)
+@Tag(name = "租户前端控制层")
 @RequiredArgsConstructor
-public class PermissionController {
+@Slf4j
+@Validated
+public class TenantController {
 
-    private final PermissionService permissionService;
+    private final TenantService tenantService;
 
     /**
-     * 获取用户当前权限列表
+     * 租户列表
      *
-     * @return 用户当前的权限列表
+     * @param pageQueryDTO 分页查询的dto对象
+     * @return 租户列表集合
      */
-    @GetMapping("/me")
-    @Operation(summary = "获取用户当前权限列表")
-    public BaseResponse<List<PermissionTreeDTO>> getPermissionByMe() {
-        return ResponseHelper.success(TreeConvertUtil.buildTree(permissionService.findPermissionListByMe()));
+    @GetMapping("/list")
+    @Operation(summary = "租户列表")
+    public BaseResponse<PageResultDTO<TenantDTO>> pageList(PageQueryDTO pageQueryDTO) {
+        return ResponseHelper.success(tenantService.pageList(pageQueryDTO));
     }
-
-
 }

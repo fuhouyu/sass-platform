@@ -15,10 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
-import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UsersAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public int removeById(Long id) {
         User user = ContextHolderStrategy.getContext().getUser();
         if (id.equals(user.getId())) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "不允许操作当前登录账号: %s", user.getUsername());
         }
         return this.userMapper.deleteById(id);
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     public int removeByIds(Collection<Long> ids) {
         User user = ContextHolderStrategy.getContext().getUser();
         if (ids.contains(user.getId())) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "不允许操作当前登录账号: %s", user.getUsername());
         }
         int deleteUserCount = this.userMapper.deleteByIds(ids);
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     private void validUsernameExists(String username) {
         Users users = this.userMapper.queryByUsername(username);
         if (Objects.nonNull(users)) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "%s 用户名已存在", username);
         }
     }
