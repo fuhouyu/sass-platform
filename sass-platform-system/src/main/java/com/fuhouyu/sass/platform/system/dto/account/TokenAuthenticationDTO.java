@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto;
+package com.fuhouyu.sass.platform.system.dto.account;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -32,28 +29,15 @@ import java.util.List;
  * token
  * </p>
  *
+ * @param userDetails 用户详情
+ * @param account     登录账号
  * @author fuhouyu
  * @since 2024/11/3 19:00
  */
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
-public class TokenAuthenticationDTO implements Authentication, Serializable {
+public record TokenAuthenticationDTO(UserDTO userDetails, String account) implements Authentication, Serializable {
 
     @Serial
     private static final long serialVersionUID = 185712368712364891L;
-
-    /**
-     * 用户详情
-     */
-    private final UserinfoDTO userDetails;
-
-    /**
-     * 登录账号
-     */
-    private final String account;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

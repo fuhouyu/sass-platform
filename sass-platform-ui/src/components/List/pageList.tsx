@@ -22,7 +22,7 @@ import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
-import {PageListHandler, PageListParams} from "@components/List/pageModel";
+import {PageListHandler, PageListParams} from "@components/List/pageParams";
 
 /**
  * 处理_转换为驼峰

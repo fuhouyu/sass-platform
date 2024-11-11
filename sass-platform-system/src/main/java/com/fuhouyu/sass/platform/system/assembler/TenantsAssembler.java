@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.TenantDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
 import com.fuhouyu.sass.platform.system.entity.Tenants;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

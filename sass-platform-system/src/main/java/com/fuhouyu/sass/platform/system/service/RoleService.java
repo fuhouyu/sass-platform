@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.RoleDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 
 /**
  * <p>

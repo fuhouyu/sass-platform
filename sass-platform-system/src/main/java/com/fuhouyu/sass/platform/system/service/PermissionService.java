@@ -16,8 +16,9 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 
 import java.util.List;
 
@@ -43,9 +44,9 @@ public interface PermissionService extends BaseService<PageQueryDTO, PermissionD
     /**
      * 获取当前用户的权限信息
      *
-     * @return 权限实体
+     * @return 权限树集合
      */
-    List<PermissionDTO> findPermissionListByMe();
+    List<PermissionTreeDTO> findPermissionListByMe();
 
 
 }

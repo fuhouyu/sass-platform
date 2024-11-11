@@ -32,7 +32,7 @@ const Login: React.FC = () => {
 
     const onFinish = (loginData: UserLogin) => {
         setLoginButtonLoading(true)
-        loginData.loginType = 'password'
+        loginData.accountType = 'password'
         dispatch(fetchLogin(loginData)).then(() => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
                 >
                     <h3 className="login-title"> 多租户后台管理系统</h3>
                     <Form.Item
-                        name="username"
+                        name="account"
                         rules={[{required: true, message: '请输入用户名!'}]}
                     >
                         <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>

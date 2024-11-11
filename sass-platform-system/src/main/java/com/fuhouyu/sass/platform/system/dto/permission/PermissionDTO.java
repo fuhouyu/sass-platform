@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo.permission;
+package com.fuhouyu.sass.platform.system.dto.permission;
 
-import com.fuhouyu.sass.platform.admin.vo.BaseResponseVO;
+import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,10 +31,10 @@ import java.io.Serializable;
  * @author fuhouyu
  * @since 2024/10/9 16:38
  */
-@Schema(name = "PermissionInfoDTO", description = "权限详情的dto对象")
+@Schema(name = "PermissionDTO", description = "权限详情的dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PermissionInfoVO extends BaseResponseVO implements Serializable {
+public class PermissionDTO extends BaseDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1237681253123113145L;

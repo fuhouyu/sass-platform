@@ -15,42 +15,37 @@
  */
 package com.fuhouyu.sass.platform.system.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * dto标识
+ * 基类dto响应
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/2 20:21
+ * @since 2024/10/9 16:55
  */
+@Schema(name = "BaseDTO", description = "基类响应dto对象")
 @Getter
 @Setter
 @ToString
-public class BaseDTO {
+public class BaseDTO implements Serializable {
 
-    /**
-     * 创建时间
-     */
+    @Schema(name = "createAt", description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createAt;
 
-    /**
-     * 更新时间
-     */
+    @Schema(name = "updateAt", description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime updateAt;
 
-    /**
-     * 创建人
-     */
+    @Schema(name = "createBy", description = "创建人", requiredMode = Schema.RequiredMode.REQUIRED)
     private String createBy;
 
-    /**
-     * 操作人
-     */
+    @Schema(name = "updateBy", description = "操作人", requiredMode = Schema.RequiredMode.REQUIRED)
     private String updateBy;
 }

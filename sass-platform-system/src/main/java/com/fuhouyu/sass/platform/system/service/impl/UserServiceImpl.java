@@ -21,8 +21,8 @@ import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
 import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UsersAssembler;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
@@ -57,14 +57,14 @@ public class UserServiceImpl implements UserService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     @Override
-    public void save(UserinfoDTO userinfoDTO) {
+    public void save(UserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
         userinfoDTO.setId(snowflakeIdWorker.nextId());
         this.userMapper.insert(USERS_ASSEMBLER.toEntity(userinfoDTO));
     }
 
     @Override
-    public UserinfoDTO findByUsername(String username) {
+    public UserDTO findByUsername(String username) {
         return USERS_ASSEMBLER.toDTO(this.userMapper.queryByUsername(username));
     }
 
@@ -76,18 +76,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserinfoDTO findById(Long userId) {
+    public UserDTO findById(Long userId) {
         Users users = this.userMapper.queryById(userId);
         return USERS_ASSEMBLER.toDTO(users);
     }
 
     @Override
-    public void edit(UserinfoDTO userinfoDTO) {
+    public void edit(UserDTO userinfoDTO) {
         this.userMapper.update(USERS_ASSEMBLER.toEntity(userinfoDTO));
     }
 
     @Override
-    public void saveBatch(List<UserinfoDTO> dtoList) {
+    public void saveBatch(List<UserDTO> dtoList) {
         List<Users> list = dtoList.stream().map(dto -> {
             dto.setId(snowflakeIdWorker.nextId());
             return USERS_ASSEMBLER.toEntity(dto);
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<UserinfoDTO>> getPageResult() {
+    public Function<PageQueryDTO, List<UserDTO>> getPageResult() {
         return (pageQuery) -> USERS_ASSEMBLER.toDTO(this.userMapper.queryList(pageQuery));
     }
 

@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system;
 
-import com.fuhouyu.sass.platform.system.dto.UserinfoDTO;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

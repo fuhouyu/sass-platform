@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo.user;
+package com.fuhouyu.sass.platform.system.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -28,15 +28,22 @@ import lombok.Data;
  * @since 2024/10/4 22:00
  */
 @Data
-@Schema(name = "UserLoginVO", description = "用户登录的vo对象")
-public class UserLoginVO {
+@Schema(name = "UserLoginDTO", description = "用户登录的dto对象")
+public class UserLoginDTO {
 
     /**
      * 用户名
      */
-    @NotBlank(message = "用户名不能为空")
-    @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String username;
+    @NotBlank(message = "账号不能为空")
+    @Schema(name = "account", description = "账号", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String account;
+
+    /**
+     * 账号类型
+     */
+    @NotBlank(message = "登录类型不能为空")
+    @Schema(name = "accountType", description = "账号类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String accountType;
 
     /**
      * 密码
@@ -44,11 +51,6 @@ public class UserLoginVO {
     @Schema(name = "password", description = "密码", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String password;
 
-    /**
-     * 账号类型
-     */
-    @NotBlank(message = "登录类型不能为空")
-    @Schema(name = "loginType", description = "登录类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String loginType;
+
 
 }

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto;
+package com.fuhouyu.sass.platform.system.dto.page;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.github.pagehelper.util.SqlSafeUtil;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,19 +39,25 @@ import java.util.Objects;
 @Getter
 @Setter
 @Slf4j
+@Schema(name = "PageQueryDTO", description = "pageQueryDTO")
 public class PageQueryDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 123876123971923123L;
 
+    @Schema(name = "pageNum", description = "页号", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageNum;
 
+    @Schema(name = "pageSize", description = "每页显示条数", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
 
+    @Schema(name = "keyword", description = "关键字查询", requiredMode = Schema.RequiredMode.REQUIRED)
     private String keyword;
 
-    private boolean isAsc;
+    @Schema(name = "isAsc", description = "是否顺序排序", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Boolean isAsc;
 
+    @Schema(name = "sortColumn", description = "排序列", requiredMode = Schema.RequiredMode.REQUIRED)
     private String sortColumn;
 
     public PageQueryDTO() {
