@@ -15,12 +15,12 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
-import com.fuhouyu.framework.web.exception.WebServiceException;
-import com.fuhouyu.framework.web.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.user.*;
@@ -56,8 +56,6 @@ import java.util.Objects;
 @Validated
 public class UserController {
 
-
-
     private final UserService userService;
 
     private final UserAccountService userAccountService;
@@ -77,8 +75,8 @@ public class UserController {
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
                     userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage());
-            throw new WebServiceException(
-                    ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(
+                    ResponseStatusEnum.INVALID_PARAM,
                     "用户名或密码错误");
         }
     }
@@ -139,7 +137,7 @@ public class UserController {
      * 修改当前用户的详情
      *
      * @param userDTO 用户dto对象
-     * @param id     主键id
+     * @param id      主键id
      * @return restResult
      */
     @PutMapping("/info/{id}")
@@ -160,7 +158,7 @@ public class UserController {
      */
     @GetMapping("/list")
     @Operation(summary = "获取用户列表")
-    public BaseResponse<PageResultDTO<UserDTO>> pageUserinfo(UserPageQueryDTO userPageQueryDTO) {
+    public BaseResponse<PageResultDTO<UserDTO>> pageList(UserPageQueryDTO userPageQueryDTO) {
         return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
     }
 

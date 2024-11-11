@@ -15,10 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
-import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
@@ -76,7 +76,7 @@ public class PermissionServiceImpl implements PermissionService {
         String permissionCode = dto.getPermissionCode();
         Permissions permissions = this.permissionMapper.queryByPermissionCode(permissionCode);
         if (Objects.nonNull(permissions)) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM, String.format("权限编码:%s 已存在", permissionCode));
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "权限编码:%s 已存在", permissionCode);
         }
         this.permissionMapper.insert(PERMISSION_ASSEMBLER.toEntity(dto));
     }

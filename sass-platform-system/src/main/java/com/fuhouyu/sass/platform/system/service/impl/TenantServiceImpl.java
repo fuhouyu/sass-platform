@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
-import com.fuhouyu.sass.platform.common.exception.ServiceException;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantsAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
@@ -55,7 +55,8 @@ public class TenantServiceImpl implements TenantService {
     public void save(TenantDTO tenantDTO) {
         Tenants existsTenant = tenantMapper.queryByTenantCode(tenantDTO.getTenantCode());
         if (Objects.nonNull(existsTenant)) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM, "租户编码:%s 已存在", existsTenant.getTenantCode());
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "租户编码:%s 已存在", existsTenant.getTenantCode());
         }
         tenantDTO.setId(snowflakeIdWorker.nextId());
         tenantMapper.insert(TENANTS_ASSEMBLER.toEntity(tenantDTO));
@@ -74,7 +75,8 @@ public class TenantServiceImpl implements TenantService {
     public void edit(TenantDTO tenantDTO) {
         Tenants tenants = tenantMapper.queryByTenantCode(tenantDTO.getTenantCode());
         if (Objects.isNull(tenants)) {
-            throw new ServiceException(ResponseCodeEnum.INVALID_PARAM, "租户: %s 不存在", tenantDTO.getTenantCode());
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "租户: %s 不存在", tenantDTO.getTenantCode());
         }
         this.tenantMapper.update(TENANTS_ASSEMBLER.toEntity(tenantDTO));
     }

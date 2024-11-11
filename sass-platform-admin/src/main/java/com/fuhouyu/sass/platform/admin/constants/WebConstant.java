@@ -29,6 +29,8 @@ public class WebConstant {
 
     public static final String USER_CONTROLLER_PATH = API_VERSION + "user";
 
+    public static final String TENANT_CONTROLLER_PATH = API_VERSION + "tenant";
+
     public static final String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
 
     private WebConstant() {
