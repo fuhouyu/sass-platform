@@ -18,25 +18,18 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import com.fuhouyu.framework.web.response.ResponseHelper;
-import com.fuhouyu.sass.platform.admin.assembler.PageQueryAssembler;
-import com.fuhouyu.sass.platform.admin.assembler.UserAccountAssembler;
-import com.fuhouyu.sass.platform.admin.assembler.UserAssembler;
-import com.fuhouyu.sass.platform.admin.assembler.UserLoginAssembler;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
-import com.fuhouyu.sass.platform.admin.vo.PageQueryResultVO;
-import com.fuhouyu.sass.platform.admin.vo.user.*;
-import com.fuhouyu.sass.platform.system.dto.*;
-import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.dto.user.*;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
-import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -57,19 +50,13 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping(WebConstant.USER_CONTROLLER_PATH)
-@Validated
 @Tag(name = "用户前端控制层")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class UserController {
 
-    private static final UserLoginAssembler USER_LOGIN_ASSEMBLER = UserLoginAssembler.INSTANCE;
 
-    private static final UserAccountAssembler USER_ACCOUNT_ASSEMBLER = UserAccountAssembler.INSTANCE;
-
-    private static final UserAssembler USER_ASSEMBLER = UserAssembler.INSTANCE;
-
-    private static final PageQueryAssembler PAGE_QUERY_ASSEMBLER = PageQueryAssembler.INSTANCE;
 
     private final UserService userService;
 
@@ -78,20 +65,18 @@ public class UserController {
     /**
      * 用户登录
      *
-     * @param userLoginVO 用户登录vo对象
+     * @param userLoginDTO 用户登录的dto对象
      * @return 响应
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录接口")
-    public BaseResponse<UserTokenVO> login(@RequestBody @Validated UserLoginVO userLoginVO) {
-        LoginAccountDTO loginAccountDTO = USER_LOGIN_ASSEMBLER.toLoginAccountDTO(userLoginVO);
+    public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
         try {
-            TokenEntity tokenEntity = this.userAccountService.login(loginAccountDTO);
-            UserTokenVO userTokenVO = USER_LOGIN_ASSEMBLER.toUserTokenVO(tokenEntity);
-            return ResponseHelper.success(userTokenVO);
+            UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
+            return ResponseHelper.success(userTokenDTO);
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginVO.getUsername(), userLoginVO.getLoginType(), e.getMessage(), e);
+                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage());
             throw new WebServiceException(
                     ResponseCodeEnum.INVALID_PARAM,
                     "用户名或密码错误");
@@ -118,46 +103,42 @@ public class UserController {
      */
     @Operation(summary = "用户详情")
     @GetMapping("/info")
-    public BaseResponse<UserinfoVO> userinfo() {
+    public BaseResponse<UserDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
-        UserinfoDTO userinfoDTO = this.userService.findById(userId);
-        UserinfoVO userinfo = USER_ASSEMBLER.toUserVO(userinfoDTO);
-        return ResponseHelper.success(userinfo);
+        UserDTO userDTO = this.userService.findById(userId);
+        return ResponseHelper.success(userDTO);
     }
 
 
     /**
      * 通过id获取用户详情
      *
-     * @return 用户详情
+     * @return 用户详情dto对象
      */
     @Operation(summary = "用户详情")
     @GetMapping("/info/{id}")
-    public BaseResponse<UserinfoVO> userinfo(@PathVariable("id") Long id) {
-        UserinfoDTO userinfoDTO = this.userService.findById(id);
-        UserinfoVO userinfo = USER_ASSEMBLER.toUserVO(userinfoDTO);
-        return ResponseHelper.success(userinfo);
+    public BaseResponse<UserDTO> userinfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.userService.findById(id));
     }
 
     /**
      * 修改当前用户的详情
      *
-     * @param userinfoVO 用户详情操作
+     * @param userDTO 用户dto对象
      * @return restResult
      */
     @PutMapping("/info")
     @Operation(summary = "修改当前的用户详情")
-    public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserinfoVO userinfoVO) {
-        UserinfoDTO userinfoDTO = USER_ASSEMBLER.toUserDTO(userinfoVO);
-        userinfoDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
-        this.userService.edit(userinfoDTO);
+    public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserDTO userDTO) {
+        userDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
+        this.userService.edit(userDTO);
         return ResponseHelper.success();
     }
 
     /**
      * 修改当前用户的详情
      *
-     * @param userinfoVO 用户详情操作
+     * @param userDTO 用户dto对象
      * @param id     主键id
      * @return restResult
      */
@@ -165,28 +146,22 @@ public class UserController {
     @Operation(summary = "修改当前的用户详情")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Validated @RequestBody UserinfoVO userinfoVO) {
-        UserinfoDTO userinfoDTO = USER_ASSEMBLER.toUserDTO(userinfoVO);
-        userinfoDTO.setId(id);
-        this.userService.edit(userinfoDTO);
+            @Validated @RequestBody UserDTO userDTO) {
+        userDTO.setId(id);
+        this.userService.edit(userDTO);
         return ResponseHelper.success();
     }
 
     /**
      * 分页查询用户列表
      *
-     * @param userPageQueryVO 用户分页查询对象
+     * @param userPageQueryDTO 用户分页查询对象
      * @return 用户列表集合
      */
     @GetMapping("/list")
     @Operation(summary = "获取用户列表")
-    public BaseResponse<PageQueryResultVO<UserinfoVO>> pageUserinfo(UserPageQueryVO userPageQueryVO) {
-        UserPageQueryDTO userPageQueryDTO = USER_ASSEMBLER.toUserPageQueryDTO(userPageQueryVO);
-        PageInfo<UserinfoDTO> pageUserEntityResult = this.userService.pageList(userPageQueryDTO);
-        PageQueryResultVO<UserinfoVO> pageQueryResultVO = new PageQueryResultVO<>(pageUserEntityResult.getPageNum(),
-                pageUserEntityResult.getPageSize(), pageUserEntityResult.getTotal(),
-                USER_ASSEMBLER.toUserInfoList(pageUserEntityResult.getList()));
-        return ResponseHelper.success(pageQueryResultVO);
+    public BaseResponse<PageResultDTO<UserDTO>> pageUserinfo(UserPageQueryDTO userPageQueryDTO) {
+        return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
     }
 
     /**
@@ -216,26 +191,19 @@ public class UserController {
     @Operation(summary = "校验用户名是否存在，如果存在，则返回true")
     @Parameter(name = "username", description = "用户名称")
     public BaseResponse<Boolean> validUsernameExists(@RequestParam("username") String username) {
-        UserinfoDTO userinfoDTO = this.userService.findByUsername(username);
-        return ResponseHelper.success(Objects.nonNull(userinfoDTO));
+        return ResponseHelper.success(Objects.nonNull(this.userService.findByUsername(username)));
     }
 
     /**
      * 保存用户信息
      *
-     * @param userinfoVO 用户的vo对象
+     * @param userDTO 用户dto对象
      * @return 响应
      */
     @Operation(summary = "保存用户信息")
     @PostMapping("/info")
-    public BaseResponse<Void> saveUser(@RequestBody SaveUserinfoVO userinfoVO) {
-        UserinfoAccountDTO userinfoAccountDTO = USER_ACCOUNT_ASSEMBLER.toUserinfoAccountDTO(userinfoVO);
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setAccount(userinfoVO.getUsername());
-        accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
-        accountDTO.setCredentials(userinfoVO.getPassword());
-        userinfoAccountDTO.addAccount(accountDTO);
-        this.userAccountService.register(userinfoAccountDTO);
+    public BaseResponse<Void> saveUser(@RequestBody SaveUserDTO userDTO) {
+        this.userAccountService.register(userDTO);
         return ResponseHelper.success();
     }
 }

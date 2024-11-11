@@ -29,7 +29,7 @@ import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {UserinfoInterface} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
-import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageModel";
+import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageParams";
 
 const User: React.FC = () => {
 

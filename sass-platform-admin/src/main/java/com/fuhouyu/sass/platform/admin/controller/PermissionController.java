@@ -17,22 +17,17 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.web.response.ResponseHelper;
-import com.fuhouyu.sass.platform.admin.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
-import com.fuhouyu.sass.platform.admin.vo.permission.PermissionInfoTreeVO;
 import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
-import com.fuhouyu.sass.platform.system.dto.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.CollectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,12 +40,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(WebConstant.PERMISSION_CONTROLLER_PATH)
-@Validated
 @Tag(name = "权限前端控制层")
 @RequiredArgsConstructor
 public class PermissionController {
-
-    private static final PermissionAssembler PERMISSION_ASSEMBLER = PermissionAssembler.INSTANCE;
 
     private final PermissionService permissionService;
 
@@ -61,13 +53,8 @@ public class PermissionController {
      */
     @GetMapping("/me")
     @Operation(summary = "获取用户当前权限列表")
-    public BaseResponse<List<PermissionInfoTreeVO>> getPermissionByMe() {
-        List<PermissionDTO> permissionList = permissionService.findPermissionListByMe();
-        List<PermissionInfoTreeVO> treeList = PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionList);
-        if (CollectionUtils.isEmpty(treeList)) {
-            return ResponseHelper.success(Collections.emptyList());
-        }
-        return ResponseHelper.success(TreeConvertUtil.buildTree(treeList));
+    public BaseResponse<List<PermissionTreeDTO>> getPermissionByMe() {
+        return ResponseHelper.success(TreeConvertUtil.buildTree(permissionService.findPermissionListByMe()));
     }
 
 

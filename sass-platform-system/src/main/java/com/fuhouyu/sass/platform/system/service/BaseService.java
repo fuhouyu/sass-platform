@@ -16,9 +16,9 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 
 import java.util.Collection;
@@ -91,15 +91,13 @@ public interface BaseService<P extends PageQueryDTO, T extends BaseDTO, ID> {
      * @param pageable 查询的dto对象
      * @return 分页查询结果
      */
-    default PageInfo<T> pageList(P pageable) {
+    default PageResultDTO<T> pageList(P pageable) {
         try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
             page.setUnsafeOrderBy(pageable.getOrderBy());
             List<T> result = this.getPageResult().apply(pageable);
-            PageInfo<T> pageInfo = new PageInfo<>(result);
-            pageInfo.setPageNum(page.getPageNum());
-            pageInfo.setPageSize(page.getPageSize());
-            pageInfo.setPages(page.getPages());
-            return pageInfo;
+            return new PageResultDTO<>(page.getPageNum(),
+                    page.getPageSize(), page.getTotal(),
+                    result);
         }
     }
 }

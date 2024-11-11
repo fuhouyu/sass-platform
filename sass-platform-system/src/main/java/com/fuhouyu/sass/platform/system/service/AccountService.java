@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 
 import java.util.Collection;

@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.SecurityUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.SecurityUserDetailDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

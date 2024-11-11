@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system;
 
 import com.fuhouyu.sass.platform.common.exception.ServiceException;
-import com.fuhouyu.sass.platform.system.dto.RoleDTO;
+import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.TenantDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
 
 /**
  * <p>

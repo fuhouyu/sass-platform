@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo.user;
+package com.fuhouyu.sass.platform.system.dto.user;
 
-import com.fuhouyu.sass.platform.admin.vo.BasePageQueryVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,18 +22,17 @@ import lombok.ToString;
 
 /**
  * <p>
- * 用户查询的vo对象
+ * 保存用户时的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/10 21:35
+ * @since 2024/11/9 21:21
  */
 @Getter
 @Setter
-@ToString(callSuper = true)
-@Schema(name = "UserPageQueryVO", description = "用户查询vo对象")
-public class UserPageQueryVO extends BasePageQueryVO {
+@ToString
+public class SaveUserDTO extends UserDTO {
 
-    @Schema(name = "gender", description = "性别筛选项")
-    private String gender;
+    @Schema(name = "password", description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String password;
 }

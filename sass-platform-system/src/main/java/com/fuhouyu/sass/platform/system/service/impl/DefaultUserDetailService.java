@@ -19,7 +19,7 @@ import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
 import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import lombok.RequiredArgsConstructor;

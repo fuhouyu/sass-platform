@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system;
 
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import org.junit.jupiter.api.Assertions;

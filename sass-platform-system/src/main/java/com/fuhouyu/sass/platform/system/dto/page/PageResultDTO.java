@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo;
+package com.fuhouyu.sass.platform.system.dto.page;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
- * 分页查询基类
+ * 分页返回的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/11 00:28
+ * @since 2024/10/11 15:22
  */
 @Getter
 @Setter
-@ToString
-@Schema(name = "BasePageQuery", description = "基类分页查询")
-public class BasePageQueryVO implements Serializable {
+@ToString(callSuper = true)
+@Schema(name = "PageResultDTO", description = "分页结果的dto对象")
+public class PageResultDTO<T> implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1238719237918263821L;
 
     @Schema(name = "pageNum", description = "页号", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageNum;
@@ -42,18 +47,22 @@ public class BasePageQueryVO implements Serializable {
     @Schema(name = "pageSize", description = "每页显示条数", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
 
-    @Schema(name = "keyword", description = "关键字查询", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String keyword;
+    @Schema(name = "total", description = "总条数", requiredMode = Schema.RequiredMode.REQUIRED, implementation = String.class)
+    private Long total;
 
-    @Schema(name = "isAsc", description = "是否顺序排序", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Boolean isAsc;
+    @Schema(name = "list", description = "分页数据")
+    private transient List<T> list;
 
-    @Schema(name = "sortColumn", description = "排序列", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String sortColumn;
+    public PageResultDTO(Integer pageNum, Integer pageSize, Long total) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+        this.total = total;
+    }
 
-    public BasePageQueryVO() {
-        this.pageNum = 1;
-        this.pageSize = 10;
-        this.isAsc = true;
+    public PageResultDTO(Integer pageNum, Integer pageSize, Long total, List<T> list) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+        this.total = total;
+        this.list = list;
     }
 }

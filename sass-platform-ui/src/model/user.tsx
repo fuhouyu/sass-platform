@@ -19,9 +19,9 @@
  * 用户登录
  */
 export interface UserLogin {
-    username: string;
+    account: string;
     password: string;
-    loginType: string;
+    accountType: string;
 }
 
 

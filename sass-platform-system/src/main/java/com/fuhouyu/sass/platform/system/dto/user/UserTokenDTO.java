@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo.user;
+package com.fuhouyu.sass.platform.system.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -35,8 +35,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @ToString
-@Schema(name = "UserTokenVO", description = "用户token vo对象")
-public class UserTokenVO implements Serializable {
+@Schema(name = "UserTokenDTO", description = "用户token dto对象")
+public class UserTokenDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1864123128912356412L;

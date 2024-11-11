@@ -13,40 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto;
+package com.fuhouyu.sass.platform.system.dto.account;
 
+import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 /**
  * <p>
- * 登录dto对象
+ * 账号实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/26 20:22
+ * @since 2024/9/27 17:54
  */
 @Getter
 @Setter
-@ToString(callSuper = true)
-@RequiredArgsConstructor
-public class LoginAccountDTO extends BaseDTO {
+@ToString
+public class AccountDTO extends BaseDTO {
 
     /**
      * 账号
      */
-    private final String account;
+    private String account;
 
     /**
      * 账号类型
      */
-    private final String accountType;
+    private String accountType;
 
     /**
-     * 登录的密码
+     * 用户id
      */
-    private final String password;
+    private Long userId;
+
+    /**
+     * 凭证
+     */
+    private String credentials;
+
+    /**
+     * 凭证过期时间
+     */
+    private LocalDateTime credentialsExpirationTime;
+
+    /**
+     * 第三方所属的账号id
+     */
+    private String refAccountId;
+
+    /**
+     * 是否启用标记
+     */
+    private Boolean isEnabled;
 
 }

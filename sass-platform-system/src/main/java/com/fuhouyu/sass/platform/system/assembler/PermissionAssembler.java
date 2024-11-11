@@ -15,10 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +35,13 @@ import org.mapstruct.factory.Mappers;
 public interface PermissionAssembler extends BaseAssembler<Permissions, PermissionDTO> {
 
     PermissionAssembler INSTANCE = Mappers.getMapper(PermissionAssembler.class);
+
+    /**
+     * 权限实体转换为权限树dto对象
+     *
+     * @param permissionList 权限实体
+     * @return 权限树dtp集合
+     */
+    List<PermissionTreeDTO> toPermissionInfoTreeDTOList(List<Permissions> permissionList);
+
 }

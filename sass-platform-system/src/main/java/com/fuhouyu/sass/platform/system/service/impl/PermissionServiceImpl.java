@@ -21,12 +21,12 @@ import com.fuhouyu.sass.platform.common.enums.ResponseCodeEnum;
 import com.fuhouyu.sass.platform.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
-import com.fuhouyu.sass.platform.system.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,8 +54,6 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionMapper permissionMapper;
 
-    private final RoleService roleService;
-
     private final SnowflakeIdWorker snowflakeIdWorker;
 
 
@@ -65,12 +63,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public List<PermissionDTO> findPermissionListByMe() {
+    public List<PermissionTreeDTO> findPermissionListByMe() {
         User user = ContextHolderStrategy.getContext().getUser();
-
         Long userId = user.getId();
         List<Permissions> list = this.permissionMapper.queryUserPermissonList(user.getTenantId(), userId);
-        return PERMISSION_ASSEMBLER.toDTO(list);
+        return PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(list);
     }
 
     @Override

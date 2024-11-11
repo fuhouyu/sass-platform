@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.assembler;
+package com.fuhouyu.sass.platform.system.dto.role;
 
-import com.fuhouyu.sass.platform.admin.vo.user.SaveUserinfoVO;
-import com.fuhouyu.sass.platform.system.dto.UserinfoAccountDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.fuhouyu.sass.platform.system.dto.BaseDTO;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 
 /**
  * <p>
- * 用户账号转换
+ * 角色dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 21:49
+ * @since 2024/10/9 20:50
  */
-@Mapper
-public interface UserAccountAssembler {
+@Getter
+@Setter
+@ToString(callSuper = true)
+public class RoleDTO extends BaseDTO {
 
-    UserAccountAssembler INSTANCE = Mappers.getMapper(UserAccountAssembler.class);
+    private Long id;
 
-    /**
-     * 转换用户账号dto对象
-     *
-     * @param userinfoVO 用户账号vo对象
-     * @return 账号dto对象
-     */
-    UserinfoAccountDTO toUserinfoAccountDTO(SaveUserinfoVO userinfoVO);
+    private String roleName;
 
+    private String roleCode;
+
+    private Integer displayOrder;
+
+    private String dataScope;
+
+    private Boolean isEnabled;
+
+    private Boolean isAllowModified;
 }
-

@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.sass.platform.system.assembler.AccountsAssembler;
-import com.fuhouyu.sass.platform.system.dto.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountId;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.entity.Accounts;

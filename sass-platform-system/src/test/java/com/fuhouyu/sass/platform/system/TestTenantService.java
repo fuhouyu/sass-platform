@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system;
 
-import com.fuhouyu.sass.platform.system.dto.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.TenantDTO;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
 import com.fuhouyu.sass.platform.system.service.TenantService;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.Test;

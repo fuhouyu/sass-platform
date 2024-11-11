@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.assembler;
+package com.fuhouyu.sass.platform.system.assembler;
 
 import com.fuhouyu.framework.security.entity.TokenEntity;
-import com.fuhouyu.sass.platform.admin.vo.user.UserLoginVO;
-import com.fuhouyu.sass.platform.admin.vo.user.UserTokenVO;
-import com.fuhouyu.sass.platform.system.dto.LoginAccountDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 用户登录
+ * token转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 21:49
+ * @since 2024/11/11 20:50
  */
 @Mapper
-public interface UserLoginAssembler {
+public interface TokenAssembler {
 
-    UserLoginAssembler INSTANCE = Mappers.getMapper(UserLoginAssembler.class);
-
-    /**
-     * 转换为账号dto对象
-     *
-     * @param userLoginVO 用户登录vo对象
-     * @return 账号dto对象
-     */
-    @Mapping(source = "loginType", target = "accountType")
-    @Mapping(source = "username", target = "account")
-    @Mapping(source = "password", target = "password")
-    LoginAccountDTO toLoginAccountDTO(UserLoginVO userLoginVO);
+    TokenAssembler INSTANCE = Mappers.getMapper(TokenAssembler.class);
 
     /**
      * token value转为dto对象
@@ -69,5 +56,5 @@ public interface UserLoginAssembler {
     @Mapping(source = "tokenEntity.refreshToken.issuedAt", target = "refreshTokenIssuedAt")
     @Mapping(source = "tokenEntity.accessToken.expiresAt", target = "accessTokenExpireAt")
     @Mapping(source = "tokenEntity.refreshToken.expiresAt", target = "refreshTokenExpireAt")
-    UserTokenVO toUserTokenVO(TokenEntity tokenEntity);
+    UserTokenDTO toUserTokenDTO(TokenEntity tokenEntity);
 }

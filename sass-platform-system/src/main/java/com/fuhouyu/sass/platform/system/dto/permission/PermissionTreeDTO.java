@@ -13,60 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto;
+package com.fuhouyu.sass.platform.system.dto.permission;
 
+import com.fuhouyu.sass.platform.common.BaseTree;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
- * 账号实体
+ * 权限详情树dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 17:54
+ * @since 2024/10/9 17:05
  */
+@Schema(name = "PermissionTreeDTO", description = "权限树详情dto对象")
 @Getter
 @Setter
-@ToString
-public class AccountDTO extends BaseDTO {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class PermissionTreeDTO extends PermissionDTO implements BaseTree<PermissionTreeDTO> {
 
-    /**
-     * 账号
-     */
-    private String account;
-
-    /**
-     * 账号类型
-     */
-    private String accountType;
-
-    /**
-     * 用户id
-     */
-    private Long userId;
-
-    /**
-     * 凭证
-     */
-    private String credentials;
-
-    /**
-     * 凭证过期时间
-     */
-    private LocalDateTime credentialsExpirationTime;
-
-    /**
-     * 第三方所属的账号id
-     */
-    private String refAccountId;
-
-    /**
-     * 是否启用标记
-     */
-    private Boolean isEnabled;
+    @Schema(name = "children", description = "权限树子集", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private List<PermissionTreeDTO> children;
 
 }

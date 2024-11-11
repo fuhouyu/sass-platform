@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.vo.permission;
+package com.fuhouyu.sass.platform.system.dto.user;
 
-import com.fuhouyu.sass.platform.common.BaseTree;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 /**
  * <p>
- * 权限详情树dto对象
+ * 用户查询的vo对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:05
+ * @since 2024/11/10 21:35
  */
-@Schema(name = "PermissionInfoTreeVO", description = "权限树详情vo对象")
 @Getter
 @Setter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class PermissionInfoTreeVO extends PermissionInfoVO implements BaseTree<PermissionInfoTreeVO> {
+@Schema(name = "UserPageQueryDTO", description = "用户查询dto对象")
+public class UserPageQueryDTO extends PageQueryDTO {
 
-    @Schema(name = "children", description = "权限树子集", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<PermissionInfoTreeVO> children;
-
+    @Schema(name = "gender", description = "性别筛选项")
+    private String gender;
 }
