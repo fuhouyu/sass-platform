@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-import {UserToken} from "@/model/authentication";
+import {request} from "@/utils";
+import {UserAuthentication, UserToken} from "@/model/authentication";
 
-const tokenKey: string = 'token';
+const baseAuthUrl = '/v1/auth'
 
-const storeToken = (token: UserToken) => {
-    localStorage.setItem(tokenKey, JSON.stringify(token));
+
+/**
+ * 用户登录
+ * @param loginData 登录的表单信息
+ */
+const loginApi = (loginData: UserAuthentication): Promise<UserToken> =>
+    request.post(`${baseAuthUrl}/login`, loginData)
+
+
+/**
+ * 退出登录
+ */
+const logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
+
+
+export {
+    loginApi,
+    logoutApi
 }
-
-const removeToken = () => {
-    localStorage.removeItem(tokenKey);
-}
-
-const getToken: () => (null | UserToken) = () => {
-    const token = localStorage.getItem(tokenKey);
-    if (!token) {
-        return null
-    }
-    return JSON.parse(token) as UserToken;
-}
-
-
-export {storeToken, removeToken, getToken}

@@ -21,7 +21,7 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
-import {UserLogin} from "@/model/user";
+import {UserAuthentication} from "@/model/authentication";
 
 
 const Login: React.FC = () => {
@@ -30,7 +30,7 @@ const Login: React.FC = () => {
     const location = useLocation();
     const dispatch = useAppDispatch();
 
-    const onFinish = (loginData: UserLogin) => {
+    const onFinish = (loginData: UserAuthentication) => {
         setLoginButtonLoading(true)
         loginData.accountType = 'password'
         dispatch(fetchLogin(loginData)).then(() => {
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
             const from = fromRouter || fromRouter.endsWith('login') ? '/' : fromRouter;
             navigate(from)
         }).catch((err: Error) => {
-            message.error(err.message)
+            message.error(err.message).then()
         }).finally(() => {
             setTimeout(() => {
                 setLoginButtonLoading(false);

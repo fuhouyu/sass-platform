@@ -20,9 +20,9 @@ import "./index.scss"
 import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
-import {UserinfoInterface} from "@/model/user";
-import {Userinfo} from "@/pages/Userinfo/userinfo";
 import withAuth from "@components/Auth/withAuth";
+import {Userinfo} from "@/pages/Userinfo/userinfo";
+import {UserDetail} from "@/model/user";
 
 interface MenuLiInterface {
     key: string;
@@ -37,7 +37,7 @@ interface MenuLiInterface {
 export const PersonCenter: React.FC = withAuth(() => {
 
     const userinfo = useAppSelector((state: {
-        user: { userinfo: UserinfoInterface };
+        user: { userinfo: UserDetail };
     }) => state.user.userinfo);
 
     const menuItems: MenuLiInterface[] = [

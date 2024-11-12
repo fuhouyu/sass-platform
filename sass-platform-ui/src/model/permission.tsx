@@ -15,11 +15,11 @@
  */
 
 
-export interface PermissionInterface {
+export interface Permission {
     /**
      * 权限树子集
      */
-    children?: PermissionInterface[];
+    children?: Permission[];
     /**
      * 组件路径
      */

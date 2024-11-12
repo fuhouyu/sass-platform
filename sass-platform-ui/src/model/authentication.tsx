@@ -15,43 +15,53 @@
  */
 
 /**
- * 用户详情
+ * 用户认证
  */
-export interface UserDetail {
+export interface UserAuthentication {
+    account: string;
+    password: string;
+    accountType: string;
+}
+
+
+/**
+ * 用户token对象
+ */
+export interface UserToken {
     /**
-     * 头像地址
+     * 认证令牌
      */
-    avatar?: string;
+    accessToken?: string;
     /**
-     * 邮件地址
+     * 认证令牌过期时间
      */
-    email?: string;
+    accessTokenExpireAt?: Date;
     /**
-     * 性别
+     * 认证令牌签发时长，单位：秒
      */
-    gender?: string;
+    accessTokenExpireSeconds?: number;
     /**
-     * 主键id
+     * 认证令牌签发时间
      */
-    id?: string;
+    accessTokenIssuedAt?: Date;
     /**
-     * 登录时间
+     * 刷新令牌
      */
-    loginDate?: string;
+    refreshToken?: string;
     /**
-     * 登录ip
+     * 刷新令牌过期时间
      */
-    loginIp?: string;
+    refreshTokenExpireAt?: Date;
     /**
-     * 真实姓名
+     * 刷新令牌签发时长，单位：秒
      */
-    realName?: string;
+    refreshTokenExpireSeconds?: number;
     /**
-     * 昵称
+     * 刷新令牌签发时间
      */
-    nickname?: string;
+    refreshTokenIssuedAt?: Date;
     /**
-     * 用户名
+     * token类型，一般为bearer
      */
-    username?: string;
+    tokenType?: string;
 }
