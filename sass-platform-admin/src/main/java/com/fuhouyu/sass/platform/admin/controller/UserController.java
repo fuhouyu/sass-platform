@@ -15,21 +15,19 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
-import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.user.*;
+import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -59,40 +57,6 @@ public class UserController {
     private final UserService userService;
 
     private final UserAccountService userAccountService;
-
-    /**
-     * 用户登录
-     *
-     * @param userLoginDTO 用户登录的dto对象
-     * @return 响应
-     */
-    @PostMapping("/login")
-    @Operation(summary = "用户登录接口")
-    public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
-        try {
-            UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
-            return ResponseHelper.success(userTokenDTO);
-        } catch (Exception e) {
-            LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage());
-            throw new ServiceException(
-                    ResponseStatusEnum.INVALID_PARAM,
-                    "用户名或密码错误");
-        }
-    }
-
-
-    /**
-     * 退出登录
-     *
-     * @return 响应
-     */
-    @Operation(summary = "退出登录")
-    @PostMapping("/logout")
-    public BaseResponse<Void> logout() {
-        this.userAccountService.logout();
-        return ResponseHelper.success();
-    }
 
     /**
      * 登录用户的用户详情

@@ -17,7 +17,7 @@
 
 import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
-import {UserinfoInterface} from "@/model/user";
+import {UserDetail} from "@/model/user";
 import {Button, Form, Input, message, Radio} from "antd";
 import './index.scss'
 import {fetchEditUserinfo} from "@/store/modules/user";
@@ -35,8 +35,8 @@ interface UserinfoFormInterface {
  */
 export const Userinfo: React.FC = () => {
 
-    const userinfo: UserinfoInterface = useAppSelector((state: {
-        user: { userinfo: UserinfoInterface }
+    const userinfo: UserDetail = useAppSelector((state: {
+        user: { userinfo: UserDetail }
     }) => state.user.userinfo);
 
     const formItem: UserinfoFormInterface[] = [
@@ -62,7 +62,7 @@ export const Userinfo: React.FC = () => {
     }
 
 
-    const onFinish = (values: UserinfoInterface): void => {
+    const onFinish = (values: UserDetail): void => {
         setButtonLoading(true);
         dispatch(fetchEditUserinfo(values))
             .then(() => {

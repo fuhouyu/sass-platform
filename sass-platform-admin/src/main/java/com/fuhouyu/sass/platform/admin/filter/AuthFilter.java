@@ -54,7 +54,7 @@ public class AuthFilter implements ParseHttpRequest {
     @Override
     public User parseUser(@NonNull HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (request.getRequestURI().equals(WebConstant.USER_CONTROLLER_PATH + "/login")
+        if (request.getRequestURI().equals(WebConstant.AUTH_CONTROLLER_PATH + "/login")
                 || request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }

@@ -15,12 +15,12 @@
  */
 
 
-import {PermissionInterface} from "@/model/permission";
+import {Permission} from "@/model/permission";
 import {request} from "@/utils";
 
 const basePermissionUrl = '/v1/permission'
 
-const getUserPermissionApi = (): Promise<PermissionInterface[]> => request.get(`${basePermissionUrl}/me`);
+const getUserPermissionApi = (): Promise<Permission[]> => request.get(`${basePermissionUrl}/me`);
 
 
 export {

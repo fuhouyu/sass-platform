@@ -46,7 +46,7 @@ import java.util.Set;
         }
 )
 @Component
-public class BaseDOValueHandle implements Interceptor {
+public class BaseEntityHandle implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

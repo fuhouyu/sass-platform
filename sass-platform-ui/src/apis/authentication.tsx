@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.constants;
+
+import {request} from "@/utils";
+import {UserAuthentication, UserToken} from "@/model/authentication";
+
+const baseAuthUrl = '/v1/auth'
+
 
 /**
- * <p>
- * web常量前缀
- * </p>
- *
- * @author fuhouyu
- * @since 2024/10/4 22:17
+ * 用户登录
+ * @param loginData 登录的表单信息
  */
-public class WebConstant {
-
-    private static final String API_VERSION = "/v1/";
-
-    public static final String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public static final String AUTH_CONTROLLER_PATH = API_VERSION + "auth";
-
-    public static final String TENANT_CONTROLLER_PATH = API_VERSION + "tenant";
-
-    public static final String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
+const loginApi = (loginData: UserAuthentication): Promise<UserToken> =>
+    request.post(`${baseAuthUrl}/login`, loginData)
 
 
+/**
+ * 退出登录
+ */
+const logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
+
+
+export {
+    loginApi,
+    logoutApi
 }

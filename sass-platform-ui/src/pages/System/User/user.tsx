@@ -27,7 +27,7 @@ import {
 } from "@/apis/user";
 import {IconFont, PageList} from "@/components";
 import './index.scss'
-import {UserinfoInterface} from "@/model/user";
+import {UserDetail} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
 import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageParams";
 
@@ -52,7 +52,7 @@ const User: React.FC = () => {
             return;
         }
         getUserinfoByIdApi(userId!)
-            .then((res: UserinfoInterface) => {
+            .then((res: UserDetail) => {
                 form.setFieldsValue({...res})
             })
             .catch((err: Error) => {
@@ -154,7 +154,7 @@ const User: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, record: UserinfoInterface) => {
+            render: (_, record: UserDetail) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => openModal(record.id)}>修改</a>
