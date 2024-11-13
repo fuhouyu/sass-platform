@@ -37,24 +37,32 @@ public interface TokenAssembler {
     /**
      * token value转为dto对象
      *
-     * @param tokenEntity token实体
+     * @param auth2Token token实体
      * @return dto对象
      */
     @Mapping(expression = """
-            java(java.time.Duration.between(tokenEntity.getAccessToken().getIssuedAt(),
-             tokenEntity.getAccessToken().getExpiresAt()).getSeconds())
+            java(java.time.Duration.between(auth2Token.getAccessToken().getIssuedAt(),
+             auth2Token.getAccessToken().getExpiresAt()).getSeconds())
             """, target = "accessTokenExpireSeconds")
     @Mapping(expression = """
-            java(java.time.Duration.between(tokenEntity.getRefreshToken().getIssuedAt(),
-             tokenEntity.getRefreshToken().getExpiresAt()).getSeconds())
+            java(java.time.Duration.between(auth2Token.getRefreshToken().getIssuedAt(),
+             auth2Token.getRefreshToken().getExpiresAt()).getSeconds())
             """,
             target = "refreshTokenExpireSeconds")
-    @Mapping(source = "tokenEntity.accessToken.tokenType.value", target = "tokenType")
-    @Mapping(source = "tokenEntity.accessToken.tokenValue", target = "accessToken")
-    @Mapping(source = "tokenEntity.refreshToken.tokenValue", target = "refreshToken")
-    @Mapping(source = "tokenEntity.accessToken.issuedAt", target = "accessTokenIssuedAt")
-    @Mapping(source = "tokenEntity.refreshToken.issuedAt", target = "refreshTokenIssuedAt")
-    @Mapping(source = "tokenEntity.accessToken.expiresAt", target = "accessTokenExpireAt")
-    @Mapping(source = "tokenEntity.refreshToken.expiresAt", target = "refreshTokenExpireAt")
-    UserTokenDTO toUserTokenDTO(OAuth2Token tokenEntity);
+    @Mapping(source = "auth2Token.accessToken.tokenType.value", target = "tokenType")
+    @Mapping(source = "auth2Token.accessToken.tokenValue", target = "accessToken")
+    @Mapping(source = "auth2Token.refreshToken.tokenValue", target = "refreshToken")
+    @Mapping(expression = """
+            java(java.time.LocalDateTime.ofInstant(auth2Token.getAccessToken().getIssuedAt(), java.time.ZoneId.systemDefault()))
+            """, target = "accessTokenIssuedAt")
+    @Mapping(expression = """
+            java(java.time.LocalDateTime.ofInstant(auth2Token.getRefreshToken().getIssuedAt(), java.time.ZoneId.systemDefault()))
+            """, target = "refreshTokenIssuedAt")
+    @Mapping(expression = """
+            java(java.time.LocalDateTime.ofInstant(auth2Token.getAccessToken().getExpiresAt(), java.time.ZoneId.systemDefault()))
+            """, target = "accessTokenExpireAt")
+    @Mapping(expression = """
+            java(java.time.LocalDateTime.ofInstant(auth2Token.getRefreshToken().getExpiresAt(), java.time.ZoneId.systemDefault()))
+            """, target = "refreshTokenExpireAt")
+    UserTokenDTO toUserTokenDTO(OAuth2Token auth2Token);
 }

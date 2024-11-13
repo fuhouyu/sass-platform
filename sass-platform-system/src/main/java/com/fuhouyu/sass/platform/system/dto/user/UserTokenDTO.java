@@ -22,7 +22,7 @@ import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -57,14 +57,14 @@ public class UserTokenDTO implements Serializable {
     private String refreshToken;
 
     @Schema(name = "accessTokenIssuedAt", description = "认证令牌签发时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Instant accessTokenIssuedAt;
+    private LocalDateTime accessTokenIssuedAt;
 
     @Schema(name = "refreshTokenIssuedAt", description = "刷新令牌签发时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Instant refreshTokenIssuedAt;
+    private LocalDateTime refreshTokenIssuedAt;
 
     @Schema(name = "accessTokenExpireAt", description = "认证令牌过期时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Instant accessTokenExpireAt;
+    private LocalDateTime accessTokenExpireAt;
 
     @Schema(name = "refreshTokenExpireAt", description = "刷新令牌过期时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Instant refreshTokenExpireAt;
+    private LocalDateTime refreshTokenExpireAt;
 }

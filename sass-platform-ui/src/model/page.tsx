@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-
+/**
+ * 分页查询对象
+ */
 export interface PageQuery {
     pageNum: number | undefined;
     pageSize: number | undefined;
