@@ -36,7 +36,6 @@ const Login: React.FC = () => {
         dispatch(fetchLogin(loginData)).then(() => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
-            console.log(fromRouter);
             const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
             navigate(from)
         }).catch((err: Error) => {
