@@ -18,14 +18,15 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.security.core.DefaultUserService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -42,16 +43,21 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DefaultUserDetailService implements UserDetailsService {
+public class DefaultUserDetailService implements DefaultUserService {
 
     private final AccountService accountService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AccountIdDTO accountIdDTO = AccountIdDTO.parseFullAccount(username);
+        return this.loadUserByUsername(username, AccountTypeEnum.PASSWORD.name());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String account, String accountType) throws UsernameNotFoundException {
+        AccountIdDTO accountIdDTO = new AccountIdDTO(account, accountType);
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
         if (Objects.isNull(accountDTO)) {
-            LoggerUtil.warn(log, "{} 登录失败,未找到对应账号", username);
+            LoggerUtil.warn(log, "account: {}, accountType:{} 登录失败,未找到对应账号", account, accountType);
             throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "用户名或密码错误");
         }
         return SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);

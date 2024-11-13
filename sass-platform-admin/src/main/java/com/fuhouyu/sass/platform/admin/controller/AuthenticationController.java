@@ -15,11 +15,8 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
-import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
@@ -63,16 +60,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     @Operation(summary = "用户登录接口")
     public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
-        try {
-            UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
-            return ResponseHelper.success(userTokenDTO);
-        } catch (Exception e) {
-            LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage());
-            throw new ServiceException(
-                    ResponseStatusEnum.INVALID_PARAM,
-                    "用户名或密码错误");
-        }
+        UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
+        return ResponseHelper.success(userTokenDTO);
     }
 
 

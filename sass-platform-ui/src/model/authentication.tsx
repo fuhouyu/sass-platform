@@ -18,8 +18,17 @@
  * 用户认证
  */
 export interface UserAuthentication {
-    account: string;
-    password: string;
+    /**
+     * 登录标识
+     */
+    identify: string;
+    /**
+     * 登录凭证
+     */
+    credentials: string;
+    /**
+     * 账号类型
+     */
     accountType: string;
 }
 

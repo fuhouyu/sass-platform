@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.framework.security.entity.TokenEntity;
+import com.fuhouyu.framework.security.token.OAuth2Token;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -56,5 +56,5 @@ public interface TokenAssembler {
     @Mapping(source = "tokenEntity.refreshToken.issuedAt", target = "refreshTokenIssuedAt")
     @Mapping(source = "tokenEntity.accessToken.expiresAt", target = "accessTokenExpireAt")
     @Mapping(source = "tokenEntity.refreshToken.expiresAt", target = "refreshTokenExpireAt")
-    UserTokenDTO toUserTokenDTO(TokenEntity tokenEntity);
+    UserTokenDTO toUserTokenDTO(OAuth2Token tokenEntity);
 }
