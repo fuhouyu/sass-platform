@@ -72,19 +72,19 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int removeById(AccountIdDTO accountIdDTO) {
-        return this.accountMapper.deleteById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType()));
+        return this.accountMapper.deleteById(new AccountId(accountIdDTO.account(), accountIdDTO.accountType()));
     }
 
     @Override
     public int removeByIds(Collection<AccountIdDTO> accountIdList) {
-        List<AccountId> ids = accountIdList.stream().map(account -> new AccountId(account.getAccount(), account.getAccountType()))
+        List<AccountId> ids = accountIdList.stream().map(account -> new AccountId(account.account(), account.accountType()))
                 .toList();
         return this.accountMapper.deleteByIds(ids);
     }
 
     @Override
     public AccountDTO findById(AccountIdDTO accountIdDTO) {
-        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType()));
+        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.account(), accountIdDTO.accountType()));
         if (Objects.isNull(accounts)) {
             return null;
         }

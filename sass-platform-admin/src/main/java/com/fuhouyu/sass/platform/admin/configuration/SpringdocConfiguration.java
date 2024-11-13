@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.config;
+package com.fuhouyu.sass.platform.admin.configuration;
 
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2024/10/5 19:46
  */
 @Configuration
-public class SpringdocConfig {
+public class SpringdocConfiguration {
 
     @Bean
     public OpenApiCustomizer openApiCustomizer() {

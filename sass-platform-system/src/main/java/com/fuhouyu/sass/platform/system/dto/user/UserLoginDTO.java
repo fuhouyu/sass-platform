@@ -15,8 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.dto.user;
 
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -34,22 +36,26 @@ public class UserLoginDTO {
     /**
      * 用户名
      */
-    @NotBlank(message = "账号不能为空")
-    @Schema(name = "account", description = "账号", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String account;
+    @NotBlank(message = "登录标识未填写")
+    @Schema(name = "identify", description = """
+            登录标识，如用户名，刷新令牌等
+            """, requiredMode = Schema.RequiredMode.REQUIRED)
+    private String identify;
 
     /**
      * 账号类型
      */
-    @NotBlank(message = "登录类型不能为空")
-    @Schema(name = "accountType", description = "账号类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String accountType;
+    @NotNull(message = "登录类型未选择")
+    @Schema(name = "accountType", description = "账号类型", defaultValue = "PASSWORD", requiredMode = Schema.RequiredMode.REQUIRED)
+    private AccountTypeEnum accountType;
 
     /**
-     * 密码
+     * 凭证
      */
-    @Schema(name = "password", description = "密码", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String password;
+    @Schema(name = "credentials", description = """
+            登录凭证
+            """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String credentials;
 
 
 

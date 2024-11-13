@@ -15,6 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.enums;
 
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
+import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 /**
  * <p>
  * 账号类型枚举
@@ -25,17 +30,21 @@ package com.fuhouyu.sass.platform.system.enums;
  */
 public enum AccountTypeEnum {
 
-    /**
-     * 密码
-     */
-    PASSWORD,
+    PASSWORD {
+        @Override
+        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+            return new UsernamePasswordAuthenticationToken(userLoginDTO.getIdentify(), userLoginDTO.getCredentials());
+        }
+    },
 
-    /**
-     * email
-     */
-    EMAIL,
-
-
+    REFRESH_TOKEN {
+        @Override
+        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+            return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getIdentify());
+        }
+    },
     ;
+
+    public abstract AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO);
 
 }

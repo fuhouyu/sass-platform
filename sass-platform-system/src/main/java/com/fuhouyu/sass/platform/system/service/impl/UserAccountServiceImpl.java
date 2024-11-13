@@ -15,11 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
-import com.fuhouyu.framework.security.entity.GrantTypeAuthenticationEntity;
-import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
@@ -28,7 +28,6 @@ import com.fuhouyu.sass.platform.system.dto.account.TokenAuthenticationDTO;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
-import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -78,16 +77,21 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
-        AccountIdDTO accountIdDTO = new AccountIdDTO(userLoginDTO.getAccount(), userLoginDTO.getAccountType());
-        GrantTypeAuthenticationEntity grantTypeAuthenticationEntity = new GrantTypeAuthenticationEntity(accountIdDTO.getAccountType(),
-                accountIdDTO.getFullAccount(),
-                userLoginDTO.getPassword());
-        Authentication authentication = authenticationManager.authenticate(grantTypeAuthenticationEntity.createAuthenticationToken());
-        SecurityUserDetailDTO securityUserDetailDTO = (SecurityUserDetailDTO) authentication.getPrincipal();
-        this.userService.recordLoginSuccess(securityUserDetailDTO.getUserId());
-        TokenEntity tokenEntity = this.getAccessToken(new TokenAuthenticationDTO(this.userService.findById(securityUserDetailDTO.getUserId()),
-                userLoginDTO.getAccount()));
-        return TOKEN_ASSEMBLER.toUserTokenDTO(tokenEntity);
+        try {
+            Authentication authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
+            SecurityUserDetailDTO securityUserDetailDTO = (SecurityUserDetailDTO) authentication.getPrincipal();
+            this.userService.recordLoginSuccess(securityUserDetailDTO.getUserId());
+            // 创建token
+            TokenAuthenticationDTO tokenAuthenticationDTO = new TokenAuthenticationDTO(this.userService.findById(securityUserDetailDTO.getUserId()),
+                    userLoginDTO.getIdentify());
+            return TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(tokenAuthenticationDTO));
+        } catch (Exception e) {
+            LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
+                    userLoginDTO.getIdentify(), userLoginDTO.getAccountType(), e.getMessage());
+            throw new ServiceException(
+                    ResponseStatusEnum.INVALID_PARAM,
+                    "用户名或密码错误");
+        }
     }
 
     @Override
@@ -95,7 +99,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Request request = ContextHolderStrategy.getContext().getRequest();
         String authorization = request.getAuthorization();
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
-        this.tokenStore.removeTokenEntity(token);
+        this.tokenStore.removeAuth2Token(token);
     }
 
     /**
@@ -116,22 +120,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             LoggerUtil.error(log, "用户账号注册失败: {}", accountDTO, e);
             throw new IllegalArgumentException("用户注册失败");
         }
-    }
-
-
-    /**
-     * 用户登录，获取token.
-     *
-     * @param authentication 认证详情
-     * @return dto对象
-     */
-    private TokenEntity getAccessToken(Authentication authentication) {
-        // 先固定
-        int accessTokenValidity = 6000;
-        int refreshTokenValidity = 6000;
-        return tokenStore.createToken(authentication,
-                accessTokenValidity,
-                refreshTokenValidity);
     }
 
 }

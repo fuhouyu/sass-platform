@@ -32,11 +32,11 @@ const Login: React.FC = () => {
 
     const onFinish = (loginData: UserAuthentication) => {
         setLoginButtonLoading(true)
-        loginData.accountType = 'password'
+        loginData.accountType = 'PASSWORD'
         dispatch(fetchLogin(loginData)).then(() => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
-            const from = fromRouter || fromRouter.endsWith('login') ? '/' : fromRouter;
+            const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
             navigate(from)
         }).catch((err: Error) => {
             message.error(err.message).then()
@@ -58,13 +58,13 @@ const Login: React.FC = () => {
                 >
                     <h3 className="login-title"> 多租户后台管理系统</h3>
                     <Form.Item
-                        name="account"
+                        name="identify"
                         rules={[{required: true, message: '请输入用户名!'}]}
                     >
                         <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>
                     </Form.Item>
                     <Form.Item
-                        name="password"
+                        name="credentials"
                         rules={[{required: true, message: '请输入密码!'}]}
                     >
                         <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>

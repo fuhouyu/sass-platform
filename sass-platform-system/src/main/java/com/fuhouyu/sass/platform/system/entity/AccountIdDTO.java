@@ -15,13 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.entity;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
-import java.util.Locale;
-
 /**
  * <p>
  * 账号id实体
@@ -30,39 +23,5 @@ import java.util.Locale;
  * @author fuhouyu
  * @since 2024/11/2 19:05
  */
-@Getter
-@ToString
-@RequiredArgsConstructor
-public class AccountIdDTO {
-
-    private static final String CONCAT_SEPARATOR = ":";
-
-    private final String account;
-
-    private final String accountType;
-
-    /**
-     * account:accountType
-     */
-    private final String fullAccount;
-
-    public AccountIdDTO(String account, String accountType) {
-        this.account = account;
-        this.accountType = accountType;
-        this.fullAccount = account + CONCAT_SEPARATOR + accountType;
-    }
-
-    /**
-     * 解析账号信息
-     *
-     * @param fullAccount 账号信息 account:accountType
-     * @return 账号dto对象
-     */
-    public static AccountIdDTO parseFullAccount(@NonNull String fullAccount) {
-        String[] accountAndType = fullAccount.split(CONCAT_SEPARATOR);
-        if (accountAndType.length != 2) {
-            throw new IllegalArgumentException(String.format("账号不正确: %s", fullAccount));
-        }
-        return new AccountIdDTO(accountAndType[0], accountAndType[1].toUpperCase(Locale.ROOT));
-    }
+public record AccountIdDTO(String account, String accountType) {
 }
