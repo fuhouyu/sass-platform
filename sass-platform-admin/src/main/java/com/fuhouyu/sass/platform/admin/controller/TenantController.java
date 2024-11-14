@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,5 +60,15 @@ public class TenantController {
     @Operation(summary = "租户列表")
     public BaseResponse<PageResultDTO<TenantDTO>> pageList(PageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantService.pageList(pageQueryDTO));
+    }
+
+    /**
+     * 通过租户id获取租户详情
+     *
+     * @param id 租户id
+     * @return 租户详情
+     */
+    public BaseResponse<TenantDTO> getTenantInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(tenantService.findById(id));
     }
 }

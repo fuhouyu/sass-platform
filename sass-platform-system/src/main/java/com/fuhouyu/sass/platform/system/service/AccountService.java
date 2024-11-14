@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 
 import java.util.Collection;
@@ -30,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/2 22:25
  */
-public interface AccountService extends BaseService<PageQueryDTO, AccountDTO, AccountIdDTO> {
+public interface AccountService extends BaseService<AccountDTO, AccountIdDTO> {
 
     /**
      * 通过用户id查询账号

@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @author fuhouyu
  * @since 2024/11/2 19:18
  */
-public interface BaseService<P extends PageQueryDTO, T extends BaseDTO, ID> {
+public interface BaseService<T extends BaseDTO, ID> {
 
     /**
      * 保存dto对象
@@ -83,7 +83,7 @@ public interface BaseService<P extends PageQueryDTO, T extends BaseDTO, ID> {
      *
      * @return 分页结果
      */
-    Function<P, List<T>> getPageResult();
+    Function<PageQueryDTO, List<T>> getPageResult();
 
     /**
      * 分页查询
@@ -91,7 +91,7 @@ public interface BaseService<P extends PageQueryDTO, T extends BaseDTO, ID> {
      * @param pageable 查询的dto对象
      * @return 分页查询结果
      */
-    default PageResultDTO<T> pageList(P pageable) {
+    default PageResultDTO<T> pageList(PageQueryDTO pageable) {
         try (Page<Object> page = PageMethod.startPage(pageable.getPageNum(), pageable.getPageSize())) {
             page.setUnsafeOrderBy(pageable.getOrderBy());
             List<T> result = this.getPageResult().apply(pageable);

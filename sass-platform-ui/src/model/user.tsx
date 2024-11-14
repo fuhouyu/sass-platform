@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+import {BaseModel} from "@/model/base";
+
 /**
  * 用户详情
  */
-export interface UserDetail {
+export interface UserDetail extends BaseModel {
     /**
      * 头像地址
      */

@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
 
+import {PageQuery, PageResult} from "@/model/page";
+import {request} from "@/utils";
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
+const baseTenantUrl = '/v1/tenant'
 
 /**
- * <p>
- * 租户域的接口
- * </p>
- *
- * @author fuhouyu
- * @since 2024/9/21 16:23
+ * 分页获取租户列表
+ * @param pageQuery 分页查询
  */
-public interface TenantService extends BaseService<TenantDTO, Long> {
+const getTenantListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
+    request.get(`${baseTenantUrl}/list`, {
+        params: {...pageQuery}
+    });
 
 
-    /**
-     * 通过租户编码获取租户
-     *
-     * @param tenantCode 租户编码
-     * @return 租户dto对象
-     */
-    TenantDTO findByTenantCode(String tenantCode);
-
-
+export {
+    getTenantListApi
 }

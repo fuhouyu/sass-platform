@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
 
-
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
+import {BaseModel} from "@/model/base";
 
 /**
- * <p>
- * 租户域的接口
- * </p>
- *
- * @author fuhouyu
- * @since 2024/9/21 16:23
+ * 租户详情
  */
-public interface TenantService extends BaseService<TenantDTO, Long> {
-
-
-    /**
-     * 通过租户编码获取租户
-     *
-     * @param tenantCode 租户编码
-     * @return 租户dto对象
-     */
-    TenantDTO findByTenantCode(String tenantCode);
-
-
+export interface TenantDetail extends BaseModel {
+    // 租户编码
+    tenantCode?: string;
+    // 租户名称
+    tenantName?: string;
+    // 租户类型
+    tenantType?: string;
+    // 备注
+    remark?: string;
+    // icon
+    icon?: string;
+    // 联系人
+    contactPerson?: string;
+    // 联系手机号
+    contactNumber?: string;
 }

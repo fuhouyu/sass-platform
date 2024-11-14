@@ -79,7 +79,7 @@ export interface PageListParams {
     /**
      * 搜索组件
      */
-    searchComments: SearchComment[]
+    searchComments?: SearchComment[]
     /**
      * ref
      */

@@ -15,7 +15,9 @@
  */
 
 
-export interface Permission {
+import {BaseModel} from "@/model/base";
+
+export interface Permission extends BaseModel {
     /**
      * 权限树子集
      */
@@ -24,14 +26,6 @@ export interface Permission {
      * 组件路径
      */
     componentPath?: string;
-    /**
-     * 创建人
-     */
-    createAt: string;
-    /**
-     * 创建时间
-     */
-    createTime: Date;
     /**
      * 显示顺序
      */
@@ -76,14 +70,6 @@ export interface Permission {
      * 路由路径
      */
     routePath?: string;
-    /**
-     * 操作人
-     */
-    updateAt: string;
-    /**
-     * 更新时间
-     */
-    updateTime: Date;
     /**
      * url参数
      */

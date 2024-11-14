@@ -59,7 +59,7 @@ const Home: React.FC = withAuth(() => {
                 key: item.routePath!,
                 label: item.permissionName,
                 icon: item.icon ?
-                    <IconFont type="i-setting" style={{fontSize: '16px'}}/> : undefined,
+                    <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) ?? null : null
             }
         })
