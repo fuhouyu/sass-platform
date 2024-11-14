@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
 
 /**
@@ -27,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
  * @author fuhouyu
  * @since 2024/9/21 16:23
  */
-public interface TenantService extends BaseService<PageQueryDTO, TenantDTO, Long> {
+public interface TenantService extends BaseService<TenantDTO, Long> {
 
 
     /**

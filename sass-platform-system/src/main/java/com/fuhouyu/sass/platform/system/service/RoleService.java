@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 
 /**
@@ -26,7 +25,7 @@ import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
  * @author fuhouyu
  * @since 2024/10/9 20:47
  */
-public interface RoleService extends BaseService<PageQueryDTO, RoleDTO, Long> {
+public interface RoleService extends BaseService<RoleDTO, Long> {
 
     /**
      * 通过角色编码获取角色

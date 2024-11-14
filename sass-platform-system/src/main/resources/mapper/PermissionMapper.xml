@@ -232,12 +232,12 @@
         SELECT
         <include refid="QueryColumns"/>
         FROM
-        tenant_has_role thr
-        LEFT JOIN user_has_role uhr ON uhr.role_id = thr.role_id
-        LEFT JOIN role_has_permission rhp ON thr.role_id = rhp.role_id
-        LEFT JOIN <include refid="TableName"/> p ON p.id = rhp.permission_id
+        tenant_has_permission thp
+        LEFT JOIN role_has_permission rhp ON thp.permission_id = rhp.permission_id
+        LEFT JOIN user_has_role uhr ON uhr.role_id = rhp.role_id
+        LEFT JOIN permissions p ON p.id = rhp.permission_id
         WHERE
-        thr.tenant_id = #{tenantId}
+        thp.tenant_id = #{tenantId}
         AND
         uhr.user_id = #{userId}
     </select>

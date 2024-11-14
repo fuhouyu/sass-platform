@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 
@@ -30,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 17:12
  */
-public interface PermissionService extends BaseService<PageQueryDTO, PermissionDTO, Long> {
+public interface PermissionService extends BaseService<PermissionDTO, Long> {
 
 
     /**

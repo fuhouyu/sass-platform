@@ -27,11 +27,11 @@ CREATE TABLE tenants
     icon VARCHAR(256),
     contact_person VARCHAR(20)           NOT NULL,
     contact_number VARCHAR(20)           NOT NULL,
-    is_deleted     boolean DEFAULT FALSE NOT NULL,
-    create_at      timestamp             NOT NULL,
-    create_by      VARCHAR(32)           NOT NULL,
-    update_at      timestamp             NOT NULL,
-    update_by      VARCHAR(32)           NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE NOT NULL,
+    create_at  TIMESTAMP             NOT NULL,
+    create_by  VARCHAR(64)           NOT NULL,
+    update_at  TIMESTAMP             NOT NULL,
+    update_by  VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -56,6 +56,27 @@ INSERT INTO tenants(id, tenant_code, tenant_name, tenant_type, remark, icon, con
 VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin');
 
+DROP TABLE IF EXISTS tenant_has_permission;
+-- 权限表
+CREATE TABLE tenant_has_permission
+(
+    tenant_id     BIGINT      NOT NULL,
+    permission_id BIGINT      NOT NULL,
+    create_at     TIMESTAMP   NOT NULL,
+    create_by     VARCHAR(64) NOT NULL,
+    PRIMARY KEY (tenant_id, permission_id)
+);
+COMMENT ON COLUMN tenant_has_permission.tenant_id IS '租户id';
+COMMENT ON COLUMN tenant_has_permission.permission_id IS '权限id';
+COMMENT ON COLUMN tenant_has_permission.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_has_permission.create_by IS '创建人';
+
+INSERT INTO tenant_has_permission(tenant_id, permission_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin'),
+       (1, 2, now(), 'admin'),
+       (1, 3, now(), 'admin'),
+       (1, 4, now(), 'admin');
+
 DROP TABLE IF EXISTS users;
 -- 用户表
 CREATE TABLE users
@@ -67,13 +88,13 @@ CREATE TABLE users
     email      VARCHAR(64),
     gender     VARCHAR(8),
     avatar     VARCHAR(32),
-    login_date timestamp,
+    login_date TIMESTAMP,
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN DEFAULT TRUE,
     is_deleted BOOLEAN DEFAULT FALSE,
-    create_at  timestamp          NOT NULL,
+    create_at  TIMESTAMP NOT NULL,
     create_by  VARCHAR(32)        NOT NULL,
-    update_at  timestamp          NOT NULL,
+    update_at  TIMESTAMP NOT NULL,
     update_by  VARCHAR(32)        NOT NULL,
     UNIQUE (username)
 );
@@ -92,9 +113,9 @@ COMMENT ON COLUMN users.login_ip IS '登录ip';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
 COMMENT ON COLUMN users.create_at IS '创建时间';
-COMMENT ON COLUMN users.create_by IS '创建者';
+COMMENT ON COLUMN users.create_by IS '创建人';
 COMMENT ON COLUMN users.update_at IS '更新时间';
-COMMENT ON COLUMN users.update_by IS '更新者';
+COMMENT ON COLUMN users.update_by IS '更新人';
 
 INSERT INTO users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, create_at, create_by,
                   update_at, update_by)
@@ -107,7 +128,7 @@ CREATE TABLE tenant_has_user
 (
     tenant_id BIGINT      NOT NULL,
     user_id   BIGINT      NOT NULL,
-    create_at timestamp   NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by VARCHAR(32) NOT NULL,
     PRIMARY KEY (tenant_id, user_id)
 );
@@ -133,9 +154,9 @@ CREATE TABLE roles
     is_enabled        BOOLEAN                     DEFAULT TRUE,
     is_deleted        BOOLEAN                     DEFAULT FALSE,
     is_allow_modified BOOLEAN DEFAULT TRUE,
-    create_at         timestamp          NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by         VARCHAR(32)        NOT NULL,
-    update_at         timestamp          NOT NULL,
+    update_at TIMESTAMP NOT NULL,
     update_by         VARCHAR(32)        NOT NULL,
     UNIQUE (role_code)
 );
@@ -150,9 +171,9 @@ COMMENT ON COLUMN roles.is_enabled IS '启用/禁用';
 COMMENT ON COLUMN roles.is_deleted IS '删除标记';
 COMMENT ON COLUMN roles.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN roles.create_at IS '创建时间';
-COMMENT ON COLUMN roles.create_by IS '创建者';
+COMMENT ON COLUMN roles.create_by IS '创建人';
 COMMENT ON COLUMN roles.update_at IS '更新时间';
-COMMENT ON COLUMN roles.update_by IS '更新者';
+COMMENT ON COLUMN roles.update_by IS '更新人';
 
 INSERT INTO roles(id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
 VALUES (1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'admin');
@@ -163,7 +184,7 @@ CREATE TABLE user_has_role
 (
     user_id   BIGINT      NOT NULL,
     role_id   BIGINT      NOT NULL,
-    create_at timestamp   NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by VARCHAR(32) NOT NULL,
     PRIMARY KEY (user_id, role_id)
 );
@@ -175,26 +196,6 @@ COMMENT ON COLUMN user_has_role.create_at IS '创建时间';
 COMMENT ON COLUMN user_has_role.create_by IS '创建人';
 
 INSERT INTO user_has_role(user_id, role_id, create_at, create_by)
-VALUES (1, 1, now(), 'admin');
-
-DROP TABLE IF EXISTS tenant_has_role;
--- 租户角色关联关系表
-CREATE TABLE tenant_has_role
-(
-    tenant_id BIGINT      NOT NULL,
-    role_id   BIGINT      NOT NULL,
-    create_at timestamp   NOT NULL,
-    create_by VARCHAR(32) NOT NULL,
-    PRIMARY KEY (tenant_id, role_id)
-);
-
-COMMENT ON TABLE tenant_has_role IS '租户和用户的关联关系表';
-COMMENT ON COLUMN tenant_has_role.tenant_id IS '租户id';
-COMMENT ON COLUMN tenant_has_role.role_id IS '角色id';
-COMMENT ON COLUMN tenant_has_role.create_at IS '创建时间';
-COMMENT ON COLUMN tenant_has_role.create_by IS '创建人';
-
-INSERT INTO tenant_has_role(tenant_id, role_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin');
 
 DROP TABLE IF EXISTS permissions;
@@ -215,14 +216,14 @@ CREATE TABLE permissions
     is_allow_modified BOOLEAN DEFAULT TRUE,
     is_visible      BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted      BOOLEAN DEFAULT FALSE,
-    create_at       timestamp             NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by       VARCHAR(32)           NOT NULL,
-    update_at       timestamp             NOT NULL,
+    update_at TIMESTAMP NOT NULL,
     update_by       VARCHAR(32)           NOT NULL,
     UNIQUE (permission_code)
 );
-CREATE INDEX permission_parent_id_idx ON permissions (parent_id);
-COMMENT ON INDEX permission_parent_id_idx IS '权限父级id索引';
+CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
+COMMENT ON INDEX idx_permission_parent_id IS '权限父级id索引';
 
 
 COMMENT ON TABLE permissions IS '角色表';
@@ -241,9 +242,9 @@ COMMENT ON COLUMN permissions.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN permissions.is_visible IS '是否显示标记';
 COMMENT ON COLUMN permissions.is_deleted IS '删除标记';
 COMMENT ON COLUMN permissions.create_at IS '创建时间';
-COMMENT ON COLUMN permissions.create_by IS '创建者';
+COMMENT ON COLUMN permissions.create_by IS '创建人';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
-COMMENT ON COLUMN permissions.update_by IS '更新者';
+COMMENT ON COLUMN permissions.update_by IS '更新人';
 
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified,
@@ -263,7 +264,7 @@ CREATE TABLE role_has_permission
 (
     role_id       BIGINT      NOT NULL,
     permission_id BIGINT      NOT NULL,
-    create_at     timestamp   NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by     VARCHAR(32) NOT NULL,
     PRIMARY KEY (role_id, permission_id)
 );
@@ -290,15 +291,15 @@ CREATE TABLE accounts
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
     is_enabled                  BOOLEAN DEFAULT true NOT NULL,
-    create_at                   timestamp            NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by                   VARCHAR(32)          NOT NULL,
-    update_at                   timestamp            NOT NULL,
+    update_at TIMESTAMP NOT NULL,
     update_by                   VARCHAR(32)          NOT NULL,
     PRIMARY KEY (account, account_type)
 );
 
-CREATE INDEX account_user_id_idx ON accounts (user_id);
-COMMENT ON INDEX account_user_id_idx IS '账号用户id索引';
+CREATE INDEX idx_account_user_id ON accounts (user_id);
+COMMENT ON INDEX idx_account_user_id IS '账号用户id索引';
 COMMENT ON TABLE accounts IS '账号表';
 COMMENT ON COLUMN accounts.account IS '账号';
 COMMENT ON COLUMN accounts.account_type IS '账号类型字典项，如密码、微信等';
@@ -308,9 +309,9 @@ COMMENT ON COLUMN accounts.credentials_expiration_time IS '凭证过期时间，
 COMMENT ON COLUMN accounts.ref_account_id IS '第三方账号登录时的账号id';
 COMMENT ON COLUMN accounts.is_enabled IS '是否启用该账号登录';
 COMMENT ON COLUMN accounts.create_at IS '创建时间';
-COMMENT ON COLUMN accounts.create_by IS '创建者';
+COMMENT ON COLUMN accounts.create_by IS '创建人';
 COMMENT ON COLUMN accounts.update_at IS '更新时间';
-COMMENT ON COLUMN accounts.update_by IS '更新者';
+COMMENT ON COLUMN accounts.update_by IS '更新人';
 
 INSERT INTO accounts(account, account_type, user_id, credentials, credentials_expiration_time, ref_account_id,
                      create_at, create_by, update_at, update_by)
@@ -328,9 +329,9 @@ CREATE TABLE dict_type
     is_deleted        BOOLEAN DEFAULT FALSE,
     is_allow_modified BOOLEAN DEFAULT TRUE,
     remark            VARCHAR(128) NOT NULL,
-    create_at         timestamp    NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by         VARCHAR(32)  NOT NULL,
-    update_at         timestamp    NOT NULL,
+    update_at TIMESTAMP NOT NULL,
     update_by         VARCHAR(32)  NOT NULL,
     UNIQUE (type_code)
 );
@@ -343,9 +344,9 @@ COMMENT ON COLUMN dict_type.is_deleted IS '删除标记';
 COMMENT ON COLUMN dict_type.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN dict_type.remark IS '备注';
 COMMENT ON COLUMN dict_type.create_at IS '创建时间';
-COMMENT ON COLUMN dict_type.create_by IS '创建者';
+COMMENT ON COLUMN dict_type.create_by IS '创建人';
 COMMENT ON COLUMN dict_type.update_at IS '更新时间';
-COMMENT ON COLUMN dict_type.update_by IS '更新者';
+COMMENT ON COLUMN dict_type.update_by IS '更新人';
 
 
 DROP TABLE IF EXISTS dict_item;
@@ -359,15 +360,15 @@ CREATE TABLE dict_item
     is_allow_modified BOOLEAN               DEFAULT TRUE,
     is_deleted        BOOLEAN               DEFAULT FALSE,
     remark            VARCHAR(128) NOT NULL,
-    create_at         timestamp    NOT NULL,
+    create_at TIMESTAMP NOT NULL,
     create_by         VARCHAR(32)  NOT NULL,
-    update_at         timestamp    NOT NULL,
+    update_at TIMESTAMP NOT NULL,
     update_by         VARCHAR(32)  NOT NULL,
     UNIQUE (item_code)
 );
 
-CREATE INDEX dict_item_type_code_idx ON dict_item (type_code);
-COMMENT ON INDEX dict_item_type_code_idx IS '字典类型编码索引';
+CREATE INDEX idx_dict_item_type_code ON dict_item (type_code);
+COMMENT ON INDEX idx_dict_item_type_code IS '字典类型编码索引';
 
 COMMENT ON TABLE dict_item IS '字典类型';
 COMMENT ON COLUMN dict_item.id IS '主键id';
@@ -375,12 +376,10 @@ COMMENT ON COLUMN dict_item.type_code IS '类型编码';
 COMMENT ON COLUMN dict_item.item_name IS '字典项名称';
 COMMENT ON COLUMN dict_item.item_code IS '字典项名称';
 COMMENT ON COLUMN dict_item.display_order IS '显示顺序';
-
 COMMENT ON COLUMN dict_item.is_deleted IS '删除标记';
 COMMENT ON COLUMN dict_item.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN dict_item.remark IS '备注';
 COMMENT ON COLUMN dict_item.create_at IS '创建时间';
-COMMENT ON COLUMN dict_item.create_by IS '创建者';
+COMMENT ON COLUMN dict_item.create_by IS '创建人';
 COMMENT ON COLUMN dict_item.update_at IS '更新时间';
-COMMENT ON COLUMN dict_item.update_by IS '更新者';
-
+COMMENT ON COLUMN dict_item.update_by IS '更新人';

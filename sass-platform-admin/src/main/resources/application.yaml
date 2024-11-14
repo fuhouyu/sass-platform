@@ -12,3 +12,5 @@ base:
     kms-national:
       sm2:
         auto-generate: true
+    database:
+      transaction-expression: execution(* com.fuhouyu.sass.platform.system..service.*Service.*(..))
