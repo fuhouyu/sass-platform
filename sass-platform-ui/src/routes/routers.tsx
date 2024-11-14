@@ -20,6 +20,7 @@ import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 import User from "@/pages/System/User/user.tsx";
 import {PersonCenter} from "@/pages/Userinfo/personCenter";
+import {Tenant} from "@/pages/Tenant/tenant";
 
 
 const Routes: Router = createBrowserRouter([
@@ -43,6 +44,10 @@ const Routes: Router = createBrowserRouter([
                         element: <User/>
                     }
                 ]
+            },
+            {
+                path: '/tenant',
+                element: <Tenant/>
             }
         ]
     },

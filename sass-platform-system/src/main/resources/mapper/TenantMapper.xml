@@ -157,5 +157,10 @@
         <include refid="AllColumns"/>
                 FROM
         <include refid="TableName"/>
+        <where>
+            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
+                tenant_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+            </if>
+        </where>
     </select>
 </mapper>

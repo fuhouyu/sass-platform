@@ -75,7 +75,8 @@ INSERT INTO tenant_has_permission(tenant_id, permission_id, create_at, create_by
 VALUES (1, 1, now(), 'admin'),
        (1, 2, now(), 'admin'),
        (1, 3, now(), 'admin'),
-       (1, 4, now(), 'admin');
+       (1, 4, now(), 'admin'),
+       (1, 5, now(), 'admin');
 
 DROP TABLE IF EXISTS users;
 -- 用户表
@@ -249,14 +250,17 @@ COMMENT ON COLUMN permissions.update_by IS '更新人';
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified,
                          is_visible, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, '系统设置', 'system', 1, 'icon-setting-fill', '/system',
+VALUES (1, -1, '系统设置', 'system', 2, 'i-setting', '/system',
         null, '', false, 'M', false, true, false, now(), 'admin', now(), 'admin'),
-       (2, 1, '用户管理', 'system:user', 1, '', '/system/user',
+       (2, 1, '用户管理', 'system:user', 1, 'i-yonghu', '/system/user',
         null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (3, 1, '角色管理', 'system:role', 2, '', '/system/role',
+       (3, 1, '角色管理', 'system:role', 2, 'i-jiaoseguanli', '/system/role',
         null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (4, 1, '权限管理', 'system:permission', 3, '', '/system/permission',
-        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin');
+       (4, 1, '权限管理', 'system:permission', 3, 'i-quanxian', '/system/permission',
+        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
+       (5, -1, '租户管理', 'tenant', 1, 'i-navicon-zhgl', '/tenant', null, '', false, 'C', false, true, false,
+        now(), 'admin', now(), 'admin');
+
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
@@ -279,7 +283,8 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin'),
        (1, 2, now(), 'admin'),
        (1, 3, now(), 'admin'),
-       (1, 4, now(), 'admin');
+       (1, 4, now(), 'admin'),
+       (1, 5, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

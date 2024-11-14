@@ -14,46 +14,18 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base";
-
 /**
- * 用户详情
+ * 基类model
  */
-export interface UserDetail extends BaseModel {
-    /**
-     * 头像地址
-     */
-    avatar?: string;
-    /**
-     * 邮件地址
-     */
-    email?: string;
-    /**
-     * 性别
-     */
-    gender?: string;
-    /**
-     * 主键id
-     */
-    id?: string;
-    /**
-     * 登录时间
-     */
-    loginDate?: string;
-    /**
-     * 登录ip
-     */
-    loginIp?: string;
-    /**
-     * 真实姓名
-     */
-    realName?: string;
-    /**
-     * 昵称
-     */
-    nickname?: string;
-    /**
-     * 用户名
-     */
-    username?: string;
+export type BaseModel = {
+    // 删除标记
+    isDeleted?: boolean;
+    // 创建时间
+    createAt?: string;
+    // 创建人
+    createBy?: string;
+    // 更新时间
+    updateAt?: string;
+    // 更新人
+    updateBy?: string;
 }

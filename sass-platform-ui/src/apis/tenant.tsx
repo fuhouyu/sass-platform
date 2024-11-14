@@ -14,46 +14,21 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base";
+import {PageQuery, PageResult} from "@/model/page";
+import {request} from "@/utils";
+
+const baseTenantUrl = '/v1/tenant'
 
 /**
- * 用户详情
+ * 分页获取租户列表
+ * @param pageQuery 分页查询
  */
-export interface UserDetail extends BaseModel {
-    /**
-     * 头像地址
-     */
-    avatar?: string;
-    /**
-     * 邮件地址
-     */
-    email?: string;
-    /**
-     * 性别
-     */
-    gender?: string;
-    /**
-     * 主键id
-     */
-    id?: string;
-    /**
-     * 登录时间
-     */
-    loginDate?: string;
-    /**
-     * 登录ip
-     */
-    loginIp?: string;
-    /**
-     * 真实姓名
-     */
-    realName?: string;
-    /**
-     * 昵称
-     */
-    nickname?: string;
-    /**
-     * 用户名
-     */
-    username?: string;
+const getTenantListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
+    request.get(`${baseTenantUrl}/list`, {
+        params: {...pageQuery}
+    });
+
+
+export {
+    getTenantListApi
 }

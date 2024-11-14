@@ -145,7 +145,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
                                 keyword: e.target.value
                             })}/>
                     </Col>
-                    {searchComments.map((searchComment) =>
+                    {searchComments?.map((searchComment) =>
                         (
                             <React.Fragment key={searchComment.key}>
                                 <Col>

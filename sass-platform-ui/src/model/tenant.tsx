@@ -17,43 +17,21 @@
 import {BaseModel} from "@/model/base";
 
 /**
- * 用户详情
+ * 租户详情
  */
-export interface UserDetail extends BaseModel {
-    /**
-     * 头像地址
-     */
-    avatar?: string;
-    /**
-     * 邮件地址
-     */
-    email?: string;
-    /**
-     * 性别
-     */
-    gender?: string;
-    /**
-     * 主键id
-     */
-    id?: string;
-    /**
-     * 登录时间
-     */
-    loginDate?: string;
-    /**
-     * 登录ip
-     */
-    loginIp?: string;
-    /**
-     * 真实姓名
-     */
-    realName?: string;
-    /**
-     * 昵称
-     */
-    nickname?: string;
-    /**
-     * 用户名
-     */
-    username?: string;
+export interface TenantDetail extends BaseModel {
+    // 租户编码
+    tenantCode?: string;
+    // 租户名称
+    tenantName?: string;
+    // 租户类型
+    tenantType?: string;
+    // 备注
+    remark?: string;
+    // icon
+    icon?: string;
+    // 联系人
+    contactPerson?: string;
+    // 联系手机号
+    contactNumber?: string;
 }

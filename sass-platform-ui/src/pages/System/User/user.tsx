@@ -29,7 +29,7 @@ import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {UserDetail} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
-import {PageListHandler, SearchInput, SearchSelection} from "@components/List/pageParams";
+import {PageListHandler, SearchSelection} from "@components/List/pageParams";
 
 const User: React.FC = () => {
 
@@ -176,12 +176,6 @@ const User: React.FC = () => {
                     openModal(undefined, true)
                 }}
                 searchComments={[
-                    {
-                        name: '用户名查询',
-                        key: 'username',
-                        placeholder: '请输入用户名查询',
-                        comment: SearchInput
-                    },
                     {
                         name: '性别筛选',
                         key: 'gender',
