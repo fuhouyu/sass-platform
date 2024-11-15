@@ -51,7 +51,7 @@ export const Userinfo: React.FC = () => {
     const [form] = Form.useForm();
     useEffect(() => {
         form.setFieldsValue({...userinfo});
-    }, [userinfo]);
+    }, [form, userinfo]);
 
     const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 

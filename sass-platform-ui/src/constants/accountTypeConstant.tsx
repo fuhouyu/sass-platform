@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
+export enum AccountType {
+    PASSWORD = "PASSWORD",
+    REFRESH_TOKEN = "REFRESH_TOKEN",
 
-import React from 'react';
-import Login from "@/pages/Login";
-import useAuth from "@/hooks/useAuth";
-
-// 使用具名函数组件来创建高阶组件
-const withAuth = (WrappedComponent: React.FC): React.FC => {
-    // 具名函数组件
-    const AuthenticatedComponent: React.FC = () => {
-        const isAuth = useAuth();
-        if (isAuth) {
-            return <WrappedComponent/>;
-        } else {
-            return <Login/>;
-        }
-    };
-
-// 使用 React.memo 包裹以优化性能
-    return React.memo(AuthenticatedComponent);
-};
-
-export default withAuth;
+}

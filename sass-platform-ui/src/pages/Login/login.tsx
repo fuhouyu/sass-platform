@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./index.scss"
 import {Button, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
@@ -22,6 +22,8 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
+import useAuth from "@/hooks/useAuth";
+import {AccountType} from "@/constants/accountTypeConstant";
 
 
 const Login: React.FC = () => {
@@ -29,10 +31,17 @@ const Login: React.FC = () => {
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
     const location = useLocation();
     const dispatch = useAppDispatch();
-
+    const isAuth = useAuth();
+    // 如果本身存在token，跳转回首页
+    useEffect(() => {
+        if (isAuth) {
+            navigate('/')
+            return
+        }
+    }, [isAuth, navigate]);
     const onFinish = (loginData: UserAuthentication) => {
         setLoginButtonLoading(true)
-        loginData.accountType = 'PASSWORD'
+        loginData.accountType = AccountType.PASSWORD
         dispatch(fetchLogin(loginData)).then(() => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;

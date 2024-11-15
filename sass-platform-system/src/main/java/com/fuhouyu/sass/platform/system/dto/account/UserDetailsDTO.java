@@ -15,29 +15,49 @@
  */
 package com.fuhouyu.sass.platform.system.dto.account;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import org.springframework.security.core.Authentication;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * <p>
- * token
+ * oauth2 用户详情
  * </p>
  *
- * @param userDetails 用户详情
- * @param account     登录账号
  * @author fuhouyu
- * @since 2024/11/3 19:00
+ * @since 2024/10/5 10:13
  */
-public record TokenAuthenticationDTO(UserDTO userDetails, String account) implements Authentication, Serializable {
+@Setter
+@Getter
+@ToString(callSuper = true)
+@RequiredArgsConstructor
+public class UserDetailsDTO implements UserDetails {
 
-    @Serial
-    private static final long serialVersionUID = 185712368712364891L;
+    /**
+     * 账号
+     */
+    private final String account;
+
+    /**
+     * 凭证
+     */
+    private final String credentials;
+
+    /**
+     * 是否启用
+     */
+    private final Boolean isEnabled;
+
+    /**
+     * 用户id
+     */
+    private final Long userId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,32 +65,17 @@ public record TokenAuthenticationDTO(UserDTO userDetails, String account) implem
     }
 
     @Override
-    public Object getCredentials() {
-        return null;
+    public String getPassword() {
+        return this.getCredentials();
     }
 
     @Override
-    public Object getDetails() {
-        return this.userDetails;
+    public String getUsername() {
+        return this.getAccount();
     }
 
     @Override
-    public Object getPrincipal() {
-        return this.account;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return true;
-    }
-
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
-    }
-
-    @Override
-    public String getName() {
-        return this.account;
+    public boolean isEnabled() {
+        return this.isEnabled;
     }
 }

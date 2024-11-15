@@ -16,23 +16,35 @@
 
 import {UserToken} from "@/model/authentication";
 
-const tokenKey: string = 'token';
+/**
+ * accessTokenKey
+ */
+const ACCESS_TOKEN_KEY: string = "ACCESS_TOKEN";
+
+/**
+ * 刷新令牌
+ */
+const REFRESH_TOKEN_KEY: string = "REFRESH_TOKEN";
 
 const storeToken = (token: UserToken) => {
-    localStorage.setItem(tokenKey, JSON.stringify(token));
+    localStorage.setItem(ACCESS_TOKEN_KEY, token.accessToken);
+    localStorage.setItem(REFRESH_TOKEN_KEY, token.refreshToken);
 }
 
 const removeToken = () => {
-    localStorage.removeItem(tokenKey);
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
 }
 
-const getToken: () => (null | UserToken) = () => {
-    const token = localStorage.getItem(tokenKey);
-    if (!token) {
-        return null
-    }
-    return JSON.parse(token) as UserToken;
-}
+/**
+ * 获取认证令牌
+ */
+const getAccessToken: () => (null | string) = () => localStorage.getItem(ACCESS_TOKEN_KEY);
+
+/**
+ * 获取刷新令牌
+ */
+const getRefreshToken: () => (null | string) = () => localStorage.getItem(REFRESH_TOKEN_KEY);
 
 
-export {storeToken, removeToken, getToken}
+export {storeToken, removeToken, getAccessToken, getRefreshToken}

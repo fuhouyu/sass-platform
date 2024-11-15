@@ -18,7 +18,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.security.core.DefaultUserService;
+import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
@@ -43,7 +43,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DefaultUserDetailService implements DefaultUserService {
+public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     private final AccountService accountService;
 

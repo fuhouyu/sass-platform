@@ -25,7 +25,7 @@ export interface UserAuthentication {
     /**
      * 登录凭证
      */
-    credentials: string;
+    credentials?: string;
     /**
      * 账号类型
      */
@@ -40,7 +40,11 @@ export interface UserToken {
     /**
      * 认证令牌
      */
-    accessToken?: string;
+    accessToken: string;
+    /**
+     * 刷新令牌
+     */
+    refreshToken: string;
     /**
      * 认证令牌过期时间
      */
@@ -53,10 +57,6 @@ export interface UserToken {
      * 认证令牌签发时间
      */
     accessTokenIssuedAt?: Date;
-    /**
-     * 刷新令牌
-     */
-    refreshToken?: string;
     /**
      * 刷新令牌过期时间
      */
