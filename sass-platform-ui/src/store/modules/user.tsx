@@ -15,7 +15,7 @@
  */
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {storeToken} from "@/utils/Token/token";
+import {removeToken, storeToken} from "@/utils/Token/token";
 import {UserDetail,} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi} from "@/apis/user";
 import {UserAuthentication, UserToken} from "@/model/authentication";
@@ -25,23 +25,28 @@ import {loginApi, logoutApi} from "@/apis/authentication";
 const userStore = createSlice({
     name: "user",
     initialState: {
-        token: {},
+        token: {
+            accessToken: "",
+            refreshToken: "",
+        },
         userinfo: {}
     },
     reducers: {
         storeToken: (state, action: PayloadAction<UserToken>) => {
             state.token = action.payload;
-            storeToken(state.token!)
+            storeToken(state.token)
             return state;
         },
         storeUserinfo: (state, action: PayloadAction<UserDetail>) => {
             state.userinfo = action.payload;
             return state;
         },
-        logout: (state, action) => {
-            console.log(action.payload);
+        logout: (state) => {
             state.userinfo = {};
-            state.token = {};
+            state.token = {
+                accessToken: "",
+                refreshToken: "",
+            };
             return state;
         }
     },
@@ -76,9 +81,10 @@ const fetchUserinfo = () => {
  * 用户退出登录
  */
 const fetchLogout = () => {
-    return async (dispatch: (arg0: { payload: PayloadAction<void>; type: `user/${string}` }) => void) => {
+    return async (dispatch: (arg0: { payload: undefined; type: `user/${string}` }) => void) => {
         await logoutApi();
-        dispatch(userStore.actions.logout(null))
+        dispatch(userStore.actions.logout())
+        removeToken()
 
     }
 }

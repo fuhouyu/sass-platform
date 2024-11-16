@@ -23,8 +23,7 @@ import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.account.SecurityUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.account.TokenAuthenticationDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UserDetailsDTO;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
@@ -35,11 +34,14 @@ import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -67,7 +69,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final PasswordEncoder passwordEncoder;
 
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(SaveUserDTO userDTO) {
@@ -77,14 +78,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
+        Authentication authentication;
         try {
-            Authentication authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
-            SecurityUserDetailDTO securityUserDetailDTO = (SecurityUserDetailDTO) authentication.getPrincipal();
-            this.userService.recordLoginSuccess(securityUserDetailDTO.getUserId());
-            // 创建token
-            TokenAuthenticationDTO tokenAuthenticationDTO = new TokenAuthenticationDTO(this.userService.findById(securityUserDetailDTO.getUserId()),
-                    userLoginDTO.getIdentify());
-            return TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(tokenAuthenticationDTO));
+            authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
                     userLoginDTO.getIdentify(), userLoginDTO.getAccountType(), e.getMessage());
@@ -92,6 +88,14 @@ public class UserAccountServiceImpl implements UserAccountService {
                     ResponseStatusEnum.INVALID_PARAM,
                     "用户名或密码错误");
         }
+        UserDetailsDTO userDetailsDTO = (UserDetailsDTO) authentication.getPrincipal();
+        if (Objects.isNull(authentication.getDetails())) {
+            ((UsernamePasswordAuthenticationToken) authentication)
+                    .setDetails(this.userService.findById(userDetailsDTO.getUserId()));
+        }
+        UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
+        this.userService.recordLoginSuccess(userDetailsDTO.getUserId());
+        return userTokenDTO;
     }
 
     @Override

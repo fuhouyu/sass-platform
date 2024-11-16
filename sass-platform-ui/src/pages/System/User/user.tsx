@@ -28,7 +28,7 @@ import {
 import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {UserDetail} from "@/model/user";
-import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/RegexConstant";
+import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
 import {PageListHandler, SearchSelection} from "@components/List/pageParams";
 
 const User: React.FC = () => {
