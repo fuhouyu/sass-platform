@@ -16,7 +16,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
-import {Breadcrumb, Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
+import {Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
 import "./index.scss"
 import Sider from "antd/es/layout/Sider";
@@ -28,7 +28,7 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
 import {Permission} from "@/model/permission";
 import {getUserPermissionApi} from "@/apis/permission";
-import {IconFont} from "@/components";
+import {Bread, IconFont} from "@/components";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -65,6 +65,7 @@ const Home: React.FC = withAuth(() => {
         })
     }, [])
 
+
     useEffect(() => {
         getUserPermissionApi().then((res: Permission[]) => {
             let itemMenus = convertMenuItem(res);
@@ -94,7 +95,7 @@ const Home: React.FC = withAuth(() => {
         navigate(path!);
     }
 
-
+    // onClick
     const onDropDownClick: MenuProps['onClick'] = (e: MenuInfo) => {
         switch (e.key) {
             case 'logout':
@@ -107,7 +108,6 @@ const Home: React.FC = withAuth(() => {
         }
     };
 
-
     return (
         <div className="container">
             <Layout className="layout-container">
@@ -118,7 +118,7 @@ const Home: React.FC = withAuth(() => {
                 </Sider>
                 <Layout>
                     <Header className="layout-header">
-                        <Breadcrumb/>
+                        <Bread/>
                         <div>
                             <Dropdown menu={{
                                 items: menus,

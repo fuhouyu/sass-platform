@@ -16,42 +16,9 @@
 
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
-import Login from "@/pages/Login";
-import Home from "@/pages/Home";
-import User from "@/pages/System/User/user.tsx";
-import {PersonCenter} from "@/pages/Userinfo/personCenter";
-import {Tenant} from "@/pages/Tenant/tenant";
+import {RoutersConstant} from "@/constants/routerConstant";
 
 
-const Routes: Router = createBrowserRouter([
-    {
-        path: '/login',
-        element: <Login/>,
-    },
-    {
-        path: '/',
-        element: <Home/>,
-        children: [
-            {
-                path: '/userinfo',
-                element: <PersonCenter/>
-            },
-            {
-                path: '/system',
-                children: [
-                    {
-                        path: '/system/user',
-                        element: <User/>
-                    }
-                ]
-            },
-            {
-                path: '/tenant',
-                element: <Tenant/>
-            }
-        ]
-    },
-
-]);
+const Routes: Router = createBrowserRouter(RoutersConstant);
 
 export default Routes;

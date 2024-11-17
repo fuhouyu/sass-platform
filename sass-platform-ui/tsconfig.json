@@ -20,7 +20,8 @@
     },
     "types": [
       "vite/client"
-    ]
+    ],
+    "jsx": "react"
   },
   "include": [
     "src/**/*.tsx",

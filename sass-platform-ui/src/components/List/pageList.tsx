@@ -15,7 +15,7 @@
  */
 
 
-import {Button, Col, Input, message, Row, Table, TableProps} from "antd";
+import {Button, Col, message, Row, Table, TableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/page";
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
@@ -131,20 +131,6 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
         <div className="list-container">
             <div className="search-header">
                 <Row gutter={10}>
-                    <Col>
-                        <span>关键字查询</span>
-                    </Col>
-                    <Col>
-                        <Input
-                            key={'keyword'}
-                            value={searchValue.keyword}
-                            onKeyDown={handleKeyDown}
-                            placeholder="请输入关键字查询"
-                            onChange={(e) => setSearchValue({
-                                ...searchValue,
-                                keyword: e.target.value
-                            })}/>
-                    </Col>
                     {searchComments?.map((searchComment) =>
                         (
                             <React.Fragment key={searchComment.key}>
@@ -170,10 +156,10 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
                             </React.Fragment>
                         )
                     )}
-                    <Col className="search-button">
+                    {(searchComments?.length ?? 0) > 0 && <Col className="search-button">
                         <Button type="primary" icon={<SearchOutlined/>}
                                 onClick={() => setPageQuery({...pageQuery, ...searchValue})}>搜索</Button>
-                    </Col>
+                    </Col>}
                 </Row>
             </div>
             <div className="table-container">
