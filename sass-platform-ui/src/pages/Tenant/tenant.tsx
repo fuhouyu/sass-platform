@@ -21,6 +21,7 @@ import {removeUserApi} from "@/apis/user";
 import {Space, TableColumnsType} from "antd";
 import {TenantDetail} from "@/model/tenant";
 import {getTenantListApi} from "@/apis/tenant";
+import {SearchInput} from "@components/List/pageParams";
 
 export const Tenant: React.FC = () => {
 
@@ -86,6 +87,14 @@ export const Tenant: React.FC = () => {
     return (<>
         <PageList
             // ref={pageListRef}
+            searchComments={[
+                {
+                    name: '租户名称',
+                    key: 'tenantName',
+                    comment: SearchInput,
+                    placeholder: '租户名称',
+                }
+            ]}
             listName='租户'
             columns={columns}
             pageRequestApi={getTenantListApi}

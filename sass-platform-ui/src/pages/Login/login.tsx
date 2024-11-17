@@ -16,7 +16,7 @@
 
 import React, {useEffect, useState} from "react";
 import "./index.scss"
-import {Button, Form, Input, message} from "antd";
+import {Button, Checkbox, Col, Divider, Form, Input, message, Row} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
@@ -24,6 +24,7 @@ import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
+import {IconFont} from "@/components";
 
 
 const Login: React.FC = () => {
@@ -59,33 +60,70 @@ const Login: React.FC = () => {
 
     return (
         <>
-            <div className="form-container">
-                <Form className="login-form"
-                      name="login"
-                      initialValues={{remember: true}}
-                      onFinish={onFinish}
-                >
-                    <h3 className="login-title"> 多租户后台管理系统</h3>
-                    <Form.Item
-                        name="identify"
-                        rules={[{required: true, message: '请输入用户名!'}]}
-                    >
-                        <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>
-                    </Form.Item>
-                    <Form.Item
-                        name="credentials"
-                        rules={[{required: true, message: '请输入密码!'}]}
-                    >
-                        <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>
-                    </Form.Item>
+            {/*<div className="form-container">*/}
+            {/*    <Form className="login-form"*/}
+            {/*          name="login"*/}
+            {/*          initialValues={{remember: true}}*/}
+            {/*          onFinish={onFinish}*/}
+            {/*    >*/}
+            {/*        <h3 className="login-title"> 多租户后台管理系统</h3>*/}
+            {/*        <Form.Item*/}
+            {/*            name="identify"*/}
+            {/*            rules={[{required: true, message: '请输入用户名!'}]}*/}
+            {/*        >*/}
+            {/*            <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>*/}
+            {/*        </Form.Item>*/}
+            {/*        <Form.Item*/}
+            {/*            name="credentials"*/}
+            {/*            rules={[{required: true, message: '请输入密码!'}]}*/}
+            {/*        >*/}
+            {/*            <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>*/}
+            {/*        </Form.Item>*/}
 
-                    <Form.Item>
-                        <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
-                            登录
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
+            {/*        <Form.Item>*/}
+            {/*            <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>*/}
+            {/*                登录*/}
+            {/*            </Button>*/}
+            {/*        </Form.Item>*/}
+            {/*    </Form>*/}
+            {/*</div>*/}
+            <Row className="login-container" style={{height: '100vh'}}>
+                {/* 左侧背景部分 */}
+                <Col span={18} className="login-bg"/>
+
+                {/* 右侧表单部分 */}
+                <Col span={6} className="login-form-wrapper">
+                    <Form className="login-form"
+                          name="login"
+                          initialValues={{remember: true}}
+                          onFinish={onFinish}
+                    >
+                        <Form.Item
+                            name="identify"
+                            rules={[{required: true, message: '请输入用户名!'}]}
+                        >
+                            <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>
+                        </Form.Item>
+                        <Form.Item
+                            name="credentials"
+                            rules={[{required: true, message: '请输入密码!'}]}
+                        >
+                            <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>
+                        </Form.Item>
+                        <Form.Item name="remember" valuePropName="checked">
+                            <Checkbox>同意用户协议</Checkbox>
+                        </Form.Item>
+                        <Divider style={{borderColor: '#7cb305'}}>
+                            <IconFont type="i-wechat-fill"/>
+                        </Divider>
+                        <Form.Item>
+                            <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
+                                登录
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Col>
+            </Row>
         </>
     )
 }

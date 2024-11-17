@@ -53,6 +53,7 @@ request.interceptors.response.use(function (response) {
     } else {
         // 如果 isSuccess 为 false，抛出异常
         if (response.data.code === 402) {
+            removeToken()
             const pathname = routers.state.location.pathname;
             routers.navigate('/login', {state: {from: pathname}}).then();
             return

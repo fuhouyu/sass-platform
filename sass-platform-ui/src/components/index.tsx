@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+import {Bread} from "./Bread/bread";
 import {IconFont} from "./Iconfont/iconfont";
 import {PageList} from "./List/pageList";
 
 export {
     IconFont,
-    PageList
+    PageList,
+    Bread
 }
