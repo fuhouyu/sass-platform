@@ -16,7 +16,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
-import {Dropdown, Layout, Menu, MenuProps, Space} from 'antd';
+import {Col, Divider, Dropdown, Image, Layout, Menu, MenuProps, Row, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
 import "./index.scss"
 import Sider from "antd/es/layout/Sider";
@@ -113,25 +113,50 @@ const Home: React.FC = withAuth(() => {
             <Layout className="layout-container">
                 <Sider className='layout-sider' collapsible collapsed={collapsed}
                        onCollapse={(value) => setCollapsed(value)}>
+                    <h3 className="platform-title">
+                        Sass 平台
+                    </h3>
+                    <Divider/>
                     <Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"
                           items={menuItems} onClick={onMenuClick}/>
                 </Sider>
                 <Layout>
                     <Header className="layout-header">
-                        <Bread/>
-                        <div>
-                            <Dropdown menu={{
-                                items: menus,
-                                onClick: onDropDownClick
-                            }}>
+                        <Row gutter={24} align={"middle"}>
+                            <Col className="user-header">
+                                <div>
+                                      <span className="tenant">
+                                    我的租户
+                               <IconFont type='i-24gl-swapHorizontal3'/>
+                               </span>
+                                    <Dropdown menu={{
+                                        items: menus,
+                                        onClick: onDropDownClick
+                                    }}>
                            <span>
+
                                 <Space>
-                                    你好, {realName} <DownOutlined/>
+                                    你好, {realName}
+                                    <Image
+                                        className="avatar"
+                                        src="error"
+                                        preview={false}
+                                        fallback="https://img.fuhouyu.com/2.jpeg"
+                                    />
+                                    <DownOutlined/>
                                 </Space>
                            </span>
-                            </Dropdown>
-                        </div>
+                                    </Dropdown>
+                                </div>
+                            </Col>
+                        </Row>
                     </Header>
+                    <Divider/>
+                    <Row className="bread-row">
+                        <Col span={21} className="layout-bread">
+                            <Bread/>
+                        </Col>
+                    </Row>
                     <Content className="layout-content">
                         <Outlet/>
                     </Content>
