@@ -57,10 +57,13 @@ public class UserServiceImpl implements UserService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     @Override
-    public void save(UserDTO userinfoDTO) {
+    public Long save(UserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
-        userinfoDTO.setId(snowflakeIdWorker.nextId());
-        this.userMapper.insert(USERS_ASSEMBLER.toEntity(userinfoDTO));
+        long id = snowflakeIdWorker.nextId();
+        Users entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
+        entity.setId(id);
+        this.userMapper.insert(entity);
+        return id;
     }
 
     @Override

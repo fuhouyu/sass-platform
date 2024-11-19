@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.entity.BaseEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/20 22:39
  */
-public interface BaseMapper<T, ID> {
+public interface BaseMapper<ID, T extends BaseEntity> {
 
     /**
      * 添加一个对象，返回影响的行数

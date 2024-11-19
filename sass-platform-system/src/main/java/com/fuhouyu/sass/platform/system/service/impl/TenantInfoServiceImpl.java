@@ -18,12 +18,12 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
-import com.fuhouyu.sass.platform.system.assembler.TenantsAssembler;
+import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
-import com.fuhouyu.sass.platform.system.entity.Tenants;
-import com.fuhouyu.sass.platform.system.mapper.TenantMapper;
-import com.fuhouyu.sass.platform.system.service.TenantService;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.entity.TenantInfo;
+import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
+import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,67 +42,70 @@ import java.util.function.Function;
  */
 @Service
 @RequiredArgsConstructor
-public class TenantServiceImpl implements TenantService {
+public class TenantInfoServiceImpl implements TenantInfoService {
 
-    private static final TenantsAssembler TENANTS_ASSEMBLER = TenantsAssembler.INSTANCE;
+    private static final TenantInfoAssembler TENANTS_ASSEMBLER = TenantInfoAssembler.INSTANCE;
 
-    private final TenantMapper tenantMapper;
+    private final TenantInfoMapper tenantInfoMapper;
 
     private final SnowflakeIdWorker snowflakeIdWorker;
 
 
     @Override
-    public void save(TenantDTO tenantDTO) {
-        Tenants existsTenant = tenantMapper.queryByTenantCode(tenantDTO.getTenantCode());
+    public Long save(TenantInfoDTO tenantInfoDTO) {
+        TenantInfo existsTenant = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
         if (Objects.nonNull(existsTenant)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "租户编码:%s 已存在", existsTenant.getTenantCode());
         }
-        tenantDTO.setId(snowflakeIdWorker.nextId());
-        tenantMapper.insert(TENANTS_ASSEMBLER.toEntity(tenantDTO));
+        long id = snowflakeIdWorker.nextId();
+        TenantInfo entity = TENANTS_ASSEMBLER.toEntity(tenantInfoDTO);
+        entity.setId(id);
+        tenantInfoMapper.insert(entity);
+        return id;
     }
 
     @Override
-    public void saveBatch(List<TenantDTO> dtoList) {
-        List<Tenants> rolesList = dtoList.stream().map(dto -> {
+    public void saveBatch(List<TenantInfoDTO> dtoList) {
+        List<TenantInfo> rolesList = dtoList.stream().map(dto -> {
             dto.setId(snowflakeIdWorker.nextId());
             return TENANTS_ASSEMBLER.toEntity(dto);
         }).toList();
-        this.tenantMapper.insertBatch(rolesList);
+        this.tenantInfoMapper.insertBatch(rolesList);
     }
 
     @Override
-    public void edit(TenantDTO tenantDTO) {
-        Tenants tenants = tenantMapper.queryByTenantCode(tenantDTO.getTenantCode());
-        if (Objects.isNull(tenants)) {
+    public void edit(TenantInfoDTO tenantInfoDTO) {
+        TenantInfo tenantInfo = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
+        if (Objects.isNull(tenantInfo)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "租户: %s 不存在", tenantDTO.getTenantCode());
+                    "租户: %s 不存在", tenantInfoDTO.getTenantCode());
         }
-        this.tenantMapper.update(TENANTS_ASSEMBLER.toEntity(tenantDTO));
+        this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
     }
 
     @Override
     public int removeById(Long id) {
-        return this.tenantMapper.deleteById(id);
+        return this.tenantInfoMapper.deleteById(id);
     }
 
     @Override
     public int removeByIds(Collection<Long> ids) {
-        return this.tenantMapper.deleteByIds(ids);
+        return this.tenantInfoMapper.deleteByIds(ids);
     }
 
     @Override
-    public TenantDTO findById(Long id) {
-        return TENANTS_ASSEMBLER.toDTO(this.tenantMapper.queryById(id));
+    public TenantInfoDTO findById(Long id) {
+        return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryById(id));
     }
 
     @Override
-    public Function<PageQueryDTO, List<TenantDTO>> getPageResult() {
-        return (p) -> TENANTS_ASSEMBLER.toDTO(this.tenantMapper.queryList(p));
+    public Function<PageQueryDTO, List<TenantInfoDTO>> getPageResult() {
+        return (p) -> TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryList(p));
     }
 
     @Override
-    public TenantDTO findByTenantCode(String tenantCode) {
-        return TENANTS_ASSEMBLER.toDTO(this.tenantMapper.queryByTenantCode(tenantCode));
+    public TenantInfoDTO findByTenantCode(String tenantCode) {
+        return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryByTenantCode(tenantCode));
     }
 }

@@ -16,67 +16,33 @@
 package com.fuhouyu.sass.platform.system.dto.tenant;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 租户dto对象
+ * 租户配置dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 16:59
+ * @since 2024/11/19 21:08
  */
-@Getter
-@Setter
-@ToString(callSuper = true)
-public class TenantDTO extends BaseDTO {
+@Schema(name = "TenantConfigDTO", description = "租户配置dto对象")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TenantConfigDTO extends BaseDTO {
 
-    /**
-     * 主键id
-     */
+    @Schema(name = "id", description = "主键id")
     private Long id;
 
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
+    @Schema(name = "name", description = "配置名称")
+    private String name;
 
-    /**
-     * 租户名称
-     */
-    private String tenantName;
-
-    /**
-     * 租户类型
-     */
-    private String tenantType;
-
-    /**
-     * 备注
-     */
+    @Schema(name = "remark", description = "备注")
     private String remark;
 
-    /**
-     * 租户图标
-     */
-    private String icon;
+    @Schema(name = "isEnabled", description = "是否启用：true启用，false禁用")
+    private Boolean isEnabled;
 
-    /**
-     * 联系人
-     */
-    private String contactPerson;
-
-    /**
-     * 联系方式
-     */
-    private String contactNumber;
-
-    /**
-     * 删除标记
-     */
-    @Setter(AccessLevel.PRIVATE)
-    private Boolean isDeleted;
 }

@@ -23,10 +23,10 @@ import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import {Outlet, useNavigate} from "react-router-dom";
 import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
-import {UserDetail} from "@/model/user";
+import {UserModel} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
-import {Permission} from "@/model/permission";
+import {PermissionModel} from "@/model/permissionModel";
 import {getUserPermissionApi} from "@/apis/permission";
 import {Bread, IconFont} from "@/components";
 
@@ -50,11 +50,11 @@ const Home: React.FC = withAuth(() => {
 
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-    const convertMenuItem = useCallback((permissionInterfaces: Permission[]): MenuItem[] | null => {
+    const convertMenuItem = useCallback((permissionInterfaces: PermissionModel[]): MenuItem[] | null => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return null;
         }
-        return permissionInterfaces?.map((item: Permission) => {
+        return permissionInterfaces?.map((item: PermissionModel) => {
             return {
                 key: item.routePath!,
                 label: item.permissionName,
@@ -67,7 +67,7 @@ const Home: React.FC = withAuth(() => {
 
 
     useEffect(() => {
-        getUserPermissionApi().then((res: Permission[]) => {
+        getUserPermissionApi().then((res: PermissionModel[]) => {
             let itemMenus = convertMenuItem(res);
             itemMenus = itemMenus ? itemMenus : [];
             setMenuItems(itemMenus);
@@ -81,7 +81,7 @@ const Home: React.FC = withAuth(() => {
         dispatch(fetchUserinfo());
     }, [dispatch])
     const realName = useAppSelector((state: {
-        user: { userinfo: UserDetail };
+        user: { userinfo: UserModel };
     }) => state.user.userinfo?.realName);
 
     // 点击菜单时进行跳转

@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.entity.Roles;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface RoleMapper extends BaseMapper<Roles, Long> {
+public interface RoleMapper extends BaseMapper<Long, Roles> {
 
     /**
      * 通过角色编码查询出角色对象

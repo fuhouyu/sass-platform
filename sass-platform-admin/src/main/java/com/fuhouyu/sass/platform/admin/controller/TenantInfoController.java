@@ -17,11 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
-import com.fuhouyu.sass.platform.system.service.TenantService;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +40,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024/11/11 21:45
  */
 @RestController
-@RequestMapping(WebConstant.TENANT_CONTROLLER_PATH)
-@Tag(name = "租户前端控制层")
+@RequestMapping("/v1/tenant")
+@Tag(name = "租户配置 web接口层")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class TenantController {
+public class TenantInfoController {
 
-    private final TenantService tenantService;
+    private final TenantInfoService tenantInfoService;
 
     /**
      * 租户列表
@@ -58,8 +57,8 @@ public class TenantController {
      */
     @GetMapping("/list")
     @Operation(summary = "租户列表")
-    public BaseResponse<PageResultDTO<TenantDTO>> pageList(PageQueryDTO pageQueryDTO) {
-        return ResponseHelper.success(tenantService.pageList(pageQueryDTO));
+    public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(PageQueryDTO pageQueryDTO) {
+        return ResponseHelper.success(tenantInfoService.pageList(pageQueryDTO));
     }
 
     /**
@@ -68,7 +67,7 @@ public class TenantController {
      * @param id 租户id
      * @return 租户详情
      */
-    public BaseResponse<TenantDTO> getTenantInfo(@PathVariable("id") Long id) {
-        return ResponseHelper.success(tenantService.findById(id));
+    public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(tenantInfoService.findById(id));
     }
 }

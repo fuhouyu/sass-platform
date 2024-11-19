@@ -16,8 +16,8 @@
 
 
 import {request} from "@/utils";
-import {UserDetail} from "@/model/user";
-import {PageQuery, PageResult} from "@/model/page";
+import {UserModel} from "@/model/user";
+import {PageQueryModel, PageResultModel} from "@/model/page";
 
 
 const baseUserUrl = '/v1/user'
@@ -25,7 +25,7 @@ const baseUserUrl = '/v1/user'
 /**
  * 获取用户详情
  */
-const getUserinfoApi = (): Promise<UserDetail> => request.get(`${baseUserUrl}/info`);
+const getUserinfoApi = (): Promise<UserModel> => request.get(`${baseUserUrl}/info`);
 
 
 /**
@@ -33,25 +33,25 @@ const getUserinfoApi = (): Promise<UserDetail> => request.get(`${baseUserUrl}/in
  * @param editUserinfo 修改用户详情
  */
 const editUserinfoApi =
-    (editUserinfo: UserDetail): Promise<void> => request.put(`${baseUserUrl}/info`, editUserinfo, {})
+    (editUserinfo: UserModel): Promise<void> => request.put(`${baseUserUrl}/info`, editUserinfo, {})
 
 /**
  * 通过用户id修改详请
  * @param editUserinfo 修改用户详情
  */
 const editUserinfoByIdApi =
-    (editUserinfo: UserDetail): Promise<void> => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
+    (editUserinfo: UserModel): Promise<void> => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
 
 /**
  * 保存用户详情
  * @param userinfo 用户详情
  */
-const saveUserInfoApi = (userinfo: UserDetail): Promise<void> => request.post(`${baseUserUrl}/info`, userinfo, {})
+const saveUserInfoApi = (userinfo: UserModel): Promise<void> => request.post(`${baseUserUrl}/info`, userinfo, {})
 
 /**
  * 获取用户列表
  */
-const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
+const getUserListApi = <P extends PageQueryModel, R extends object>(pageQuery: P): Promise<PageResultModel<R>> =>
     request.get(`${baseUserUrl}/list`, {
         params: {...pageQuery}
     });
@@ -59,7 +59,7 @@ const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Pr
 /**
  * 通过用户id获取用户详情
  */
-const getUserinfoByIdApi = (id: string): Promise<UserDetail> => request.get(`${baseUserUrl}/info/${id}`);
+const getUserinfoByIdApi = (id: string): Promise<UserModel> => request.get(`${baseUserUrl}/info/${id}`);
 
 /**
  * 通过id删除用户

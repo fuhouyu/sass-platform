@@ -71,14 +71,17 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void save(PermissionDTO dto) {
-        dto.setId(snowflakeIdWorker.nextId());
+    public Long save(PermissionDTO dto) {
+        long id = snowflakeIdWorker.nextId();
         String permissionCode = dto.getPermissionCode();
         Permissions permissions = this.permissionMapper.queryByPermissionCode(permissionCode);
         if (Objects.nonNull(permissions)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "权限编码:%s 已存在", permissionCode);
         }
-        this.permissionMapper.insert(PERMISSION_ASSEMBLER.toEntity(dto));
+        Permissions entity = PERMISSION_ASSEMBLER.toEntity(dto);
+        entity.setId(id);
+        this.permissionMapper.insert(entity);
+        return id;
     }
 
     @Override

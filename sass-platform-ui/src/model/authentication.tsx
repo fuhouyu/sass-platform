@@ -17,7 +17,7 @@
 /**
  * 用户认证
  */
-export interface UserAuthentication {
+export interface UserAuthenticationModel {
     /**
      * 登录标识
      */

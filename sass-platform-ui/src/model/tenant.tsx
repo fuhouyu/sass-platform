@@ -19,7 +19,8 @@ import {BaseModel} from "@/model/base";
 /**
  * 租户详情
  */
-export interface TenantDetail extends BaseModel {
+export interface TenantInfoModel extends BaseModel {
+    id?: string;
     // 租户编码
     tenantCode?: string;
     // 租户名称
@@ -33,5 +34,17 @@ export interface TenantDetail extends BaseModel {
     // 联系人
     contactPerson?: string;
     // 联系手机号
-    contactNumber?: string;
+    contactInfo?: string;
+}
+
+
+export interface TenantConfigModel extends BaseModel {
+    // 配置id
+    id?: string;
+    // 配置名称
+    name?: string;
+    // 备注
+    remark?: string;
+    // 是否启用
+    isEnabled?: string;
 }

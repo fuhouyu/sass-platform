@@ -16,7 +16,7 @@
 
 
 import {Button, Col, message, Row, Table, TableProps} from "antd";
-import {PageQuery, PageResult} from "@/model/page";
+import {PageQueryModel, PageResultModel} from "@/model/page";
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
@@ -35,7 +35,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 
 const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     const {listName, searchComments, columns, deleteCallback, addCallback, pageRequestApi} = props
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
+    const [pageQuery, setPageQuery] = useState<PageQueryModel>({
         pageNum: 1,
         pageSize: 10,
     });
@@ -43,7 +43,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
 
     const [searchValue, setSearchValue] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const [pageResult, setPageResult] = useState<PageResult<object>>();
+    const [pageResult, setPageResult] = useState<PageResultModel<object>>();
     const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
 
     const rowSelection: TableProps['rowSelection'] = {
@@ -60,9 +60,9 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
      * 刷新列表
      * @param pageQuery 分页查询
      */
-    const refreshList = useCallback((pageQuery: PageQuery) => {
+    const refreshList = useCallback((pageQuery: PageQueryModel) => {
         pageRequestApi(pageQuery)
-            .then((pageResult: PageResult<object>) => {
+            .then((pageResult: PageResultModel<object>) => {
                 setPageResult({...pageResult});
             })
     }, [pageRequestApi, setPageResult])
@@ -77,7 +77,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     useImperativeHandle(ref, () => ({
         refresh: () => {
             pageRequestApi(pageQuery)
-                .then((pageResult: PageResult<object>) => {
+                .then((pageResult: PageResultModel<object>) => {
                     setPageResult({...pageResult});
                 })
         },

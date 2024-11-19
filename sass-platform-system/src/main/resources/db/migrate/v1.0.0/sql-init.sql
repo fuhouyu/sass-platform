@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-DROP TABLE IF EXISTS tenants;
-CREATE TABLE tenants
+DROP TABLE IF EXISTS tenant_info;
+CREATE TABLE tenant_info
 (
     id               BIGINT PRIMARY KEY    NOT NULL,
     tenant_config_id BIGINT                NOT NULL,
@@ -37,28 +37,28 @@ CREATE TABLE tenants
 );
 
 
-COMMENT ON TABLE tenants IS '租户表';
-COMMENT ON COLUMN tenants.id IS '主键id';
-COMMENT ON COLUMN tenants.tenant_config_id IS '租户配置id';
-COMMENT ON COLUMN tenants.tenant_code IS '租户编码';
-COMMENT ON COLUMN tenants.tenant_name IS '租户名称';
-COMMENT ON COLUMN tenants.tenant_type IS '租户类型字典项';
-COMMENT ON COLUMN tenants.remark IS '描述';
-COMMENT ON COLUMN tenants.icon IS '租户图标';
-COMMENT ON COLUMN tenants.contact_person IS '联系人';
-COMMENT ON COLUMN tenants.contact_info IS '联系方式';
-COMMENT ON COLUMN tenants.start_time IS '开始时间';
-COMMENT ON COLUMN tenants.end_time IS '结束时间';
-COMMENT ON COLUMN tenants.is_deleted IS '删除标记: false 未删除';
-COMMENT ON COLUMN tenants.create_at IS '创建时间';
-COMMENT ON COLUMN tenants.create_by IS '创建人';
-COMMENT ON COLUMN tenants.update_at IS '更新时间';
-COMMENT ON COLUMN tenants.update_by IS '更新人';
+COMMENT ON TABLE tenant_info IS '租户表';
+COMMENT ON COLUMN tenant_info.id IS '主键id';
+COMMENT ON COLUMN tenant_info.tenant_config_id IS '租户配置id';
+COMMENT ON COLUMN tenant_info.tenant_code IS '租户编码';
+COMMENT ON COLUMN tenant_info.tenant_name IS '租户名称';
+COMMENT ON COLUMN tenant_info.tenant_type IS '租户类型字典项';
+COMMENT ON COLUMN tenant_info.remark IS '描述';
+COMMENT ON COLUMN tenant_info.icon IS '租户图标';
+COMMENT ON COLUMN tenant_info.contact_person IS '联系人';
+COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
+COMMENT ON COLUMN tenant_info.start_time IS '开始时间';
+COMMENT ON COLUMN tenant_info.end_time IS '结束时间';
+COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
+COMMENT ON COLUMN tenant_info.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_info.create_by IS '创建人';
+COMMENT ON COLUMN tenant_info.update_at IS '更新时间';
+COMMENT ON COLUMN tenant_info.update_by IS '更新人';
 
-CREATE INDEX idx_tenant_config_id on tenants (tenant_config_id);
+CREATE INDEX idx_tenant_config_id on tenant_info (tenant_config_id);
 COMMENT ON INDEX idx_tenant_config_id IS '租户配置id';
 -- 内置租户
-INSERT INTO tenants(id, tenant_config_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
+INSERT INTO tenant_info(id, tenant_config_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                     contact_info, create_at,
                     create_by, update_at, update_by)
 VALUES (1, 1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
@@ -262,7 +262,10 @@ VALUES (1, -1, 1, '首页', 'home', 1, 'i-home', '/', null, '', false, 'C', fals
         now(), 'admin', now(), 'admin'),
        (2, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', null, '', false, 'C', false, true, false,
         now(), 'admin', now(), 'admin'),
-       (22, 2, 1, '租户管理', '/tenant/manager', 1, 'i-navicon-zhgl', '/tenant/manager', null, '', false, 'C', false,
+       (21, 2, 1, '租户管理', '/tenant/manager', 1, 'i-navicon-zhgl', '/tenant/manager', null, '', false, 'C', false,
+        true, false,
+        now(), 'admin', now(), 'admin'),
+       (22, 2, 1, '配置管理', '/tenant/config', 2, 'i-peizhiguanli', '/tenant/config', null, '', false, 'C', false,
         true, false,
         now(), 'admin', now(), 'admin'),
        (3, -1, 1, '系统设置', 'system', 3, 'i-setting', '/system',
@@ -296,6 +299,7 @@ COMMENT ON COLUMN role_has_permission.create_by IS '创建人';
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin'),
        (1, 2, now(), 'admin'),
+       (1, 21, now(), 'admin'),
        (1, 22, now(), 'admin'),
        (1, 3, now(), 'admin'),
        (1, 4, now(), 'admin'),

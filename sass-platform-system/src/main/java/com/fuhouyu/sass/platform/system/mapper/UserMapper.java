@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2024/9/24 20:26
  */
-public interface UserMapper extends BaseMapper<Users, Long> {
+public interface UserMapper extends BaseMapper<Long, Users> {
 
     /**
      * 通过用户名称查询

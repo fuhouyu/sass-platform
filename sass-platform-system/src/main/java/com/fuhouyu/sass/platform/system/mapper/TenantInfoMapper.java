@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.constants;
+package com.fuhouyu.sass.platform.system.mapper;
+
+import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 
 /**
  * <p>
- * web常量前缀
+ * 租户mapper接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/9/20 22:29
  */
-public class WebConstant {
+public interface TenantInfoMapper extends BaseMapper<Long, TenantInfo> {
 
-    private static final String API_VERSION = "/v1/";
-
-    public static final String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public static final String AUTH_CONTROLLER_PATH = API_VERSION + "auth";
-
-    public static final String TENANT_INFO_CONTROLLER_PATH = API_VERSION + "tenant";
-
-    public static final String TENANT_CONFIG_CONTROLLER_PATH = API_VERSION + "tenant";
-
-    public static final String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
-
+    /**
+     * 通过租户编码进行查询
+     *
+     * @param tenantCode 租户编码
+     * @return 租户do实体对象
+     */
+    TenantInfo queryByTenantCode(String tenantCode);
 }

@@ -29,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 17:12
  */
-public interface PermissionService extends BaseService<PermissionDTO, Long> {
+public interface PermissionService extends BaseService<Long, PermissionDTO> {
 
 
     /**

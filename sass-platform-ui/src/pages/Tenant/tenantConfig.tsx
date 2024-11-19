@@ -16,37 +16,24 @@
 
 
 import React from "react";
-import {PageList} from "@/components";
-import {removeUserApi} from "@/apis/user";
 import {Space, TableColumnsType} from "antd";
-import {TenantInfoModel} from "@/model/tenant";
-import {getTenantListApi} from "@/apis/tenant";
-import {SearchInput} from "@components/List/pageParams";
 
-export const Tenant: React.FC = () => {
+import {PageList} from "@/components";
+import {SearchInput} from "@components/List/pageParams";
+import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
+import {TenantConfigModel} from "@/model/tenant";
+
+export const TenantConfig: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
-            title: '租户编码',
-            dataIndex: 'tenantCode',
+            title: '配置名称',
+            dataIndex: 'name',
             showSorterTooltip: {target: 'full-header'},
         },
         {
-            title: '租户名称',
-            dataIndex: 'tenantName',
-            defaultSortOrder: 'descend',
-        },
-        {
-            title: '租户类型',
-            dataIndex: 'tenantType',
-        },
-        {
-            title: '联系人',
-            dataIndex: 'contactPerson',
-        },
-        {
-            title: '联系方式',
-            dataIndex: 'contactInfo',
+            title: '是否启用',
+            dataIndex: 'isEnabled',
         },
         {
             title: '创建时间',
@@ -72,11 +59,11 @@ export const Tenant: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, record: TenantInfoModel) => {
+            render: (_, record: TenantConfigModel) => {
+                console.log(record);
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => {
-                            console.log(record)
                         }}>修改</a>
                     </Space>
                 </>)
@@ -89,19 +76,19 @@ export const Tenant: React.FC = () => {
             // ref={pageListRef}
             searchComments={[
                 {
-                    name: '租户名称',
-                    key: 'tenantName',
+                    name: '配置名称',
+                    key: 'keyword',
                     comment: SearchInput,
-                    placeholder: '租户名称',
+                    placeholder: '配置名称',
                 }
             ]}
-            listName='租户'
+            listName='租户配置'
             columns={columns}
-            pageRequestApi={getTenantListApi}
+            pageRequestApi={getTenantConfigListApi}
             addCallback={() => {
                 // openModal(undefined, true)
             }}
-            deleteCallback={(ids: string[]) => removeUserApi(ids)}
+            deleteCallback={(ids: string[]) => removerTenantConfigApi(ids)}
         />
     </>)
 }

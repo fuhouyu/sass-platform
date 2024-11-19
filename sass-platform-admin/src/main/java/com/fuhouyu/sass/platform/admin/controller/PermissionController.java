@@ -17,7 +17,6 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
@@ -40,8 +39,8 @@ import java.util.List;
  * @since 2024/10/9 17:08
  */
 @RestController
-@RequestMapping(WebConstant.PERMISSION_CONTROLLER_PATH)
-@Tag(name = "权限前端控制层")
+@RequestMapping("/v1/permission")
+@Tag(name = "权限 web接口服务器")
 @Validated
 @RequiredArgsConstructor
 public class PermissionController {

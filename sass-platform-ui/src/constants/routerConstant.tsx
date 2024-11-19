@@ -20,6 +20,7 @@ import {PersonCenter} from "@/pages/Userinfo/personCenter";
 import User from "@/pages/System/User/user";
 import {Tenant} from "@/pages/Tenant/tenant";
 import React from "react";
+import {TenantConfig} from "@/pages/Tenant/tenantConfig";
 
 export type RouterType = {
     title: string,
@@ -51,6 +52,11 @@ export const RoutersConstant: RouterType[] = [
                         title: '租户管理',
                         path: '/tenant/manager',
                         element: <Tenant/>,
+                    },
+                    {
+                        title: '配置管理',
+                        path: '/tenant/config',
+                        element: <TenantConfig/>,
                     }
                 ]
 

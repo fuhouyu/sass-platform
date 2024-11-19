@@ -22,7 +22,7 @@ import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
 import withAuth from "@components/Auth/withAuth";
 import {Userinfo} from "@/pages/Userinfo/userinfo";
-import {UserDetail} from "@/model/user";
+import {UserModel} from "@/model/user";
 
 interface MenuLiInterface {
     key: string;
@@ -37,7 +37,7 @@ interface MenuLiInterface {
 export const PersonCenter: React.FC = withAuth(() => {
 
     const userinfo = useAppSelector((state: {
-        user: { userinfo: UserDetail };
+        user: { userinfo: UserModel };
     }) => state.user.userinfo);
 
     const menuItems: MenuLiInterface[] = [

@@ -31,7 +31,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/27 23:46
  */
-public interface AccountMapper extends BaseMapper<Accounts, AccountId> {
+public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
 
 
     /**

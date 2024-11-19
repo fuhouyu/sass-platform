@@ -32,7 +32,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class Tenants extends BaseEntity {
+public class TenantInfo extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1623531235412389142L;
