@@ -15,7 +15,7 @@
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {DownOutlined, HomeOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
+import {DownOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {Col, Divider, Dropdown, Image, Layout, Menu, MenuProps, Row, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
 import "./index.scss"
@@ -70,11 +70,6 @@ const Home: React.FC = withAuth(() => {
         getUserPermissionApi().then((res: Permission[]) => {
             let itemMenus = convertMenuItem(res);
             itemMenus = itemMenus ? itemMenus : [];
-            itemMenus.unshift({
-                key: 'home',
-                label: '首页',
-                icon: <HomeOutlined style={{fontSize: '16px'}}/>,
-            })
             setMenuItems(itemMenus);
         });
     }, [convertMenuItem])

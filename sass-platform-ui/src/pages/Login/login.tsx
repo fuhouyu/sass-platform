@@ -60,33 +60,6 @@ const Login: React.FC = () => {
 
     return (
         <>
-            {/*<div className="form-container">*/}
-            {/*    <Form className="login-form"*/}
-            {/*          name="login"*/}
-            {/*          initialValues={{remember: true}}*/}
-            {/*          onFinish={onFinish}*/}
-            {/*    >*/}
-            {/*        <h3 className="login-title"> 多租户后台管理系统</h3>*/}
-            {/*        <Form.Item*/}
-            {/*            name="identify"*/}
-            {/*            rules={[{required: true, message: '请输入用户名!'}]}*/}
-            {/*        >*/}
-            {/*            <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            name="credentials"*/}
-            {/*            rules={[{required: true, message: '请输入密码!'}]}*/}
-            {/*        >*/}
-            {/*            <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>*/}
-            {/*        </Form.Item>*/}
-
-            {/*        <Form.Item>*/}
-            {/*            <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>*/}
-            {/*                登录*/}
-            {/*            </Button>*/}
-            {/*        </Form.Item>*/}
-            {/*    </Form>*/}
-            {/*</div>*/}
             <Row className="login-container" style={{height: '100vh'}}>
                 {/* 左侧背景部分 */}
                 <Col span={18} className="login-bg"/>
@@ -98,6 +71,7 @@ const Login: React.FC = () => {
                           initialValues={{remember: true}}
                           onFinish={onFinish}
                     >
+                        <h3 className="title">Sass 后台管理系统</h3>
                         <Form.Item
                             name="identify"
                             rules={[{required: true, message: '请输入用户名!'}]}

@@ -70,7 +70,7 @@ public class TenantDTO extends BaseDTO {
     private String contactPerson;
 
     /**
-     * 联系电话
+     * 联系方式
      */
     private String contactNumber;
 

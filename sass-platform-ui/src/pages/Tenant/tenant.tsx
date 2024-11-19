@@ -45,7 +45,7 @@ export const Tenant: React.FC = () => {
             dataIndex: 'contactPerson',
         },
         {
-            title: '联系电话',
+            title: '联系方式',
             dataIndex: 'contactNumber',
         },
         {
