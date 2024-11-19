@@ -24,7 +24,7 @@
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
         <result column="icon" property="icon" jdbcType="VARCHAR"/>
         <result column="contact_person" property="contactPerson" jdbcType="VARCHAR"/>
-        <result column="contact_number" property="contactNumber" jdbcType="VARCHAR"/>
+        <result column="contact_info" property="contactInfo" jdbcType="VARCHAR"/>
         <result column="is_deleted" property="isDeleted" jdbcType="BOOLEAN"/>
     </resultMap>
 
@@ -40,7 +40,7 @@
         remark,
         icon,
         contact_person,
-        contact_number,
+        contact_info,
         is_deleted,
         create_at,
         update_at,
@@ -63,7 +63,7 @@
             #{remark},
             #{icon},
             #{contactPerson},
-            #{contactNumber},
+            #{contactInfo},
             #{isDeleted},
             #{createAt},
             #{updateAt},
@@ -88,7 +88,7 @@
                 #{entity.remark},
                 #{entity.icon},
                 #{entity.contactPerson},
-                #{entity.contactNumber},
+                #{entity.contactInfo},
                 #{entity.createAt},
                 #{entity.updateAt},
                 #{entity.createBy},
@@ -107,8 +107,8 @@
         <if test="contactPerson != null and contactPerson != ''">
             contact_person = #{contactPerson},
         </if>
-        <if test="contactNumber != null and contactNumber != ''">
-            contact_number = #{contactNumber},
+        <if test="contactInfo != null and contactInfo != ''">
+            contact_info = #{contactInfo},
         </if>
         remark = #{remark},
         update_at = #{updateAt},

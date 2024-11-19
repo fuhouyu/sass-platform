@@ -44,6 +44,18 @@ export const RoutersConstant: RouterType[] = [
                 element: <PersonCenter/>
             },
             {
+                title: '租户管理',
+                path: '/tenant',
+                children: [
+                    {
+                        title: '租户管理',
+                        path: '/tenant/manager',
+                        element: <Tenant/>,
+                    }
+                ]
+
+            },
+            {
                 title: '系统管理',
                 path: '/system',
                 children: [
@@ -54,11 +66,7 @@ export const RoutersConstant: RouterType[] = [
                     }
                 ]
             },
-            {
-                title: '租户管理',
-                path: '/tenant',
-                element: <Tenant/>
-            }
+
         ]
     },
 

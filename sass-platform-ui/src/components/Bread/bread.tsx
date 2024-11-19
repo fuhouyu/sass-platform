@@ -15,7 +15,6 @@
  */
 
 
-import {Link} from "react-router-dom";
 import {Breadcrumb} from "antd";
 import {RoutersConstant, RouterType} from "@/constants/routerConstant";
 import {useMemo} from "react";
@@ -43,17 +42,15 @@ export const Bread = () => {
         return pathSnippets.map((_, index) => {
             const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
             const breadcrumbName = getBreadcrumbName(url, RoutersConstant);
-
-            return (
-                // <Link to={url}>{breadcrumbName} <li className="ant-breadcrumb-separator"/> </Link>
-                <Breadcrumb.Item key={url}>
-                    <Link to={url}>{breadcrumbName}</Link>
-                </Breadcrumb.Item>
-            );
+            return {
+                title: breadcrumbName,
+                key: url,
+                href: url,
+            };
         });
     }, [pathSnippets]);
 
-    return <Breadcrumb>{breadcrumb}</Breadcrumb>;
+    return <Breadcrumb items={breadcrumb}></Breadcrumb>;
 };
 
 const matchPath = (currentPath: string, routePath: string) => {

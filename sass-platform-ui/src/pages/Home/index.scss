@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-$sider_background_color: #21252B;
+$sider_background_color: #304156;
 
 // 侧边栏颜色管理
 .layout-sider, .ant-menu, .ant-menu-dark, .layout-menu, .ant-menu-item, .ant-layout-sider-trigger, .ant-menu-submenu-title {
@@ -35,21 +35,59 @@ $sider_background_color: #21252B;
     width: 100%;
     height: 100%;
 
-    // 布局头
-    .layout-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #fff;
+    // 平台title
+    .platform-title {
+      height: 3.125rem;
+      width: 100%;
+      line-height: 3.125rem;
+      text-align: center;
+      margin: 0 auto;
     }
 
-    .ant-layout-header {
+    // 分隔线
+    .ant-divider {
+      margin: 0;
+    }
+
+    // 布局头
+    .layout-header {
+      background-color: #fff;
+      height: 3.125rem;
+      line-height: 3.125rem;
       padding: 0 15px;
+      // 用户头
+      .user-header {
+        margin-left: auto;
+        font-size: 1rem;
+        // 租户标签
+        .tenant {
+          padding-right: 1rem;
+
+          span {
+            padding-left: 0.3rem;
+          }
+        }
+      }
+
+      // 头像
+      .avatar {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+      }
+    }
+
+
+    // 面包屑
+    .bread-row {
+      background-color: #fff;
+      padding: 0.5rem 0.5rem;
+      text-align: center;
     }
 
     // 内容区域
     .layout-content {
-      margin: 16px;
+      margin: 1rem;
     }
   }
 }

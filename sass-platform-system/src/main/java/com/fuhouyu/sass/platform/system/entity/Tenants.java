@@ -74,9 +74,9 @@ public class Tenants extends BaseEntity {
     private String contactPerson;
 
     /**
-     * 联系电话
+     * 联系方式
      */
-    private String contactNumber;
+    private String contactInfo;
 
     /**
      * 删除标记
