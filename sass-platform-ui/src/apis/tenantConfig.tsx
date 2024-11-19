@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
+
+import {PageQueryModel, PageResultModel} from "@/model/page";
 import {request} from "@/utils";
-import {UserAuthenticationModel, UserToken} from "@/model/authentication";
 
-const baseAuthUrl = '/v1/auth'
+const baseTenantUrl = '/v1/tenant-config'
+
+/**
+ * 租户配置接口
+ * @param pageQuery 分页查询对象
+ */
+const getTenantConfigListApi = <P extends PageQueryModel, R extends object>(pageQuery: P): Promise<PageResultModel<R>> =>
+    request.get(`${baseTenantUrl}/list`, {
+        params: {...pageQuery}
+    });
 
 
 /**
- * 用户登录
- * @param loginData 登录的表单信息
+ * 删除租户配置的api
+ * @param ids ids
  */
-const loginApi = (loginData: UserAuthenticationModel): Promise<UserToken> =>
-    request.post(`${baseAuthUrl}/login`, loginData)
-
-
-/**
- * 退出登录
- */
-const logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
-
+const removerTenantConfigApi = (ids: string[]): Promise<void> => request.delete(`${baseTenantUrl}`, {data: ids});
 
 export {
-    loginApi,
-    logoutApi
+    getTenantConfigListApi,
+    removerTenantConfigApi
 }

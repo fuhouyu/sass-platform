@@ -33,21 +33,22 @@ import java.util.function.Function;
  * @author fuhouyu
  * @since 2024/11/2 19:18
  */
-public interface BaseService<T extends BaseDTO, ID> {
+public interface BaseService<ID, T extends BaseDTO> {
 
     /**
      * 保存dto对象
      *
      * @param dto dto对象
      */
-    void save(T dto);
+    ID save(T dto);
 
     /**
      * 批量保存dto对象
      *
      * @param dtoList dto集合
      */
-    void saveBatch(List<T> dtoList);
+    default void saveBatch(List<T> dtoList) {
+    }
 
     /**
      * 修改dto对象

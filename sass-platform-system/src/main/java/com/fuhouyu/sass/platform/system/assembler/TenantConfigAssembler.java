@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.admin.constants;
+package com.fuhouyu.sass.platform.system.assembler;
+
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantConfigDTO;
+import com.fuhouyu.sass.platform.system.entity.TenantConfig;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * web常量前缀
+ * 租户配置转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:17
+ * @since 2024/11/19 21:16
  */
-public class WebConstant {
+@Mapper
+public interface TenantConfigAssembler extends BaseAssembler<TenantConfig, TenantConfigDTO> {
 
-    private static final String API_VERSION = "/v1/";
-
-    public static final String USER_CONTROLLER_PATH = API_VERSION + "user";
-
-    public static final String AUTH_CONTROLLER_PATH = API_VERSION + "auth";
-
-    public static final String TENANT_INFO_CONTROLLER_PATH = API_VERSION + "tenant";
-
-    public static final String TENANT_CONFIG_CONTROLLER_PATH = API_VERSION + "tenant";
-
-    public static final String PERMISSION_CONTROLLER_PATH = API_VERSION + "permission";
-
-    private WebConstant() {
-    }
-
-
+    TenantConfigAssembler INSTANCE = Mappers.getMapper(TenantConfigAssembler.class);
 }

@@ -54,10 +54,11 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void save(AccountDTO accountDTO) {
+    public AccountIdDTO save(AccountDTO accountDTO) {
         accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
         accountDTO.setIsEnabled(true);
         this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
+        return new AccountIdDTO(accountDTO.getAccount(), accountDTO.getAccountType());
     }
 
     @Override

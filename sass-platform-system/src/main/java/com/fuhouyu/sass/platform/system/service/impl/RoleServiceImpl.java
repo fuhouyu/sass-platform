@@ -58,16 +58,18 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void save(RoleDTO dto) {
+    public Long save(RoleDTO dto) {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);
         if (Objects.nonNull(roles)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "角色编码: %s 已存在", roleCode);
         }
-        dto.setId(snowflakeIdWorker.nextId());
+        long id = snowflakeIdWorker.nextId();
         Roles entity = ROLES_ASSEMBLER.toEntity(dto);
+        entity.setId(id);
         this.roleMapper.insert(entity);
+        return id;
     }
 
     @Override

@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.mapper;
+package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.entity.Tenants;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.entity.TenantInfo;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 租户mapper接口
+ * 租户转换
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 22:29
+ * @since 2024/11/2 19:48
  */
-public interface TenantMapper extends BaseMapper<Tenants, Long> {
+@Mapper
+public interface TenantInfoAssembler extends BaseAssembler<TenantInfo, TenantInfoDTO> {
 
-    /**
-     * 通过租户编码进行查询
-     *
-     * @param tenantCode 租户编码
-     * @return 租户do实体对象
-     */
-    Tenants queryByTenantCode(String tenantCode);
+    TenantInfoAssembler INSTANCE = Mappers.getMapper(TenantInfoAssembler.class);
 }

@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.assembler;
+package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
-import com.fuhouyu.sass.platform.system.entity.Tenants;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantConfigDTO;
 
 /**
  * <p>
- * 租户转换
+ * 租户配置接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/2 19:48
+ * @since 2024/11/19 21:35
  */
-@Mapper
-public interface TenantsAssembler extends BaseAssembler<Tenants, TenantDTO> {
-
-    TenantsAssembler INSTANCE = Mappers.getMapper(TenantsAssembler.class);
+public interface TenantConfigService extends BaseService<Long, TenantConfigDTO> {
 }

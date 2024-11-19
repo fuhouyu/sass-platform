@@ -28,7 +28,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface PermissionMapper extends BaseMapper<Permissions, Long> {
+public interface PermissionMapper extends BaseMapper<Long, Permissions> {
 
     /**
      * 通过权限编码查询权限

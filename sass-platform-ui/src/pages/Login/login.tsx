@@ -21,7 +21,7 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
-import {UserAuthentication} from "@/model/authentication";
+import {UserAuthenticationModel} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {IconFont} from "@/components";
@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             return
         }
     }, [isAuth, navigate]);
-    const onFinish = (loginData: UserAuthentication) => {
+    const onFinish = (loginData: UserAuthenticationModel) => {
         setLoginButtonLoading(true)
         loginData.accountType = AccountType.PASSWORD
         dispatch(fetchLogin(loginData)).then(() => {

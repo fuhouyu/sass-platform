@@ -13,29 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.entity;
 
-
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 租户域的接口
+ * 租户配置实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/21 16:23
+ * @since 2024/11/19 21:14
  */
-public interface TenantService extends BaseService<TenantDTO, Long> {
-
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TenantConfig extends BaseEntity {
 
     /**
-     * 通过租户编码获取租户
-     *
-     * @param tenantCode 租户编码
-     * @return 租户dto对象
+     * 主键id
      */
-    TenantDTO findByTenantCode(String tenantCode);
+    private Long id;
 
+    /**
+     * 配置名称
+     */
+    private String name;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 是否启用：true启用，false禁用
+     */
+    private Boolean isEnabled;
 }

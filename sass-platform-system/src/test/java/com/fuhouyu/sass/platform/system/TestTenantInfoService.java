@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system;
 
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantDTO;
-import com.fuhouyu.sass.platform.system.service.TenantService;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,56 +34,56 @@ import java.util.Objects;
  * @since 2024/9/21 16:41
  */
 
-class TestTenantService extends TestBaseService {
+class TestTenantInfoService extends TestBaseService {
 
     @Autowired
-    private TenantService tenantService;
+    private TenantInfoService tenantInfoService;
 
 
     @Test
     void testTenant() {
         // 保存
-        TenantDTO tenantDTO = this.generateTenantModel();
-        tenantService.save(tenantDTO);
+        TenantInfoDTO tenantInfoDTO = this.generateTenantModel();
+        tenantInfoService.save(tenantInfoDTO);
         // 根据id查询
-        TenantDTO tenantModelQueryById = this.tenantService.findById(tenantDTO.getId());
-        this.compare(tenantDTO, tenantModelQueryById);
+        TenantInfoDTO tenantModelQueryById = this.tenantInfoService.findById(tenantInfoDTO.getId());
+        this.compare(tenantInfoDTO, tenantModelQueryById);
         // 根据编码查询
-        TenantDTO queryByTenantCode = this.tenantService.findByTenantCode(tenantDTO.getTenantCode());
-        this.compare(tenantDTO, queryByTenantCode);
+        TenantInfoDTO queryByTenantCode = this.tenantInfoService.findByTenantCode(tenantInfoDTO.getTenantCode());
+        this.compare(tenantInfoDTO, queryByTenantCode);
         // 修改
-        tenantDTO.setTenantName("update_tenant");
-        this.tenantService.edit(tenantDTO);
+        tenantInfoDTO.setTenantName("update_tenant");
+        this.tenantInfoService.edit(tenantInfoDTO);
         // 批量查询
         PageQueryDTO pageQueryDTO = new PageQueryDTO(1, 10);
-        PageInfo<TenantDTO> list = this.tenantService.pageList(pageQueryDTO);
-        for (TenantDTO model : list.getList()) {
-            this.compare(tenantDTO, model);
+        PageInfo<TenantInfoDTO> list = this.tenantInfoService.pageList(pageQueryDTO);
+        for (TenantInfoDTO model : list.getList()) {
+            this.compare(tenantInfoDTO, model);
         }
         // 删除
-        int count = this.tenantService.removeById(tenantDTO.getId());
+        int count = this.tenantInfoService.removeById(tenantInfoDTO.getId());
         Assert.isTrue(count > 0, "数据删除失败");
 
     }
 
-    private void compare(TenantDTO source, TenantDTO target) {
+    private void compare(TenantInfoDTO source, TenantInfoDTO target) {
         Assert.isTrue(Objects.equals(source.getTenantCode(), target.getTenantCode()), "租户编码不一致");
         Assert.isTrue(Objects.equals(source.getTenantName(), target.getTenantName()), "租户名称不一致");
         Assert.isTrue(Objects.equals(source.getRemark(), target.getRemark()), "租户备注不一致");
         Assert.isTrue(Objects.equals(source.getContactPerson(), target.getContactPerson()), "租户联系人不一致");
-        Assert.isTrue(Objects.equals(source.getContactNumber(), target.getContactNumber()), "租户联系人方式不一致");
+        Assert.isTrue(Objects.equals(source.getContactInfo(), target.getContactInfo()), "租户联系人方式不一致");
     }
 
 
-    private TenantDTO generateTenantModel() {
-        TenantDTO tenantDTO = new TenantDTO();
-        tenantDTO.setTenantCode(super.getUUIDStr(8));
-        tenantDTO.setTenantName(super.getUUIDStr(8));
-        tenantDTO.setTenantType(super.getUUIDStr(8));
-        tenantDTO.setRemark(super.getUUIDStr(8));
-        tenantDTO.setIcon(super.getUUIDStr(8));
-        tenantDTO.setContactPerson(super.getUUIDStr(8));
-        tenantDTO.setContactNumber(super.getUUIDStr(8));
-        return tenantDTO;
+    private TenantInfoDTO generateTenantModel() {
+        TenantInfoDTO tenantInfoDTO = new TenantInfoDTO();
+        tenantInfoDTO.setTenantCode(super.getUUIDStr(8));
+        tenantInfoDTO.setTenantName(super.getUUIDStr(8));
+        tenantInfoDTO.setTenantType(super.getUUIDStr(8));
+        tenantInfoDTO.setRemark(super.getUUIDStr(8));
+        tenantInfoDTO.setIcon(super.getUUIDStr(8));
+        tenantInfoDTO.setContactPerson(super.getUUIDStr(8));
+        tenantInfoDTO.setContactInfo(super.getUUIDStr(8));
+        return tenantInfoDTO;
     }
 }

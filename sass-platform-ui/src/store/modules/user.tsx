@@ -16,9 +16,9 @@
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {removeToken, storeToken} from "@/utils/Token/token";
-import {UserDetail,} from "@/model/user";
+import {UserModel,} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi} from "@/apis/user";
-import {UserAuthentication, UserToken} from "@/model/authentication";
+import {UserAuthenticationModel, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
 
 
@@ -37,7 +37,7 @@ const userStore = createSlice({
             storeToken(state.token)
             return state;
         },
-        storeUserinfo: (state, action: PayloadAction<UserDetail>) => {
+        storeUserinfo: (state, action: PayloadAction<UserModel>) => {
             state.userinfo = action.payload;
             return state;
         },
@@ -56,7 +56,7 @@ const userStore = createSlice({
  * 用户登录接口
  * @param loginForm 表单参数
  */
-const fetchLogin = (loginForm: UserAuthentication) => {
+const fetchLogin = (loginForm: UserAuthenticationModel) => {
     return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
         const token = await loginApi(loginForm);
         if (token) {
@@ -71,8 +71,8 @@ const fetchLogin = (loginForm: UserAuthentication) => {
  * 用户详情接口
  */
 const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: UserDetail; type: `user/${string}` }) => void) => {
-        const res: UserDetail = await getUserinfoApi();
+    return async (dispatch: (arg0: { payload: UserModel; type: `user/${string}` }) => void) => {
+        const res: UserModel = await getUserinfoApi();
         dispatch(userStore.actions.storeUserinfo(res))
     }
 }
@@ -93,8 +93,8 @@ const fetchLogout = () => {
  * 修改用户详情
  * @param editUserinfo 用户详情接口修改
  */
-const fetchEditUserinfo = (editUserinfo: UserDetail) => {
-    return async (dispatch: (arg0: { payload: UserDetail; type: `user/${string}` }) => void) => {
+const fetchEditUserinfo = (editUserinfo: UserModel) => {
+    return async (dispatch: (arg0: { payload: UserModel; type: `user/${string}` }) => void) => {
         await editUserinfoApi(editUserinfo);
         const res = await getUserinfoApi();
         dispatch(userStore.actions.storeUserinfo(res))

@@ -17,7 +17,6 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -41,8 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024/11/12 20:44
  */
 @RestController
-@RequestMapping(WebConstant.AUTH_CONTROLLER_PATH)
-@Tag(name = "认证前端控制层")
+@RequestMapping("/v1/auth")
+@Tag(name = "认证 web接口层")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

@@ -25,7 +25,7 @@ import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
  * @author fuhouyu
  * @since 2024/10/5 19:17
  */
-public interface UserService extends BaseService<UserDTO, Long> {
+public interface UserService extends BaseService<Long, UserDTO> {
 
     /**
      * 通过用户名称查询

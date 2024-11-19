@@ -18,7 +18,6 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
@@ -47,8 +46,8 @@ import java.util.Objects;
  * @since 2024/10/4 21:50
  */
 @RestController
-@RequestMapping(WebConstant.USER_CONTROLLER_PATH)
-@Tag(name = "用户前端控制层")
+@RequestMapping("/v1/user")
+@Tag(name = "用户 web接口层")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
