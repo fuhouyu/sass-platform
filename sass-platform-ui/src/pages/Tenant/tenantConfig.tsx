@@ -16,12 +16,11 @@
 
 
 import React from "react";
-import {Space, TableColumnsType} from "antd";
+import {TableColumnsType, Tag} from "antd";
 
 import {PageList} from "@/components";
 import {SearchInput} from "@components/List/pageParams";
 import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
-import {TenantConfigModel} from "@/model/tenant";
 
 export const TenantConfig: React.FC = () => {
 
@@ -34,6 +33,15 @@ export const TenantConfig: React.FC = () => {
         {
             title: '是否启用',
             dataIndex: 'isEnabled',
+            align: 'center',
+            render: (isEnabled: boolean) => (
+                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
+                        <span style={{color: '#2090FF'}}>启用</span>
+                    </Tag> :
+                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
+                        <span style={{color: '#FF9696'}}>禁用</span>
+                    </Tag>
+            )
         },
         {
             title: '创建时间',
@@ -59,15 +67,14 @@ export const TenantConfig: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, record: TenantConfigModel) => {
-                console.log(record);
-                return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => {
-                        }}>修改</a>
-                    </Space>
-                </>)
-            }
+            // render: (_, _: TenantConfigModel) => {
+            //     return (<>
+            //         <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+            //             <a onClick={() => {
+            //             }}>修改</a>
+            //         </Space>
+            //     </>)
+            // }
         }
     ];
 
