@@ -62,8 +62,8 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
      */
     const refreshList = useCallback((pageQuery: PageQueryModel) => {
         pageRequestApi(pageQuery)
-            .then((pageResult: PageResultModel<object>) => {
-                setPageResult({...pageResult});
+            .then((res: PageResultModel<object>) => {
+                setPageResult({...res});
             })
     }, [pageRequestApi, setPageResult])
 
