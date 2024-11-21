@@ -48,6 +48,9 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     @Schema(name = "permissionName", description = "权限名称", requiredMode = Schema.RequiredMode.REQUIRED)
     private String permissionName;
 
+    @Schema(name = "permissionType", description = "权限类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String permissionType;
+
     @Schema(name = "permissionCode", description = "权限编码", requiredMode = Schema.RequiredMode.REQUIRED)
     private String permissionCode;
 
