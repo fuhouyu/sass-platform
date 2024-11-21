@@ -15,17 +15,26 @@
  */
 
 $sider_background_color: #304156;
-
 // 侧边栏颜色管理
-.layout-sider, .ant-menu, .ant-menu-dark, .layout-menu, .ant-menu-item, .ant-layout-sider-trigger, .ant-menu-submenu-title {
+.layout-sider, .layout-menu, .ant-layout-sider-trigger, {
   background-color: $sider_background_color !important;
   color: #ffffff !important;
 }
 
-// 选中滑过的颜色处理
-.ant-menu-item-active, .ant-menu-item-selected {
-  background-color: #2187FB !important;
+.ant-menu-sub {
+  background-color: #202D3D !important;
 }
+
+// 平台title
+.platform-title {
+  height: 3.125rem;
+  width: 100%;
+  line-height: 3.125rem;
+  text-align: center;
+  margin: 0 auto;
+  color: white;
+}
+
 
 .container {
   height: 100%;
@@ -34,15 +43,6 @@ $sider_background_color: #304156;
   .layout-container {
     width: 100%;
     height: 100%;
-
-    // 平台title
-    .platform-title {
-      height: 3.125rem;
-      width: 100%;
-      line-height: 3.125rem;
-      text-align: center;
-      margin: 0 auto;
-    }
 
     // 分隔线
     .ant-divider {

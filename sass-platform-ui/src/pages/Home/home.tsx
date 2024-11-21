@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DownOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {Col, Divider, Dropdown, Image, Layout, Menu, MenuProps, Row, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
@@ -26,9 +26,8 @@ import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
 import {UserModel} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
-import {PermissionModel} from "@/model/permissionModel";
-import {getUserPermissionApi} from "@/apis/permission";
 import {Bread, IconFont} from "@/components";
+import {useMenuTree} from "@/hooks/useMenuTree";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -48,31 +47,8 @@ const menus: MenuProps['items'] = [
 
 const Home: React.FC = withAuth(() => {
 
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    const menuItems = useMenuTree();
 
-    const convertMenuItem = useCallback((permissionInterfaces: PermissionModel[]): MenuItem[] | null => {
-        if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
-            return null;
-        }
-        return permissionInterfaces?.map((item: PermissionModel) => {
-            return {
-                key: item.routePath!,
-                label: item.permissionName,
-                icon: item.icon ?
-                    <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
-                children: item.children ? convertMenuItem(item.children) ?? null : null
-            }
-        })
-    }, [])
-
-
-    useEffect(() => {
-        getUserPermissionApi().then((res: PermissionModel[]) => {
-            let itemMenus = convertMenuItem(res);
-            itemMenus = itemMenus ? itemMenus : [];
-            setMenuItems(itemMenus);
-        });
-    }, [convertMenuItem])
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
 

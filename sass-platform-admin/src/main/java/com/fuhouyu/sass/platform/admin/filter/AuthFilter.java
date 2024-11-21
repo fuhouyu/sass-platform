@@ -22,7 +22,6 @@ import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.web.handler.ParseHttpRequest;
-import com.fuhouyu.sass.platform.admin.constants.WebConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +53,7 @@ public class AuthFilter implements ParseHttpRequest {
     @Override
     public User parseUser(@NonNull HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (request.getRequestURI().equals(WebConstant.AUTH_CONTROLLER_PATH + "/login")
+        if (request.getRequestURI().endsWith("/login")
                 || request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }

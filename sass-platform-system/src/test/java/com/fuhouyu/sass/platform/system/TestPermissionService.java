@@ -15,7 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system;
 
-import com.fuhouyu.sass.platform.common.exception.ServiceException;
+import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

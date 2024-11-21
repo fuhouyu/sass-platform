@@ -15,12 +15,15 @@
  */
 
 
-import React from "react";
-import {TableColumnsType, Tag} from "antd";
-
-import {PageList} from "@/components";
-import {SearchInput} from "@components/List/pageParams";
+import React, {useRef, useState} from "react";
+import {Button, Form, Input, message, Modal, TableColumnsType, Tag, Tree, TreeProps} from "antd";
+import {IconFont, PageList} from "@/components";
+import {PageListHandler, SearchInput} from "@components/List/pageParams";
 import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
+import {getUserinfoByIdApi} from "@/apis/user";
+import {UserModel} from "@/model/user";
+import {useMenuTree} from "@/hooks/useMenuTree";
+
 
 export const TenantConfig: React.FC = () => {
 
@@ -78,6 +81,65 @@ export const TenantConfig: React.FC = () => {
         }
     ];
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+    const pageListRef = useRef<PageListHandler>();
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
+    const [isAdded, setIsAdded] = useState<boolean>(true);
+    const [form] = Form.useForm();
+
+    const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+    const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+    const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+    const menuTree = useMenuTree();
+    const onExpand: TreeProps['onExpand'] = (expandedKeysValue) => {
+        console.log('onExpand', expandedKeysValue);
+        setExpandedKeys(expandedKeysValue);
+        setAutoExpandParent(false);
+    };
+
+    const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
+        console.log('onCheck', checkedKeysValue);
+        setCheckedKeys(checkedKeysValue as React.Key[]);
+    };
+
+    const onSelect: TreeProps['onSelect'] = (selectedKeysValue, info) => {
+        console.log('onSelect', info);
+        setSelectedKeys(selectedKeysValue);
+    };
+
+    /**
+     * 打开模态组
+     * @param userId 用户id
+     * @param isAdd 是否添加用户
+     */
+    const openModal = (userId?: string,
+                       isAdd?: boolean) => {
+        setIsModalOpen(true);
+        if (isAdd) {
+            setIsAdded(isAdd)
+            return;
+        }
+        getUserinfoByIdApi(userId!)
+            .then((res: UserModel) => {
+                form.setFieldsValue({...res})
+            })
+            .catch((err: Error) => {
+                message.error(err.message).then()
+            })
+    }
+
+
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        // form.resetFields();
+    }
+
+
+
     return (<>
         <PageList
             // ref={pageListRef}
@@ -93,9 +155,70 @@ export const TenantConfig: React.FC = () => {
             columns={columns}
             pageRequestApi={getTenantConfigListApi}
             addCallback={() => {
-                // openModal(undefined, true)
+                openModal(undefined, true)
             }}
             deleteCallback={(ids: string[]) => removerTenantConfigApi(ids)}
         />
+
+        <Modal
+            title={isAdded ? "新增用户" : "修改用户"}
+            className="ant-modal-header"
+            open={isModalOpen}
+            onCancel={() => closeModal()}
+            width={600}
+            footer={[
+                <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                    /*onClick={handlerUserForm}*/>确定</Button>,
+                <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
+            ]}
+            closeIcon={<IconFont type="i-Close" style={{
+                fontSize: '24px',
+            }}/>}
+        >
+            <Form
+                name="basic"
+                form={form}
+                style={{maxWidth: 600}}
+                autoComplete="off"
+            >
+                <Form.Item
+                    label="配置名称"
+                    name="name"
+                    validateTrigger="onBlur"
+                    key="name"
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                    required={true}
+                    hasFeedback
+                    rules={[{required: true, message: '请输入${label}'}]}
+                >
+                    <Input placeholder='请输入配置名称' maxLength={20}/>
+                </Form.Item>
+                <Form.Item
+                    label="权限列表"
+                    name="permissionList"
+                    key="permissionList"
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                    required={true}
+                    hasFeedback
+                >
+                    <Tree
+                        checkable
+                        onExpand={onExpand}
+                        expandedKeys={expandedKeys}
+                        autoExpandParent={autoExpandParent}
+                        onCheck={onCheck}
+                        checkedKeys={checkedKeys}
+                        onSelect={onSelect}
+                        selectedKeys={selectedKeys}
+                        treeData={menuTree}
+                    />
+                </Form.Item>
+
+            </Form>
+        </Modal>
     </>)
 }
