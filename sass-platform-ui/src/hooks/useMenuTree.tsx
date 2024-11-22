@@ -15,14 +15,25 @@
  */
 
 
-import {useCallback, useEffect, useState} from "react";
+import {ReactNode, useCallback, useEffect, useState} from "react";
 import {Permission} from "@/model/permission";
 import {IconFont} from "@/components";
 import {getUserPermissionApi} from "@/apis/permission";
-import {MenuProps} from "antd";
-import {DataNode} from "antd/es/tree";
+import {MenuProps, TreeDataNode} from "antd";
 
-export type MenuTreeProps = Required<MenuProps>['items'][number] | DataNode;
+
+type MenuType = Required<MenuProps>['items'][number];
+
+export type MenuTreeProps =
+    {
+        key: string,
+        title: string,
+        label: string,
+        icon?: ReactNode | undefined | null,
+        children?: MenuTreeProps[] | null,
+        routerPath?: string,
+    } &
+    (MenuType | TreeDataNode);
 
 export const useMenuTree = () => {
     const [menuTree, setMenuTree] = useState<MenuTreeProps[] | null>(null);
@@ -32,9 +43,10 @@ export const useMenuTree = () => {
         }
         return permissionInterfaces?.map((item: Permission) => {
             return {
-                key: item.id,
+                key: item.routePath ?? item.id,
                 title: item.permissionName,
                 label: item.permissionName,
+                routerPath: item.routePath,
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) ?? null : null
