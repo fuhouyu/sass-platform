@@ -214,7 +214,7 @@ export const TenantConfig: React.FC = () => {
                         checkedKeys={checkedKeys}
                         onSelect={onSelect}
                         selectedKeys={selectedKeys}
-                        treeData={menuTree}
+                        treeData={menuTree ?? []}
                     />
                 </Form.Item>
 
