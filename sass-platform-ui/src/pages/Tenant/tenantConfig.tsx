@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Button, Form, Input, message, Modal, TableColumnsType, Tag, Tree, TreeProps} from "antd";
+import {Button, Form, Input, message, Modal, TableColumnsType, Tag, Tree, TreeDataNode, TreeProps} from "antd";
 import {IconFont, PageList} from "@/components";
 import {PageListHandler, SearchInput} from "@components/List/pageParams";
 import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
@@ -91,7 +91,7 @@ export const TenantConfig: React.FC = () => {
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-    const menuTree = useMenuTree();
+    const menuTree = useMenuTree<TreeDataNode>();
     const onExpand: TreeProps['onExpand'] = (expandedKeysValue) => {
         console.log('onExpand', expandedKeysValue);
         setExpandedKeys(expandedKeysValue);
@@ -214,7 +214,7 @@ export const TenantConfig: React.FC = () => {
                         checkedKeys={checkedKeys}
                         onSelect={onSelect}
                         selectedKeys={selectedKeys}
-                        treeData={menuTree ?? []}
+                        treeData={menuTree}
                     />
                 </Form.Item>
 

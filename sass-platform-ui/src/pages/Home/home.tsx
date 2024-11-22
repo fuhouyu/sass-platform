@@ -27,7 +27,7 @@ import {UserModel} from "@/model/user";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {MenuInfo} from "rc-menu/lib/interface";
 import {Bread, IconFont} from "@/components";
-import {useMenuTree} from "@/hooks/useMenuTree";
+import {MenuType, useMenuTree} from "@/hooks/useMenuTree";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -47,7 +47,7 @@ const menus: MenuProps['items'] = [
 
 const Home: React.FC = withAuth(() => {
 
-    const menuItems = useMenuTree();
+    const menuItems = useMenuTree<MenuType>();
 
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
