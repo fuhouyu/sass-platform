@@ -16,9 +16,70 @@
 
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
-import {RoutersConstant} from "@/constants/routerConstant";
+import React from "react";
+import {Tenant} from "@/pages/tenant/tenant";
+import {PersonCenter} from "@/pages/userinfo/personCenter";
+import Login from "@/pages/login";
+import User from "@/pages/system/user/user";
+import {Layout} from "@/pages/layout/layout";
+import {TenantConfig} from "@/pages/tenant/tenantConfig";
+
+export type RouterType = {
+    title: string,
+    path: string,
+    element?: React.JSX.Element,
+    children?: RouterType[]
+}
 
 
-const Routes: Router = createBrowserRouter(RoutersConstant);
+export const RoutesConstant: RouterType[] = [
+    {
+        title: '登录',
+        path: '/login',
+        element: <Login/>,
+    },
+    {
+        title: '首页',
+        path: '/',
+        element: <Layout/>,
+        children: [
+            {
+                title: '用户详情',
+                path: '/userinfo',
+                element: <PersonCenter/>
+            },
+            {
+                title: '租户管理',
+                path: '/tenant',
+                children: [
+                    {
+                        title: '租户管理',
+                        path: '/tenant/manager',
+                        element: <Tenant/>,
+                    },
+                    {
+                        title: '配置管理',
+                        path: '/tenant/config',
+                        element: <TenantConfig/>,
+                    }
+                ]
 
-export default Routes;
+            },
+            {
+                title: '系统管理',
+                path: '/system',
+                children: [
+                    {
+                        title: '用户管理',
+                        path: '/system/user',
+                        element: <User/>
+                    }
+                ]
+            },
+
+        ]
+    },
+
+]
+export const router: Router = createBrowserRouter(RoutesConstant);
+

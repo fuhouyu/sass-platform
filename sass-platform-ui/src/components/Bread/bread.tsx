@@ -16,8 +16,8 @@
 
 
 import {Breadcrumb} from "antd";
-import {RoutersConstant, RouterType} from "@/constants/routerConstant";
 import {useMemo} from "react";
+import {RouterType, RoutesConstant} from "@/routes/routers";
 
 
 const getBreadcrumbName = (path: string, routers: RouterType[]) => {
@@ -41,7 +41,7 @@ export const Bread = () => {
     const breadcrumb = useMemo(() => {
         return pathSnippets.map((_, index) => {
             const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-            const breadcrumbName = getBreadcrumbName(url, RoutersConstant);
+            const breadcrumbName = getBreadcrumbName(url, RoutesConstant);
             return {
                 title: breadcrumbName,
                 key: url,

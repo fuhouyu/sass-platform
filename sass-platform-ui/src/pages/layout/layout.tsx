@@ -16,7 +16,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {DownOutlined, LogoutOutlined, UserOutlined} from '@ant-design/icons';
-import {Col, Divider, Dropdown, Image, Layout, Menu, MenuProps, Row, Space} from 'antd';
+import {Col, Divider, Dropdown, Image, Layout as _Layout, Menu, MenuProps, Row, Space} from 'antd';
 import withAuth from "@/components/Auth/withAuth";
 import "./index.scss"
 import Sider from "antd/es/layout/Sider";
@@ -45,7 +45,7 @@ const menus: MenuProps['items'] = [
 ];
 
 
-const Home: React.FC = withAuth(() => {
+export const Layout: React.FC = withAuth(() => {
 
     const menuItems = useMenuTree<MenuType>();
 
@@ -81,7 +81,7 @@ const Home: React.FC = withAuth(() => {
 
     return (
         <div className="container">
-            <Layout className="layout-container">
+            <_Layout className="layout-container">
                 <Sider className='layout-sider' collapsible collapsed={collapsed}
                        onCollapse={(value) => setCollapsed(value)}>
                     <h3 className="platform-title">
@@ -91,7 +91,7 @@ const Home: React.FC = withAuth(() => {
                     <Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"
                           items={menuItems} onClick={onMenuClick}/>
                 </Sider>
-                <Layout>
+                <_Layout>
                     <Header className="layout-header">
                         <Row gutter={24} align={"middle"}>
                             <Col className="user-header">
@@ -131,10 +131,8 @@ const Home: React.FC = withAuth(() => {
                     <Content className="layout-content">
                         <Outlet/>
                     </Content>
-                </Layout>
-            </Layout>
+                </_Layout>
+            </_Layout>
         </div>
     );
 });
-
-export default Home;

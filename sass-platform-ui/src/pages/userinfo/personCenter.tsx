@@ -21,7 +21,7 @@ import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icon
 import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
 import withAuth from "@components/Auth/withAuth";
-import {Userinfo} from "@/pages/Userinfo/userinfo";
+import {Userinfo} from "@/pages/userinfo/userinfo";
 import {UserModel} from "@/model/user";
 
 interface MenuLiInterface {

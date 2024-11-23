@@ -16,26 +16,25 @@
 
 
 import {useCallback, useEffect, useState} from "react";
-import {Permission} from "@/model/permission";
 import {IconFont} from "@/components";
 import {getUserPermissionApi} from "@/apis/permission";
 import {MenuProps, TreeDataNode} from "antd";
+import {Menus} from "@/model/menus";
 
 
 export type MenuType = Required<MenuProps>['items'][number];
 
 export function useMenuTree<T = MenuType | TreeDataNode>(): T[] {
     const [menuTree, setMenuTree] = useState<T[] | null>();
-    const convertMenuItem = useCallback((permissionInterfaces: Permission[]): (T[] | undefined | null) => {
+    const convertMenuItem = useCallback((permissionInterfaces: Menus[]): (T[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
         }
-        return permissionInterfaces?.map((item: Permission) => {
+        return permissionInterfaces?.map((item: Menus) => {
             return {
                 key: item.routePath ?? item.id,
                 title: item.permissionName,
                 label: item.permissionName,
-                routerPath: item.routePath,
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
@@ -56,36 +55,3 @@ export function useMenuTree<T = MenuType | TreeDataNode>(): T[] {
 
     return menuTree ?? [];
 }
-
-// export const useMenuTree = () => {
-//     const [menuTree, setMenuTree] = useState<MenuTreeProps[] | null>(null);
-//     const convertMenuItem = useCallback((permissionInterfaces: Permission[]): (MenuTreeProps[] | null) => {
-//         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
-//             return null;
-//         }
-//         return permissionInterfaces?.map((item: Permission) => {
-//             return {
-//                 key: item.routePath ?? item.id,
-//                 title: item.permissionName,
-//                 label: item.permissionName,
-//                 routerPath: item.routePath,
-//                 icon: item.icon ?
-//                     <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
-//                 children: item.children ? convertMenuItem(item.children) ?? null : null
-//             }
-//         })
-//     }, [])
-//
-//     useEffect(() => {
-//         getUserPermissionApi()
-//             .then((permissions) => {
-//                 const converted = convertMenuItem(permissions);
-//                 setMenuTree(converted);
-//             })
-//             .catch((error) => {
-//                 console.error(error);
-//             });
-//     }, [convertMenuItem]);
-//
-//     return menuTree || undefined;
-// }
