@@ -17,26 +17,29 @@
 
 import {useCallback} from "react";
 import {IconFont} from "@/components";
-import {MenuProps, TreeDataNode} from "antd";
-import {Menus} from "@/model/menus";
+import {TreeDataNode} from "antd";
+import {Menu} from "@/model/menu";
 
 
-export type MenuType = Required<MenuProps>['items'][number];
+export type MenuTreeType = {
+    id: string;
+} & (MenuType | TreeDataNode);
 
-export function useMenuTree<T = MenuType | TreeDataNode>(menus: Menus[]): T[] {
-    const convertMenuItem = useCallback((permissionInterfaces: Menus[]): (T[] | undefined | null) => {
+export function useMenuTree(menus: Menu[]): MenuTreeType[] {
+    const convertMenuItem = useCallback((permissionInterfaces: Menu[]): (MenuTreeType[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
         }
-        return permissionInterfaces?.map((item: Menus) => {
+        return permissionInterfaces?.map((item: Menu) => {
             return {
+                id: item.id,
                 key: item.routePath ?? item.id,
                 title: item.permissionName,
                 label: item.permissionName,
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
-            } as unknown as T;
+            };
         })
     }, [])
 

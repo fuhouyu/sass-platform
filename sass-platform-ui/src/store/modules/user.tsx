@@ -18,9 +18,9 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {removeToken, storeToken} from "@/utils/Token/token";
 import {UserModel,} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi} from "@/apis/user";
-import {UserAuthenticationModel, UserToken} from "@/model/authentication";
+import {UserAuthentication, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 import {getUserPermissionApi} from "@/apis/permission";
 
 
@@ -33,7 +33,7 @@ const userStore = createSlice({
         },
         userinfo: {},
         // 用户菜单
-        userMenus: [] as Menus[],
+        userMenus: [] as Menu[],
     },
     reducers: {
         storeToken: (state, action: PayloadAction<UserToken>) => {
@@ -45,7 +45,7 @@ const userStore = createSlice({
             state.userinfo = action.payload;
             return state;
         },
-        storeMenu: (state, action: PayloadAction<Menus[]>) => {
+        storeMenu: (state, action: PayloadAction<Menu[]>) => {
             state.userMenus = action.payload;
             return state;
         },
@@ -65,7 +65,7 @@ const userStore = createSlice({
  * 用户登录接口
  * @param loginForm 表单参数
  */
-const fetchLogin = (loginForm: UserAuthenticationModel) => {
+const fetchLogin = (loginForm: UserAuthentication) => {
     return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
         const token = await loginApi(loginForm);
         if (token) {
@@ -90,7 +90,7 @@ const fetchUserinfo = () => {
  * 获取menus
  */
 const fetchUserMenus = () => {
-    return async (dispatch: (arg0: { payload: Menus[]; type: `user/${string}` }) => Menus[]): Promise<Menus[]> => {
+    return async (dispatch: (arg0: { payload: Menu[]; type: `user/${string}` }) => Menu[]): Promise<Menu[]> => {
         const menus = await getUserPermissionApi();
         if (menus) {
             dispatch(userStore.actions.storeMenu(menus));

@@ -15,8 +15,9 @@
  */
 
 
-import {PageQueryModel, PageResultModel} from "@/model/page";
+import {PageQuery, PageResult} from "@/model/pageQuery";
 import {request} from "@/utils";
+import {TenantConfig} from "@/model/tenant";
 
 const baseTenantUrl = '/v1/tenant-config'
 
@@ -24,11 +25,32 @@ const baseTenantUrl = '/v1/tenant-config'
  * 租户配置接口
  * @param pageQuery 分页查询对象
  */
-const getTenantConfigListApi = <P extends PageQueryModel, R extends object>(pageQuery: P): Promise<PageResultModel<R>> =>
+const getTenantConfigListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
     request.get(`${baseTenantUrl}/list`, {
         params: {...pageQuery}
     });
 
+/**
+ * 通过id获取a详情
+ * @param id 主键id
+ */
+const getTenantConfigApi = (id: string): Promise<TenantConfig> =>
+    request.get(`${baseTenantUrl}/${id}`)
+
+/**
+ * 保存租户配置api
+ * @param tenantConfig 租户配置
+ */
+const saveTenantConfigApi = (tenantConfig: TenantConfig): Promise<string> =>
+    request.post(`${baseTenantUrl}`, tenantConfig);
+
+/**
+ * 修改租户配置
+ * @param updateId 修改的id
+ * @param tenantConfig 租户配置
+ */
+const updateTenantConfigApi = (updateId: string, tenantConfig: TenantConfig): Promise<void> =>
+    request.put(`${baseTenantUrl}/${updateId}`, tenantConfig);
 
 /**
  * 删除租户配置的api
@@ -38,5 +60,8 @@ const removerTenantConfigApi = (ids: string[]): Promise<void> => request.delete(
 
 export {
     getTenantConfigListApi,
-    removerTenantConfigApi
+    removerTenantConfigApi,
+    saveTenantConfigApi,
+    getTenantConfigApi,
+    updateTenantConfigApi
 }

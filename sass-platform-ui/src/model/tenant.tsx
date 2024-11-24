@@ -15,11 +15,12 @@
  */
 
 import {BaseModel} from "@/model/base";
+import {Key} from "react";
 
 /**
  * 租户详情
  */
-export interface TenantInfoModel extends BaseModel {
+export interface TenantInfo extends BaseModel {
     id?: string;
     // 租户编码
     tenantCode?: string;
@@ -38,7 +39,10 @@ export interface TenantInfoModel extends BaseModel {
 }
 
 
-export interface TenantConfigModel extends BaseModel {
+/**
+ * 租户配置
+ */
+export interface TenantConfig extends BaseModel {
     // 配置id
     id?: string;
     // 配置名称
@@ -46,5 +50,7 @@ export interface TenantConfigModel extends BaseModel {
     // 备注
     remark?: string;
     // 是否启用
-    isEnabled?: string;
+    isEnabled?: boolean;
+    // 权限id集合
+    permissionIds?: Key[];
 }

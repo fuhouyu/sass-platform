@@ -75,15 +75,15 @@ const User: React.FC = () => {
         setIsModalButtonLoading(true);
         const promise = isAdded ? saveUserDetail() : updateUserDetail();
         promise.then(() => {
-            message.success("修改成功").then()
+            message.success("操作成功").then()
             setIsModalOpen(false);
+            form.resetFields();
             pageListRef.current?.refresh();
         })
             .catch((err: Error) => {
                 message.error(err.message).then()
             }).finally(() => {
             setIsModalButtonLoading(false);
-            form.resetFields();
         })
     }
 
@@ -168,7 +168,7 @@ const User: React.FC = () => {
     return (
         <>
             <PageList
-                // ref={pageListRef}
+                ref={pageListRef}
                 listName='用户'
                 columns={columns}
                 pageRequestApi={getUserListApi}

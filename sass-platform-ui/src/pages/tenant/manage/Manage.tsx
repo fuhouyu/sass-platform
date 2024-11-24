@@ -19,7 +19,7 @@ import React from "react";
 import {PageList} from "@/components";
 import {removeUserApi} from "@/apis/user";
 import {Space, TableColumnsType} from "antd";
-import {TenantInfoModel} from "@/model/tenant";
+import {TenantInfo} from "@/model/tenant";
 import {getTenantListApi} from "@/apis/tenant";
 import {SearchInput} from "@components/List/pageParams";
 
@@ -72,7 +72,7 @@ const Manage: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, record: TenantInfoModel) => {
+            render: (_, record: TenantInfo) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => {

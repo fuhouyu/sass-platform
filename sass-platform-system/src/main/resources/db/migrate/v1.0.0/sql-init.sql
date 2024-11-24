@@ -79,6 +79,22 @@ CREATE TABLE tenant_config
     update_by  VARCHAR(64)           NOT NULL
 );
 
+-- 租户配置权限
+DROP TABLE IF EXISTS tenant_config_has_permission;
+CREATE TABLE tenant_config_has_permission
+(
+    tenant_config_id BIGINT      NOT NULL,
+    permission_id    BIGINT      NOT NULL,
+    create_at        TIMESTAMP   NOT NULL,
+    create_by        VARCHAR(64) NOT NULL,
+    PRIMARY KEY (tenant_config_id, permission_id)
+);
+COMMENT ON TABLE tenant_config_has_permission IS '租户配置的权限关系表';
+COMMENT ON COLUMN tenant_config_has_permission.tenant_config_id IS '租户配置id';
+COMMENT ON COLUMN tenant_config_has_permission.permission_id IS '权限id';
+COMMENT ON COLUMN tenant_config_has_permission.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_config_has_permission.create_by IS '创建人';
+
 
 DROP TABLE IF EXISTS users;
 -- 用户表

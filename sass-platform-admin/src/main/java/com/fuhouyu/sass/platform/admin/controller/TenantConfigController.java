@@ -23,6 +23,7 @@ import com.fuhouyu.sass.platform.system.dto.tenant.TenantConfigDTO;
 import com.fuhouyu.sass.platform.system.service.TenantConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ import java.util.List;
 @Tag(name = "租户配置 前端控制层")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
+@Valid
 public class TenantConfigController {
 
     private final TenantConfigService tenantConfigService;
@@ -60,6 +61,34 @@ public class TenantConfigController {
     @Operation(summary = "租户配置列表")
     public BaseResponse<PageResultDTO<TenantConfigDTO>> pageList(PageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantConfigService.pageList(pageQueryDTO));
+    }
+
+    /**
+     * 保存租户配置
+     *
+     * @param tenantConfigDTO 租户配置的dto对象
+     * @return 主键id
+     */
+    @PostMapping
+    @Operation(summary = "保存租户配置")
+    public BaseResponse<Long> saveTenant(@RequestBody @Validated TenantConfigDTO tenantConfigDTO) {
+        return ResponseHelper.success(tenantConfigService.save(tenantConfigDTO));
+    }
+
+    /**
+     * 修改租户配置
+     *
+     * @param tenantConfigDTO 租户配置的dto对象
+     * @return 主键id
+     */
+    @PutMapping("/{id}")
+    @Operation(summary = "修改租户配置")
+    public BaseResponse<Long> editTenant(
+            @PathVariable("id") Long id,
+            @RequestBody @Validated TenantConfigDTO tenantConfigDTO) {
+        tenantConfigDTO.setId(id);
+        tenantConfigService.edit(tenantConfigDTO);
+        return ResponseHelper.success();
     }
 
     /**

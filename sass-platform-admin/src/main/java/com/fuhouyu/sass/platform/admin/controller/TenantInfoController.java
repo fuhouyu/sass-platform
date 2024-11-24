@@ -67,6 +67,8 @@ public class TenantInfoController {
      * @param id 租户id
      * @return 租户详情
      */
+    @GetMapping("/{id}")
+    @Operation(summary = "通过租户id获取租户详情")
     public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(tenantInfoService.findById(id));
     }

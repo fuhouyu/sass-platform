@@ -17,11 +17,11 @@
 
 import {BaseModel} from "@/model/base";
 
-export interface Menus extends BaseModel {
+export interface Menu extends BaseModel {
     /**
      * 权限树子集
      */
-    children?: Menus[];
+    children?: Menu[];
     /**
      * 组件路径
      */

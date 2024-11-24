@@ -18,10 +18,10 @@
 import {Breadcrumb} from "antd";
 import {useMemo} from "react";
 import {useAppSelector} from "@/store";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 import './index.scss'
 
-const getBreadcrumbName = (path: string, routers: Menus[]) => {
+const getBreadcrumbName = (path: string, routers: Menu[]) => {
     for (const item of routers) {
         if (matchPath(path, item.routePath ?? '')) {
             return item.permissionName;
@@ -43,14 +43,13 @@ export const Bread = () => {
         return pathSnippets.map((_, index) => {
             const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
             const breadcrumbName = getBreadcrumbName(url, userMenus);
-            console.log(url)
             return {
                 title: breadcrumbName,
                 key: url,
                 href: url,
             };
         });
-    }, [pathSnippets]);
+    }, [pathSnippets, userMenus]);
 
     return (
         <>

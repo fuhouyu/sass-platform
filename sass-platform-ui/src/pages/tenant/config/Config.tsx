@@ -15,40 +15,59 @@
  */
 
 
-import React, {Key, useEffect, useState} from "react";
-import {
-    Button,
-    Checkbox,
-    Form,
-    GetProp,
-    Input,
-    message,
-    Modal,
-    TableColumnsType,
-    Tag,
-    Tree,
-    TreeDataNode,
-    TreeProps
-} from "antd";
+import React, {Key, useRef, useState} from "react";
+import {Button, Checkbox, Form, GetProp, Input, message, Modal, Radio, Space, TableColumnsType, Tag, Tree} from "antd";
 import {IconFont, PageList} from "@/components";
-import {SearchInput} from "@components/List/pageParams";
-import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
-import {getUserinfoByIdApi} from "@/apis/user";
-import {UserModel} from "@/model/user";
-import {useMenuTree} from "@/hooks/useMenuTree";
+import {PageListHandler, SearchInput} from "@components/List/pageParams";
+import {
+    getTenantConfigApi,
+    getTenantConfigListApi,
+    removerTenantConfigApi,
+    saveTenantConfigApi,
+    updateTenantConfigApi
+} from "@/apis/tenantConfig";
+import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
 import './index.scss'
 import TextArea from "antd/es/input/TextArea";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
+import {TenantConfig} from "@/model/tenant";
 
-const extractKeys = (trees: TreeDataNode[]): Key[] => {
-    const keys: Key[] = []
+/**
+ * 转换映射关系
+ * @param trees tree数据
+ * @param idKeyMap idKeyMap的映射对象
+ */
+const parseIdKeyMap = (trees: MenuTreeType[], idKeyMap: Map<Key, string>) => {
     trees.forEach(tree => {
-        keys.push(tree.key);
+        idKeyMap.set(tree.key, tree.id);
         if (tree.children) {
-            keys.push(...extractKeys(tree.children))
+            parseIdKeyMap(tree.children, idKeyMap);
         }
     });
+}
+
+/**
+ * 解析修改时已选中的菜单项
+ * @param trees 树
+ * @param ids id集合
+ */
+const parseMenuKey = (trees: MenuTreeType[], ids?: Key[]): Key[] => {
+    if (!ids || ids.length === 0) {
+        return [];
+    }
+    const keys: Key[] = []
+    trees.forEach(tree => {
+        ids.forEach(id => {
+            if (id === tree.id) {
+                keys.push(tree.key)
+            }
+        })
+        if (tree.children) {
+            keys.push(...parseMenuKey(tree.children, ids));
+        }
+    });
+
     return keys;
 }
 
@@ -97,97 +116,89 @@ const Config: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            // render: (_, _: TenantConfigModel) => {
-            //     return (<>
-            //         <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-            //             <a onClick={() => {
-            //             }}>修改</a>
-            //         </Space>
-            //     </>)
-            // }
+            render: (_, tenantConfig: TenantConfig) => {
+                return (<>
+                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+                        <a onClick={() => {
+                            openModal(tenantConfig.id)
+                        }}>修改</a>
+                    </Space>
+                </>)
+            }
         }
     ];
 
-    useEffect(() => {
-
-    }, []);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-    const [isAdded, setIsAdded] = useState<boolean>(true);
+    const pageListRef = useRef<PageListHandler>();
+    const [updateId, setUpdateId] = useState<string>();
     const [form] = Form.useForm();
+    const [isEnabled, setIsEnabled] = useState<boolean>(true);
+    const userMenus: Menu[] = useAppSelector((state) => state.user.userMenus);
+    const menuTree = useMenuTree(userMenus);
 
+    // key 和 id映射
+    const idKeyMap = new Map<Key, string>();
+    parseIdKeyMap(menuTree, idKeyMap);
+
+    /**
+     * 权限树相关
+     */
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-    const [allMenuKeys, setAllMenuKeys] = useState<React.Key[]>([]);
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-    const userMenus: Menus[] = useAppSelector((state) => state.user.userMenus);
-    const menuTree = useMenuTree<TreeDataNode>(userMenus);
-    const onExpand: TreeProps['onExpand'] = (expandedKeysValue) => {
-        console.log('onExpand', expandedKeysValue);
-        setExpandedKeys(expandedKeysValue);
-        setAutoExpandParent(false);
-    };
 
+    const [selectMenusOptions, setSelectMenusOptions] = useState<string[]>([]);
     const menusOptions = [
         {label: '展开/折叠', value: 'expanded'},
         {label: '全选/全不选', value: 'selectAll'},
     ];
 
     const onMenusOptions: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-        console.log('checked = ', checkedValues);
         if (checkedValues.length == 0) {
             setExpandedKeys([]);
             setCheckedKeys([]);
-            return
+            setSelectMenusOptions([])
+            return;
         }
+        setSelectMenusOptions(checkedValues as string[]);
         checkedValues.map(value => {
             switch (value) {
                 case 'expanded':
-                    setExpandedKeys(allMenuKeys);
+                    setExpandedKeys(Array.from(idKeyMap.keys()));
                     break;
                 case 'selectAll':
-                    setCheckedKeys(allMenuKeys);
+                    setCheckedKeys(Array.from(idKeyMap.keys()));
                     break
-
             }
         })
 
     };
 
-    const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
-        console.log('onCheck', checkedKeysValue);
-        setCheckedKeys(checkedKeysValue as React.Key[]);
-    };
-
-    const onSelect: TreeProps['onSelect'] = (selectedKeysValue, info) => {
-        console.log('onSelect', info);
-        setSelectedKeys(selectedKeysValue);
-    };
-
-    useEffect(() => {
-        setAllMenuKeys(extractKeys(menuTree));
-    }, [menuTree]);
 
     /**
      * 打开模态组
-     * @param userId 用户id
+     * @param configId 配置id
      * @param isAdd 是否添加用户
      */
-    const openModal = (userId?: string,
-                       isAdd?: boolean) => {
+    const openModal = (configId?: string) => {
         setIsModalOpen(true);
-        if (isAdd) {
-            setIsAdded(isAdd)
-            return;
+        setUpdateId(configId);
+        if (!configId) {
+            return
         }
-        getUserinfoByIdApi(userId!)
-            .then((res: UserModel) => {
+        // 修改获取配置数据
+        getTenantConfigApi(configId!)
+            .then((res: TenantConfig) => {
                 form.setFieldsValue({...res})
+                if (res.permissionIds) {
+                    setCheckedKeys(parseMenuKey(menuTree, res.permissionIds))
+                }
             })
             .catch((err: Error) => {
                 message.error(err.message).then()
-            })
+            });
     }
 
 
@@ -196,13 +207,50 @@ const Config: React.FC = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        // form.resetFields();
+        cleanFormValues();
+    }
+
+    /**
+     * 清除form表单中的值
+     */
+    const cleanFormValues = () => {
+        setExpandedKeys([]);
+        setSelectMenusOptions([]);
+        form.resetFields();
+        setCheckedKeys([]);
+    }
+
+    /**
+     * 处理租户配置
+     * @param value 租户配置
+     */
+    const handleTenantConfig = (value: TenantConfig) => {
+        setIsModalButtonLoading(true);
+        const ids: string[] = [];
+        checkedKeys.forEach(checkedKey => {
+            const id = idKeyMap.get(checkedKey);
+            if (id) ids.push(id);
+        });
+        value.permissionIds = ids;
+        const promise = updateId ? updateTenantConfigApi(updateId, value) : saveTenantConfigApi(value);
+        promise.then(() => {
+            setIsModalOpen(false);
+            cleanFormValues();
+            message.success("操作成功").then();
+            pageListRef.current?.refresh();
+        })
+            .catch((error) => {
+                message.error(error.message).then();
+            })
+            .finally(() => {
+                setIsModalButtonLoading(false);
+            })
     }
 
 
     return (<>
         <PageList
-            // ref={pageListRef}
+            ref={pageListRef}
             searchComments={[
                 {
                     name: '配置名称',
@@ -215,22 +263,18 @@ const Config: React.FC = () => {
             columns={columns}
             pageRequestApi={getTenantConfigListApi}
             addCallback={() => {
-                openModal(undefined, true)
+                openModal()
             }}
             deleteCallback={(ids: string[]) => removerTenantConfigApi(ids)}
         />
 
         <Modal
-            title={isAdded ? "新增配置" : "修改配置"}
+            title={updateId ? "修改配置" : "新增配置"}
             className="ant-modal-header"
-            open={true}
+            open={isModalOpen}
             onCancel={() => closeModal()}
             width={600}
-            footer={[
-                <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                    /*onClick={handlerUserForm}*/>确定</Button>,
-                <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
-            ]}
+            footer={[]}
             closeIcon={<IconFont type="i-Close" style={{
                 fontSize: '24px',
             }}/>}
@@ -240,6 +284,9 @@ const Config: React.FC = () => {
                 form={form}
                 style={{maxWidth: 600}}
                 autoComplete="off"
+                onFinish={handleTenantConfig}
+
+                initialValues={{isEnabled: isEnabled}}
             >
                 <Form.Item
                     label="配置名称"
@@ -257,29 +304,46 @@ const Config: React.FC = () => {
                 </Form.Item>
                 <Form.Item
                     label="权限列表"
-                    name="permissionList"
                     key="permissionList"
                     labelCol={{span: 4}}
                     wrapperCol={{span: 20}}
                     colon={false}
                     required={true}
-                    hasFeedback
                 >
                     <div className="menu-list">
-                        <Checkbox.Group options={menusOptions} onChange={onMenusOptions}/>
+                        <Checkbox.Group value={selectMenusOptions} options={menusOptions} onChange={onMenusOptions}/>
                         <Tree
                             className="menu-tree"
                             checkable
-                            onExpand={onExpand}
+                            onExpand={(expandedKeysValue: Key[]) => {
+                                setExpandedKeys(expandedKeysValue);
+                                setAutoExpandParent(false);
+                            }}
                             expandedKeys={expandedKeys}
                             autoExpandParent={autoExpandParent}
-                            onCheck={onCheck}
+                            onCheck={(checkedKeysValue) => setCheckedKeys(checkedKeysValue as React.Key[])}
                             checkedKeys={checkedKeys}
-                            onSelect={onSelect}
+                            onSelect={(selectedKeysValue: Key[]) => setSelectedKeys(selectedKeysValue)}
                             selectedKeys={selectedKeys}
                             treeData={menuTree}
                         />
                     </div>
+                </Form.Item>
+                <Form.Item
+                    label="状态"
+                    name="isEnabled"
+                    key="isEnabled"
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                    hasFeedback
+                >
+                    <Radio.Group onChange={(e) => {
+                        setIsEnabled(e.target.value);
+                    }}>
+                        <Radio value={true}>启用</Radio>
+                        <Radio value={false}>禁用</Radio>
+                    </Radio.Group>
                 </Form.Item>
                 <Form.Item
                     label="备注"
@@ -288,9 +352,21 @@ const Config: React.FC = () => {
                     labelCol={{span: 4}}
                     wrapperCol={{span: 20}}
                     colon={false}
-                    hasFeedback
                 >
                     <TextArea className="remark" showCount maxLength={500}/>
+                </Form.Item>
+                <Form.Item
+                    className="form-button"
+                >
+                    <Space
+                        size="middle"
+                    >
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={isModalButtonLoading}>确定</Button>
+                        <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
+                    </Space>
                 </Form.Item>
             </Form>
         </Modal>

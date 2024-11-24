@@ -20,9 +20,10 @@ import React, {lazy, Suspense} from "react";
 import Login from "@/pages/login";
 import {Layout} from "@/layouts/layout";
 import {NotFound} from "@/pages/error/notfound/NotFound";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
+import {PersonCenter} from "@/pages/userinfo/PersonCenter";
 
 export type RouterType = {
     id: string;
@@ -50,6 +51,12 @@ export const commonRouter: RouterType[] = [
                 title: 'Home',
                 path: '/home',
                 element: <Home/>
+            },
+            {
+                id: 'userinfo',
+                title: 'userinfo',
+                path: '/userinfo',
+                element: <PersonCenter/>
             }
         ]
     },
@@ -88,7 +95,7 @@ const lazyElement = (path: string) => {
         </Suspense>
     );
 };
-export const parseRouters = (menuProps: Menus[]): RouterType[] => {
+export const parseRouters = (menuProps: Menu[]): RouterType[] => {
 
     if (menuProps === undefined || menuProps.length === 0) {
         return [];

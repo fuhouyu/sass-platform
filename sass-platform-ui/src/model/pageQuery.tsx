@@ -17,7 +17,7 @@
 /**
  * 分页查询对象
  */
-export interface PageQueryModel {
+export interface PageQuery {
     pageNum: number | undefined;
     pageSize: number | undefined;
     keyword?: string;
@@ -29,7 +29,7 @@ export interface PageQueryModel {
 /**
  * 分页查询的结果集
  */
-export interface PageResultModel<T> {
+export interface PageResult<T> {
     pageNum: number;
     pageSize: number;
     total: number;

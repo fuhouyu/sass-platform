@@ -21,7 +21,7 @@ import {parseRouters, router} from "@/routes/routers";
 import {getAccessToken} from "@/utils";
 import {useAppDispatch} from "@/store";
 import {fetchUserMenus} from "@/store/modules/user";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 
 export const App: React.FC = () => {
@@ -35,7 +35,7 @@ export const App: React.FC = () => {
             return;
         }
         dispatch(fetchUserMenus())
-            .then((userMenus: Menus[]) => {
+            .then((userMenus: Menu[]) => {
                 setLoading(false);
                 router.routes[0]?.children!.push(...parseRouters(userMenus))
             })

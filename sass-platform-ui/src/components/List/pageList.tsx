@@ -16,8 +16,8 @@
 
 
 import {Button, Col, message, Row, Table, TableProps} from "antd";
-import {PageQueryModel, PageResultModel} from "@/model/page";
-import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useState} from "react";
+import {PageQuery, PageResult} from "@/model/pageQuery";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {SearchOutlined} from "@ant-design/icons";
 import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
@@ -35,7 +35,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 
 const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     const {listName, searchComments, columns, deleteCallback, addCallback, pageRequestApi} = props
-    const [pageQuery, setPageQuery] = useState<PageQueryModel>({
+    const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
@@ -43,7 +43,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
 
     const [searchValue, setSearchValue] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const [pageResult, setPageResult] = useState<PageResultModel<object>>();
+    const [pageResult, setPageResult] = useState<PageResult<object>>();
     const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
 
     const rowSelection: TableProps['rowSelection'] = {
@@ -56,28 +56,21 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
         },
     };
 
-    /**
-     * 刷新列表
-     * @param pageQuery 分页查询
-     */
-    const refreshList = useCallback((pageQuery: PageQueryModel) => {
+    useEffect(() => {
+        console.log(1)
+        setLoading(true);
         pageRequestApi(pageQuery)
-            .then((res: PageResultModel<object>) => {
+            .then((res: PageResult<object>) => {
                 setPageResult({...res});
             })
-    }, [pageRequestApi, setPageResult])
-
-    useEffect(() => {
-        setLoading(true);
-        refreshList(pageQuery);
         setLoading(false);
-    }, [pageQuery, refreshList])
+    }, [pageQuery, pageRequestApi])
 
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
             pageRequestApi(pageQuery)
-                .then((pageResult: PageResultModel<object>) => {
+                .then((pageResult: PageResult<object>) => {
                     setPageResult({...pageResult});
                 })
         },
@@ -116,15 +109,17 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     /**
      * 删除事件
      */
-    const onDeleteButtonClick = () => {
-        deleteCallback(deleteIds.map(id => String(id)))
-            .then(() => {
-                message.success("删除成功").then()
-                setDeleteIds([]);
-            })
-            .catch((error: Error) => {
-                message.error(error.message).then()
-            })
+    const onDeleteButtonClick = async () => {
+        try {
+            await deleteCallback(deleteIds.map(id => String(id)))
+            message.success("删除成功").then()
+        } catch {
+            message.error('删除失败').then()
+        } finally {
+            setDeleteIds([]);
+        }
+        const res = await pageRequestApi(pageQuery)
+        setPageResult({...res});
     }
 
     return (
@@ -174,10 +169,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
                                 新增
                             </Button>
                             <Button className="del-button" disabled={deleteIds.length === 0}
-                                    onClick={() => {
-                                        onDeleteButtonClick()
-                                        refreshList(pageQuery)
-                                    }}
+                                    onClick={() => onDeleteButtonClick()}
                                     icon={<IconFont type="i-delete"/>}>
                                 删除
                             </Button>

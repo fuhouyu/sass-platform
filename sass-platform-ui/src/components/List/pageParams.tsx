@@ -17,7 +17,7 @@
 
 import React from "react";
 import {Input, Select, TableColumnsType} from "antd";
-import {PageQueryModel, PageResultModel} from "@/model/page";
+import {PageQuery, PageResult} from "@/model/pageQuery";
 import {DefaultOptionType} from "rc-select/lib/Select";
 
 /**
@@ -66,7 +66,7 @@ export interface PageListParams {
      * 分页查询api接口
      * @param pageQuery 查询api
      */
-    pageRequestApi: <R extends object>(pageQuery: PageQueryModel) => Promise<PageResultModel<R>>
+    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
     /**
      *  新增数据的回调
      */

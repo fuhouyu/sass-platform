@@ -17,41 +17,30 @@ package com.fuhouyu.sass.platform.system.dto.tenant;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.io.Serial;
 
 /**
  * <p>
- * 租户配置dto对象
+ * 租户配置的权限dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/19 21:08
+ * @since 2024/11/24 19:41
  */
-@Schema(name = "TenantConfigDTO", description = "租户配置dto对象")
+@Schema(name = "TenantConfigPermission", description = "租户配置权限表")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TenantConfigDTO extends BaseDTO {
+public class TenantConfigPermissionDTO extends BaseDTO {
 
-    @Schema(name = "id", description = "主键id")
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 1241236412641233112L;
 
-    @Schema(name = "name", description = "配置名称")
-    @NotNull(message = "配置名称未填写")
-    private String name;
+    @Schema(name = "tenantConfigId", description = "租户配置id", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long tenantConfigId;
 
-    @Schema(name = "remark", description = "备注")
-    private String remark;
-
-    @Schema(name = "isEnabled", description = "是否启用：true启用，false禁用")
-    private Boolean isEnabled;
-
-    @Schema(name = "permissionIds", description = "权限id集合")
-    @NotNull(message = "权限未选择")
-    @Size(min = 1, message = "权限未选择")
-    private List<Long> permissionIds;
+    @Schema(name = "permissionId", description = "权限id", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long permissionId;
 }

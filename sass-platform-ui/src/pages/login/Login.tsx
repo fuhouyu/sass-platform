@@ -21,12 +21,12 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
-import {UserAuthenticationModel} from "@/model/authentication";
+import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {IconFont} from "@/components";
 import {parseRouters, router} from "@/routes/routers";
-import {Menus} from "@/model/menus";
+import {Menu} from "@/model/menu";
 
 
 const Login: React.FC = () => {
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
             return
         }
     }, [isAuth, navigate]);
-    const onFinish = (loginData: UserAuthenticationModel) => {
+    const onFinish = (loginData: UserAuthentication) => {
         setLoginButtonLoading(true)
         loginData.accountType = AccountType.PASSWORD
         dispatch(fetchLogin(loginData)).then(() => {
@@ -55,7 +55,7 @@ const Login: React.FC = () => {
                 .then(() => {
                     // 设置权限
                     dispatch(fetchUserMenus())
-                        .then((menuItems: Menus[]) => {
+                        .then((menuItems: Menu[]) => {
                             router.routes[0]?.children!.push(...parseRouters(menuItems))
                         })
                 })
