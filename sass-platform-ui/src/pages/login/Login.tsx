@@ -56,7 +56,7 @@ const Login: React.FC = () => {
                     // 设置权限
                     dispatch(fetchUserMenus())
                         .then((menuItems: Menus[]) => {
-                            router.routes[0].children = parseRouters(menuItems)
+                            router.routes[0]?.children!.push(...parseRouters(menuItems))
                         })
                 })
         }).catch((err: Error) => {

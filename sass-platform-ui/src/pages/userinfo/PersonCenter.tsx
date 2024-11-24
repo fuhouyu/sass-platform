@@ -20,7 +20,6 @@ import "./index.scss"
 import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
-import withAuth from "@components/Auth/withAuth";
 import {Userinfo} from "@/pages/userinfo/Userinfo";
 import {UserModel} from "@/model/user";
 
@@ -34,7 +33,7 @@ interface MenuLiInterface {
  * 个人中心用户详情
  * @constructor 构造函数
  */
-export const PersonCenter: React.FC = withAuth(() => {
+export const PersonCenter: React.FC = () => {
 
     const userinfo = useAppSelector((state: {
         user: { userinfo: UserModel };
@@ -95,5 +94,5 @@ export const PersonCenter: React.FC = withAuth(() => {
             </div>
         </>
     )
-})
+}
 

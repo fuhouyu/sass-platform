@@ -25,7 +25,17 @@ import {ItemType} from "antd/es/menu/interface";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {fetchUserMenus} from "@/store/modules/user";
 import {Menus} from "@/model/menus";
+import {IconFont} from "@/components";
 
+const commonMenus: ItemType[] = [
+    {
+        key: 'home',
+        title: '首页',
+        label: '首页',
+        icon:
+            <IconFont type="i-home" style={{fontSize: '16px'}}/>
+    }
+]
 /**
  * 侧边菜单组件
  * @constructor 构造函数
@@ -36,7 +46,7 @@ export const Menu = () => {
         dispatch(fetchUserMenus());
     }, [dispatch])
     const userMenus: Menus[] = useAppSelector((state) => state.user.userMenus);
-    const menuItems = useMenuTree<ItemType>(userMenus)
+    commonMenus.push(...useMenuTree<ItemType>(userMenus))
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
     // 点击菜单时进行跳转
@@ -54,7 +64,7 @@ export const Menu = () => {
                 </h3>
                 <Divider/>
                 <_Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"
-                       items={menuItems} onClick={onMenuClick}/>
+                       items={commonMenus} onClick={onMenuClick}/>
             </Sider>
         </>
     )

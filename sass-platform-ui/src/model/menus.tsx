@@ -47,10 +47,6 @@ export interface Menus extends BaseModel {
      */
     isFrame: boolean;
     /**
-     * 是否系统权限
-     */
-    isSystemd: boolean;
-    /**
      * 是否显示
      */
     isVisible: boolean;

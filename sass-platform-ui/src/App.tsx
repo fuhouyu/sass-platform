@@ -37,7 +37,7 @@ export const App: React.FC = () => {
         dispatch(fetchUserMenus())
             .then((userMenus: Menus[]) => {
                 setLoading(false);
-                router.routes[0].children = parseRouters(userMenus);
+                router.routes[0]?.children!.push(...parseRouters(userMenus))
             })
     }, [dispatch])
     if (loading) {

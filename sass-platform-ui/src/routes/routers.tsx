@@ -22,6 +22,7 @@ import {Layout} from "@/layouts/layout";
 import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Menus} from "@/model/menus";
 import {PageLoading} from "@components/PageLoading/pageLoading";
+import {Home} from "@/pages/home/Home";
 
 export type RouterType = {
     id: string;
@@ -33,14 +34,24 @@ export type RouterType = {
 }
 
 
-export const RoutesConstant: RouterType[] = [
+/**
+ * 公共路由
+ */
+export const commonRouter: RouterType[] = [
 
     {
         id: 'layout',
         title: 'layout',
         path: '/',
         element: <Layout/>,
-        children: []
+        children: [
+            {
+                id: 'home',
+                title: 'Home',
+                path: '/home',
+                element: <Home/>
+            }
+        ]
     },
     {
         id: 'login',
@@ -57,7 +68,7 @@ export const RoutesConstant: RouterType[] = [
     }
 
 ]
-export const router: Router = createBrowserRouter(RoutesConstant,);
+export const router: Router = createBrowserRouter(commonRouter);
 
 
 const modules = import.meta.glob('../pages/**/*.tsx');

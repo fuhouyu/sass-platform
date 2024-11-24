@@ -14,26 +14,13 @@
  * limitations under the License.
  */
 
-import {Layout as _Layout} from "antd";
-import {Content} from "antd/es/layout/layout";
-import {Outlet} from "react-router-dom";
-import {Menu} from "@/layouts/menu/menu";
-import {Header} from "@/layouts/header/header";
-import './index.scss'
-import withAuth from "@components/Auth/withAuth";
 
-export const Layout = withAuth(() => {
+import React from "react";
+
+export const Home: React.FC = () => {
     return (
         <>
-            <_Layout className="layout-container">
-                <Menu/>
-                <_Layout>
-                    <Header/>
-                    <Content className="layout-content">
-                        <Outlet/>
-                    </Content>
-                </_Layout>
-            </_Layout>
+            首页
         </>
     )
-})
+}
