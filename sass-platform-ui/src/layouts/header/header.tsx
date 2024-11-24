@@ -104,11 +104,12 @@ export const Header = () => {
                 </Row>
                 {/*面包屑*/}
                 <Divider/>
-                <Row className="bread-row" gutter={24} align={"middle"}>
-                    <Col span={24} className="layout-bread">
-                        <Bread/>
-                    </Col>
-                </Row>
+                <Bread/>
+                {/*<Row className="bread-row" gutter={24} align={"middle"}>*/}
+                {/*    <Col span={24} className="layout-bread">*/}
+                {/*        */}
+                {/*    </Col>*/}
+                {/*</Row>*/}
             </_Header>
         </>
     )

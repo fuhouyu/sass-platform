@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import "normalize.css"
-import {App} from "@/App";
-import {store} from "@/store";
-import {Provider} from "react-redux";
 
-createRoot(document.getElementById('root')!).render(
-    <>
-        <Provider store={store}>
-        <App/>
-        </Provider>
-    </>
-)
+import {Spin} from "antd";
+import React from "react";
+import './index.scss'
+
+export const PageLoading = () => {
+    const contentStyle: React.CSSProperties = {
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: 10,
+    };
+
+    const content = <div style={contentStyle}/>;
+    return (
+        <>
+            <Spin delay={1000} tip="页面加载中..." fullscreen={true} size="large" className="page-loading">
+                {content}
+            </Spin>
+        </>
+    )
+}

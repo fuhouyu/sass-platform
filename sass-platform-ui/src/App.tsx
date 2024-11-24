@@ -15,19 +15,38 @@
  */
 
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {RouterProvider} from "react-router-dom";
-import {Provider} from "react-redux";
-import {store} from "@/store";
-import {router} from "@/routes/routers";
-
+import {parseRouters, router} from "@/routes/routers";
+import {getAccessToken} from "@/utils";
+import {useAppDispatch} from "@/store";
+import {fetchUserMenus} from "@/store/modules/user";
+import {Menus} from "@/model/menus";
+import {PageLoading} from "@components/PageLoading/pageLoading";
 
 export const App: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            // 都为空时，不再请求路由
+            setLoading(false);
+            return;
+        }
+        dispatch(fetchUserMenus())
+            .then((userMenus: Menus[]) => {
+                setLoading(false);
+                router.routes[0].children = parseRouters(userMenus);
+            })
+    }, [dispatch])
+    if (loading) {
+        return <PageLoading/>
+    }
     return (
-        <Provider store={store}>
 
-            <RouterProvider
-                router={router}/>
-        </Provider>
-    )
+        <RouterProvider
+            router={router}/>
+
+    );
 }

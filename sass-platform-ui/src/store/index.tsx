@@ -22,7 +22,7 @@ import {useDispatch, useSelector, useStore} from "react-redux";
 
 export const store = configureStore({
     reducer: {
-        user: userReducer
+        user: userReducer,
     }
 })
 

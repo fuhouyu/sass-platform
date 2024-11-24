@@ -38,6 +38,8 @@ import {UserModel} from "@/model/user";
 import {useMenuTree} from "@/hooks/useMenuTree";
 import './index.scss'
 import TextArea from "antd/es/input/TextArea";
+import {Menus} from "@/model/menus";
+import {useAppSelector} from "@/store";
 
 const extractKeys = (trees: TreeDataNode[]): Key[] => {
     const keys: Key[] = []
@@ -49,7 +51,8 @@ const extractKeys = (trees: TreeDataNode[]): Key[] => {
     });
     return keys;
 }
-export const Config: React.FC = () => {
+
+const Config: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
@@ -105,6 +108,9 @@ export const Config: React.FC = () => {
         }
     ];
 
+    useEffect(() => {
+
+    }, []);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [isAdded, setIsAdded] = useState<boolean>(true);
@@ -115,7 +121,8 @@ export const Config: React.FC = () => {
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-    const menuTree = useMenuTree<TreeDataNode>();
+    const userMenus: Menus[] = useAppSelector((state) => state.user.userMenus);
+    const menuTree = useMenuTree<TreeDataNode>(userMenus);
     const onExpand: TreeProps['onExpand'] = (expandedKeysValue) => {
         console.log('onExpand', expandedKeysValue);
         setExpandedKeys(expandedKeysValue);
@@ -216,7 +223,7 @@ export const Config: React.FC = () => {
         <Modal
             title={isAdded ? "新增配置" : "修改配置"}
             className="ant-modal-header"
-            open={isModalOpen}
+            open={true}
             onCancel={() => closeModal()}
             width={600}
             footer={[
@@ -289,3 +296,5 @@ export const Config: React.FC = () => {
         </Modal>
     </>)
 }
+
+export default Config;

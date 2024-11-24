@@ -20,6 +20,8 @@ import {UserModel,} from "@/model/user";
 import {editUserinfoApi, getUserinfoApi} from "@/apis/user";
 import {UserAuthenticationModel, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
+import {Menus} from "@/model/menus";
+import {getUserPermissionApi} from "@/apis/permission";
 
 
 const userStore = createSlice({
@@ -29,7 +31,9 @@ const userStore = createSlice({
             accessToken: "",
             refreshToken: "",
         },
-        userinfo: {}
+        userinfo: {},
+        // 用户菜单
+        userMenus: [] as Menus[],
     },
     reducers: {
         storeToken: (state, action: PayloadAction<UserToken>) => {
@@ -41,12 +45,17 @@ const userStore = createSlice({
             state.userinfo = action.payload;
             return state;
         },
+        storeMenu: (state, action: PayloadAction<Menus[]>) => {
+            state.userMenus = action.payload;
+            return state;
+        },
         logout: (state) => {
             state.userinfo = {};
             state.token = {
                 accessToken: "",
                 refreshToken: "",
             };
+            state.userMenus = [];
             return state;
         }
     },
@@ -78,6 +87,19 @@ const fetchUserinfo = () => {
 }
 
 /**
+ * 获取menus
+ */
+const fetchUserMenus = () => {
+    return async (dispatch: (arg0: { payload: Menus[]; type: `user/${string}` }) => Menus[]): Promise<Menus[]> => {
+        const menus = await getUserPermissionApi();
+        if (menus) {
+            dispatch(userStore.actions.storeMenu(menus));
+        }
+        return menus;
+    }
+}
+
+/**
  * 用户退出登录
  */
 const fetchLogout = () => {
@@ -85,7 +107,6 @@ const fetchLogout = () => {
         await logoutApi();
         dispatch(userStore.actions.logout())
         removeToken()
-
     }
 }
 
@@ -105,7 +126,8 @@ export {
     fetchLogin,
     fetchLogout,
     fetchUserinfo,
-    fetchEditUserinfo
+    fetchEditUserinfo,
+    fetchUserMenus
 };
 
 export default userStore.reducer;

@@ -16,70 +16,79 @@
 
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
-import React from "react";
-import {PersonCenter} from "@/pages/userinfo/personCenter";
+import React, {lazy, Suspense} from "react";
 import Login from "@/pages/login";
-import User from "@/pages/system/user/user";
-import {Manage} from "@/pages/tenant/manage/manage";
-import {Config} from "@/pages/tenant/config/config";
 import {Layout} from "@/layouts/layout";
+import {NotFound} from "@/pages/error/notfound/NotFound";
+import {Menus} from "@/model/menus";
+import {PageLoading} from "@components/PageLoading/pageLoading";
 
 export type RouterType = {
+    id: string;
     title: string,
     path: string,
-    element?: React.JSX.Element,
+    element?: React.ReactNode | null | undefined,
+    component?: React.ReactNode,
     children?: RouterType[]
 }
 
 
 export const RoutesConstant: RouterType[] = [
+
     {
+        id: 'layout',
+        title: 'layout',
+        path: '/',
+        element: <Layout/>,
+        children: []
+    },
+    {
+        id: 'login',
         title: '登录',
         path: '/login',
         element: <Login/>,
     },
     {
-        title: '首页',
-        path: '/',
-        element: <Layout/>,
-        children: [
-            {
-                title: '用户详情',
-                path: '/userinfo',
-                element: <PersonCenter/>
-            },
-            {
-                title: '租户管理',
-                path: '/tenant',
-                children: [
-                    {
-                        title: '租户管理',
-                        path: '/tenant/manager',
-                        element: <Manage/>,
-                    },
-                    {
-                        title: '配置管理',
-                        path: '/tenant/config',
-                        element: <Config/>,
-                    }
-                ]
+        id: '404',
+        title: '404',
+        path: '/*',
+        component: <NotFound/>,
 
-            },
-            {
-                title: '系统管理',
-                path: '/system',
-                children: [
-                    {
-                        title: '用户管理',
-                        path: '/system/user',
-                        element: <User/>
-                    }
-                ]
-            },
-
-        ]
-    },
+    }
 
 ]
-export const router: Router = createBrowserRouter(RoutesConstant);
+export const router: Router = createBrowserRouter(RoutesConstant,);
 
+
+const modules = import.meta.glob('../pages/**/*.tsx');
+
+
+const lazyElement = (path: string) => {
+    const module = modules[`../pages/${path}.tsx`];
+    if (!module) {
+        return (<NotFound/>);
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const Component = lazy(module);
+    return (
+        <Suspense fallback={<PageLoading/>}>
+            <Component/>
+        </Suspense>
+    );
+};
+export const parseRouters = (menuProps: Menus[]): RouterType[] => {
+
+    if (menuProps === undefined || menuProps.length === 0) {
+        return [];
+    }
+    return menuProps.map((item) => {
+        return {
+            id: item.id,
+            title: item.permissionName,
+            path: item.routePath ?? '',
+            children: item.children ? parseRouters(item.children) : [],
+            element: item.componentPath && lazyElement(item.componentPath),
+        }
+    })
+}

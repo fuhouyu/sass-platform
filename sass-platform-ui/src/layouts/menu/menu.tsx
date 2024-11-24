@@ -17,17 +17,26 @@
 
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu as _Menu} from 'antd';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {MenuType, useMenuTree} from "@/hooks/useMenuTree";
 import {useNavigate} from "react-router-dom";
 import './index.scss'
+import {ItemType} from "antd/es/menu/interface";
+import {useAppDispatch, useAppSelector} from "@/store";
+import {fetchUserMenus} from "@/store/modules/user";
+import {Menus} from "@/model/menus";
 
 /**
  * 侧边菜单组件
  * @constructor 构造函数
  */
 export const Menu = () => {
-    const menuItems = useMenuTree<MenuType>();
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(fetchUserMenus());
+    }, [dispatch])
+    const userMenus: Menus[] = useAppSelector((state) => state.user.userMenus);
+    const menuItems = useMenuTree<ItemType>(userMenus)
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
     // 点击菜单时进行跳转
@@ -35,6 +44,7 @@ export const Menu = () => {
         const path = item?.key?.toLocaleString();
         navigate(path!);
     }
+
     return (
         <>
             <Sider className='layout-sider' collapsible collapsed={collapsed}

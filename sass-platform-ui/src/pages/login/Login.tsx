@@ -19,12 +19,14 @@ import "./index.scss"
 import {Button, Checkbox, Col, Divider, Form, Input, message, Row} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
-import {fetchLogin} from "@/store/modules/user";
+import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 import {UserAuthenticationModel} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {IconFont} from "@/components";
+import {parseRouters, router} from "@/routes/routers";
+import {Menus} from "@/model/menus";
 
 
 const Login: React.FC = () => {
@@ -33,10 +35,12 @@ const Login: React.FC = () => {
     const location = useLocation();
     const dispatch = useAppDispatch();
     const isAuth = useAuth();
+
     // 如果本身存在token，跳转回首页
     useEffect(() => {
+
         if (isAuth) {
-            navigate('/')
+            router.navigate('/').then()
             return
         }
     }, [isAuth, navigate]);
@@ -47,7 +51,14 @@ const Login: React.FC = () => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
             const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
-            navigate(from)
+            router.navigate(from)
+                .then(() => {
+                    // 设置权限
+                    dispatch(fetchUserMenus())
+                        .then((menuItems: Menus[]) => {
+                            router.routes[0].children = parseRouters(menuItems)
+                        })
+                })
         }).catch((err: Error) => {
             message.error(err.message).then()
         }).finally(() => {

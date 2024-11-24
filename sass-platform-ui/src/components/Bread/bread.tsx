@@ -17,13 +17,14 @@
 
 import {Breadcrumb} from "antd";
 import {useMemo} from "react";
-import {RouterType, RoutesConstant} from "@/routes/routers";
+import {useAppSelector} from "@/store";
+import {Menus} from "@/model/menus";
+import './index.scss'
 
-
-const getBreadcrumbName = (path: string, routers: RouterType[]) => {
+const getBreadcrumbName = (path: string, routers: Menus[]) => {
     for (const item of routers) {
-        if (matchPath(path, item.path)) {
-            return item.title;
+        if (matchPath(path, item.routePath ?? '')) {
+            return item.permissionName;
         }
         const children = item.children;
         if (children) {
@@ -35,13 +36,14 @@ const getBreadcrumbName = (path: string, routers: RouterType[]) => {
 };
 
 export const Bread = () => {
-
+    const userMenus = useAppSelector(state => state.user.userMenus);
     const pathSnippets = location.pathname.split('/').filter(i => i);
 
     const breadcrumb = useMemo(() => {
         return pathSnippets.map((_, index) => {
             const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-            const breadcrumbName = getBreadcrumbName(url, RoutesConstant);
+            const breadcrumbName = getBreadcrumbName(url, userMenus);
+            console.log(url)
             return {
                 title: breadcrumbName,
                 key: url,
@@ -50,7 +52,13 @@ export const Bread = () => {
         });
     }, [pathSnippets]);
 
-    return <Breadcrumb items={breadcrumb}></Breadcrumb>;
+    return (
+        <>
+            <Breadcrumb className="breadcrumb"
+                        items={breadcrumb}
+            ></Breadcrumb>
+        </>
+    );
 };
 
 const matchPath = (currentPath: string, routePath: string) => {

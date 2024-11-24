@@ -15,17 +15,15 @@
  */
 
 
-import {useCallback, useEffect, useState} from "react";
+import {useCallback} from "react";
 import {IconFont} from "@/components";
-import {getUserPermissionApi} from "@/apis/permission";
 import {MenuProps, TreeDataNode} from "antd";
 import {Menus} from "@/model/menus";
 
 
 export type MenuType = Required<MenuProps>['items'][number];
 
-export function useMenuTree<T = MenuType | TreeDataNode>(): T[] {
-    const [menuTree, setMenuTree] = useState<T[] | null>();
+export function useMenuTree<T = MenuType | TreeDataNode>(menus: Menus[]): T[] {
     const convertMenuItem = useCallback((permissionInterfaces: Menus[]): (T[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
@@ -42,16 +40,6 @@ export function useMenuTree<T = MenuType | TreeDataNode>(): T[] {
         })
     }, [])
 
-    useEffect(() => {
-        getUserPermissionApi()
-            .then((permissions) => {
-                const converted = convertMenuItem(permissions);
-                setMenuTree(converted);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [convertMenuItem]);
 
-    return menuTree ?? [];
+    return convertMenuItem(menus) ?? [];
 }

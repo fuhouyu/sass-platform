@@ -13,18 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.breadcrumb {
+  line-height: 2rem;
+}
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import "normalize.css"
-import {App} from "@/App";
-import {store} from "@/store";
-import {Provider} from "react-redux";
-
-createRoot(document.getElementById('root')!).render(
-    <>
-        <Provider store={store}>
-        <App/>
-        </Provider>
-    </>
-)
+.breadcrumb ol a {
+  height: 2rem;
+}

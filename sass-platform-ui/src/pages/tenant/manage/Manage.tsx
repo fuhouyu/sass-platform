@@ -23,7 +23,7 @@ import {TenantInfoModel} from "@/model/tenant";
 import {getTenantListApi} from "@/apis/tenant";
 import {SearchInput} from "@components/List/pageParams";
 
-export const Manage: React.FC = () => {
+const Manage: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
@@ -76,7 +76,6 @@ export const Manage: React.FC = () => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => {
-                            console.log(record)
                         }}>修改</a>
                     </Space>
                 </>)
@@ -105,3 +104,5 @@ export const Manage: React.FC = () => {
         />
     </>)
 }
+
+export default Manage;
