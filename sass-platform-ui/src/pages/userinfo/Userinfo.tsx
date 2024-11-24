@@ -68,10 +68,10 @@ export const Userinfo: React.FC = () => {
             .then(() => {
                 form.setFieldsValue({...values});
                 setButtonLoading(false);
-                message.success('修改成功');
+                message.success('修改成功').then();
             }).catch((error: Error) => {
             console.log('用户修改失败: ', error);
-            message.error('用户修改失败');
+            message.error('用户修改失败').then();
         })
     }
 

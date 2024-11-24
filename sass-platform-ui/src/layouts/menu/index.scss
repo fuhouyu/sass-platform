@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.layout-sider, .layout-menu, .ant-layout-sider-trigger, {
+  background-color: #304156 !important;
+  color: #ffffff !important;
+}
 
-
-export {default} from './login';
- 
+.ant-menu-sub {
+  background-color: #202D3D !important;
+}

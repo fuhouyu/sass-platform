@@ -13,38 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.entity;
 
-html,
-body,
-#root {
-  --primary-color: #4CAF50;
-  --secondary-color: #FF9800;
-  --text-color: #333333;
-  --background-color: #F9F9F9;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-  height: 100%;
-  margin: 0;
-  background-color: #f0f0f0;
-  font-family: 'Helvetica Neue', Arial, sans-serif; /* 字体族 */
-  font-size: 16px; /* 字体大小 */
-  line-height: 1.5; /* 行高 */
-  color: #333; /* 全局字体颜色 */
-}
+import java.io.Serial;
 
-// 字体居中
-.text-align-center {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
+/**
+ * <p>
+ * 租户配置的权限dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/24 19:41
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TenantConfigPermission extends BaseEntity {
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
+    @Serial
+    private static final long serialVersionUID = 1241236412641233112L;
 
-.form-button {
-  padding-top: 2rem;
-  justify-items: flex-end;
+    /**
+     * 租户配置id
+     */
+    private Long tenantConfigId;
+
+    /**
+     * 权限id
+     */
+    private Long permissionId;
+
 }

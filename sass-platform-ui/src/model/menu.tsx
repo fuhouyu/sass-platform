@@ -17,11 +17,11 @@
 
 import {BaseModel} from "@/model/base";
 
-export interface Permission extends BaseModel {
+export interface Menu extends BaseModel {
     /**
      * 权限树子集
      */
-    children?: Permission[];
+    children?: Menu[];
     /**
      * 组件路径
      */
@@ -46,10 +46,6 @@ export interface Permission extends BaseModel {
      * 是否外链
      */
     isFrame: boolean;
-    /**
-     * 是否系统权限
-     */
-    isSystemd: boolean;
     /**
      * 是否显示
      */

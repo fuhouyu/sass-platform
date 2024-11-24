@@ -15,7 +15,7 @@
  */
 
 import {request} from "@/utils";
-import {UserAuthenticationModel, UserToken} from "@/model/authentication";
+import {UserAuthentication, UserToken} from "@/model/authentication";
 
 const baseAuthUrl = '/v1/auth'
 
@@ -24,7 +24,7 @@ const baseAuthUrl = '/v1/auth'
  * 用户登录
  * @param loginData 登录的表单信息
  */
-const loginApi = (loginData: UserAuthenticationModel): Promise<UserToken> =>
+const loginApi = (loginData: UserAuthentication): Promise<UserToken> =>
     request.post(`${baseAuthUrl}/login`, loginData)
 
 

@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-/**
- * 分页查询对象
- */
-export interface PageQueryModel {
-    pageNum: number | undefined;
-    pageSize: number | undefined;
-    keyword?: string;
-    sortColumn?: string;
-    isAsc?: boolean;
-}
 
+import {Spin} from "antd";
+import React from "react";
+import './index.scss'
 
-/**
- * 分页查询的结果集
- */
-export interface PageResultModel<T> {
-    pageNum: number;
-    pageSize: number;
-    total: number;
-    list: T[];
+export const PageLoading = () => {
+    const contentStyle: React.CSSProperties = {
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: 10,
+    };
+
+    const content = <div style={contentStyle}/>;
+    return (
+        <>
+            <Spin delay={1000} tip="页面加载中..." fullscreen={true} size="large" className="page-loading">
+                {content}
+            </Spin>
+        </>
+    )
 }

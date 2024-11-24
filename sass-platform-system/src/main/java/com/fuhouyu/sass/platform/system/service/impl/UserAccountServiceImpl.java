@@ -72,7 +72,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(SaveUserDTO userDTO) {
-        this.userService.save(userDTO);
+        Long id = this.userService.save(userDTO);
+        userDTO.setId(id);
         this.saveAccounts(userDTO);
     }
 

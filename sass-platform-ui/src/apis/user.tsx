@@ -17,7 +17,7 @@
 
 import {request} from "@/utils";
 import {UserModel} from "@/model/user";
-import {PageQueryModel, PageResultModel} from "@/model/page";
+import {PageQuery, PageResult} from "@/model/pageQuery";
 
 
 const baseUserUrl = '/v1/user'
@@ -51,7 +51,7 @@ const saveUserInfoApi = (userinfo: UserModel): Promise<void> => request.post(`${
 /**
  * 获取用户列表
  */
-const getUserListApi = <P extends PageQueryModel, R extends object>(pageQuery: P): Promise<PageResultModel<R>> =>
+const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
     request.get(`${baseUserUrl}/list`, {
         params: {...pageQuery}
     });

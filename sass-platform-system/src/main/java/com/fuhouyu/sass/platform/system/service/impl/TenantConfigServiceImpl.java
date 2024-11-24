@@ -21,6 +21,7 @@ import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantConfigDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantConfig;
 import com.fuhouyu.sass.platform.system.mapper.TenantConfigMapper;
+import com.fuhouyu.sass.platform.system.service.TenantConfigPermissionService;
 import com.fuhouyu.sass.platform.system.service.TenantConfigService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -49,12 +51,16 @@ public class TenantConfigServiceImpl implements TenantConfigService {
 
     private final SnowflakeIdWorker snowflakeIdWorker;
 
+    private final TenantConfigPermissionService tenantConfigPermissionService;
+
     @Override
     public Long save(TenantConfigDTO dto) {
         long id = snowflakeIdWorker.nextId();
         TenantConfig entity = TENANT_CONFIG_ASSEMBLER.toEntity(dto);
         entity.setId(id);
         tenantConfigMapper.insert(entity);
+        tenantConfigPermissionService.saveConfigPermission(id,
+                dto.getPermissionIds());
         return id;
     }
 
@@ -62,6 +68,7 @@ public class TenantConfigServiceImpl implements TenantConfigService {
     public void edit(TenantConfigDTO dto) {
         TenantConfig entity = TENANT_CONFIG_ASSEMBLER.toEntity(dto);
         this.tenantConfigMapper.update(entity);
+        this.tenantConfigPermissionService.saveConfigPermission(dto.getId(), dto.getPermissionIds());
     }
 
     @Override
@@ -71,12 +78,21 @@ public class TenantConfigServiceImpl implements TenantConfigService {
 
     @Override
     public int removeByIds(Collection<Long> ids) {
-        return this.tenantConfigMapper.deleteByIds(ids);
+        int count = this.tenantConfigMapper.deleteByIds(ids);
+        this.tenantConfigPermissionService.deleteConfigPermissions(ids);
+        return count;
     }
 
     @Override
     public TenantConfigDTO findById(Long id) {
-        return TENANT_CONFIG_ASSEMBLER.toDTO(this.tenantConfigMapper.queryById(id));
+        TenantConfig tenantConfig = this.tenantConfigMapper.queryById(id);
+        if (Objects.isNull(tenantConfig)) {
+            return null;
+        }
+        TenantConfigDTO tenantConfigDTO = TENANT_CONFIG_ASSEMBLER.toDTO(tenantConfig);
+        List<Long> permissionIdList = this.tenantConfigPermissionService.findPermissionIdByConfigId(id);
+        tenantConfigDTO.setPermissionIds(permissionIdList);
+        return tenantConfigDTO;
     }
 
     @Override

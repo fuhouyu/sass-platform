@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 
+/**
+ * 分页查询对象
+ */
+export interface PageQuery {
+    pageNum: number | undefined;
+    pageSize: number | undefined;
+    keyword?: string;
+    sortColumn?: string;
+    isAsc?: boolean;
+}
 
-export {default} from './routers.tsx'
- 
+
+/**
+ * 分页查询的结果集
+ */
+export interface PageResult<T> {
+    pageNum: number;
+    pageSize: number;
+    total: number;
+    list: T[];
+}

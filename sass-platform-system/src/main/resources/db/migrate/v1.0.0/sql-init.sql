@@ -79,6 +79,22 @@ CREATE TABLE tenant_config
     update_by  VARCHAR(64)           NOT NULL
 );
 
+-- 租户配置权限
+DROP TABLE IF EXISTS tenant_config_has_permission;
+CREATE TABLE tenant_config_has_permission
+(
+    tenant_config_id BIGINT      NOT NULL,
+    permission_id    BIGINT      NOT NULL,
+    create_at        TIMESTAMP   NOT NULL,
+    create_by        VARCHAR(64) NOT NULL,
+    PRIMARY KEY (tenant_config_id, permission_id)
+);
+COMMENT ON TABLE tenant_config_has_permission IS '租户配置的权限关系表';
+COMMENT ON COLUMN tenant_config_has_permission.tenant_config_id IS '租户配置id';
+COMMENT ON COLUMN tenant_config_has_permission.permission_id IS '权限id';
+COMMENT ON COLUMN tenant_config_has_permission.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_config_has_permission.create_by IS '创建人';
+
 
 DROP TABLE IF EXISTS users;
 -- 用户表
@@ -258,24 +274,24 @@ COMMENT ON COLUMN permissions.update_by IS '更新人';
 INSERT INTO permissions (id, parent_id, tenant_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified,
                          is_visible, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, 1, '首页', 'home', 1, 'i-home', '/', null, '', false, 'C', false, true, false,
+VALUES (1, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', null, '', false, 'C', false, true, false,
         now(), 'admin', now(), 'admin'),
-       (2, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', null, '', false, 'C', false, true, false,
-        now(), 'admin', now(), 'admin'),
-       (21, 2, 1, '租户管理', '/tenant/manager', 1, 'i-navicon-zhgl', '/tenant/manager', null, '', false, 'C', false,
+       (11, 1, 1, '租户管理', '/tenant/manager', 1, 'i-navicon-zhgl', '/tenant/manager', 'tenant/manage/Manage', '',
+        false, 'C', false,
         true, false,
         now(), 'admin', now(), 'admin'),
-       (22, 2, 1, '配置管理', '/tenant/config', 2, 'i-peizhiguanli', '/tenant/config', null, '', false, 'C', false,
+       (12, 1, 1, '配置管理', '/tenant/config', 2, 'i-peizhiguanli', '/tenant/config', 'tenant/config/Config', '',
+        false, 'C', false,
         true, false,
         now(), 'admin', now(), 'admin'),
-       (3, -1, 1, '系统设置', 'system', 3, 'i-setting', '/system',
+       (2, -1, 1, '系统设置', 'system', 3, 'i-setting', '/system',
         null, '', false, 'M', false, true, false, now(), 'admin', now(), 'admin'),
-       (4, 3, 1, '用户管理', 'system:user', 1, 'i-yonghu', '/system/user',
-        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (5, 3, 1, '角色管理', 'system:role', 2, 'i-jiaoseguanli', '/system/role',
-        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (6, 3, 1, '权限管理', 'system:permission', 3, 'i-quanxian', '/system/permission',
-        null, '', false, 'C', false, true, false, now(), 'admin', now(), 'admin')
+       (21, 2, 1, '用户管理', 'system:user', 1, 'i-yonghu', '/system/user',
+        'system/user/User', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
+       (22, 2, 1, '角色管理', 'system:role', 2, 'i-jiaoseguanli', '/system/role',
+        'system/user/Role', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
+       (23, 2, 1, '权限管理', 'system:permission', 3, 'i-quanxian', '/system/permission',
+        'system/user/Permission', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin')
 ;
 
 
@@ -299,11 +315,11 @@ COMMENT ON COLUMN role_has_permission.create_by IS '创建人';
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin'),
        (1, 2, now(), 'admin'),
+       (1, 11, now(), 'admin'),
        (1, 21, now(), 'admin'),
+       (1, 12, now(), 'admin'),
        (1, 22, now(), 'admin'),
-       (1, 3, now(), 'admin'),
-       (1, 4, now(), 'admin'),
-       (1, 5, now(), 'admin');
+       (1, 23, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

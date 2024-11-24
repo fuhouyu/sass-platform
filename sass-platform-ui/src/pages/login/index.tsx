@@ -14,37 +14,6 @@
  * limitations under the License.
  */
 
-html,
-body,
-#root {
-  --primary-color: #4CAF50;
-  --secondary-color: #FF9800;
-  --text-color: #333333;
-  --background-color: #F9F9F9;
 
-  height: 100%;
-  margin: 0;
-  background-color: #f0f0f0;
-  font-family: 'Helvetica Neue', Arial, sans-serif; /* 字体族 */
-  font-size: 16px; /* 字体大小 */
-  line-height: 1.5; /* 行高 */
-  color: #333; /* 全局字体颜色 */
-}
-
-// 字体居中
-.text-align-center {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.form-button {
-  padding-top: 2rem;
-  justify-items: flex-end;
-}
+export {default} from './Login';
+ 

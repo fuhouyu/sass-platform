@@ -16,9 +16,97 @@
 
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
-import {RoutersConstant} from "@/constants/routerConstant";
+import React, {lazy, Suspense} from "react";
+import Login from "@/pages/login";
+import {Layout} from "@/layouts/layout";
+import {NotFound} from "@/pages/error/notfound/NotFound";
+import {Menu} from "@/model/menu";
+import {PageLoading} from "@components/PageLoading/pageLoading";
+import {Home} from "@/pages/home/Home";
+import {PersonCenter} from "@/pages/userinfo/PersonCenter";
+
+export type RouterType = {
+    id: string;
+    title: string,
+    path: string,
+    element?: React.ReactNode | null | undefined,
+    component?: React.ReactNode,
+    children?: RouterType[]
+}
 
 
-const Routes: Router = createBrowserRouter(RoutersConstant);
+/**
+ * 公共路由
+ */
+export const commonRouter: RouterType[] = [
 
-export default Routes;
+    {
+        id: 'layout',
+        title: 'layout',
+        path: '/',
+        element: <Layout/>,
+        children: [
+            {
+                id: 'home',
+                title: 'Home',
+                path: '/home',
+                element: <Home/>
+            },
+            {
+                id: 'userinfo',
+                title: 'userinfo',
+                path: '/userinfo',
+                element: <PersonCenter/>
+            }
+        ]
+    },
+    {
+        id: 'login',
+        title: '登录',
+        path: '/login',
+        element: <Login/>,
+    },
+    {
+        id: '404',
+        title: '404',
+        path: '/*',
+        component: <NotFound/>,
+
+    }
+
+]
+export const router: Router = createBrowserRouter(commonRouter);
+
+
+const modules = import.meta.glob('../pages/**/*.tsx');
+
+
+const lazyElement = (path: string) => {
+    const module = modules[`../pages/${path}.tsx`];
+    if (!module) {
+        return (<NotFound/>);
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const Component = lazy(module);
+    return (
+        <Suspense fallback={<PageLoading/>}>
+            <Component/>
+        </Suspense>
+    );
+};
+export const parseRouters = (menuProps: Menu[]): RouterType[] => {
+
+    if (menuProps === undefined || menuProps.length === 0) {
+        return [];
+    }
+    return menuProps.map((item) => {
+        return {
+            id: item.id,
+            title: item.permissionName,
+            path: item.routePath ?? '',
+            children: item.children ? parseRouters(item.children) : [],
+            element: item.componentPath && lazyElement(item.componentPath),
+        }
+    })
+}

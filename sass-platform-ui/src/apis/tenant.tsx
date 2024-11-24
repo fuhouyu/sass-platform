@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {PageQueryModel, PageResultModel} from "@/model/page";
+import {PageQuery, PageResult} from "@/model/pageQuery";
 import {request} from "@/utils";
 
 const baseTenantUrl = '/v1/tenant'
@@ -23,7 +23,7 @@ const baseTenantUrl = '/v1/tenant'
  * 分页获取租户列表
  * @param pageQuery 分页查询
  */
-const getTenantListApi = <P extends PageQueryModel, R extends object>(pageQuery: P): Promise<PageResultModel<R>> =>
+const getTenantListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
     request.get(`${baseTenantUrl}/list`, {
         params: {...pageQuery}
     });
