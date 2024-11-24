@@ -17,12 +17,12 @@
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
 import React from "react";
-import {Tenant} from "@/pages/tenant/tenant";
 import {PersonCenter} from "@/pages/userinfo/personCenter";
 import Login from "@/pages/login";
 import User from "@/pages/system/user/user";
-import {Layout} from "@/pages/layout/layout";
-import {TenantConfig} from "@/pages/tenant/tenantConfig";
+import {Manage} from "@/pages/tenant/manage/manage";
+import {Config} from "@/pages/tenant/config/config";
+import {Layout} from "@/layouts/layout";
 
 export type RouterType = {
     title: string,
@@ -55,12 +55,12 @@ export const RoutesConstant: RouterType[] = [
                     {
                         title: '租户管理',
                         path: '/tenant/manager',
-                        element: <Tenant/>,
+                        element: <Manage/>,
                     },
                     {
                         title: '配置管理',
                         path: '/tenant/config',
-                        element: <TenantConfig/>,
+                        element: <Config/>,
                     }
                 ]
 

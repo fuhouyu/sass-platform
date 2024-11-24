@@ -15,17 +15,41 @@
  */
 
 
-import React, {useRef, useState} from "react";
-import {Button, Form, Input, message, Modal, TableColumnsType, Tag, Tree, TreeDataNode, TreeProps} from "antd";
+import React, {Key, useEffect, useState} from "react";
+import {
+    Button,
+    Checkbox,
+    Form,
+    GetProp,
+    Input,
+    message,
+    Modal,
+    TableColumnsType,
+    Tag,
+    Tree,
+    TreeDataNode,
+    TreeProps
+} from "antd";
 import {IconFont, PageList} from "@/components";
-import {PageListHandler, SearchInput} from "@components/List/pageParams";
+import {SearchInput} from "@components/List/pageParams";
 import {getTenantConfigListApi, removerTenantConfigApi} from "@/apis/tenantConfig";
 import {getUserinfoByIdApi} from "@/apis/user";
 import {UserModel} from "@/model/user";
 import {useMenuTree} from "@/hooks/useMenuTree";
+import './index.scss'
+import TextArea from "antd/es/input/TextArea";
 
-
-export const TenantConfig: React.FC = () => {
+const extractKeys = (trees: TreeDataNode[]): Key[] => {
+    const keys: Key[] = []
+    trees.forEach(tree => {
+        keys.push(tree.key);
+        if (tree.children) {
+            keys.push(...extractKeys(tree.children))
+        }
+    });
+    return keys;
+}
+export const Config: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
@@ -82,12 +106,12 @@ export const TenantConfig: React.FC = () => {
     ];
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
-    const pageListRef = useRef<PageListHandler>();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [isAdded, setIsAdded] = useState<boolean>(true);
     const [form] = Form.useForm();
 
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+    const [allMenuKeys, setAllMenuKeys] = useState<React.Key[]>([]);
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -96,6 +120,32 @@ export const TenantConfig: React.FC = () => {
         console.log('onExpand', expandedKeysValue);
         setExpandedKeys(expandedKeysValue);
         setAutoExpandParent(false);
+    };
+
+    const menusOptions = [
+        {label: '展开/折叠', value: 'expanded'},
+        {label: '全选/全不选', value: 'selectAll'},
+    ];
+
+    const onMenusOptions: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+        console.log('checked = ', checkedValues);
+        if (checkedValues.length == 0) {
+            setExpandedKeys([]);
+            setCheckedKeys([]);
+            return
+        }
+        checkedValues.map(value => {
+            switch (value) {
+                case 'expanded':
+                    setExpandedKeys(allMenuKeys);
+                    break;
+                case 'selectAll':
+                    setCheckedKeys(allMenuKeys);
+                    break
+
+            }
+        })
+
     };
 
     const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
@@ -107,6 +157,10 @@ export const TenantConfig: React.FC = () => {
         console.log('onSelect', info);
         setSelectedKeys(selectedKeysValue);
     };
+
+    useEffect(() => {
+        setAllMenuKeys(extractKeys(menuTree));
+    }, [menuTree]);
 
     /**
      * 打开模态组
@@ -139,7 +193,6 @@ export const TenantConfig: React.FC = () => {
     }
 
 
-
     return (<>
         <PageList
             // ref={pageListRef}
@@ -161,7 +214,7 @@ export const TenantConfig: React.FC = () => {
         />
 
         <Modal
-            title={isAdded ? "新增用户" : "修改用户"}
+            title={isAdded ? "新增配置" : "修改配置"}
             className="ant-modal-header"
             open={isModalOpen}
             onCancel={() => closeModal()}
@@ -205,19 +258,33 @@ export const TenantConfig: React.FC = () => {
                     required={true}
                     hasFeedback
                 >
-                    <Tree
-                        checkable
-                        onExpand={onExpand}
-                        expandedKeys={expandedKeys}
-                        autoExpandParent={autoExpandParent}
-                        onCheck={onCheck}
-                        checkedKeys={checkedKeys}
-                        onSelect={onSelect}
-                        selectedKeys={selectedKeys}
-                        treeData={menuTree}
-                    />
+                    <div className="menu-list">
+                        <Checkbox.Group options={menusOptions} onChange={onMenusOptions}/>
+                        <Tree
+                            className="menu-tree"
+                            checkable
+                            onExpand={onExpand}
+                            expandedKeys={expandedKeys}
+                            autoExpandParent={autoExpandParent}
+                            onCheck={onCheck}
+                            checkedKeys={checkedKeys}
+                            onSelect={onSelect}
+                            selectedKeys={selectedKeys}
+                            treeData={menuTree}
+                        />
+                    </div>
                 </Form.Item>
-
+                <Form.Item
+                    label="备注"
+                    name="remark"
+                    key="remark"
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                    hasFeedback
+                >
+                    <TextArea className="remark" showCount maxLength={500}/>
+                </Form.Item>
             </Form>
         </Modal>
     </>)

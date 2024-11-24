@@ -23,7 +23,7 @@ import {TenantInfoModel} from "@/model/tenant";
 import {getTenantListApi} from "@/apis/tenant";
 import {SearchInput} from "@components/List/pageParams";
 
-export const Tenant: React.FC = () => {
+export const Manage: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
