@@ -16,7 +16,7 @@
 
 import React, {useEffect, useState} from "react";
 import "./index.scss"
-import {Button, Checkbox, Col, Divider, Form, Input, message, Row} from "antd";
+import {Button, Checkbox, Divider, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
@@ -71,12 +71,8 @@ const Login: React.FC = () => {
 
     return (
         <>
-            <Row className="login-container" style={{height: '100vh'}}>
-                {/* 左侧背景部分 */}
-                <Col span={18} className="login-bg"/>
-
-                {/* 右侧表单部分 */}
-                <Col span={6} className="login-form-wrapper">
+            <div className="container">
+                <div className="login-container">
                     <Form className="login-form"
                           name="login"
                           initialValues={{remember: true}}
@@ -107,8 +103,8 @@ const Login: React.FC = () => {
                             </Button>
                         </Form.Item>
                     </Form>
-                </Col>
-            </Row>
+                </div>
+            </div>
         </>
     )
 }

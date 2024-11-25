@@ -18,7 +18,6 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id               BIGINT PRIMARY KEY    NOT NULL,
-    tenant_config_id BIGINT                NOT NULL,
     tenant_code      VARCHAR(64)           NOT NULL,
     tenant_name      VARCHAR(64)           NOT NULL,
     tenant_type      VARCHAR(12)           NOT NULL,
@@ -28,6 +27,7 @@ CREATE TABLE tenant_info
     contact_info     VARCHAR(20)           NOT NULL,
     start_time       TIMESTAMP,
     end_time         TIMESTAMP,
+    is_enabled BOOLEAN DEFAULT TRUE NOT NULL,
     is_deleted       BOOLEAN DEFAULT FALSE NOT NULL,
     create_at        TIMESTAMP             NOT NULL,
     create_by        VARCHAR(64)           NOT NULL,
@@ -39,7 +39,6 @@ CREATE TABLE tenant_info
 
 COMMENT ON TABLE tenant_info IS '租户表';
 COMMENT ON COLUMN tenant_info.id IS '主键id';
-COMMENT ON COLUMN tenant_info.tenant_config_id IS '租户配置id';
 COMMENT ON COLUMN tenant_info.tenant_code IS '租户编码';
 COMMENT ON COLUMN tenant_info.tenant_name IS '租户名称';
 COMMENT ON COLUMN tenant_info.tenant_type IS '租户类型字典项';
@@ -49,51 +48,36 @@ COMMENT ON COLUMN tenant_info.contact_person IS '联系人';
 COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
 COMMENT ON COLUMN tenant_info.start_time IS '开始时间';
 COMMENT ON COLUMN tenant_info.end_time IS '结束时间';
+COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.create_at IS '创建时间';
 COMMENT ON COLUMN tenant_info.create_by IS '创建人';
 COMMENT ON COLUMN tenant_info.update_at IS '更新时间';
 COMMENT ON COLUMN tenant_info.update_by IS '更新人';
 
-CREATE INDEX idx_tenant_config_id on tenant_info (tenant_config_id);
-COMMENT ON INDEX idx_tenant_config_id IS '租户配置id';
+
 -- 内置租户
-INSERT INTO tenant_info(id, tenant_config_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
+INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                     contact_info, create_at,
                     create_by, update_at, update_by)
-VALUES (1, 1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
+VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin');
 
-
--- 租户配置表
-DROP TABLE IF EXISTS tenant_config;
-CREATE TABLE tenant_config
+-- 租户权限
+DROP TABLE IF EXISTS tenant_has_permission;
+CREATE TABLE tenant_has_permission
 (
-    id         BIGINT                NOT NULL PRIMARY KEY,
-    name       VARCHAR(128)          NOT NULL,
-    remark     VARCHAR(512),
-    is_enabled BOOLEAN DEFAULT FALSE NOT NULL,
-    create_at  TIMESTAMP             NOT NULL,
-    create_by  VARCHAR(64)           NOT NULL,
-    update_at  TIMESTAMP             NOT NULL,
-    update_by  VARCHAR(64)           NOT NULL
-);
-
--- 租户配置权限
-DROP TABLE IF EXISTS tenant_config_has_permission;
-CREATE TABLE tenant_config_has_permission
-(
-    tenant_config_id BIGINT      NOT NULL,
+    tenant_id BIGINT NOT NULL,
     permission_id    BIGINT      NOT NULL,
     create_at        TIMESTAMP   NOT NULL,
     create_by        VARCHAR(64) NOT NULL,
-    PRIMARY KEY (tenant_config_id, permission_id)
+    PRIMARY KEY (tenant_id, permission_id)
 );
-COMMENT ON TABLE tenant_config_has_permission IS '租户配置的权限关系表';
-COMMENT ON COLUMN tenant_config_has_permission.tenant_config_id IS '租户配置id';
-COMMENT ON COLUMN tenant_config_has_permission.permission_id IS '权限id';
-COMMENT ON COLUMN tenant_config_has_permission.create_at IS '创建时间';
-COMMENT ON COLUMN tenant_config_has_permission.create_by IS '创建人';
+COMMENT ON TABLE tenant_has_permission IS '租户权限关系表';
+COMMENT ON COLUMN tenant_has_permission.tenant_id IS '租户id';
+COMMENT ON COLUMN tenant_has_permission.permission_id IS '权限id';
+COMMENT ON COLUMN tenant_has_permission.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_has_permission.create_by IS '创建人';
 
 
 DROP TABLE IF EXISTS users;
@@ -274,15 +258,8 @@ COMMENT ON COLUMN permissions.update_by IS '更新人';
 INSERT INTO permissions (id, parent_id, tenant_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified,
                          is_visible, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', null, '', false, 'C', false, true, false,
-        now(), 'admin', now(), 'admin'),
-       (11, 1, 1, '租户管理', '/tenant/manager', 1, 'i-navicon-zhgl', '/tenant/manager', 'tenant/manage/Manage', '',
-        false, 'C', false,
-        true, false,
-        now(), 'admin', now(), 'admin'),
-       (12, 1, 1, '配置管理', '/tenant/config', 2, 'i-peizhiguanli', '/tenant/config', 'tenant/config/Config', '',
-        false, 'C', false,
-        true, false,
+VALUES (1, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', 'tenant/Tenant', '', false, 'C', false, true,
+        false,
         now(), 'admin', now(), 'admin'),
        (2, -1, 1, '系统设置', 'system', 3, 'i-setting', '/system',
         null, '', false, 'M', false, true, false, now(), 'admin', now(), 'admin'),
@@ -315,7 +292,6 @@ COMMENT ON COLUMN role_has_permission.create_by IS '创建人';
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin'),
        (1, 2, now(), 'admin'),
-       (1, 11, now(), 'admin'),
        (1, 21, now(), 'admin'),
        (1, 12, now(), 'admin'),
        (1, 22, now(), 'admin'),

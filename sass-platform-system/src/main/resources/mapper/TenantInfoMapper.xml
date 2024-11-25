@@ -25,7 +25,7 @@
         <result column="icon" property="icon" jdbcType="VARCHAR"/>
         <result column="contact_person" property="contactPerson" jdbcType="VARCHAR"/>
         <result column="contact_info" property="contactInfo" jdbcType="VARCHAR"/>
-        <result column="is_deleted" property="isDeleted" jdbcType="BOOLEAN"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
     </resultMap>
 
     <sql id="TableName">
@@ -41,6 +41,7 @@
         icon,
         contact_person,
         contact_info,
+        is_enabled,
         is_deleted,
         create_at,
         update_at,
@@ -64,6 +65,7 @@
             #{icon},
             #{contactPerson},
             #{contactInfo},
+            #{isEnabled},
             #{isDeleted},
             #{createAt},
             #{updateAt},
@@ -89,6 +91,8 @@
                 #{entity.icon},
                 #{entity.contactPerson},
                 #{entity.contactInfo},
+                #{entity.isEnabled},
+                #{entity.isDeleted},
                 #{entity.createAt},
                 #{entity.updateAt},
                 #{entity.createBy},
@@ -109,6 +113,9 @@
         </if>
         <if test="contactInfo != null and contactInfo != ''">
             contact_info = #{contactInfo},
+        </if>
+        <if test="isEnabled != null">
+            is_enabled = #{isEnabled},
         </if>
         remark = #{remark},
         update_at = #{updateAt},

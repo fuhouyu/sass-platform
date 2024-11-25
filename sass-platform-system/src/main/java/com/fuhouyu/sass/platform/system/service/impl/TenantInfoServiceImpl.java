@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
+import com.fuhouyu.sass.platform.system.service.TenantPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final TenantInfoMapper tenantInfoMapper;
 
+    private final TenantPermissionService tenantPermissionService;
+
     private final SnowflakeIdWorker snowflakeIdWorker;
 
 
@@ -62,16 +65,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         TenantInfo entity = TENANTS_ASSEMBLER.toEntity(tenantInfoDTO);
         entity.setId(id);
         tenantInfoMapper.insert(entity);
+        this.tenantPermissionService.saveTenantPermission(id, tenantInfoDTO.getPermissionIds());
         return id;
-    }
-
-    @Override
-    public void saveBatch(List<TenantInfoDTO> dtoList) {
-        List<TenantInfo> rolesList = dtoList.stream().map(dto -> {
-            dto.setId(snowflakeIdWorker.nextId());
-            return TENANTS_ASSEMBLER.toEntity(dto);
-        }).toList();
-        this.tenantInfoMapper.insertBatch(rolesList);
     }
 
     @Override
@@ -82,6 +77,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "租户: %s 不存在", tenantInfoDTO.getTenantCode());
         }
         this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
+        this.tenantPermissionService.saveTenantPermission(tenantInfoDTO.getId(), tenantInfoDTO.getPermissionIds());
     }
 
     @Override
@@ -91,12 +87,20 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public int removeByIds(Collection<Long> ids) {
-        return this.tenantInfoMapper.deleteByIds(ids);
+        int count = this.tenantInfoMapper.deleteByIds(ids);
+        this.tenantPermissionService.deleteTenantPermissions(ids);
+        return count;
     }
 
     @Override
     public TenantInfoDTO findById(Long id) {
-        return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryById(id));
+        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        if (Objects.isNull(tenantInfo)) {
+            return null;
+        }
+        TenantInfoDTO result = TENANTS_ASSEMBLER.toDTO(tenantInfo);
+        result.setPermissionIds(this.tenantPermissionService.findPermissionIdByTenantId(id));
+        return result;
     }
 
     @Override

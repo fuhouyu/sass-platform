@@ -57,7 +57,6 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     };
 
     useEffect(() => {
-        console.log(1)
         setLoading(true);
         pageRequestApi(pageQuery)
             .then((res: PageResult<object>) => {

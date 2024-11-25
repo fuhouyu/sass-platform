@@ -13,7 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-export {default} from './Login';
- 
+import java.io.Serial;
+
+/**
+ * <p>
+ * 租户权限dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/24 19:41
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TenantPermission extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1241236412641233112L;
+
+    /**
+     * 租户id
+     */
+    private Long tenantId;
+
+    /**
+     * 权限id
+     */
+    private Long permissionId;
+
+}
