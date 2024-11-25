@@ -20,43 +20,43 @@ import java.util.List;
 
 /**
  * <p>
- * 租户配置接口
+ * 租户权限接口
  * </p>
  *
  * @author fuhouyu
  * @since 2024/11/24 19:46
  */
-public interface TenantConfigPermissionService {
+public interface TenantPermissionService {
 
     /**
      * 保存关联关系
      *
-     * @param configId      配置id
+     * @param tenantId      租户id
      * @param permissionIds 权限id集合
      */
-    void saveConfigPermission(Long configId,
+    void saveTenantPermission(Long tenantId,
                               Collection<Long> permissionIds);
 
     /**
      * 删除关联关系
      *
-     * @param configId      配置id
+     * @param tenantId      租户id
      * @param permissionIds 权限id集合
      */
-    void deleteConfigPermission(Long configId, Collection<Long> permissionIds);
+    void deleteTenantPermission(Long tenantId, Collection<Long> permissionIds);
 
     /**
-     * 通过配置id批量删除
+     * 通过租户id批量删除
      *
-     * @param configIds 配置id
+     * @param tenantIds 租户id
      */
-    void deleteConfigPermissions(Collection<Long> configIds);
+    void deleteTenantPermissions(Collection<Long> tenantIds);
 
     /**
-     * 通过配置id查询权限id
+     * 通过租户id查询权限id
      *
-     * @param configId 配置id
+     * @param tenantId 租户id
      * @return 权限id集合
      */
-    List<Long> findPermissionIdByConfigId(Long configId);
+    List<Long> findPermissionIdByTenantId(Long tenantId);
 }

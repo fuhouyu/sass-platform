@@ -15,20 +15,20 @@
   limitations under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantConfigPermissionMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantConfigPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
-        <result column="tenant_config_id" property="tenantConfigId" jdbcType="VARCHAR"/>
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
         <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
         <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
-        tenant_config_has_permission
+        tenant_has_permission
     </sql>
 
     <sql id="AllColumns">
-        tenant_config_id,
+        tenant_id,
         permission_id,
         create_at,
         create_by
@@ -41,9 +41,9 @@
             <include refid="AllColumns"/>
         </trim>
         VALUES
-        <foreach collection="tenantConfigPermissions" separator="," item="entity">
+        <foreach collection="tenantPermissions" separator="," item="entity">
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            #{entity.tenantConfigId},
+            #{entity.tenantId},
             #{entity.permissionId},
             #{entity.createAt},
             #{entity.createBy},
@@ -55,7 +55,7 @@
         DELETE FROM
         <include refid="TableName">
         </include>
-        WHERE tenant_config_id = #{tenantConfigId}
+        WHERE tenant_id = #{tenantId}
         <if test="permissionIds != null and permissionIds.size() > 0">
             AND permission_id IN
             <foreach collection="permissionIds" open="(" close=")" item="permissionId" separator=",">
@@ -64,20 +64,20 @@
         </if>
     </delete>
 
-    <delete id="deleteConfigPermissions">
+    <delete id="deleteTenantPermissions">
         DELETE
             FROM
         <include refid="TableName">
         </include>
-        WHERE tenant_config_id IN
+        WHERE tenant_id IN
         <foreach collection="configIds" open="(" close=")" separator="," item="configId">
             #{configId}
         </foreach>
     </delete>
 
-    <select id="queryPermissionIdByConfigId" resultType="java.lang.Long">
+    <select id="queryPermissionIdByTenantId" resultType="java.lang.Long">
         SELECT permission_id
-        FROM tenant_config_has_permission
-        WHERE tenant_config_id = #{configId}
+        FROM tenant_has_permission
+        WHERE tenant_id = #{configId}
     </select>
 </mapper>

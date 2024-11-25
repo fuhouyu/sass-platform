@@ -36,19 +36,6 @@ export interface TenantInfo extends BaseModel {
     contactPerson?: string;
     // 联系手机号
     contactInfo?: string;
-}
-
-
-/**
- * 租户配置
- */
-export interface TenantConfig extends BaseModel {
-    // 配置id
-    id?: string;
-    // 配置名称
-    name?: string;
-    // 备注
-    remark?: string;
     // 是否启用
     isEnabled?: boolean;
     // 权限id集合

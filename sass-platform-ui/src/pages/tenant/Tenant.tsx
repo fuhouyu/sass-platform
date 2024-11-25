@@ -17,21 +17,15 @@
 
 import React, {Key, useRef, useState} from "react";
 import {Button, Checkbox, Form, GetProp, Input, message, Modal, Radio, Space, TableColumnsType, Tag, Tree} from "antd";
+import {TenantInfo} from "@/model/tenant";
 import {IconFont, PageList} from "@/components";
 import {PageListHandler, SearchInput} from "@components/List/pageParams";
-import {
-    getTenantConfigApi,
-    getTenantConfigListApi,
-    removerTenantConfigApi,
-    saveTenantConfigApi,
-    updateTenantConfigApi
-} from "@/apis/tenantConfig";
+import {getTenantInfoApi, getTenantListApi, removeTenantApi, saveTenantApi, updateTenantApi} from "@/apis/tenant";
 import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
-import './index.scss'
-import TextArea from "antd/es/input/TextArea";
 import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
-import {TenantConfig} from "@/model/tenant";
+import TextArea from "antd/es/input/TextArea";
+import './index.scss'
 
 /**
  * 转换映射关系
@@ -71,13 +65,30 @@ const parseMenuKey = (trees: MenuTreeType[], ids?: Key[]): Key[] => {
     return keys;
 }
 
-const Config: React.FC = () => {
+const Tenant: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
-            title: '配置名称',
-            dataIndex: 'name',
+            title: '租户编码',
+            dataIndex: 'tenantCode',
             showSorterTooltip: {target: 'full-header'},
+        },
+        {
+            title: '租户名称',
+            dataIndex: 'tenantName',
+            defaultSortOrder: 'descend',
+        },
+        {
+            title: '租户类型',
+            dataIndex: 'tenantType',
+        },
+        {
+            title: '联系人',
+            dataIndex: 'contactPerson',
+        },
+        {
+            title: '联系方式',
+            dataIndex: 'contactInfo',
         },
         {
             title: '是否启用',
@@ -116,7 +127,7 @@ const Config: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, tenantConfig: TenantConfig) => {
+            render: (_, tenantConfig: TenantInfo) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => {
@@ -127,6 +138,7 @@ const Config: React.FC = () => {
             }
         }
     ];
+
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -179,18 +191,18 @@ const Config: React.FC = () => {
 
     /**
      * 打开模态组
-     * @param configId 配置id
+     * @param tenantId 租户id
      * @param isAdd 是否添加用户
      */
-    const openModal = (configId?: string) => {
+    const openModal = (tenantId?: string) => {
         setIsModalOpen(true);
-        setUpdateId(configId);
-        if (!configId) {
+        setUpdateId(tenantId);
+        if (!tenantId) {
             return
         }
-        // 修改获取配置数据
-        getTenantConfigApi(configId!)
-            .then((res: TenantConfig) => {
+        // 修改获取租户数据
+        getTenantInfoApi(tenantId!)
+            .then((res: TenantInfo) => {
                 form.setFieldsValue({...res})
                 if (res.permissionIds) {
                     setCheckedKeys(parseMenuKey(menuTree, res.permissionIds))
@@ -221,10 +233,10 @@ const Config: React.FC = () => {
     }
 
     /**
-     * 处理租户配置
-     * @param value 租户配置
+     * 处理租户租户
+     * @param value 租户租户
      */
-    const handleTenantConfig = (value: TenantConfig) => {
+    const handleTenantConfig = (value: TenantInfo) => {
         setIsModalButtonLoading(true);
         const ids: string[] = [];
         checkedKeys.forEach(checkedKey => {
@@ -232,14 +244,14 @@ const Config: React.FC = () => {
             if (id) ids.push(id);
         });
         value.permissionIds = ids;
-        const promise = updateId ? updateTenantConfigApi(updateId, value) : saveTenantConfigApi(value);
+        const promise = updateId ? updateTenantApi(updateId, value) : saveTenantApi(value);
         promise.then(() => {
             setIsModalOpen(false);
             cleanFormValues();
             message.success("操作成功").then();
             pageListRef.current?.refresh();
         })
-            .catch((error) => {
+            .catch((error: Error) => {
                 message.error(error.message).then();
             })
             .finally(() => {
@@ -247,66 +259,73 @@ const Config: React.FC = () => {
             })
     }
 
-
     return (<>
         <PageList
             ref={pageListRef}
             searchComments={[
                 {
-                    name: '配置名称',
-                    key: 'keyword',
+                    name: '租户名称',
+                    key: 'tenantName',
                     comment: SearchInput,
-                    placeholder: '配置名称',
+                    placeholder: '租户名称',
                 }
             ]}
-            listName='租户配置'
+            listName='租户'
             columns={columns}
-            pageRequestApi={getTenantConfigListApi}
+            pageRequestApi={getTenantListApi}
             addCallback={() => {
                 openModal()
             }}
-            deleteCallback={(ids: string[]) => removerTenantConfigApi(ids)}
+            deleteCallback={(ids: string[]) => removeTenantApi(ids)}
         />
 
         <Modal
-            title={updateId ? "修改配置" : "新增配置"}
+            title={updateId ? "修改租户" : "新增租户"}
             className="ant-modal-header"
             open={isModalOpen}
             onCancel={() => closeModal()}
-            width={600}
             footer={[]}
+            width={600}
             closeIcon={<IconFont type="i-Close" style={{
-                fontSize: '24px',
+                fontSize: '1.5rem',
             }}/>}
+            destroyOnClose
         >
             <Form
                 name="basic"
                 form={form}
-                style={{maxWidth: 600}}
+                labelCol={{span: 4}}
                 autoComplete="off"
                 onFinish={handleTenantConfig}
-
                 initialValues={{isEnabled: isEnabled}}
             >
                 <Form.Item
-                    label="配置名称"
-                    name="name"
+                    label="租户名称"
+                    name="tenantName"
                     validateTrigger="onBlur"
-                    key="name"
-                    labelCol={{span: 4}}
-                    wrapperCol={{span: 20}}
+                    key="tenantName"
                     colon={false}
                     required={true}
                     hasFeedback
                     rules={[{required: true, message: '请输入${label}'}]}
                 >
-                    <Input placeholder='请输入配置名称' maxLength={20}/>
+                    <Input placeholder='请输入租户名称' maxLength={20}/>
                 </Form.Item>
                 <Form.Item
-                    label="权限列表"
+                    label="租户编码"
+                    name="tenantCode"
+                    validateTrigger="onBlur"
+                    key="tenantCode"
+                    colon={false}
+                    required={true}
+                    hasFeedback={updateId === null}
+                    rules={[{required: true, message: '请输入${label}'}]}
+                >
+                    <Input disabled={updateId != null} placeholder='请输入租户编码' maxLength={20}/>
+                </Form.Item>
+                <Form.Item
+                    label="租户权限"
                     key="permissionList"
-                    labelCol={{span: 4}}
-                    wrapperCol={{span: 20}}
                     colon={false}
                     required={true}
                 >
@@ -330,11 +349,34 @@ const Config: React.FC = () => {
                     </div>
                 </Form.Item>
                 <Form.Item
+                    label="联系人"
+                    name="contactPerson"
+                    validateTrigger="onBlur"
+                    key="contactPerson"
+                    colon={false}
+                    required={true}
+
+                    hasFeedback
+                    rules={[{required: true, message: '请输入${label}'}]}
+                >
+                    <Input placeholder='请输入联系人' maxLength={20}/>
+                </Form.Item>
+                <Form.Item
+                    label="联系方式"
+                    name="contactInfo"
+                    validateTrigger="onBlur"
+                    key="contactInfo"
+                    colon={false}
+                    required={true}
+                    hasFeedback
+                    rules={[{required: true, message: '请输入${label}'}]}
+                >
+                    <Input placeholder='请输入联系方式' maxLength={20}/>
+                </Form.Item>
+                <Form.Item
                     label="状态"
                     name="isEnabled"
                     key="isEnabled"
-                    labelCol={{span: 4}}
-                    wrapperCol={{span: 20}}
                     colon={false}
                     hasFeedback
                 >
@@ -349,8 +391,6 @@ const Config: React.FC = () => {
                     label="备注"
                     name="remark"
                     key="remark"
-                    labelCol={{span: 4}}
-                    wrapperCol={{span: 20}}
                     colon={false}
                 >
                     <TextArea className="remark" showCount maxLength={500}/>
@@ -373,4 +413,4 @@ const Config: React.FC = () => {
     </>)
 }
 
-export default Config;
+export default Tenant;

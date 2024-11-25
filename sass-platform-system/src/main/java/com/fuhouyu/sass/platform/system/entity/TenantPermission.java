@@ -13,17 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.entity;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantConfigDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 
 /**
  * <p>
- * 租户配置接口
+ * 租户权限dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/19 21:35
+ * @since 2024/11/24 19:41
  */
-public interface TenantConfigService extends BaseService<Long, TenantConfigDTO> {
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TenantPermission extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1241236412641233112L;
+
+    /**
+     * 租户id
+     */
+    private Long tenantId;
+
+    /**
+     * 权限id
+     */
+    private Long permissionId;
+
 }

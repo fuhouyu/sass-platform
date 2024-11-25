@@ -23,13 +23,13 @@ import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/v1/tenant")
-@Tag(name = "租户配置 web接口层")
+@Tag(name = "租户 web接口层")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -49,6 +49,34 @@ public class TenantInfoController {
 
     private final TenantInfoService tenantInfoService;
 
+    /**
+     * 保存租户
+     *
+     * @param tenantInfoDTO 租户的dto对象
+     * @return 主键id
+     */
+    @PostMapping
+    @Operation(summary = "保存租户")
+    public BaseResponse<Long> saveTenant(@RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
+        return ResponseHelper.success(tenantInfoService.save(tenantInfoDTO));
+    }
+
+    /**
+     * 修改租户
+     *
+     * @param tenantInfoDTO 租户的dto对象
+     * @return 主键id
+     */
+    @PutMapping("/{id}")
+    @Operation(summary = "修改租户")
+    public BaseResponse<Long> editTenant(
+            @PathVariable("id") Long id,
+            @RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
+        tenantInfoDTO.setId(id);
+        this.tenantInfoService.edit(tenantInfoDTO);
+        return ResponseHelper.success();
+    }
+    
     /**
      * 租户列表
      *
@@ -72,4 +100,20 @@ public class TenantInfoController {
     public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(tenantInfoService.findById(id));
     }
+
+    /**
+     * 通过id删除租户
+     *
+     * @param ids 租户ids
+     * @return true删除成功
+     */
+    @DeleteMapping
+    @Operation(summary = "通过id集合删除租户")
+    public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的租户")
+                                                  List<Long> ids) {
+        int count = this.tenantInfoService.removeByIds(ids);
+        return ResponseHelper.success(count > 0);
+    }
+    
+    
 }

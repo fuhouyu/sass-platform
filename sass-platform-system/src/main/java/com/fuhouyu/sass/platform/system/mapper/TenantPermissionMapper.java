@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.entity.TenantConfigPermission;
+import com.fuhouyu.sass.platform.system.entity.TenantPermission;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -29,22 +29,22 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/24 19:49
  */
-public interface TenantConfigPermissionMapper {
+public interface TenantPermissionMapper {
 
     /**
      * 批量保存
      *
-     * @param tenantConfigPermissions 配置关系和权限的集合
+     * @param tenantPermissions 配置关系和权限的集合
      */
-    void insertBatch(@Param("tenantConfigPermissions") Collection<TenantConfigPermission> tenantConfigPermissions);
+    void insertBatch(@Param("tenantPermissions") Collection<TenantPermission> tenantPermissions);
 
     /**
      * 通过配置id和权限id删除
      *
-     * @param tenantConfigId 租户配置id
+     * @param tenantId 租户配置id
      * @param permissionIds  权限id集合
      */
-    void delete(@Param(("tenantConfigId")) Long tenantConfigId,
+    void delete(@Param(("tenantId")) Long tenantId,
                 @Param("permissionIds") Collection<Long> permissionIds);
 
     /**
@@ -52,7 +52,7 @@ public interface TenantConfigPermissionMapper {
      *
      * @param configIds 配置id集合
      */
-    void deleteConfigPermissions(@Param("configIds") Collection<Long> configIds);
+    void deleteTenantPermissions(@Param("configIds") Collection<Long> configIds);
 
     /**
      * 通过配置id查询出权限id集合
@@ -60,5 +60,5 @@ public interface TenantConfigPermissionMapper {
      * @param configId 配置id
      * @return 权限id集合
      */
-    List<Long> queryPermissionIdByConfigId(@Param("configId") Long configId);
+    List<Long> queryPermissionIdByTenantId(@Param("configId") Long configId);
 }

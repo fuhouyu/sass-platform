@@ -17,8 +17,12 @@ package com.fuhouyu.sass.platform.system.dto.tenant;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * <p>
@@ -37,13 +41,16 @@ public class TenantInfoDTO extends BaseDTO {
     private Long id;
 
     @Schema(name = "tenantCode", description = "租户编码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "租户编码未输入")
     private String tenantCode;
 
     @Schema(name = "tenantName", description = "租户名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "租户名称未输入")
     private String tenantName;
 
     @Schema(name = "tenantType", description = "租户类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String tenantType;
+    // FIXME 先写死默认值
+    private String tenantType = "COMPANY";
 
     @Schema(name = "remark", description = "备注")
     private String remark;
@@ -57,4 +64,10 @@ public class TenantInfoDTO extends BaseDTO {
     @Schema(name = "contactInfo", description = "联系方式")
     private String contactInfo;
 
+    @Schema(name = "isEnabled", description = "状态：true 启用")
+    private Boolean isEnabled;
+
+    @Schema(name = "permissionIds", description = "权限id集合")
+    @NotEmpty(message = "权限未选择")
+    private List<Long> permissionIds;
 }

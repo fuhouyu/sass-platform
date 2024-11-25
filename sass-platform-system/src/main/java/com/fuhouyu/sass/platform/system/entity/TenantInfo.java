@@ -79,7 +79,8 @@ public class TenantInfo extends BaseEntity {
     private String contactInfo;
 
     /**
-     * 删除标记
+     * 状态：true 启用
      */
-    private Boolean isDeleted;
+    private Boolean isEnabled;
+
 }
