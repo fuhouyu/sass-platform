@@ -17,13 +17,13 @@
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
 import React, {lazy, Suspense} from "react";
-import Login from "@/pages/login";
 import {Layout} from "@/layouts/layout";
 import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {PersonCenter} from "@/pages/userinfo/PersonCenter";
+import Login from "@/pages/login/Login";
 
 export type RouterType = {
     id: string;

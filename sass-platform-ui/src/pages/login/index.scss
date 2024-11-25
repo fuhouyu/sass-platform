@@ -15,57 +15,29 @@
  */
 
 /* 左侧背景样式 */
-.login-bg {
-  background: url('img/background.png') center/cover no-repeat;
-  position: relative;
-}
-
-.login-bg-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.login-bg-content h1 {
-  font-size: 3rem;
-  color: #fff;
-}
-
-/* 右侧表单样式 */
-.login-form-wrapper {
+.container {
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #ffffff;
+  background: url('images/background.webp') center/cover no-repeat;
+  opacity: 90%;
 }
 
 .login-form {
-  width: 100%;
-  max-width: 20rem;
-  padding: 1.2rem;
+  width: 25rem;
+  padding: 1.5625rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background: #fff;
-
+  // 标题头
   .title {
     text-align: center;
+    margin: 0 auto 1.875rem auto;
   }
 }
 
-.login-form h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
 
-.login-form-button {
-  width: 100%;
-}
-
-.icon-user, .icon-lock {
-  color: rgba(0, 0, 0, 0.25);
-}
 
 
 
