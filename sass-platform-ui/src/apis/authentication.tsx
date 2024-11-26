@@ -16,8 +16,9 @@
 
 import {request} from "@/utils";
 import {UserAuthentication, UserToken} from "@/model/authentication";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 
-const baseAuthUrl = '/v1/auth'
+const baseAuthUrl = BaseUrlConstant.AUTHENTICATION_API_PREFIX
 
 
 /**

@@ -63,7 +63,7 @@ public class UserController {
      * @return 用户详情
      */
     @Operation(summary = "用户详情")
-    @GetMapping("/info")
+    @GetMapping("/me")
     public BaseResponse<UserDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
         UserDTO userDTO = this.userService.findById(userId);
@@ -77,7 +77,7 @@ public class UserController {
      * @return 用户详情dto对象
      */
     @Operation(summary = "用户详情")
-    @GetMapping("/info/{id}")
+    @GetMapping("/{id}")
     public BaseResponse<UserDTO> userinfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.userService.findById(id));
     }
@@ -88,7 +88,7 @@ public class UserController {
      * @param userDTO 用户dto对象
      * @return restResult
      */
-    @PutMapping("/info")
+    @PutMapping
     @Operation(summary = "修改当前的用户详情")
     public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserDTO userDTO) {
         userDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
@@ -103,7 +103,7 @@ public class UserController {
      * @param id      主键id
      * @return restResult
      */
-    @PutMapping("/info/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "修改当前的用户详情")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
@@ -119,7 +119,7 @@ public class UserController {
      * @param userPageQueryDTO 用户分页查询对象
      * @return 用户列表集合
      */
-    @GetMapping("/list")
+    @GetMapping("/page")
     @Operation(summary = "获取用户列表")
     public BaseResponse<PageResultDTO<UserDTO>> pageList(UserPageQueryDTO userPageQueryDTO) {
         return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
@@ -162,7 +162,7 @@ public class UserController {
      * @return 响应
      */
     @Operation(summary = "保存用户信息")
-    @PostMapping("/info")
+    @PostMapping
     public BaseResponse<Void> saveUser(@RequestBody SaveUserDTO userDTO) {
         this.userAccountService.register(userDTO);
         return ResponseHelper.success();

@@ -14,46 +14,35 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base";
 
 /**
- * 用户详情
+ * api常量
  */
-export interface Userinfo extends BaseModel {
+export class BaseUrlConstant {
+
     /**
-     * 头像地址
+     * 版本
      */
-    avatar?: string;
+    static readonly VERSION: string = '/v1';
+
     /**
-     * 邮件地址
+     * 用户api
      */
-    email?: string;
+    static readonly USER_API_PREFIX = `${BaseUrlConstant.VERSION}/user`;
+
     /**
-     * 性别
+     *认证api
      */
-    gender?: string;
+    static readonly AUTHENTICATION_API_PREFIX = `${BaseUrlConstant.VERSION}/auth`;
+
     /**
-     * 主键id
+     * 权限api
      */
-    id?: string;
+    static readonly PERMISSION_API_PREFIX = `${BaseUrlConstant.VERSION}/permission`;
+
     /**
-     * 登录时间
+     * 租户api
      */
-    loginDate?: string;
-    /**
-     * 登录ip
-     */
-    loginIp?: string;
-    /**
-     * 真实姓名
-     */
-    realName?: string;
-    /**
-     * 昵称
-     */
-    nickname?: string;
-    /**
-     * 用户名
-     */
-    username?: string;
+    static readonly TENANT_API_PREFIX = `${BaseUrlConstant.VERSION}/tenant`;
+
 }

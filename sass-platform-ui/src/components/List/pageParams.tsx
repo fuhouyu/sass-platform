@@ -19,6 +19,7 @@ import React from "react";
 import {Input, Select, TableColumnsType} from "antd";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {DefaultOptionType} from "rc-select/lib/Select";
+import {AnyObject} from "antd/es/_util/type";
 
 /**
  * 搜索组件props
@@ -66,7 +67,7 @@ export interface PageListParams {
      * 分页查询api接口
      * @param pageQuery 查询api
      */
-    pageRequestApi: <R extends object>(pageQuery: PageQuery) => Promise<PageResult<R>>
+    pageRequestApi: (pageQuery: PageQuery) => Promise<PageResult<AnyObject>>
     /**
      *  新增数据的回调
      */
