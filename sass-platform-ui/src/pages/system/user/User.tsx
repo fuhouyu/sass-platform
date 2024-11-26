@@ -17,19 +17,12 @@
 
 import React, {useRef, useState} from "react";
 import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType} from "antd";
-import {
-    editUserinfoByIdApi,
-    getUserinfoByIdApi,
-    getUserListApi,
-    removeUserApi,
-    saveUserInfoApi,
-    validUsernameExistsApi
-} from "@/apis/user";
 import {IconFont, PageList} from "@/components";
 import './index.scss'
-import {UserModel} from "@/model/user";
+import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
 import {PageListHandler, SearchSelection} from "@components/List/pageParams";
+import {userApi} from "@/apis/user";
 
 const User: React.FC = () => {
 
@@ -51,8 +44,8 @@ const User: React.FC = () => {
             setIsAdded(isAddUser)
             return;
         }
-        getUserinfoByIdApi(userId!)
-            .then((res: UserModel) => {
+        userApi.getInfoByIdApi(userId!)
+            .then((res: Userinfo) => {
                 form.setFieldsValue({...res})
             })
             .catch((err: Error) => {
@@ -90,17 +83,17 @@ const User: React.FC = () => {
     /**
      * 保存用户详情
      */
-    const saveUserDetail: () => Promise<void> = () => {
+    const saveUserDetail: () => Promise<string> = () => {
         const userDetail = form.getFieldsValue();
-        return saveUserInfoApi(userDetail)
+        return userApi.saveInfoApi(userDetail)
     }
 
     /**
      * 修改用户详情
      */
     const updateUserDetail: () => Promise<void> = () => {
-        const userDetail = form.getFieldsValue();
-        return editUserinfoByIdApi(userDetail)
+        const userinfo: Userinfo = form.getFieldsValue();
+        return userApi.editInfoApi(userinfo.id!, userinfo);
     }
 
     const columns: TableColumnsType = [
@@ -154,7 +147,7 @@ const User: React.FC = () => {
         {
             title: '操作',
             dataIndex: 'action',
-            render: (_, record: UserModel) => {
+            render: (_, record: Userinfo) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => openModal(record.id)}>修改</a>
@@ -171,7 +164,7 @@ const User: React.FC = () => {
                 ref={pageListRef}
                 listName='用户'
                 columns={columns}
-                pageRequestApi={getUserListApi}
+                pageRequestApi={userApi.pageInfoListApi}
                 addCallback={() => {
                     openModal(undefined, true)
                 }}
@@ -187,7 +180,7 @@ const User: React.FC = () => {
                         ]
                     }
                 ]}
-                deleteCallback={(ids: string[]) => removeUserApi(ids)}
+                deleteCallback={(ids: string[]) => userApi.deleteInfoApi(ids)}
             />
             <Modal
                 title={isAdded ? "新增用户" : "修改用户"}
@@ -235,7 +228,7 @@ const User: React.FC = () => {
                                                 if (!USERNAME_REGEX.regex.test(value)) {
                                                     return Promise.reject(new Error("用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
                                                 }
-                                                const exists: boolean = await validUsernameExistsApi(value);
+                                                const exists: boolean = await userApi.checkUsernameExistsApi(value);
                                                 if (exists) {
                                                     return Promise.reject(new Error('用户名已存在'));
                                                 }

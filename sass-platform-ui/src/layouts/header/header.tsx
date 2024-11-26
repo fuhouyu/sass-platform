@@ -22,7 +22,7 @@ import {Header as _Header} from "antd/es/layout/layout";
 import {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
-import {UserModel} from "@/model/user";
+import {Userinfo} from "@/model/user";
 import {useNavigate} from "react-router-dom";
 import type {ItemType} from "antd/es/menu/interface";
 import './index.scss'
@@ -50,7 +50,7 @@ export const Header = () => {
         dispatch(fetchUserinfo());
     }, [dispatch])
     const realName = useAppSelector((state: {
-        user: { userinfo: UserModel };
+        user: { userinfo: Userinfo };
     }) => state.user.userinfo?.realName);
 
     const navigate = useNavigate();

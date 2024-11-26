@@ -15,12 +15,13 @@
  */
 
 
-import {Permission} from "@/model/permission";
 import {request} from "@/utils";
+import {Menu} from "@/model/menu";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 
-const basePermissionUrl = '/v1/permission'
+const basePermissionUrl = BaseUrlConstant.PERMISSION_API_PREFIX;
 
-const getUserPermissionApi = (): Promise<Permission[]> => request.get(`${basePermissionUrl}/me`);
+const getUserPermissionApi = (): Promise<Menu[]> => request.get(`${basePermissionUrl}/me`);
 
 
 export {

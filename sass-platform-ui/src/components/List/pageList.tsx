@@ -23,6 +23,7 @@ import {IconFont} from "@components/Iconfont/iconfont";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
 import {PageListHandler, PageListParams} from "@components/List/pageParams";
+import {AnyObject} from "antd/es/_util/type";
 
 /**
  * 处理_转换为驼峰
@@ -43,7 +44,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
 
     const [searchValue, setSearchValue] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const [pageResult, setPageResult] = useState<PageResult<object>>();
+    const [pageResult, setPageResult] = useState<PageResult<AnyObject>>();
     const [deleteIds, setDeleteIds] = useState<React.Key[]>([]);
 
     const rowSelection: TableProps['rowSelection'] = {
@@ -59,7 +60,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     useEffect(() => {
         setLoading(true);
         pageRequestApi(pageQuery)
-            .then((res: PageResult<object>) => {
+            .then((res: PageResult<AnyObject>) => {
                 setPageResult({...res});
             })
         setLoading(false);
@@ -69,7 +70,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     useImperativeHandle(ref, () => ({
         refresh: () => {
             pageRequestApi(pageQuery)
-                .then((pageResult: PageResult<object>) => {
+                .then((pageResult: PageResult<AnyObject>) => {
                     setPageResult({...pageResult});
                 })
         },
@@ -109,14 +110,14 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
      * 删除事件
      */
     const onDeleteButtonClick = async () => {
-        try {
-            await deleteCallback(deleteIds.map(id => String(id)))
-            message.success("删除成功").then()
-        } catch {
-            message.error('删除失败').then()
-        } finally {
-            setDeleteIds([]);
-        }
+        deleteCallback(deleteIds.map(id => String(id)))
+            .then(() => {
+                message.success("删除成功").then()
+            })
+            .catch((error: Error) => {
+                message.error(error.message).then()
+            })
+        setDeleteIds([]);
         const res = await pageRequestApi(pageQuery)
         setPageResult({...res});
     }

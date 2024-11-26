@@ -16,12 +16,12 @@
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {removeToken, storeToken} from "@/utils/Token/token";
-import {UserModel,} from "@/model/user";
-import {editUserinfoApi, getUserinfoApi} from "@/apis/user";
+import {Userinfo,} from "@/model/user";
 import {UserAuthentication, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
 import {Menu} from "@/model/menu";
 import {getUserPermissionApi} from "@/apis/permission";
+import {userApi} from "@/apis/user";
 
 
 const userStore = createSlice({
@@ -41,7 +41,7 @@ const userStore = createSlice({
             storeToken(state.token)
             return state;
         },
-        storeUserinfo: (state, action: PayloadAction<UserModel>) => {
+        storeUserinfo: (state, action: PayloadAction<Userinfo>) => {
             state.userinfo = action.payload;
             return state;
         },
@@ -80,8 +80,8 @@ const fetchLogin = (loginForm: UserAuthentication) => {
  * 用户详情接口
  */
 const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: UserModel; type: `user/${string}` }) => void) => {
-        const res: UserModel = await getUserinfoApi();
+    return async (dispatch: (arg0: { payload: Userinfo; type: `user/${string}` }) => void) => {
+        const res: Userinfo = await userApi.getInfoMeApi();
         dispatch(userStore.actions.storeUserinfo(res))
     }
 }
@@ -114,10 +114,10 @@ const fetchLogout = () => {
  * 修改用户详情
  * @param editUserinfo 用户详情接口修改
  */
-const fetchEditUserinfo = (editUserinfo: UserModel) => {
-    return async (dispatch: (arg0: { payload: UserModel; type: `user/${string}` }) => void) => {
-        await editUserinfoApi(editUserinfo);
-        const res = await getUserinfoApi();
+const fetchEditUserinfo = (editUserinfo: Userinfo) => {
+    return async (dispatch: (arg0: { payload: Userinfo; type: `user/${string}` }) => void) => {
+        await userApi.editInfoApi(editUserinfo.id!, editUserinfo);
+        const res = await userApi.getInfoByIdApi(editUserinfo.id!);
         dispatch(userStore.actions.storeUserinfo(res))
     }
 }

@@ -20,12 +20,13 @@ import {Button, Checkbox, Form, GetProp, Input, message, Modal, Radio, Space, Ta
 import {TenantInfo} from "@/model/tenant";
 import {IconFont, PageList} from "@/components";
 import {PageListHandler, SearchInput} from "@components/List/pageParams";
-import {getTenantInfoApi, getTenantListApi, removeTenantApi, saveTenantApi, updateTenantApi} from "@/apis/tenant";
 import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
 import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'
+import {userApi} from "@/apis/user";
+import {tenantApi} from "@/apis/tenant";
 
 /**
  * 转换映射关系
@@ -200,8 +201,8 @@ const Tenant: React.FC = () => {
         if (!tenantId) {
             return
         }
-        // 修改获取租户数据
-        getTenantInfoApi(tenantId!)
+        // 修改获取租户数据，先获取详情
+        userApi.getInfoByIdApi(tenantId!)
             .then((res: TenantInfo) => {
                 form.setFieldsValue({...res})
                 if (res.permissionIds) {
@@ -244,7 +245,7 @@ const Tenant: React.FC = () => {
             if (id) ids.push(id);
         });
         value.permissionIds = ids;
-        const promise = updateId ? updateTenantApi(updateId, value) : saveTenantApi(value);
+        const promise = updateId ? tenantApi.editInfoApi(updateId, value) : tenantApi.saveInfoApi(value);
         promise.then(() => {
             setIsModalOpen(false);
             cleanFormValues();
@@ -272,11 +273,11 @@ const Tenant: React.FC = () => {
             ]}
             listName='租户'
             columns={columns}
-            pageRequestApi={getTenantListApi}
+            pageRequestApi={tenantApi.pageInfoListApi}
             addCallback={() => {
                 openModal()
             }}
-            deleteCallback={(ids: string[]) => removeTenantApi(ids)}
+            deleteCallback={(ids: string[]) => tenantApi.deleteInfoApi(ids)}
         />
 
         <Modal

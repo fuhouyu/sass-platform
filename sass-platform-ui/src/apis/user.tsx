@@ -16,73 +16,26 @@
 
 
 import {request} from "@/utils";
-import {UserModel} from "@/model/user";
-import {PageQuery, PageResult} from "@/model/pageQuery";
+import {Userinfo} from "@/model/user";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {DefaultApiImpl} from "@/apis/baseApi";
 
 
-const baseUserUrl = '/v1/user'
+const baseUserUrl = BaseUrlConstant.USER_API_PREFIX;
 
-/**
- * 获取用户详情
- */
-const getUserinfoApi = (): Promise<UserModel> => request.get(`${baseUserUrl}/info`);
+class UserApi extends DefaultApiImpl<Userinfo> {
 
+    constructor() {
+        super(baseUserUrl);
+    }
 
-/**
- * 用户详情修改api
- * @param editUserinfo 修改用户详情
- */
-const editUserinfoApi =
-    (editUserinfo: UserModel): Promise<void> => request.put(`${baseUserUrl}/info`, editUserinfo, {})
-
-/**
- * 通过用户id修改详请
- * @param editUserinfo 修改用户详情
- */
-const editUserinfoByIdApi =
-    (editUserinfo: UserModel): Promise<void> => request.put(`${baseUserUrl}/info/${editUserinfo.id}`, editUserinfo)
-
-/**
- * 保存用户详情
- * @param userinfo 用户详情
- */
-const saveUserInfoApi = (userinfo: UserModel): Promise<void> => request.post(`${baseUserUrl}/info`, userinfo, {})
-
-/**
- * 获取用户列表
- */
-const getUserListApi = <P extends PageQuery, R extends object>(pageQuery: P): Promise<PageResult<R>> =>
-    request.get(`${baseUserUrl}/list`, {
-        params: {...pageQuery}
-    });
-
-/**
- * 通过用户id获取用户详情
- */
-const getUserinfoByIdApi = (id: string): Promise<UserModel> => request.get(`${baseUserUrl}/info/${id}`);
-
-/**
- * 通过id删除用户
- * @param ids 用户集合
- *
- */
-const removeUserApi = (ids: string[]): Promise<void> => request.delete(`${baseUserUrl}`, {
-    data: ids
-});
-
-/**
- * 验证用户名是否存在
- * @param username 用户名称
- */
-const validUsernameExistsApi = (username: string): Promise<boolean> => request.get(`${baseUserUrl}/exists?username=${username}`, {})
-
-export {
-    saveUserInfoApi,
-    editUserinfoApi,
-    editUserinfoByIdApi,
-    getUserinfoApi,
-    getUserListApi,
-    getUserinfoByIdApi,
-    removeUserApi,
-    validUsernameExistsApi
+    /**
+     * 检查用户名是否存在
+     * @param username 用户名
+     */
+    checkUsernameExistsApi = (username: string): Promise<boolean> => {
+        return request.get(`${baseUserUrl}/exists?username=${username}`, {})
+    }
 }
+
+export const userApi: UserApi = new UserApi()

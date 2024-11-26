@@ -83,7 +83,7 @@ public class TenantInfoController {
      * @param pageQueryDTO 分页查询的dto对象
      * @return 租户列表集合
      */
-    @GetMapping("/list")
+    @GetMapping("/page")
     @Operation(summary = "租户列表")
     public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(PageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantInfoService.pageList(pageQueryDTO));

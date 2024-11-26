@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
@@ -26,6 +27,7 @@ import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import com.fuhouyu.sass.platform.system.service.TenantPermissionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -43,6 +45,7 @@ import java.util.function.Function;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TenantInfoServiceImpl implements TenantInfoService {
 
     private static final TenantInfoAssembler TENANTS_ASSEMBLER = TenantInfoAssembler.INSTANCE;
@@ -87,6 +90,11 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public int removeByIds(Collection<Long> ids) {
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        if (ids.contains(tenantId)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前登录的租户不允许删除操作！");
+        }
         int count = this.tenantInfoMapper.deleteByIds(ids);
         this.tenantPermissionService.deleteTenantPermissions(ids);
         return count;

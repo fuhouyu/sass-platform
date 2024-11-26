@@ -28,7 +28,7 @@ export const NotFound = () => {
         }
     }, [])
     const backHome = () => {
-        router.navigate('/').then()
+        router.navigate('/home').then()
     }
     return (
         <Result
