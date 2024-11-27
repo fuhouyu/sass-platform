@@ -23,7 +23,7 @@ import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {PersonCenter} from "@/pages/userinfo/PersonCenter";
-import Login from "@/pages/login/Login";
+import Login from "@/pages/login";
 
 export type RouterType = {
     id: string;
@@ -78,11 +78,11 @@ export const commonRouter: RouterType[] = [
 export const router: Router = createBrowserRouter(commonRouter);
 
 
-const modules = import.meta.glob('../pages/**/*.tsx');
+const modules = import.meta.glob('../pages/**/index.tsx');
 
 
 const lazyElement = (path: string) => {
-    const module = modules[`../pages/${path}.tsx`];
+    const module = modules[`../pages/${path}/index.tsx`];
     if (!module) {
         return (<NotFound/>);
     }

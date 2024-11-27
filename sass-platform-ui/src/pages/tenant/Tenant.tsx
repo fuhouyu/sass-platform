@@ -66,7 +66,11 @@ const parseMenuKey = (trees: MenuTreeType[], ids?: Key[]): Key[] => {
     return keys;
 }
 
-const Tenant: React.FC = () => {
+/**
+ * 租户组件
+ * @constructor
+ */
+export const Tenant: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
@@ -413,5 +417,3 @@ const Tenant: React.FC = () => {
         </Modal>
     </>)
 }
-
-export default Tenant;

@@ -15,25 +15,6 @@
  */
 
 
-import {request} from "@/utils";
-import {Menu} from "@/model/menu";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
-import {DefaultApiImpl} from "@/apis/baseApi";
+import {User} from "@/pages/system/user/User";
 
-const basePermissionUrl = BaseUrlConstant.PERMISSION_API_PREFIX;
-
-class PermissionApi extends DefaultApiImpl<Menu> {
-    constructor() {
-        super(BaseUrlConstant.PERMISSION_API_PREFIX);
-    }
-
-    /**
-     *  获取当前用户的权限api
-     */
-    getUserPermissionApi = (): Promise<Menu[]> => request.get(`${basePermissionUrl}/me`);
-}
-
-/**
- * 权限api
- */
-export const permissionApi: PermissionApi = new PermissionApi();
+export default User;

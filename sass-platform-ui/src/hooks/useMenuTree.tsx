@@ -17,12 +17,15 @@
 
 import {useCallback} from "react";
 import {IconFont} from "@/components";
-import {TreeDataNode} from "antd";
+import {MenuProps, TreeDataNode} from "antd";
 import {Menu} from "@/model/menu";
 
+export type MenuType = Required<MenuProps>['items'][number];
 
 export type MenuTreeType = {
     id: string;
+    key: string;
+    children?: MenuTreeType[] | undefined | null;
 } & (MenuType | TreeDataNode);
 
 export function useMenuTree(menus: Menu[]): MenuTreeType[] {

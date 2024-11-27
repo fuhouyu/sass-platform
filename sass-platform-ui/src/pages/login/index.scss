@@ -35,6 +35,36 @@
     text-align: center;
     margin: 0 auto 1.875rem auto;
   }
+
+  .other-login-divider {
+    margin: 0 0 0.7rem 0;
+
+    p {
+      font-size: 0.875rem;
+      line-height: 0.875rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .other-login-methods {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+    // icon固定大小
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    div {
+      display: flex;
+      gap: 0.3rem;
+
+    }
+
+  }
 }
 
 

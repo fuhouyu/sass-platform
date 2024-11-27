@@ -255,21 +255,32 @@ COMMENT ON COLUMN permissions.create_by IS '创建人';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
 COMMENT ON COLUMN permissions.update_by IS '更新人';
 
-INSERT INTO permissions (id, parent_id, tenant_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified,
-                         is_visible, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, 1, '租户管理', 'tenant', 2, 'i-navicon-zhgl', '/tenant', 'tenant/Tenant', '', false, 'C', false, true,
-        false,
-        now(), 'admin', now(), 'admin'),
-       (2, -1, 1, '系统设置', 'system', 3, 'i-setting', '/system',
-        null, '', false, 'M', false, true, false, now(), 'admin', now(), 'admin'),
-       (21, 2, 1, '用户管理', 'system:user', 1, 'i-yonghu', '/system/user',
-        'system/user/User', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (22, 2, 1, '角色管理', 'system:role', 2, 'i-jiaoseguanli', '/system/role',
-        'system/user/Role', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin'),
-       (23, 2, 1, '权限管理', 'system:permission', 3, 'i-quanxian', '/system/permission',
-        'system/user/Permission', '', false, 'C', false, true, false, now(), 'admin', now(), 'admin')
-;
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
+                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (1, -1, '租户管理', 'tenant', 2, 'i-zuhuguanli', '/tenant', 'tenant', '', false, 'C', false, true, 1, false,
+        '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
+                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (2, -1, '系统设置', 'system', 3, 'i-xitongshezhi', '/system', null, '', false, 'M', false, true, 1, false,
+        '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
+                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (21, 2, '用户管理', 'system:user', 1, 'i-yonghu1', '/system/user', 'system/user', '', false, 'C', false, true, 1,
+        false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
+                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (22, 2, '角色管理', 'system:role', 2, 'i-jiaoseguanli2', '/system/role', 'system/role', '', false, 'C', false,
+        true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
+                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (23, 2, '权限管理', 'system:permission', 3, 'i-icon-quanxian', '/system/permission', 'system/permission', '',
+        false, 'C', false, true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900',
+        'admin');
 
 
 -- 角色关联的权限
