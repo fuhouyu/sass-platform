@@ -20,8 +20,8 @@ import {Userinfo,} from "@/model/user";
 import {UserAuthentication, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
 import {Menu} from "@/model/menu";
-import {getUserPermissionApi} from "@/apis/permission";
 import {userApi} from "@/apis/user";
+import {permissionApi} from "@/apis/permission";
 
 
 const userStore = createSlice({
@@ -91,7 +91,7 @@ const fetchUserinfo = () => {
  */
 const fetchUserMenus = () => {
     return async (dispatch: (arg0: { payload: Menu[]; type: `user/${string}` }) => Menu[]): Promise<Menu[]> => {
-        const menus = await getUserPermissionApi();
+        const menus = await permissionApi.getUserPermissionApi();
         if (menus) {
             dispatch(userStore.actions.storeMenu(menus));
         }

@@ -24,7 +24,7 @@ import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
 import {PageListHandler, SearchSelection} from "@components/List/pageParams";
 import {userApi} from "@/apis/user";
 
-const User: React.FC = () => {
+export const User: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const pageListRef = useRef<PageListHandler>();
@@ -327,4 +327,3 @@ const User: React.FC = () => {
         </>
     )
 }
-export default User

@@ -16,7 +16,7 @@
 
 import React, {useEffect, useState} from "react";
 import "./index.scss"
-import {Button, Checkbox, Divider, Form, Input, message} from "antd";
+import {Button, Divider, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
@@ -24,12 +24,15 @@ import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
-import {IconFont} from "@/components";
 import {parseRouters, router} from "@/routes/routers";
 import {Menu} from "@/model/menu";
+import {IconFont} from "@/components";
 
-
-const Login: React.FC = () => {
+/**
+ * 登录组件
+ * @constructor
+ */
+export const Login: React.FC = () => {
     const navigate = useNavigate();
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
     const location = useLocation();
@@ -91,12 +94,24 @@ const Login: React.FC = () => {
                         >
                             <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>
                         </Form.Item>
-                        <Form.Item name="remember" valuePropName="checked">
-                            <Checkbox>同意用户协议</Checkbox>
-                        </Form.Item>
-                        <Divider style={{borderColor: '#7cb305'}}>
-                            <IconFont type="i-wechat-fill"/>
+                        {/*<Form.Item name="remember" valuePropName="checked">*/}
+                        {/*    <Checkbox>同意用户协议</Checkbox>*/}
+                        {/*</Form.Item>*/}
+                        <Divider className='other-login-divider'>
+                            <p>其它登录方式</p>
                         </Divider>
+                        <div className='other-login-methods'>
+                            {/*微信扫码*/}
+                            <div className='other-login-method'>
+                                <IconFont type="i-weixin"/>
+                                <p>微信登录</p>
+                            </div>
+                            {/*weLink登录*/}
+                            <div className='other-login-method'>
+                                <IconFont type="i-WeLink"/>
+                                <p>WeLink 扫码</p>
+                            </div>
+                        </div>
                         <Form.Item>
                             <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
                                 登录
@@ -108,5 +123,3 @@ const Login: React.FC = () => {
         </>
     )
 }
-
-export default Login;

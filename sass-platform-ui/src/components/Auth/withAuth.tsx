@@ -17,7 +17,7 @@
 
 import React from 'react';
 import useAuth from "@/hooks/useAuth";
-import Login from "@/pages/login/Login";
+import Login from "@/pages/login";
 
 // 使用具名函数组件来创建高阶组件
 const withAuth = (WrappedComponent: React.FC): React.FC => {
