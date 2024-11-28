@@ -70,8 +70,7 @@ export const Userinfo: React.FC = () => {
                 setButtonLoading(false);
                 message.success('修改成功').then();
             }).catch((error: Error) => {
-            console.log('用户修改失败: ', error);
-            message.error('用户修改失败').then();
+            message.error('用户修改失败' + error.message).then();
         })
     }
 

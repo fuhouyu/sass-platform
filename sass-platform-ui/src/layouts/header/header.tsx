@@ -15,7 +15,7 @@
  */
 
 
-import {Col, Divider, Dropdown, Image, MenuProps, Row, Space} from "antd";
+import {Col, Dropdown, Image, MenuProps, Row, Space} from "antd";
 import {Bread, IconFont} from "@/components";
 import {DownOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {Header as _Header} from "antd/es/layout/layout";
@@ -75,6 +75,9 @@ export const Header = () => {
         <>
             <_Header className="layout-header">
                 <Row gutter={24} align={"middle"}>
+                    <Col>
+                        <Bread/>
+                    </Col>
                     <Col className="user-header">
                         <div>
                                       <span className="tenant">
@@ -102,14 +105,7 @@ export const Header = () => {
                         </div>
                     </Col>
                 </Row>
-                {/*面包屑*/}
-                <Divider/>
-                <Bread/>
-                {/*<Row className="bread-row" gutter={24} align={"middle"}>*/}
-                {/*    <Col span={24} className="layout-bread">*/}
-                {/*        */}
-                {/*    </Col>*/}
-                {/*</Row>*/}
+
             </_Header>
         </>
     )

@@ -240,4 +240,13 @@
         AND
         uhr.user_id = #{userId}
     </select>
+
+    <select id="queryListByParentId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> p
+        WHERE parent_id = #{parentId}
+        AND is_deleted = false
+    </select>
 </mapper>

@@ -55,4 +55,12 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      */
     List<Permissions> queryUserPermissonList(@Param("tenantId") Long tenantId,
                                              @Param("userId") Long userId);
+
+    /**
+     * 通过父级id查询子级
+     *
+     * @param parentId 父级id
+     * @return 权限集合
+     */
+    List<Permissions> queryListByParentId(@Param("parentId") Long parentId);
 }

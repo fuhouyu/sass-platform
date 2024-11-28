@@ -15,11 +15,13 @@
  */
 
 
-import {Breadcrumb} from "antd";
+import {Breadcrumb, BreadcrumbProps} from "antd";
 import {useMemo} from "react";
 import {useAppSelector} from "@/store";
 import {Menu} from "@/model/menu";
 import './index.scss'
+import {Link} from "react-router-dom";
+
 
 const getBreadcrumbName = (path: string, routers: Menu[]) => {
     for (const item of routers) {
@@ -35,26 +37,33 @@ const getBreadcrumbName = (path: string, routers: Menu[]) => {
     return '';
 };
 
+const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params, items, paths) => {
+    const isLast = currentRoute?.path === items[items.length - 1]?.path;
+    return isLast ? (
+        <span>{currentRoute.title}</span>
+    ) : (
+        <Link to={`/${paths.join("/")}`}>{currentRoute.title}</Link>
+    );
+}
+
 export const Bread = () => {
     const userMenus = useAppSelector(state => state.user.userMenus);
     const pathSnippets = location.pathname.split('/').filter(i => i);
-
     const breadcrumb = useMemo(() => {
-        return pathSnippets.map((_, index) => {
-            const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-            const breadcrumbName = getBreadcrumbName(url, userMenus);
+        return pathSnippets.map((path) => {
+            const breadcrumbName = getBreadcrumbName(path, userMenus);
             return {
                 title: breadcrumbName,
-                key: url,
-                href: url,
+                key: path,
+                path: path,
             };
         });
     }, [pathSnippets, userMenus]);
-
     return (
         <>
             <Breadcrumb className="breadcrumb"
                         items={breadcrumb}
+                        itemRender={itemRender}
             ></Breadcrumb>
         </>
     );

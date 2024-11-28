@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,5 +60,18 @@ public class PermissionController {
         return ResponseHelper.success(TreeConvertUtil.buildTree(permissionService.findPermissionListByMe()));
     }
 
+    /**
+     * 通过父级id查询查询
+     * 当父级id不存在时，查询一级菜单
+     * 当前接口懒加载时使用
+     *
+     * @param parentId 父级id
+     * @return 菜单列表
+     */
+    @Operation(summary = "通过父级id查询子级菜单，")
+    @GetMapping({"/list/{parentId}", "/list"})
+    public BaseResponse<List<PermissionDTO>> getPermissionList(@PathVariable(value = "parentId", required = false) Long parentId) {
+        return ResponseHelper.success(this.permissionService.getPermissionList(parentId));
+    }
 
 }

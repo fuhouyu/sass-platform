@@ -20,29 +20,65 @@ import {DownOutlined} from "@ant-design/icons";
 import {Tree} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
-import {useMenuTree} from "@/hooks/useMenuTree";
+
+const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] => {
+    return list.map((node: Menu) => {
+        if (node.id === key) {
+            return {
+                ...node,
+                children,
+            };
+        }
+        if (node.children) {
+            return {
+                ...node,
+                children: updateTreeData(node.children, key, children),
+            };
+        }
+        return node;
+    });
+
+}
 
 export const Permission: React.FC = () => {
-    const [menus, setMenus] = useState<Menu[]>();
+    const [treeData, setTreeData] = useState<Menu[]>([]);
 
     useEffect(() => {
-        permissionApi.getUserPermissionApi()
+        // 先查询出一级菜单
+        permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
-                setMenus(res);
+                setTreeData(res);
             })
     }, [])
-    const menuTree = useMenuTree(menus!);
+
+    /**
+     * 懒加载菜单
+     * @param key key，这里是主键id
+     * @param children 子菜单
+     */
+    const onLoadData = async ({key, children}: { key: React.Key, children?: Menu[] | undefined }) => {
+        if (children) {
+            console.log(children)
+            return new Promise<void>((resolve) => {
+                resolve()
+            })
+        }
+        const res = await permissionApi.getPermissionListApi(key.toString());
+        setTreeData((origin) => updateTreeData(origin, key, res));
+    }
     return (
         <>
             <div>
                 <Tree
                     showLine
+                    fieldNames={{key: 'id', title: 'permissionName'}}
                     switcherIcon={<DownOutlined/>}
-                    // onSelect={onSelect}
-                    treeData={menuTree}
+                    loadData={onLoadData}
+                    treeData={treeData}
                 />
             </div>
         </>
     )
 
 }
+
