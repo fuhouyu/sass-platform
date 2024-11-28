@@ -20,7 +20,6 @@ import {Menu} from "@/model/menu";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 import {DefaultApiImpl} from "@/apis/baseApi";
 
-const basePermissionUrl = BaseUrlConstant.PERMISSION_API_PREFIX;
 
 class PermissionApi extends DefaultApiImpl<Menu> {
     constructor() {
@@ -30,7 +29,15 @@ class PermissionApi extends DefaultApiImpl<Menu> {
     /**
      *  获取当前用户的权限api
      */
-    getUserPermissionApi = (): Promise<Menu[]> => request.get(`${basePermissionUrl}/me`);
+    getUserPermissionApi = (): Promise<Menu[]> => request.get(`${this.baseUrl}/me`);
+
+    /**
+     * 查询子集列表
+     * @param parentId 父级id，为空时查询出一级
+     */
+    getPermissionListApi: (parentId?: string) => Promise<Menu[]> = (parentId?: string): Promise<Menu[]> => {
+        return parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
+    }
 }
 
 /**

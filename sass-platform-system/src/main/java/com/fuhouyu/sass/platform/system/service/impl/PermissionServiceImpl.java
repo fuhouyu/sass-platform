@@ -35,6 +35,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -119,5 +120,11 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Function<PageQueryDTO, List<PermissionDTO>> getPageResult() {
         return (p) -> PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryList(p));
+    }
+
+    @Override
+    public List<PermissionDTO> getPermissionList(Long parentId) {
+        List<Permissions> list = this.permissionMapper.queryListByParentId(Optional.ofNullable(parentId).orElse(-1L));
+        return PERMISSION_ASSEMBLER.toDTO(list);
     }
 }

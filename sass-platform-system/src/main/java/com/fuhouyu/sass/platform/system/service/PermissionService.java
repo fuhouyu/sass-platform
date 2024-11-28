@@ -47,5 +47,11 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      */
     List<PermissionTreeDTO> findPermissionListByMe();
 
-
+    /**
+     * 通过父级id查询子级，为空时查询一级
+     *
+     * @param parentId 父级id
+     * @return 权限列表
+     */
+    List<PermissionDTO> getPermissionList(Long parentId);
 }

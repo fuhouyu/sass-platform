@@ -47,7 +47,6 @@ export const Menu = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     // 点击菜单时进行跳转
     const onMenuClick = ({keyPath}: { key: string, keyPath: string[] }) => {
-        console.log(keyPath)
         const toPath = keyPath.reverse().join('/');
         navigate(toPath);
     }

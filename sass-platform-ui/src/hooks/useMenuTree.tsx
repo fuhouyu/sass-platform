@@ -15,7 +15,7 @@
  */
 
 
-import {useCallback} from "react";
+import {ReactNode, useCallback} from "react";
 import {IconFont} from "@/components";
 import {MenuProps, TreeDataNode} from "antd";
 import {Menu} from "@/model/menu";
@@ -26,6 +26,7 @@ export type MenuTreeType = {
     id?: string | undefined;
     key: string;
     children?: MenuTreeType[] | undefined | null;
+    icon?: ReactNode
 } & (MenuType | TreeDataNode);
 
 export function useMenuTree(menus: Menu[]): MenuTreeType[] {
