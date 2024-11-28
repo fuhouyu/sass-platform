@@ -17,18 +17,16 @@
 
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu as _Menu} from 'antd';
-import {useEffect, useState} from "react";
-import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
+import {useState} from "react";
+import {MenuType, useMenuTree} from "@/hooks/useMenuTree";
 import {useNavigate} from "react-router-dom";
 import './index.scss'
-import {useAppDispatch, useAppSelector} from "@/store";
-import {fetchUserMenus} from "@/store/modules/user";
+import {useAppSelector} from "@/store";
 import {Menu as UserMenus} from "@/model/menu";
 import {IconFont} from "@/components";
 
-const commonMenus: MenuTreeType[] = [
+const commonMenus: MenuType[] = [
     {
-        id: 'home',
         key: 'home',
         title: '首页',
         label: '首页',
@@ -41,20 +39,17 @@ const commonMenus: MenuTreeType[] = [
  * @constructor 构造函数
  */
 export const Menu = () => {
-    const dispatch = useAppDispatch();
-    useEffect(() => {
-        dispatch(fetchUserMenus());
-    }, [dispatch])
     const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
-    const menuItems = useMenuTree(userMenus);
-    menuItems.unshift(...commonMenus);
 
+    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[];
+    menuItems.unshift(...commonMenus);
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
     // 点击菜单时进行跳转
-    const onMenuClick = (item: MenuTreeType) => {
-        const path = item?.key?.toLocaleString();
-        navigate(path!);
+    const onMenuClick = ({keyPath}: { key: string, keyPath: string[] }) => {
+        console.log(keyPath)
+        const toPath = keyPath.reverse().join('/');
+        navigate(toPath);
     }
 
     return (

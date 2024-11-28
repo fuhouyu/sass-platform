@@ -23,7 +23,7 @@ import {Menu} from "@/model/menu";
 export type MenuType = Required<MenuProps>['items'][number];
 
 export type MenuTreeType = {
-    id: string;
+    id?: string | undefined;
     key: string;
     children?: MenuTreeType[] | undefined | null;
 } & (MenuType | TreeDataNode);
