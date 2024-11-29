@@ -123,7 +123,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
     }
 
     return (
-        <div className="list-container">
+        <>
             <div className="search-header">
                 <Row gutter={10}>
                     {searchComments?.map((searchComment) =>
@@ -201,7 +201,7 @@ const PageList = forwardRef<PageListHandler, PageListParams>((props, ref) => {
                     />
                 </div>
             </div>
-        </div>
+        </>
     );
 })
 
