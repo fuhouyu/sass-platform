@@ -15,12 +15,13 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React, {Key, useEffect, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
-import {Input, Space, Splitter, Table, TableColumnsType, Tree} from "antd";
+import {Button, Input, Splitter, Table, TableColumnsType, Tree} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
-import {Userinfo} from "@/model/user";
+import './index.scss'
+import {IconFont} from "@/components";
 
 const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] => {
     return list.map((node: Menu) => {
@@ -43,6 +44,7 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 export const Permission: React.FC = () => {
     const [treeData, setTreeData] = useState<Menu[]>([]);
+    const [tableData, setTableData] = useState<Menu[]>([])
 
     useEffect(() => {
         // 先查询出一级菜单
@@ -89,18 +91,32 @@ export const Permission: React.FC = () => {
             title: '操作人',
             dataIndex: 'updateBy',
         },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            render: (_, record: Userinfo) => {
-                return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => openModal(record.id)}>修改</a>
-                    </Space>
-                </>)
-            }
-        }
+        // {
+        //     title: '操作',
+        //     dataIndex: 'action',
+        //     render: (_, record: Userinfo) => {
+        //         return (<>
+        //             <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+        //                 <a onClick={() => openModal(record.id)}>修改</a>
+        //             </Space>
+        //         </>)
+        //     }
+        // }
     ];
+
+    /**
+     * 树被点击时的事件
+     * @param selectedKeys 当前选中的key
+     */
+    const onSelectTree = async (selectedKeys: Key[]) => {
+        if (!selectedKeys || selectedKeys.length === 0) {
+            return
+        }
+        // 这里只会有一条
+        const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
+        setTableData(child);
+
+    }
 
     /**
      * 懒加载菜单
@@ -121,25 +137,35 @@ export const Permission: React.FC = () => {
             <div className='permission-container'>
                 <Splitter className='permission-splitter'>
                     <Splitter.Panel defaultSize="30%" min="20%" max="70%">
-                        <Input style={{
-                            margin: '0 0 .5rem 0'
-                        }} placeholder='请输入权限名称' allowClear/>
-                        <Tree
-                            style={{
-                                padding: '.5rem',
-                                height: '100%'
-                            }}
-                            height={1000}
-                            showLine
-                            fieldNames={{key: 'id', title: 'permissionName'}}
-                            switcherIcon={<DownOutlined/>}
-                            loadData={onLoadData}
-                            treeData={treeData}
-                        />
+                        <Input
+                            className='search-input'
+                            placeholder='请输入权限名称' allowClear/>
+                        <div className='tree-info'>
+                            <Tree
+                                showLine
+                                fieldNames={{key: 'id', title: 'permissionName'}}
+                                switcherIcon={<DownOutlined/>}
+                                loadData={onLoadData}
+                                treeData={treeData}
+                                onSelect={onSelectTree}
+                            />
+                        </div>
                     </Splitter.Panel>
                     <Splitter.Panel>
-
-                        <Table columns={columns}/>
+                        <div className="title-line">
+                            <div className="buttons">
+                                <Button className="add-button"
+                                        icon={<IconFont type="i-add"/>}
+                                >
+                                    新增
+                                </Button>
+                                <Button className="del-button"
+                                        icon={<IconFont type="i-delete"/>}>
+                                    删除
+                                </Button>
+                            </div>
+                        </div>
+                        <Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>
                     </Splitter.Panel>
                 </Splitter>
             </div>
