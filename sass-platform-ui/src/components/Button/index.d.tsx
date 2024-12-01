@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {Page} from "./List/page/page";
-import {PageLoading} from "./PageLoading/pageLoading";
 
-export {
-    IconFont,
-    Page,
-    Bread,
-    PageLoading,
+export interface ButtonProps {
+    onClick?: () => void
 }

@@ -21,15 +21,14 @@
 
   .search-components {
     display: flex;
+    gap: 1rem;
 
     .search-component {
       display: flex;
       justify-content: center;
       align-items: center;
-
-      label {
-        width: 6rem;
-      }
+      gap: .6rem;
+      white-space: nowrap;
     }
   }
 

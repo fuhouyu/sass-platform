@@ -31,7 +31,7 @@ import {
     Tree
 } from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {IconFont, PageList} from "@/components";
+import {IconFont, Page} from "@/components";
 import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
 import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
@@ -40,6 +40,7 @@ import './index.scss'
 import {userApi} from "@/apis/user";
 import {tenantApi} from "@/apis/tenant";
 import {PageQuery, PageResult} from "@/model/pageQuery";
+import {AddButton, DeleteButton} from "@components/Button/commonButton";
 
 /**
  * 转换映射关系
@@ -304,28 +305,21 @@ export const Tenant: React.FC = () => {
     }
 
     return (<>
-        <PageList
+        <Page
             tableProps={{
-                tableName: '租户名称',
+                tableName: '租户列表',
                 columns: columns,
                 pageData: pageResult,
                 setPageQuery: setPageQuery,
                 setMultipleChooseRowKey: setRowKeys,
                 components: [
-                    <div className="buttons">
-                        <Button className="add-button" onClick={() => openModal()} icon={<IconFont type="i-add"/>}
-                        >
-                            新增
-                        </Button>
-                        <Button className="del-button"
-                                onClick={async () => {
-                                    tenantApi.deleteInfoApi(rowKeys as string[]).then();
-                                    pageRequest()
-                                }}
-                                icon={<IconFont type="i-delete"/>}>
-                            删除
-                        </Button>
-                    </div>
+                    <>
+                        <AddButton onClick={() => openModal()}/>
+                        <DeleteButton onClick={async () => {
+                            tenantApi.deleteInfoApi(rowKeys as string[]).then();
+                            pageRequest()
+                        }}/>
+                    </>
                 ]
             }}
             headerSearchProps={{

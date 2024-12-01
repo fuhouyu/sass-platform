@@ -18,6 +18,7 @@ import React from "react";
 import {TableProps} from "@components/List/table/index.d";
 import {IconFont} from "@/components";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
+import './index.scss'
 
 /**
  * 处理_转换为驼峰
@@ -68,23 +69,22 @@ export const Table = (tableProps: TableProps) => {
     return (
         <>
             <div className="table-container">
-                <div className="title-container">
                     <div className="title-line">
-                        <div className="title">
+                        <span className="title">
                             {tableName}
-                        </div>
+                        </span>
                         <div className="components">
                             {components?.map((component, index) => (
-                                <div key={index}>
+                                <div className='component' key={index}>
                                     {component}
                                 </div>
                             ))
                             }
                         </div>
                     </div>
-                    <div className="checked-num">
-                        <IconFont type="i-tips" style={{color: 'white'}}/>
-                        选择列表数据后可进行批量操作
+                <div className="tips-container">
+                    <IconFont className='tips' type="i-tips"/>
+                    <span>选择列表数据后可进行批量操作</span>
                     </div>
                 </div>
                 <div className="list">
@@ -106,7 +106,6 @@ export const Table = (tableProps: TableProps) => {
                         showSorterTooltip={{target: 'sorter-icon'}}
                     />
                 </div>
-            </div>
         </>
     )
 }

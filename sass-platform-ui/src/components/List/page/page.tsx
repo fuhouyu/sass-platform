@@ -17,10 +17,10 @@
 
 import './index.scss'
 import {PageListProps} from "@components/List/page/index.d";
-import Header from "@components/List/header/Header";
-import {Table} from "@components/List/table/Table";
+import Header from "@components/List/header/header";
+import {Table} from "@components/List/table/table";
 
-const PageList = (props: PageListProps) => {
+const Page = (props: PageListProps) => {
     const {headerSearchProps, setPageQuery, tableProps} = props
 
 
@@ -36,5 +36,5 @@ const PageList = (props: PageListProps) => {
 };
 
 export {
-    PageList
+    Page
 }
