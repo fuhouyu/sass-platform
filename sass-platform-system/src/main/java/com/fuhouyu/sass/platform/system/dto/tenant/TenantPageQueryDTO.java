@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.dto.tenant;
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList} from "./List/page/PageList";
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-export {
-    IconFont,
-    PageList,
-    Bread
+/**
+ * <p>
+ * 租户分页查询的dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/1 16:15
+ */
+@Schema(name = "TenantPageQueryDTO", description = "租户分页查询的dto对象")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TenantPageQueryDTO extends PageQueryDTO {
+
+    @Schema(name = "tenantName", description = "租户名称模糊查询")
+    private String tenantName;
 }

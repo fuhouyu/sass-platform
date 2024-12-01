@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList} from "./List/page/PageList";
 
-export {
-    IconFont,
-    PageList,
-    Bread
+// 搜索组件的基础属性
+import React from "react";
+
+
+// 搜索组件的主接口
+export interface SearchComponentProps {
+    // 组件数组
+    components: React.ReactNode[];
+    // 搜索事件
+    onSearchClick?: () => void;
 }

@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList} from "./List/page/PageList";
+
+import './index.scss'
+import {PageListProps} from "@components/List/page/index.d";
+import Header from "@components/List/header/Header";
+import {Table} from "@components/List/table/Table";
+
+const PageList = (props: PageListProps) => {
+    const {headerSearchProps, setPageQuery, tableProps} = props
+
+
+    return (
+        <>
+            {headerSearchProps && <Header
+                {...headerSearchProps}/>}
+            <Table
+                setPageQuery={setPageQuery}
+                {...tableProps}/>
+        </>
+    );
+};
 
 export {
-    IconFont,
-    PageList,
-    Bread
+    PageList
 }

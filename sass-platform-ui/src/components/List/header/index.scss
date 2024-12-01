@@ -14,12 +14,31 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList} from "./List/page/PageList";
+.search-header {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.9375rem;
+  background-color: #ffffff;
 
-export {
-    IconFont,
-    PageList,
-    Bread
+  .search-components {
+    display: flex;
+
+    .search-component {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      label {
+        width: 6rem;
+      }
+    }
+  }
+
+  .ant-select-selector {
+    width: 180px !important;
+  }
+
+  .search-button {
+    font-size: 0.75rem;
+    margin-left: auto;
+  }
 }

@@ -165,8 +165,8 @@
                 FROM
         <include refid="TableName"/>
         <where>
-            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
-                tenant_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+            <if test="pageQuery.tenantName != null and pageQuery.tenantName != ''">
+                tenant_name LIKE CONCAT('%', #{pageQuery.tenantName}, '%')
             </if>
         </where>
     </select>

@@ -15,11 +15,23 @@
  */
 
 
-import React, {Key, useRef, useState} from "react";
-import {Button, Checkbox, Form, GetProp, Input, message, Modal, Radio, Space, TableColumnsType, Tag, Tree} from "antd";
+import React, {Key, useEffect, useState} from "react";
+import {
+    Button,
+    Checkbox,
+    CheckboxProps,
+    Form,
+    Input,
+    message,
+    Modal,
+    Radio,
+    Space,
+    TableColumnsType,
+    Tag,
+    Tree
+} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {IconFont, PageList} from "@/components";
-import {PageListHandler, SearchInput} from "@components/List/pageParams";
 import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
 import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
@@ -27,6 +39,7 @@ import TextArea from "antd/es/input/TextArea";
 import './index.scss'
 import {userApi} from "@/apis/user";
 import {tenantApi} from "@/apis/tenant";
+import {PageQuery, PageResult} from "@/model/pageQuery";
 
 /**
  * 转换映射关系
@@ -35,7 +48,7 @@ import {tenantApi} from "@/apis/tenant";
  */
 const parseIdKeyMap = (trees: MenuTreeType[], idKeyMap: Map<Key, string>) => {
     trees.forEach(tree => {
-        idKeyMap.set(tree.key, tree.id);
+        idKeyMap.set(tree.key, tree.id!);
         if (tree.children) {
             parseIdKeyMap(tree.children, idKeyMap);
         }
@@ -145,14 +158,15 @@ export const Tenant: React.FC = () => {
     ];
 
 
+    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-    const pageListRef = useRef<PageListHandler>();
     const [updateId, setUpdateId] = useState<string>();
     const [form] = Form.useForm();
     const [isEnabled, setIsEnabled] = useState<boolean>(true);
     const userMenus: Menu[] = useAppSelector((state) => state.user.userMenus);
     const menuTree = useMenuTree(userMenus);
+    const [tenantQuery, setTenantQuery] = useState<{ [key: string]: unknown }>({});
 
     // key 和 id映射
     const idKeyMap = new Map<Key, string>();
@@ -166,38 +180,64 @@ export const Tenant: React.FC = () => {
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
-    const [selectMenusOptions, setSelectMenusOptions] = useState<string[]>([]);
-    const menusOptions = [
-        {label: '展开/折叠', value: 'expanded'},
-        {label: '全选/全不选', value: 'selectAll'},
-    ];
 
-    const onMenusOptions: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-        if (checkedValues.length == 0) {
+    /**
+     * 分页查询
+     */
+    const [pageQuery, setPageQuery] = useState<PageQuery>({
+        pageNum: 1,
+        pageSize: 10,
+    });
+
+    /**
+     * 分页查询结果
+     */
+    const [pageResult, setPageResult] = useState<PageResult<TenantInfo>>();
+    useEffect(() => {
+        tenantApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<TenantInfo>) => {
+                setPageResult({...res});
+            })
+    }, [pageQuery])
+
+    /**
+     * 分页查询请求
+     */
+    const pageRequest = () => {
+        tenantApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<TenantInfo>) => {
+                setPageResult({...res})
+            })
+    }
+
+
+    /**
+     * 展开/折叠
+     * @param e 事件
+     */
+    const onExpanded: CheckboxProps['onChange'] = (e) => {
+        if (e.target.checked) {
+            setExpandedKeys(Array.from(idKeyMap.keys()));
+        } else {
             setExpandedKeys([]);
-            setCheckedKeys([]);
-            setSelectMenusOptions([])
-            return;
         }
-        setSelectMenusOptions(checkedValues as string[]);
-        checkedValues.map(value => {
-            switch (value) {
-                case 'expanded':
-                    setExpandedKeys(Array.from(idKeyMap.keys()));
-                    break;
-                case 'selectAll':
-                    setCheckedKeys(Array.from(idKeyMap.keys()));
-                    break
-            }
-        })
-
     };
 
+    /**
+     * 全选/全不选
+     * @param e 事件
+     */
+    const onSelectedAll: CheckboxProps['onChange'] = (e) => {
+        if (e.target.checked) {
+            setCheckedKeys(Array.from(idKeyMap.keys()));
+        } else {
+            setCheckedKeys([]);
+        }
+    }
 
     /**
      * 打开模态组
      * @param tenantId 租户id
-     * @param isAdd 是否添加用户
      */
     const openModal = (tenantId?: string) => {
         setIsModalOpen(true);
@@ -232,14 +272,13 @@ export const Tenant: React.FC = () => {
      */
     const cleanFormValues = () => {
         setExpandedKeys([]);
-        setSelectMenusOptions([]);
-        form.resetFields();
         setCheckedKeys([]);
+        form.resetFields();
     }
 
     /**
-     * 处理租户租户
-     * @param value 租户租户
+     * 处理租户
+     * @param value 租户
      */
     const handleTenantConfig = (value: TenantInfo) => {
         setIsModalButtonLoading(true);
@@ -254,7 +293,7 @@ export const Tenant: React.FC = () => {
             setIsModalOpen(false);
             cleanFormValues();
             message.success("操作成功").then();
-            pageListRef.current?.refresh();
+            pageRequest()
         })
             .catch((error: Error) => {
                 message.error(error.message).then();
@@ -266,22 +305,39 @@ export const Tenant: React.FC = () => {
 
     return (<>
         <PageList
-            ref={pageListRef}
-            searchComments={[
-                {
-                    name: '租户名称',
-                    key: 'tenantName',
-                    comment: SearchInput,
-                    placeholder: '租户名称',
-                }
-            ]}
-            listName='租户'
-            columns={columns}
-            pageRequestApi={tenantApi.pageInfoListApi}
-            addCallback={() => {
-                openModal()
+            tableProps={{
+                tableName: '租户名称',
+                columns: columns,
+                pageData: pageResult,
+                setPageQuery: setPageQuery,
+                setMultipleChooseRowKey: setRowKeys,
+                components: [
+                    <div className="buttons">
+                        <Button className="add-button" onClick={() => openModal()} icon={<IconFont type="i-add"/>}
+                        >
+                            新增
+                        </Button>
+                        <Button className="del-button"
+                                onClick={async () => {
+                                    tenantApi.deleteInfoApi(rowKeys as string[]).then();
+                                    pageRequest()
+                                }}
+                                icon={<IconFont type="i-delete"/>}>
+                            删除
+                        </Button>
+                    </div>
+                ]
             }}
-            deleteCallback={(ids: string[]) => tenantApi.deleteInfoApi(ids)}
+            headerSearchProps={{
+                components: [
+                    <><label htmlFor="tenantName">租户名称</label>
+                        <Input placeholder={'请输入租户名称'} id={'tenantName'} onChange={(e) => {
+                            setTenantQuery({tenantName: e.target.value})
+                        }}/>
+                    </>
+                ],
+                onSearchClick: () => setPageQuery({...pageQuery, ...tenantQuery})
+            }}
         />
 
         <Modal
@@ -335,7 +391,12 @@ export const Tenant: React.FC = () => {
                     required={true}
                 >
                     <div className="menu-list">
-                        <Checkbox.Group value={selectMenusOptions} options={menusOptions} onChange={onMenusOptions}/>
+                        <div>
+                            <Space>
+                                <Checkbox onChange={onExpanded}>展开/折叠</Checkbox>
+                                <Checkbox onChange={onSelectedAll}>全选/全不选</Checkbox>
+                            </Space>
+                        </div>
                         <Tree
                             className="menu-tree"
                             checkable
