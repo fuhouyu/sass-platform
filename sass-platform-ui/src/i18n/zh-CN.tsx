@@ -16,6 +16,9 @@
 const ZhCN = {
     Header: {
         title: '多租户后台管理系统',
+        personCenter: '个人中心',
+        logout: '退出',
+
     },
     Login: {
         usernamePlaceholder: '请输入用户名',
@@ -26,7 +29,14 @@ const ZhCN = {
         wechatLogin: '微信登录',
         weLinkLogin: 'WeLink 扫码',
         loginButton: '登录',
-
+    },
+    Menu: {
+        home: '主页',
+        system: '系统管理',
+        tenant: '租户管理',
+        user: '用户管理',
+        role: '角色管理',
+        permission: '权限管理',
     }
 }
 

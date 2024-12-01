@@ -22,8 +22,15 @@
   padding: 0 15px;
   // 用户头
   .user-header {
+    display: flex;
+    align-items: center;
     margin-left: auto;
     font-size: 1rem;
+
+    .language-button {
+      margin: 0 .5rem;
+      border: 0;
+    }
     // 租户标签
     .tenant {
       padding-right: 1rem;

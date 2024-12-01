@@ -16,6 +16,8 @@
 const EnUS = {
     Header: {
         title: 'Sass Platform',
+        personCenter: 'Person Center',
+        logout: 'Logout',
     },
     Login: {
         usernamePlaceholder: 'Please enter your username',
@@ -26,6 +28,14 @@ const EnUS = {
         wechatLogin: 'Wechat Login',
         weLinkLogin: 'WeLink QR Login',
         loginButton: 'Login',
+    },
+    Menu: {
+        home: 'Home',
+        system: 'System Manage',
+        tenant: 'Tenant Manage',
+        user: 'User Manage',
+        role: 'Role Manage',
+        permission: 'Permission Manage',
     }
 }
 

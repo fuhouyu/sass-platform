@@ -19,6 +19,7 @@ import {ReactNode, useCallback} from "react";
 import {IconFont} from "@/components";
 import {MenuProps, TreeDataNode} from "antd";
 import {Menu} from "@/model/menu";
+import {useTranslation} from "react-i18next";
 
 export type MenuType = Required<MenuProps>['items'][number];
 
@@ -30,6 +31,7 @@ export type MenuTreeType = {
 } & (MenuType | TreeDataNode);
 
 export function useMenuTree(menus: Menu[]): MenuTreeType[] {
+    const {t} = useTranslation();
     const convertMenuItem = useCallback((permissionInterfaces: Menu[]): (MenuTreeType[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
@@ -38,8 +40,8 @@ export function useMenuTree(menus: Menu[]): MenuTreeType[] {
             return {
                 id: item.id,
                 key: item.routePath ?? item.id,
-                title: item.permissionName,
-                label: item.permissionName,
+                title: t(`Menu.${item.permissionName}`),
+                label: t(`Menu.${item.permissionName}`),
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
