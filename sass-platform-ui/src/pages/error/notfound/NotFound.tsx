@@ -18,13 +18,14 @@ import {useEffect} from "react";
 import {getAccessToken} from "@/utils";
 import {router} from "@/routes/routers";
 import {Button, Result} from "antd";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 export const NotFound = () => {
     // 如果用户未登录，跳回登录页
     useEffect(() => {
         const accessToken = getAccessToken();
         if (!accessToken) {
-            router.navigate('/login', {state: {from: router.state.location.pathname}}).then();
+            router.navigate(BASE_LOGIN_URL, {state: {from: router.state.location.pathname}}).then();
         }
     }, [])
     const backHome = () => {

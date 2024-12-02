@@ -22,6 +22,7 @@ import {getAccessToken, removeToken} from "@/utils";
 import {getRefreshToken} from "@/utils/Token/token";
 import {fetchLogin} from "@/store/modules/user";
 import {AccountType} from "@/constants/accountTypeConstant";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 const useAuth = () => {
     const navigate = useNavigate();
@@ -30,11 +31,14 @@ const useAuth = () => {
     const token = getAccessToken();
     const dispatch = useAppDispatch();
     useEffect(() => {
+        if (pathname.endsWith(BASE_LOGIN_URL)) {
+            return;
+        }
         if (!token) {
             const refreshToken = getRefreshToken();
             if (!refreshToken) {
                 message.warning("当前用户登录状态已失效").then();
-                navigate('/login', {state: {from: pathname}});
+                navigate(BASE_LOGIN_URL, {state: {from: pathname}});
                 return;
             }
 
@@ -45,7 +49,7 @@ const useAuth = () => {
                 })
                 .catch(() => {
                     removeToken();
-                    navigate('/login', {state: {from: pathname}});
+                    navigate(BASE_LOGIN_URL, {state: {from: pathname}});
                 });
         }
     }, [dispatch, navigate, pathname, token]);

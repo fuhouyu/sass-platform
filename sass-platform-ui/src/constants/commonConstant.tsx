@@ -19,3 +19,8 @@
  * localStore语言key
  */
 export const LANGUAGE_KEY: string = 'site_language';
+
+/**
+ * 登录页
+ */
+export const BASE_LOGIN_URL: string = '/login';
