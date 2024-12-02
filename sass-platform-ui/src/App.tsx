@@ -19,20 +19,16 @@ import React, {useEffect, useState} from "react";
 import {RouterProvider} from "react-router-dom";
 import {parseRouters, router} from "@/routes/routers";
 import {getAccessToken} from "@/utils";
-import {useAppDispatch, useAppSelector} from "@/store";
+import {useAppDispatch} from "@/store";
 import {fetchUserMenus} from "@/store/modules/user";
 import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import '@/i18n/index'
-import {useTranslation} from "react-i18next";
 
 export const App: React.FC = () => {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
-    const {i18n} = useTranslation();
-    const language = useAppSelector(state => state.locale.language);
     useEffect(() => {
-        i18n.changeLanguage(language).then()
         const accessToken = getAccessToken();
         if (!accessToken) {
             // 都为空时，不再请求路由
@@ -49,7 +45,6 @@ export const App: React.FC = () => {
         return <PageLoading/>
     }
     return (
-
         <RouterProvider
             router={router}/>
 

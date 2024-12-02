@@ -17,12 +17,19 @@
 
 import React, {Key, useEffect, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
-import {Button, Input, Splitter, Table, TableColumnsType, Tree} from "antd";
+import {Button, Col, Input, Row, Table, TableColumnsType, Tree} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {IconFont} from "@/components";
+import {useTranslation} from "react-i18next";
 
+/**
+ * 设置树数据
+ * @param list 菜单集合
+ * @param key key
+ * @param children 子集
+ */
 const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] => {
     return list.map((node: Menu) => {
         if (node.id === key) {
@@ -45,50 +52,41 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 export const Permission: React.FC = () => {
     const [treeData, setTreeData] = useState<Menu[]>([]);
     const [tableData, setTableData] = useState<Menu[]>([])
-
+    const {t} = useTranslation();
     useEffect(() => {
         // 先查询出一级菜单
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
+                res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
                 setTreeData(res);
             })
-    }, [])
+    }, [t])
 
     const columns: TableColumnsType = [
         {
-            title: '权限名称',
+            title: t('Permission.name'),
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
         },
         {
-            title: '权限编码',
+            title: t('Permission.code'),
             dataIndex: 'permissionCode',
 
         },
         {
-            title: '显示顺序',
+            title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
             defaultSortOrder: 'descend',
         },
         {
-            title: '创建时间',
-            dataIndex: 'createAt',
-            sorter: true,
-            showSorterTooltip: false
-        },
-        {
-            title: '创建人',
-            dataIndex: 'createBy'
-        },
-        {
-            title: '更新时间',
+            title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
             showSorterTooltip: false
         },
         {
-            title: '操作人',
+            title: t('Common.updateBy'),
             dataIndex: 'updateBy',
         },
         // {
@@ -114,6 +112,7 @@ export const Permission: React.FC = () => {
         }
         // 这里只会有一条
         const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
+        child.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
         setTableData(child);
 
     }
@@ -130,45 +129,45 @@ export const Permission: React.FC = () => {
             })
         }
         const res = await permissionApi.getPermissionListApi(key.toString());
+        res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
         setTreeData((origin) => updateTreeData(origin, key, res));
     }
     return (
         <>
-            <div className='permission-container'>
-                <Splitter className='permission-splitter'>
-                    <Splitter.Panel defaultSize="30%" min="20%" max="70%">
-                        <Input
-                            className='search-input'
-                            placeholder='请输入权限名称' allowClear/>
-                        <div className='tree-info'>
-                            <Tree
-                                showLine
-                                fieldNames={{key: 'id', title: 'permissionName'}}
-                                switcherIcon={<DownOutlined/>}
-                                loadData={onLoadData}
-                                treeData={treeData}
-                                onSelect={onSelectTree}
-                            />
+            <Row gutter={24} className={'main-container'}>
+                <Col span={3} className={'tree-container'}>
+                    <Input
+                        className='search-input'
+                        placeholder={t('Permission.namePlaceholder')} allowClear/>
+                    <div className='tree-info'>
+                        <Tree
+                            showLine
+                            fieldNames={{key: 'id', title: 'permissionName'}}
+                            switcherIcon={<DownOutlined/>}
+                            loadData={onLoadData}
+                            treeData={treeData}
+                            onSelect={onSelectTree}
+                        />
+                    </div>
+                </Col>
+                <Col span={21}>
+                    <div className="title-line">
+                        <div className="buttons">
+                            <Button className="add-button"
+                                    icon={<IconFont type="i-add"/>}
+                            >
+                                新增
+                            </Button>
+                            <Button className="del-button"
+                                    icon={<IconFont type="i-delete"/>}>
+                                删除
+                            </Button>
                         </div>
-                    </Splitter.Panel>
-                    <Splitter.Panel>
-                        <div className="title-line">
-                            <div className="buttons">
-                                <Button className="add-button"
-                                        icon={<IconFont type="i-add"/>}
-                                >
-                                    新增
-                                </Button>
-                                <Button className="del-button"
-                                        icon={<IconFont type="i-delete"/>}>
-                                    删除
-                                </Button>
-                            </div>
-                        </div>
-                        <Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>
-                    </Splitter.Panel>
-                </Splitter>
-            </div>
+                    </div>
+                    <Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>
+                </Col>
+            </Row>
+
 
         </>
     )

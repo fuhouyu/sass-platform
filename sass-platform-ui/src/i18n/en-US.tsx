@@ -14,11 +14,31 @@
  * limitations under the License.
  */
 const EnUS = {
+    // 公共参数
+    Common: {
+        createBy: 'Create By',
+        createAt: 'Create At',
+        updateBy: 'Update By',
+        updateAt: 'Update At',
+        status: 'Status',
+        displayOrder: 'Display Order',
+        remark: 'Remark',
+        reset: 'Reset',
+    },
+    // button
+    Button: {
+        add: 'Add',
+        edit: 'Edit',
+        delete: 'Delete',
+        search: 'Search',
+    },
+    // header
     Header: {
         title: 'Sass Platform',
         personCenter: 'Person Center',
         logout: 'Logout',
     },
+    // 登录
     Login: {
         usernamePlaceholder: 'Please enter your username',
         usernameEmptyMessage: 'Please enter your username!',
@@ -29,6 +49,7 @@ const EnUS = {
         weLinkLogin: 'WeLink QR Login',
         loginButton: 'Login',
     },
+    // 菜单
     Menu: {
         home: 'Home',
         system: 'System Manage',
@@ -36,6 +57,12 @@ const EnUS = {
         user: 'User Manage',
         role: 'Role Manage',
         permission: 'Permission Manage',
+    },
+    // 权限
+    Permission: {
+        name: 'Permission Name',
+        namePlaceholder: 'Please enter permission name',
+        code: 'Permission Code',
     }
 }
 

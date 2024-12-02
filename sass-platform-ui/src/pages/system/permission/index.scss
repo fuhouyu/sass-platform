@@ -14,37 +14,24 @@
  * limitations under the License.
  */
 
-.permission-container {
+.main-container {
   height: 100%;
 }
 
-.search-input {
-  margin: 0 0 .5rem 0;
-}
-
-.tree-info {
+.tree-container {
   height: 100%;
   background-color: #fff;
-  padding: .3rem;
-  // 字体
-  .ant-tree-title {
+
+  .ant-tree-list-holder-inner {
+    gap: .5rem;
+  }
+
+  .ant-tree-node-content-wrapper {
     font-size: 1.1rem;
-    line-height: 1.1rem;
-    vertical-align: middle;
+    padding-inline: 0;
   }
 }
 
-// title line
-.title-line {
-
-}
-
-.table-info {
-  align-self: flex-start;
-  background-color: #fff;
-}
-
-
-.permission-splitter {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)
+.search-input {
+  margin: .5rem 0;
 }

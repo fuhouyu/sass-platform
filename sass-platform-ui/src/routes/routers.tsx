@@ -24,6 +24,7 @@ import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {PersonCenter} from "@/pages/userinfo/PersonCenter";
 import Login from "@/pages/login";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 export type RouterType = {
     id: string;
@@ -63,7 +64,7 @@ export const commonRouter: RouterType[] = [
     {
         id: 'login',
         title: '登录',
-        path: '/login',
+        path: BASE_LOGIN_URL,
         element: <Login/>,
     },
     {

@@ -14,12 +14,32 @@
  * limitations under the License.
  */
 const ZhCN = {
+    // 公共参数
+    Common: {
+        createBy: '创建人',
+        createAt: '创建时间',
+        updateBy: '操作人',
+        updateAt: '操作时间',
+        status: '状态',
+        displayOrder: '排序',
+        remark: '备注',
+        reset: '重置',
+    },
+    // button
+    Button: {
+        add: '新增',
+        edit: '修改',
+        delete: '删除',
+        search: '搜索',
+    },
+    // header
     Header: {
         title: '多租户后台管理系统',
         personCenter: '个人中心',
         logout: '退出',
 
     },
+    //登录
     Login: {
         usernamePlaceholder: '请输入用户名',
         usernameEmptyMessage: '请输入用户名!',
@@ -30,6 +50,7 @@ const ZhCN = {
         weLinkLogin: 'WeLink 扫码',
         loginButton: '登录',
     },
+    // 菜单
     Menu: {
         home: '主页',
         system: '系统管理',
@@ -37,6 +58,12 @@ const ZhCN = {
         user: '用户管理',
         role: '角色管理',
         permission: '权限管理',
+    },
+    // 权限
+    Permission: {
+        name: '权限名称',
+        namePlaceholder: '请输入权限名称',
+        code: '权限编码',
     }
 }
 

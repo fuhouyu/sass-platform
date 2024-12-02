@@ -29,6 +29,7 @@ import './index.scss'
 import {changeLanguage} from "@/store/modules/locale";
 import i18n from "i18next";
 import {useTranslation} from "react-i18next";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 
 export const Header = () => {
@@ -69,7 +70,7 @@ export const Header = () => {
         switch (e.key) {
             case 'logout':
                 dispatch(fetchLogout());
-                navigate('/login');
+                navigate(BASE_LOGIN_URL);
                 break;
             case 'userinfo':
                 navigate('/userinfo');
