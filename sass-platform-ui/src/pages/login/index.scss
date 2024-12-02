@@ -24,6 +24,19 @@
   opacity: 90%;
 }
 
+.login-container {
+  position: absolute;
+}
+
+.switch-language-button {
+  position: relative;
+  top: 2.3rem;
+  left: .3rem;
+  border: 0;
+  background-color: #fff;
+  box-shadow: 0 0 0 0;
+}
+
 .login-form {
   width: 25rem;
   padding: 1.5625rem;

@@ -15,37 +15,27 @@
  */
 
 
-import {Col, Dropdown, Image, MenuProps, Row, Space} from "antd";
+import {Button, Col, Dropdown, Image, MenuProps, Row, Space} from "antd";
 import {Bread, IconFont} from "@/components";
 import {DownOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {Header as _Header} from "antd/es/layout/layout";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
 import {Userinfo} from "@/model/user";
 import {useNavigate} from "react-router-dom";
 import type {ItemType} from "antd/es/menu/interface";
 import './index.scss'
+import {changeLanguage} from "@/store/modules/locale";
+import i18n from "i18next";
+import {useTranslation} from "react-i18next";
 
-/**
- * 下拉选择框
- */
-const dropDownMenus: MenuProps['items'] = [
-    {
-        key: 'userinfo',
-        label: '个人中心',
-        icon: <UserOutlined/>,
-    },
-    {
-        key: 'logout',
-        label: '退出',
-        icon: <LogoutOutlined/>,
-    },
-];
 
 export const Header = () => {
 
     const dispatch = useAppDispatch();
+    const [language, setLanguage] = useState<string>(useAppSelector(state => state.locale.language));
+    const {t} = useTranslation();
     useEffect(() => {
         dispatch(fetchUserinfo());
     }, [dispatch])
@@ -54,6 +44,22 @@ export const Header = () => {
     }) => state.user.userinfo?.realName);
 
     const navigate = useNavigate();
+
+    /**
+     * 下拉选择框
+     */
+    const dropDownMenus: MenuProps['items'] = [
+        {
+            key: 'personCenter',
+            label: t('Header.personCenter'),
+            icon: <UserOutlined/>,
+        },
+        {
+            key: 'logout',
+            label: t('Header.logout'),
+            icon: <LogoutOutlined/>,
+        },
+    ];
 
     // onClick
     const onDropDownClick: MenuProps['onClick'] = (e: ItemType) => {
@@ -79,6 +85,17 @@ export const Header = () => {
                         <Bread/>
                     </Col>
                     <Col className="user-header">
+                        <Button
+                            className='language-button'
+                            onClick={async () => {
+                                const switchLanguage: string = language === 'zh' ? 'en' : 'zh'
+                                setLanguage(switchLanguage);
+                                dispatch(changeLanguage(switchLanguage));
+                                await i18n.changeLanguage(switchLanguage).then();
+                            }}
+                            icon={
+                                <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>
+                            }/>
                         <div>
                                       <span className="tenant">
                                     我的租户

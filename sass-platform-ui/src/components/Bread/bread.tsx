@@ -21,6 +21,7 @@ import {useAppSelector} from "@/store";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {Link} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 
 const getBreadcrumbName = (path: string, routers: Menu[]) => {
@@ -49,11 +50,12 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
 export const Bread = () => {
     const userMenus = useAppSelector(state => state.user.userMenus);
     const pathSnippets = location.pathname.split('/').filter(i => i);
+    const {t} = useTranslation();
     const breadcrumb = useMemo(() => {
         return pathSnippets.map((path) => {
             const breadcrumbName = getBreadcrumbName(path, userMenus);
             return {
-                title: breadcrumbName,
+                title: t(`Menu.${breadcrumbName}`),
                 key: path,
                 path: path,
             };

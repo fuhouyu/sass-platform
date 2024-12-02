@@ -20,13 +20,15 @@ import {Button, Divider, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
 import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
-import {useAppDispatch} from "@/store";
+import {useAppDispatch, useAppSelector} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {parseRouters, router} from "@/routes/routers";
 import {Menu} from "@/model/menu";
 import {IconFont} from "@/components";
+import {changeLanguage} from "@/store/modules/locale";
+import {useTranslation} from "react-i18next";
 
 /**
  * 登录组件
@@ -38,10 +40,11 @@ export const Login: React.FC = () => {
     const location = useLocation();
     const dispatch = useAppDispatch();
     const isAuth = useAuth();
+    const {t, i18n} = useTranslation();
+    const [language, setLanguage] = useState<string>(useAppSelector(state => state.locale.language));
 
     // 如果本身存在token，跳转回首页
     useEffect(() => {
-
         if (isAuth) {
             router.navigate('/').then()
             return
@@ -76,45 +79,57 @@ export const Login: React.FC = () => {
         <>
             <div className="container">
                 <div className="login-container">
+                    <Button
+                        className='switch-language-button'
+                        onClick={async () => {
+                            const switchLanguage: string = language === 'zh' ? 'en' : 'zh'
+                            setLanguage(switchLanguage);
+                            dispatch(changeLanguage(switchLanguage));
+                            await i18n.changeLanguage(switchLanguage).then();
+                        }}
+                        icon={
+                            <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>
+                        }/>
                     <Form className="login-form"
                           name="login"
                           initialValues={{remember: true}}
                           onFinish={onFinish}
                     >
-                        <h3 className="title">Sass 后台管理系统</h3>
+                        <h3 className="title">{t('Header.title')}</h3>
                         <Form.Item
                             name="identify"
-                            rules={[{required: true, message: '请输入用户名!'}]}
+                            rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                         >
-                            <Input prefix={<UserOutlined/>} placeholder="请输入用户名"/>
+                            <Input prefix={<UserOutlined/>} placeholder={t('Login.usernamePlaceholder')}/>
                         </Form.Item>
                         <Form.Item
                             name="credentials"
-                            rules={[{required: true, message: '请输入密码!'}]}
+                            rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                         >
-                            <Input prefix={<LockOutlined/>} type="password" placeholder="请输入密码"/>
+                            <Input prefix={<LockOutlined/>} type="password"
+                                   placeholder={t('Login.passwordPlaceholder')}/>
                         </Form.Item>
                         {/*<Form.Item name="remember" valuePropName="checked">*/}
                         {/*    <Checkbox>同意用户协议</Checkbox>*/}
                         {/*</Form.Item>*/}
                         <Divider className='other-login-divider'>
-                            <p>其它登录方式</p>
+                            <p>{t('Login.otherLogin')}</p>
                         </Divider>
                         <div className='other-login-methods'>
                             {/*微信扫码*/}
                             <div className='other-login-method'>
                                 <IconFont type="i-weixin"/>
-                                <p>微信登录</p>
+                                <p>{t('Login.wechatLogin')}</p>
                             </div>
                             {/*weLink登录*/}
                             <div className='other-login-method'>
                                 <IconFont type="i-WeLink"/>
-                                <p>WeLink 扫码</p>
+                                <p>{t('Login.weLinkLogin')}</p>
                             </div>
                         </div>
                         <Form.Item>
                             <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
-                                登录
+                                {t('Login.loginButton')}
                             </Button>
                         </Form.Item>
                     </Form>

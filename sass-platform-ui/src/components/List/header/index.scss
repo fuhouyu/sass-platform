@@ -14,47 +14,30 @@
  * limitations under the License.
  */
 
-// 布局头
-.layout-header {
-  background-color: #fff;
-  height: 3.125rem;
-  line-height: 3.125rem;
-  padding: 0 15px;
-  // 用户头
-  .user-header {
+.search-header {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.9375rem;
+  background-color: #ffffff;
+
+  .search-components {
     display: flex;
-    align-items: center;
+    gap: 1rem;
+
+    .search-component {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .6rem;
+      white-space: nowrap;
+    }
+  }
+
+  .ant-select-selector {
+    width: 180px !important;
+  }
+
+  .search-button {
+    font-size: 0.75rem;
     margin-left: auto;
-    font-size: 1rem;
-
-    .language-button {
-      margin: 0 .5rem;
-      border: 0;
-    }
-    // 租户标签
-    .tenant {
-      padding-right: 1rem;
-
-      span {
-        padding-left: 0.3rem;
-      }
-    }
   }
-
-  // 头像
-  .avatar {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-  }
-}
-
-// 平台title
-.platform-title {
-  height: 3.125rem;
-  width: 100%;
-  line-height: 3.125rem;
-  text-align: center;
-  margin: 0 auto;
-  color: white;
 }

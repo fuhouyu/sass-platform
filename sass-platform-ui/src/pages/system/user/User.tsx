@@ -15,86 +15,18 @@
  */
 
 
-import React, {useRef, useState} from "react";
-import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType} from "antd";
-import {IconFont, PageList} from "@/components";
+import React, {useEffect, useState} from "react";
+import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, Space, TableColumnsType} from "antd";
+import {IconFont, Page} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
-import {PageListHandler, SearchSelection} from "@components/List/pageParams";
 import {userApi} from "@/apis/user";
+import {PageQuery, PageResult} from "@/model/pageQuery";
+import {TenantInfo} from "@/model/tenant";
+import {AddButton, DeleteButton} from "@components/Button/commonButton";
 
 export const User: React.FC = () => {
-
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const pageListRef = useRef<PageListHandler>();
-    const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-    const [isAdded, setIsAdded] = useState<boolean>(false);
-    const [form] = Form.useForm();
-
-    /**
-     * 打开模态组
-     * @param userId 用户id
-     * @param isAddUser 是否添加用户
-     */
-    const openModal = (userId?: string,
-                       isAddUser?: boolean) => {
-        setIsModalOpen(true);
-        if (isAddUser) {
-            setIsAdded(isAddUser)
-            return;
-        }
-        userApi.getInfoByIdApi(userId!)
-            .then((res: Userinfo) => {
-                form.setFieldsValue({...res})
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            })
-    }
-
-    /**
-     * 关闭模态组
-     */
-    const closeModal = () => {
-        setIsModalOpen(false);
-        form.resetFields();
-    }
-
-    /**
-     * 处理用户表单
-     */
-    const handlerUserForm = () => {
-        setIsModalButtonLoading(true);
-        const promise = isAdded ? saveUserDetail() : updateUserDetail();
-        promise.then(() => {
-            message.success("操作成功").then()
-            setIsModalOpen(false);
-            form.resetFields();
-            pageListRef.current?.refresh();
-        })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            }).finally(() => {
-            setIsModalButtonLoading(false);
-        })
-    }
-
-    /**
-     * 保存用户详情
-     */
-    const saveUserDetail: () => Promise<string> = () => {
-        const userDetail = form.getFieldsValue();
-        return userApi.saveInfoApi(userDetail)
-    }
-
-    /**
-     * 修改用户详情
-     */
-    const updateUserDetail: () => Promise<void> = () => {
-        const userinfo: Userinfo = form.getFieldsValue();
-        return userApi.editInfoApi(userinfo.id!, userinfo);
-    }
 
     const columns: TableColumnsType = [
         {
@@ -157,33 +89,149 @@ export const User: React.FC = () => {
         }
     ];
 
+    const [updateUserId, setUpdateUserId] = useState<string | undefined>();
+    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
+    const [form] = Form.useForm();
+    const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+
+    /**
+     * 打开模态组
+     * @param userId 用户id
+     */
+    const openModal = (userId?: string) => {
+        setIsModalOpen(true);
+        setUpdateUserId(userId);
+        if (!userId) {
+            return;
+        }
+        userApi.getInfoByIdApi(userId!)
+            .then((res: Userinfo) => {
+                form.setFieldsValue({...res})
+            })
+            .catch((err: Error) => {
+                message.error(err.message).then()
+            })
+    }
+
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+    }
+
+    /**
+     * 处理用户表单
+     */
+    const handlerUserForm = async () => {
+        await form.validateFields();
+        setIsModalButtonLoading(true);
+        try {
+            await (updateUserId ? updateUserDetail() : saveUserDetail());
+            message.success("操作成功").then()
+            setIsModalOpen(false);
+            form.resetFields();
+        } catch (error: unknown) {
+            message.error(error instanceof Error ? error.message : '未知错误').then()
+        } finally {
+            setIsModalButtonLoading(false);
+        }
+    }
+
+    /**
+     * 保存用户详情
+     */
+    const saveUserDetail: () => Promise<string> = () => {
+        const userDetail = form.getFieldsValue();
+        return userApi.saveInfoApi(userDetail)
+    }
+
+    /**
+     * 修改用户详情
+     */
+    const updateUserDetail: () => Promise<void> = () => {
+        const userinfo: Userinfo = form.getFieldsValue();
+        return userApi.editInfoApi(userinfo.id!, userinfo);
+    }
+
+    /**
+     * 分页查询
+     */
+    const [pageQuery, setPageQuery] = useState<PageQuery>({
+        pageNum: 1,
+        pageSize: 10,
+    });
+
+    /**
+     * 分页查询结果
+     */
+    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
+    useEffect(() => {
+        userApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<Userinfo>) => {
+                setPageResult({...res});
+            })
+    }, [pageQuery])
+
+    /**
+     * 分页查询请求
+     */
+    const pageRequest = () => {
+        userApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<TenantInfo>) => {
+                setPageResult({...res})
+            })
+    }
+
 
     return (
         <>
-            <PageList
-                ref={pageListRef}
-                listName='用户'
-                columns={columns}
-                pageRequestApi={userApi.pageInfoListApi}
-                addCallback={() => {
-                    openModal(undefined, true)
+            <Page
+                tableProps={{
+                    tableName: '用户列表',
+                    columns: columns,
+                    pageData: pageResult,
+                    setPageQuery: setPageQuery,
+                    setMultipleChooseRowKey: setRowKeys,
+                    components: [
+                        <>
+                            <AddButton onClick={() => openModal()}/>
+                            <DeleteButton onClick={async () => {
+                                userApi.deleteInfoApi(rowKeys as string[]).then();
+                                pageRequest()
+                            }}/>
+                        </>
+                    ]
                 }}
-                searchComments={[
-                    {
-                        name: '性别筛选',
-                        key: 'gender',
-                        comment: SearchSelection,
-                        placeholder: '用户性别',
-                        options: [
-                            {label: '男', value: 'male'},
-                            {label: '女', value: 'female'},
-                        ]
-                    }
-                ]}
-                deleteCallback={(ids: string[]) => userApi.deleteInfoApi(ids)}
+                headerSearchProps={{
+                    components: [
+                        <><label htmlFor="username">用户名</label>
+                            <Input placeholder={'请输入用户名'} id={'username'} onChange={(e) => {
+                                setUserQuery({username: e.target.value})
+                            }}/>
+                        </>,
+                        <>
+                            <span>性别</span>
+                            <Select
+                                key={'gender'}
+                                placeholder={'用户性别'}
+                                onChange={(value) => userQuery['gender'] = value}
+                                options={[
+                                    {value: 'male', label: <span>男</span>},
+                                    {value: 'female', label: <span>女</span>}
+                                ]}
+                            />
+                        </>
+                    ],
+                    onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                }}
             />
+
             <Modal
-                title={isAdded ? "新增用户" : "修改用户"}
+                title={updateUserId ? "修改用户" : "新增用户"}
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
@@ -205,7 +253,7 @@ export const User: React.FC = () => {
                     style={{maxWidth: 600}}
                     autoComplete="off"
                 >
-                    {isAdded &&
+                    {!updateUserId &&
                         <Row gutter={24}>
                             <Col span={12}>
                                 <Form.Item

@@ -23,6 +23,9 @@ export interface PageQuery {
     keyword?: string;
     sortColumn?: string;
     isAsc?: boolean;
+
+    // 允许动态添加任意键
+    [key: string]: unknown;
 }
 
 

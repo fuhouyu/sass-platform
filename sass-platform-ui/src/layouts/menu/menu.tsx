@@ -24,27 +24,33 @@ import './index.scss'
 import {useAppSelector} from "@/store";
 import {Menu as UserMenus} from "@/model/menu";
 import {IconFont} from "@/components";
+import {useTranslation} from "react-i18next";
 
-const commonMenus: MenuType[] = [
-    {
-        key: 'home',
-        title: '首页',
-        label: '首页',
-        icon:
-            <IconFont type="i-home" style={{fontSize: '16px'}}/>
-    }
-]
 /**
  * 侧边菜单组件
  * @constructor 构造函数
  */
 export const Menu = () => {
+
+    const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+    const {t} = useTranslation();
+
+    const commonMenus: MenuType[] = [
+        {
+            key: 'home',
+            title: t('Menu.home'),
+            label: t('Menu.home'),
+            icon:
+                <IconFont type="i-home" style={{fontSize: '16px'}}/>
+        }
+    ]
+
     const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
 
     const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[];
     menuItems.unshift(...commonMenus);
-    const navigate = useNavigate();
-    const [collapsed, setCollapsed] = useState<boolean>(false);
+
     // 点击菜单时进行跳转
     const onMenuClick = ({keyPath}: { key: string, keyPath: string[] }) => {
         const toPath = keyPath.reverse().join('/');
@@ -56,7 +62,7 @@ export const Menu = () => {
             <Sider className='layout-sider' collapsible collapsed={collapsed}
                    onCollapse={(value) => setCollapsed(value)}>
                 <h3 className="platform-title">
-                    Sass 平台
+                    {t('Header.title')}
                 </h3>
                 <Divider/>
                 <_Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"

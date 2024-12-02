@@ -17,9 +17,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -85,7 +85,7 @@ public class TenantInfoController {
      */
     @GetMapping("/page")
     @Operation(summary = "租户列表")
-    public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(PageQueryDTO pageQueryDTO) {
+    public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(TenantPageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantInfoService.pageList(pageQueryDTO));
     }
 
