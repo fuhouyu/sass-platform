@@ -18,6 +18,7 @@ import axios, {AxiosInstance} from "axios";
 import {getAccessToken, removeToken} from "@/utils";
 import {router} from "@/routes/routers";
 import {message} from "antd";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 
 const request: AxiosInstance = axios.create({
@@ -56,7 +57,7 @@ request.interceptors.response.use(function (response) {
         if (response.data.code === 402) {
             removeToken()
             const pathname = router.state.location.pathname;
-            router.navigate('/login', {state: {from: pathname}}).then();
+            router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
             return
         }
         const error = new Error(response.data.message || '请求失败');

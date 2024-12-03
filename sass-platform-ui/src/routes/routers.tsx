@@ -43,7 +43,7 @@ export const commonRouter: RouterType[] = [
 
     {
         id: 'layout',
-        title: 'layout',
+        title: 'home',
         path: '/',
         element: <Layout/>,
         children: [

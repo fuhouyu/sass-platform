@@ -35,7 +35,7 @@ const getBreadcrumbName = (path: string, routers: Menu[]) => {
             if (childName) return childName;
         }
     }
-    return '';
+    return 'home';
 };
 
 const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params, items, paths) => {

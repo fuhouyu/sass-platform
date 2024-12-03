@@ -60,6 +60,7 @@ const EnUS = {
     },
     // 权限
     Permission: {
+        listName: 'Permission List',
         name: 'Permission Name',
         namePlaceholder: 'Please enter permission name',
         code: 'Permission Code',

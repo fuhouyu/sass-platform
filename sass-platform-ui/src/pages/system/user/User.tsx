@@ -17,7 +17,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, Space, TableColumnsType} from "antd";
-import {IconFont, Page} from "@/components";
+import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
@@ -189,7 +189,7 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <Page
+            <PageList
                 tableProps={{
                     tableName: '用户列表',
                     columns: columns,

@@ -15,7 +15,7 @@
  */
 import {Table as _Table, TableProps as _TableProps} from "antd";
 import React from "react";
-import {TableProps} from "@components/List/table/index.d";
+import {TableProps} from "@components/List/table/interface";
 import {IconFont} from "@/components";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
@@ -29,7 +29,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-export const Table = (tableProps: TableProps) => {
+const Table = (tableProps: TableProps) => {
     const {setPageQuery, setMultipleChooseRowKey, tableName, pageData, columns, components} = tableProps;
 
     const rowSelection: _TableProps['rowSelection'] = {
@@ -109,3 +109,5 @@ export const Table = (tableProps: TableProps) => {
         </>
     )
 }
+
+export default Table;

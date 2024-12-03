@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {SearchComponentProps} from "./interface.d";
+import {SearchComponentProps} from "./interface";
 import {Button} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import './index.scss'
@@ -22,7 +22,7 @@ import './index.scss'
 /**
  * 搜索头
  */
-const Header = (searchComponentProps: SearchComponentProps) => {
+const SearchHeader = (searchComponentProps: SearchComponentProps) => {
     const {components, onSearchClick} = searchComponentProps;
     return (
         <div className="search-header">
@@ -46,4 +46,4 @@ const Header = (searchComponentProps: SearchComponentProps) => {
     );
 };
 
-export default Header;
+export default SearchHeader;

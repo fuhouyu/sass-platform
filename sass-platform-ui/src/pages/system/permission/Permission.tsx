@@ -17,12 +17,14 @@
 
 import React, {Key, useEffect, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
-import {Button, Col, Input, Row, Table, TableColumnsType, Tree} from "antd";
+import {Col, Input, Row, TableColumnsType, Tree} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
-import {IconFont} from "@/components";
 import {useTranslation} from "react-i18next";
+import {SearchHeader, Table} from "@/components";
+import {PageQuery, PageResult} from "@/model/pageQuery";
+import {AddButton, DeleteButton} from "@components/Button/commonButton";
 
 /**
  * 设置树数据
@@ -51,7 +53,13 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 export const Permission: React.FC = () => {
     const [treeData, setTreeData] = useState<Menu[]>([]);
-    const [tableData, setTableData] = useState<Menu[]>([])
+    const [pageQuery, setPageQuery] = useState<PageQuery>({
+        pageNum: 1,
+        pageSize: 10,
+        parentId: '-1',
+    })
+
+    const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
     const {t} = useTranslation();
     useEffect(() => {
         // 先查询出一级菜单
@@ -61,6 +69,10 @@ export const Permission: React.FC = () => {
                 setTreeData(res);
             })
     }, [t])
+
+    const onSearch = async () => {
+        setPageData(await permissionApi.pageInfoListApi(pageQuery));
+    }
 
     const columns: TableColumnsType = [
         {
@@ -113,8 +125,6 @@ export const Permission: React.FC = () => {
         // 这里只会有一条
         const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
         child.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-        setTableData(child);
-
     }
 
     /**
@@ -151,20 +161,50 @@ export const Permission: React.FC = () => {
                     </div>
                 </Col>
                 <Col span={21}>
-                    <div className="title-line">
-                        <div className="buttons">
-                            <Button className="add-button"
-                                    icon={<IconFont type="i-add"/>}
-                            >
-                                新增
-                            </Button>
-                            <Button className="del-button"
-                                    icon={<IconFont type="i-delete"/>}>
-                                删除
-                            </Button>
-                        </div>
-                    </div>
-                    <Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>
+                    <SearchHeader
+                        // components={[<Input placeholder={t('Permission.namePlaceholder')}/>]}/>
+                        components={[
+                            <><label htmlFor="permissionName">{t('Permission.name')}</label>
+                                <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
+                                       onChange={(e) => {
+                                           setPageQuery({
+                                               ...pageQuery,
+                                               permissionName: e.target.value
+                                           })
+                                       }}/>
+                            </>,
+                        ]}
+                        onSearchClick={onSearch}
+                    />
+                    <Table
+                        tableName={t('Permission.listName')}
+                        columns={columns}
+                        setPageQuery={setPageQuery}
+                        pageData={pageData}
+                        components={[
+                            <>
+                                <AddButton/>
+                                <DeleteButton onClick={async () => {
+                                    // userApi.deleteInfoApi(rowKeys as string[]).then();
+                                    // pageRequest()
+                                }}/>
+                            </>
+                        ]}
+                    />
+                    {/*<div className="title-line">*/}
+                    {/*    <div className="buttons">*/}
+                    {/*        <Button className="add-button"*/}
+                    {/*                icon={<IconFont type="i-add"/>}*/}
+                    {/*        >*/}
+                    {/*            新增*/}
+                    {/*        </Button>*/}
+                    {/*        <Button className="del-button"*/}
+                    {/*                icon={<IconFont type="i-delete"/>}>*/}
+                    {/*            删除*/}
+                    {/*        </Button>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                    {/*<Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>*/}
                 </Col>
             </Row>
 

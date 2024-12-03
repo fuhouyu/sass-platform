@@ -16,8 +16,8 @@
 
 
 import {PageQuery} from "@/model/pageQuery";
-import {SearchComponentProps} from "@components/List/header/interface.d";
-import {TableProps} from "@components/List/table/index.d";
+import {SearchComponentProps} from "@components/List/header/interface";
+import {TableProps} from "@components/List/table/interface";
 
 
 /**

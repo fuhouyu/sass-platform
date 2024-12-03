@@ -31,7 +31,7 @@ import {
     Tree
 } from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {IconFont, Page} from "@/components";
+import {IconFont, PageList} from "@/components";
 import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
 import {Menu} from "@/model/menu";
 import {useAppSelector} from "@/store";
@@ -305,7 +305,7 @@ export const Tenant: React.FC = () => {
     }
 
     return (<>
-        <Page
+        <PageList
             tableProps={{
                 tableName: '租户列表',
                 columns: columns,
