@@ -61,6 +61,7 @@ const ZhCN = {
     },
     // 权限
     Permission: {
+        listName: '权限列表',
         name: '权限名称',
         namePlaceholder: '请输入权限名称',
         code: '权限编码',

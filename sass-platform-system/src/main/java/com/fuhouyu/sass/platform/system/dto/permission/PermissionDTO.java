@@ -81,5 +81,6 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     @Schema(name = "isVisible", description = "是否显示", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isVisible;
 
-
+    @Schema(name = "isLeaf", description = "是否为叶子节点，true 叶子，false 非叶子节点, 仅返回")
+    private Boolean isLeaf;
 }

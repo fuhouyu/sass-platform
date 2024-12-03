@@ -17,22 +17,22 @@
 DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
-    id               BIGINT PRIMARY KEY    NOT NULL,
-    tenant_code      VARCHAR(64)           NOT NULL,
-    tenant_name      VARCHAR(64)           NOT NULL,
-    tenant_type      VARCHAR(12)           NOT NULL,
-    remark           VARCHAR(256),
-    icon             VARCHAR(256),
-    contact_person   VARCHAR(20)           NOT NULL,
-    contact_info     VARCHAR(20)           NOT NULL,
-    start_time       TIMESTAMP,
-    end_time         TIMESTAMP,
-    is_enabled BOOLEAN DEFAULT TRUE NOT NULL,
-    is_deleted       BOOLEAN DEFAULT FALSE NOT NULL,
-    create_at        TIMESTAMP             NOT NULL,
-    create_by        VARCHAR(64)           NOT NULL,
-    update_at        TIMESTAMP             NOT NULL,
-    update_by        VARCHAR(64)           NOT NULL,
+    id             BIGINT PRIMARY KEY    NOT NULL,
+    tenant_code    VARCHAR(64)           NOT NULL,
+    tenant_name    VARCHAR(64)           NOT NULL,
+    tenant_type    VARCHAR(12)           NOT NULL,
+    remark         VARCHAR(256),
+    icon           VARCHAR(256),
+    contact_person VARCHAR(20)           NOT NULL,
+    contact_info   VARCHAR(20)           NOT NULL,
+    start_time     TIMESTAMP,
+    end_time       TIMESTAMP,
+    is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
+    create_at      TIMESTAMP             NOT NULL,
+    create_by      VARCHAR(64)           NOT NULL,
+    update_at      TIMESTAMP             NOT NULL,
+    update_by      VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -58,8 +58,8 @@ COMMENT ON COLUMN tenant_info.update_by IS '更新人';
 
 -- 内置租户
 INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
-                    contact_info, create_at,
-                    create_by, update_at, update_by)
+                        contact_info, create_at,
+                        create_by, update_at, update_by)
 VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin');
 
@@ -67,10 +67,10 @@ VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, '
 DROP TABLE IF EXISTS tenant_has_permission;
 CREATE TABLE tenant_has_permission
 (
-    tenant_id BIGINT NOT NULL,
-    permission_id    BIGINT      NOT NULL,
-    create_at        TIMESTAMP   NOT NULL,
-    create_by        VARCHAR(64) NOT NULL,
+    tenant_id     BIGINT      NOT NULL,
+    permission_id BIGINT      NOT NULL,
+    create_at     TIMESTAMP   NOT NULL,
+    create_by     VARCHAR(64) NOT NULL,
     PRIMARY KEY (tenant_id, permission_id)
 );
 COMMENT ON TABLE tenant_has_permission IS '租户权限关系表';
@@ -149,19 +149,19 @@ VALUES (1, 1, now(), 'admin');
 DROP TABLE IF EXISTS roles;
 CREATE TABLE roles
 (
-    id                BIGINT PRIMARY KEY NOT NULL,
-    role_name         VARCHAR(64)        NOT NULL,
-    role_code         VARCHAR(64)        NOT NULL,
-    display_order     INT                NOT NULL DEFAULT 0,
-    data_scope        VARCHAR(32)        NOT NULL,
-    is_enabled        BOOLEAN                     DEFAULT TRUE,
-    is_deleted        BOOLEAN                     DEFAULT FALSE,
-    is_allow_modified BOOLEAN DEFAULT TRUE,
-    tenant_id         BIGINT    NOT NULL,
-    create_at         TIMESTAMP NOT NULL,
-    create_by         VARCHAR(32)        NOT NULL,
-    update_at         TIMESTAMP NOT NULL,
-    update_by         VARCHAR(32)        NOT NULL,
+    id                BIGINT PRIMARY KEY    NOT NULL,
+    role_name         VARCHAR(64)           NOT NULL,
+    role_code         VARCHAR(64)           NOT NULL,
+    display_order     INT                   NOT NULL DEFAULT 0,
+    data_scope        VARCHAR(32)           NOT NULL,
+    is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
+    is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    tenant_id         BIGINT                NOT NULL,
+    create_at         TIMESTAMP             NOT NULL,
+    create_by         VARCHAR(32)           NOT NULL,
+    update_at         TIMESTAMP             NOT NULL,
+    update_by         VARCHAR(32)           NOT NULL,
     UNIQUE (role_code)
 );
 
@@ -209,31 +209,32 @@ DROP TABLE IF EXISTS permissions;
 -- 权限表
 CREATE TABLE permissions
 (
-    id              BIGINT PRIMARY KEY    NOT NULL,
-    parent_id       BIGINT                NOT NULL,
-    permission_name VARCHAR(64)           NOT NULL,
-    permission_code VARCHAR(64)           NOT NULL,
-    display_order   INT     DEFAULT 0,
-    icon            VARCHAR(64),
-    route_path      VARCHAR(32),
-    component_path  VARCHAR(32),
-    url_params      VARCHAR(256),
-    is_frame        BOOLEAN DEFAULT false NOT NULL,
-    permission_type VARCHAR(16)           NOT NULL,
-    is_allow_modified BOOLEAN DEFAULT TRUE,
-    is_visible      BOOLEAN DEFAULT TRUE  NOT NULL,
-    tenant_id       BIGINT                NOT NULL,
-    is_deleted      BOOLEAN DEFAULT FALSE,
-    create_at       TIMESTAMP             NOT NULL,
-    create_by       VARCHAR(32)           NOT NULL,
-    update_at       TIMESTAMP             NOT NULL,
-    update_by       VARCHAR(32)           NOT NULL,
+    id                BIGINT PRIMARY KEY    NOT NULL,
+    parent_id         BIGINT                NOT NULL,
+    permission_name   VARCHAR(64)           NOT NULL,
+    permission_code   VARCHAR(64)           NOT NULL,
+    display_order     INT     DEFAULT 0,
+    icon              VARCHAR(64),
+    route_path        VARCHAR(32),
+    component_path    VARCHAR(32),
+    url_params        VARCHAR(256),
+    is_frame          BOOLEAN DEFAULT false NOT NULL,
+    permission_type   VARCHAR(16)           NOT NULL,
+    is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_visible        BOOLEAN DEFAULT TRUE  NOT NULL,
+    owner_tenant_id   BIGINT                NOT NULL,
+    is_leaf           BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
+    create_at         TIMESTAMP             NOT NULL,
+    create_by         VARCHAR(32)           NOT NULL,
+    update_at         TIMESTAMP             NOT NULL,
+    update_by         VARCHAR(32)           NOT NULL,
     UNIQUE (permission_code)
 );
 CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
 COMMENT ON INDEX idx_permission_parent_id IS '权限父级id索引';
-CREATE INDEX idx_permission_tenant_id ON permissions (tenant_id);
-COMMENT ON INDEX idx_permission_tenant_id IS '权限租户id索引';
+CREATE INDEX idx_permission_tenant_id ON permissions (owner_tenant_id, permission_code);
+COMMENT ON INDEX idx_permission_tenant_id IS '租户下的权限编码唯一索引索引';
 
 COMMENT ON TABLE permissions IS '角色表';
 COMMENT ON COLUMN permissions.id IS '角色名称';
@@ -250,6 +251,8 @@ COMMENT ON COLUMN permissions.permission_type IS '权限类型字典项';
 COMMENT ON COLUMN permissions.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN permissions.is_visible IS '是否显示标记';
 COMMENT ON COLUMN permissions.is_deleted IS '删除标记';
+COMMENT ON COLUMN permissions.owner_tenant_id IS '所属的租户id';
+COMMENT ON COLUMN permissions.is_leaf IS '是否为叶子节点：true 是 false 否';
 COMMENT ON COLUMN permissions.create_at IS '创建时间';
 COMMENT ON COLUMN permissions.create_by IS '创建人';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
@@ -257,29 +260,30 @@ COMMENT ON COLUMN permissions.update_by IS '更新人';
 
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, '租户管理', 'tenant', 2, 'i-zuhuguanli', '/tenant', 'tenant', '', false, 'C', false, true, 1, false,
+                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (1, -1, 'tenant', 'tenant', 2, 'i-zuhuguanli', '/tenant', 'tenant', '', false, 'C', false, true, 1, true,
+        false,
         '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (2, -1, '系统设置', 'system', 3, 'i-xitongshezhi', '/system', null, '', false, 'M', false, true, 1, false,
+                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (2, -1, 'system', 'system', 3, 'i-xitongshezhi', '/system', null, '', false, 'M', false, true, 1, false, false,
         '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (21, 2, '用户管理', 'system:user', 1, 'i-yonghu1', '/system/user', 'system/user', '', false, 'C', false, true, 1,
-        false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (21, 2, 'user', 'system:user', 1, 'i-yonghu1', 'user', 'system/user', '', false, 'C', false, true, 1,
+        true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (22, 2, '角色管理', 'system:role', 2, 'i-jiaoseguanli2', '/system/role', 'system/role', '', false, 'C', false,
-        true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (22, 2, 'role', 'system:role', 2, 'i-jiaoseguanli2', 'role', 'system/role', '', false, 'C', false,
+        true, 1, true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (23, 2, '权限管理', 'system:permission', 3, 'i-icon-quanxian', '/system/permission', 'system/permission', '',
-        false, 'C', false, true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900',
+                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (23, 2, 'permission', 'system:permission', 3, 'i-icon-quanxian', 'permission', 'system/permission', '',
+        false, 'C', false, true, 1, true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900',
         'admin');
 
 
@@ -350,16 +354,16 @@ DROP TABLE IF EXISTS dict_type;
 -- 字典表
 CREATE TABLE dict_type
 (
-    id                BIGINT       NOT NULL PRIMARY KEY,
-    dict_name         VARCHAR(128) NOT NULL,
-    type_code         VARCHAR(128) NOT NULL,
-    is_deleted        BOOLEAN DEFAULT FALSE,
-    is_allow_modified BOOLEAN DEFAULT TRUE,
-    remark            VARCHAR(128) NOT NULL,
-    create_at TIMESTAMP NOT NULL,
-    create_by         VARCHAR(32)  NOT NULL,
-    update_at TIMESTAMP NOT NULL,
-    update_by         VARCHAR(32)  NOT NULL,
+    id                BIGINT                NOT NULL PRIMARY KEY,
+    dict_name         VARCHAR(128)          NOT NULL,
+    type_code         VARCHAR(128)          NOT NULL,
+    is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
+    is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    remark            VARCHAR(128)          NOT NULL,
+    create_at         TIMESTAMP             NOT NULL,
+    create_by         VARCHAR(32)           NOT NULL,
+    update_at         TIMESTAMP             NOT NULL,
+    update_by         VARCHAR(32)           NOT NULL,
     UNIQUE (type_code)
 );
 
@@ -379,18 +383,18 @@ COMMENT ON COLUMN dict_type.update_by IS '更新人';
 DROP TABLE IF EXISTS dict_item;
 CREATE TABLE dict_item
 (
-    id                BIGINT       NOT NULL PRIMARY KEY,
-    type_code         VARCHAR(128) NOT NULL,
-    item_name         VARCHAR(128) NOT NULL,
-    item_code         VARCHAR(128) NOT NULL,
-    display_order     INT          NOT NULL DEFAULT 0,
-    is_allow_modified BOOLEAN               DEFAULT TRUE,
-    is_deleted        BOOLEAN               DEFAULT FALSE,
-    remark            VARCHAR(128) NOT NULL,
-    create_at TIMESTAMP NOT NULL,
-    create_by         VARCHAR(32)  NOT NULL,
-    update_at TIMESTAMP NOT NULL,
-    update_by         VARCHAR(32)  NOT NULL,
+    id                BIGINT                NOT NULL PRIMARY KEY,
+    type_code         VARCHAR(128)          NOT NULL,
+    item_name         VARCHAR(128)          NOT NULL,
+    item_code         VARCHAR(128)          NOT NULL,
+    display_order     INT                   NOT NULL DEFAULT 0,
+    is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
+    remark            VARCHAR(128)          NOT NULL,
+    create_at         TIMESTAMP             NOT NULL,
+    create_by         VARCHAR(32)           NOT NULL,
+    update_at         TIMESTAMP             NOT NULL,
+    update_by         VARCHAR(32)           NOT NULL,
     UNIQUE (item_code)
 );
 

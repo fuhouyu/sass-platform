@@ -30,6 +30,8 @@
         <result column="is_frame" property="isFrame" jdbcType="BOOLEAN"/>
         <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
         <result column="is_visible" property="isVisible" jdbcType="BOOLEAN"/>
+        <result column="is_leaf" property="isLeaf" jdbcType="BOOLEAN"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BOOLEAN"/>
     </resultMap>
 
     <sql id="TableName">
@@ -50,6 +52,8 @@
         is_frame,
         is_allow_modified,
         is_visible,
+        is_leaf,
+        owner_tenant_id,
         is_deleted,
         create_at,
         update_at,
@@ -71,6 +75,8 @@
         p.is_frame,
         p.is_allow_modified,
         p.is_visible,
+        p.is_leaf,
+        p.owner_tenant_id,
         p.is_deleted,
         p.create_at,
         p.update_at,
@@ -99,6 +105,8 @@
             #{isFrame},
             #{isAllowModified},
             #{isVisible},
+            #{isLeaf},
+            #{ownerTenantId},
             #{isDeleted},
             #{createAt},
             #{updateAt},
@@ -129,6 +137,8 @@
                 #{entity.isFrame},
                 #{entity.isAllowModified},
                 #{entity.isVisible},
+                #{entity.isLeaf},
+                #{entity.ownerTenantId},
                 #{entity.isDeleted},
                 #{entity.createAt},
                 #{entity.updateAt},
@@ -166,6 +176,9 @@
         </if>
          <if test="isVisible != null">
             is_visible = #{isVisible},
+        </if>
+        <if test="isLeaf != null">
+            is_leaf = #{isLeaf},
         </if>
         update_at = #{updateAt},
         update_by = #{updateBy}
@@ -213,6 +226,15 @@
         <include refid="QueryColumns"/>
                 FROM
         <include refid="TableName"/> p
+        <where>
+            <if test="pageQuery.parentId != null">
+                p.parent_id = #{pageQuery.parentId}
+            </if>
+            <if test="pageQuery.permissionName != null and pageQuery.permissionName != ''">
+                AND p.permission_name LIKE CONCAT('%',#{pageQuery.permissionName},'%')
+            </if>
+
+        </where>
     </select>
 
     <select id="queryListByRoleIdList" resultMap="BaseResultMap">
@@ -236,7 +258,7 @@
         LEFT JOIN role_has_permission uhp ON uhr.role_id = uhp.role_id
         LEFT JOIN permissions p ON p.id = uhp.permission_id
         WHERE
-        p.tenant_id = #{tenantId}
+        p.owner_tenant_id = #{tenantId}
         AND
         uhr.user_id = #{userId}
     </select>

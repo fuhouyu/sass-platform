@@ -37,29 +37,78 @@ public class Permissions extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 1123897912371561223L;
 
+    /**
+     * 主键id
+     */
     private Long id;
 
+    /**
+     * 父级id
+     */
     private Long parentId;
 
+    /**
+     * 权限名称
+     */
     private String permissionName;
 
+    /**
+     * 权限编码
+     */
     private String permissionCode;
 
+    /**
+     * 权限类型
+     */
     private String permissionType;
 
+    /**
+     * 排序顺序
+     */
     private Integer displayOrder;
 
+    /**
+     * icon
+     */
     private String icon;
 
+    /**
+     * 路由路径
+     */
     private String routePath;
 
+    /**
+     * 组件路径
+     */
     private String componentPath;
 
+    /**
+     * url参数
+     */
     private String urlParams;
 
+    /**
+     * 是否frame
+     */
     private Boolean isFrame;
 
+    /**
+     * 是否允许修改
+     */
     private Boolean isAllowModified;
 
+    /**
+     * 是否显示
+     */
     private Boolean isVisible;
+
+    /**
+     * 租户id
+     */
+    private Long ownerTenantId;
+
+    /**
+     * 是否为叶子节点
+     */
+    private Boolean isLeaf;
 }

@@ -16,17 +16,17 @@
 
 
 import './index.scss'
-import {PageListProps} from "@components/List/page/index.d";
-import Header from "@components/List/header/header";
-import {Table} from "@components/List/table/table";
+import {PageListProps} from "@components/List/page/interface";
+import SearchHeader from "@components/List/header/searchHeader";
+import Table from "@components/List/table/table";
 
-const Page = (props: PageListProps) => {
+const PageList = (props: PageListProps) => {
     const {headerSearchProps, setPageQuery, tableProps} = props
 
 
     return (
         <>
-            {headerSearchProps && <Header
+            {headerSearchProps && <SearchHeader
                 {...headerSearchProps}/>}
             <Table
                 setPageQuery={setPageQuery}
@@ -35,6 +35,4 @@ const Page = (props: PageListProps) => {
     );
 };
 
-export {
-    Page
-}
+export default PageList;

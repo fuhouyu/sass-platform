@@ -18,7 +18,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
+import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +44,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/v1/permission")
-@Tag(name = "权限 web接口服务器")
+@Tag(name = "权限 web接口")
 @Validated
 @RequiredArgsConstructor
 public class PermissionController {
@@ -72,6 +74,18 @@ public class PermissionController {
     @GetMapping({"/list/{parentId}", "/list"})
     public BaseResponse<List<PermissionDTO>> getPermissionList(@PathVariable(value = "parentId", required = false) Long parentId) {
         return ResponseHelper.success(this.permissionService.getPermissionList(parentId));
+    }
+
+    /**
+     * 权限分页查询dto对象
+     *
+     * @param pageQuery 分页查询
+     * @return 分页列表
+     */
+    @Operation(summary = "权限分页查询dto对象")
+    @GetMapping("/page")
+    public BaseResponse<PageResultDTO<PermissionDTO>> pageList(PermissionPageQueryDTO pageQuery) {
+        return ResponseHelper.success(this.permissionService.pageList(pageQuery));
     }
 
 }

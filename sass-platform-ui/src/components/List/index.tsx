@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
+import SearchHeader from "./header/searchHeader";
+import PageList from "./page/pageList";
+import Table from "./table/table";
 
 export {
-    IconFont,
     Table,
     PageList,
     SearchHeader,
-    Bread,
-    PageLoading,
 }

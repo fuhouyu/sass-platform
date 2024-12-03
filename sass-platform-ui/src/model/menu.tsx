@@ -17,6 +17,7 @@
 
 import {BaseModel} from "@/model/base";
 
+
 export interface Menu extends BaseModel {
     /**
      * 权限树子集

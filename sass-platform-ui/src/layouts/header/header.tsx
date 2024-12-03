@@ -52,12 +52,12 @@ export const Header = () => {
     const dropDownMenus: MenuProps['items'] = [
         {
             key: 'personCenter',
-            label: t('Header.personCenter'),
+            label: t('SearchHeader.personCenter'),
             icon: <UserOutlined/>,
         },
         {
             key: 'logout',
-            label: t('Header.logout'),
+            label: t('SearchHeader.logout'),
             icon: <LogoutOutlined/>,
         },
     ];
