@@ -35,7 +35,7 @@ const getBreadcrumbName = (path: string, routers: Menu[]) => {
             if (childName) return childName;
         }
     }
-    return 'home';
+    return '';
 };
 
 const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params, items, paths) => {
@@ -49,9 +49,21 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
 
 export const Bread = () => {
     const userMenus = useAppSelector(state => state.user.userMenus);
-    const pathSnippets = location.pathname.split('/').filter(i => i);
+    const pathname = location.pathname;
     const {t} = useTranslation();
+
     const breadcrumb = useMemo(() => {
+        if (pathname === '/') {
+            return [];
+        }
+        if (pathname === '/home') {
+            return [{
+                title: t(`Menu.home`),
+                key: pathname,
+                path: pathname,
+            }];
+        }
+        const pathSnippets = pathname.split('/').filter(i => i);
         return pathSnippets.map((path) => {
             const breadcrumbName = getBreadcrumbName(path, userMenus);
             return {
@@ -60,7 +72,7 @@ export const Bread = () => {
                 path: path,
             };
         });
-    }, [pathSnippets, userMenus]);
+    }, [pathname, t, userMenus]);
     return (
         <>
             <Breadcrumb className="breadcrumb"

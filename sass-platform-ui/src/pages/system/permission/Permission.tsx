@@ -57,22 +57,41 @@ export const Permission: React.FC = () => {
         pageNum: 1,
         pageSize: 10,
         parentId: '-1',
-    })
-
+    });
+    const [search, setSearch] = useState<{ [key: string]: unknown }>({})
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
+    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+
+    const tableSearch = (tableSearch: { [key: string]: unknown }) => {
+        setPageQuery({
+            ...pageQuery,
+            ...search,
+            ...tableSearch
+        });
+    }
     const {t} = useTranslation();
+    /**
+     * 左侧菜单树
+     */
     useEffect(() => {
         // 先查询出一级菜单
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
                 res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
                 setTreeData(res);
-            })
-    }, [t])
+            });
+    }, [t]);
 
-    const onSearch = async () => {
-        setPageData(await permissionApi.pageInfoListApi(pageQuery));
-    }
+    /**
+     * 右侧列表
+     */
+    useEffect(() => {
+        permissionApi.pageInfoListApi(pageQuery)
+            .then((res) => {
+                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
+                setPageData(res);
+            })
+    }, [pageQuery]);
 
     const columns: TableColumnsType = [
         {
@@ -88,6 +107,7 @@ export const Permission: React.FC = () => {
         {
             title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
+            sorter: true,
             defaultSortOrder: 'descend',
         },
         {
@@ -125,6 +145,7 @@ export const Permission: React.FC = () => {
         // 这里只会有一条
         const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
         child.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
+        setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
     /**
@@ -162,49 +183,32 @@ export const Permission: React.FC = () => {
                 </Col>
                 <Col span={21}>
                     <SearchHeader
-                        // components={[<Input placeholder={t('Permission.namePlaceholder')}/>]}/>
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>
                                 <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
-                                       onChange={(e) => {
-                                           setPageQuery({
-                                               ...pageQuery,
-                                               permissionName: e.target.value
-                                           })
-                                       }}/>
+                                       onChange={(e) => setSearch({permissionName: e.target.value})}/>
                             </>,
                         ]}
-                        onSearchClick={onSearch}
+                        onSearchClick={() => {
+                            setPageQuery({...pageQuery, ...search})
+                        }}
                     />
                     <Table
                         tableName={t('Permission.listName')}
                         columns={columns}
-                        setPageQuery={setPageQuery}
+                        setMultipleChooseRowKey={setRowKeys}
+                        setPageQuery={tableSearch}
                         pageData={pageData}
                         components={[
                             <>
                                 <AddButton/>
                                 <DeleteButton onClick={async () => {
-                                    // userApi.deleteInfoApi(rowKeys as string[]).then();
-                                    // pageRequest()
+                                    permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                    setPageQuery({...pageQuery})
                                 }}/>
                             </>
                         ]}
                     />
-                    {/*<div className="title-line">*/}
-                    {/*    <div className="buttons">*/}
-                    {/*        <Button className="add-button"*/}
-                    {/*                icon={<IconFont type="i-add"/>}*/}
-                    {/*        >*/}
-                    {/*            新增*/}
-                    {/*        </Button>*/}
-                    {/*        <Button className="del-button"*/}
-                    {/*                icon={<IconFont type="i-delete"/>}>*/}
-                    {/*            删除*/}
-                    {/*        </Button>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                    {/*<Table columns={columns} rowKey='id' dataSource={tableData} className='table-info'/>*/}
                 </Col>
             </Row>
 
