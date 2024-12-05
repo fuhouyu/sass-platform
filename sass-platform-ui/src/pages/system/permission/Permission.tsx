@@ -25,6 +25,7 @@ import {useTranslation} from "react-i18next";
 import {SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import type {TableRowSelection} from "antd/es/table/interface";
 
 /**
  * 设置树数据
@@ -61,6 +62,16 @@ export const Permission: React.FC = () => {
     const [search, setSearch] = useState<{ [key: string]: unknown }>({})
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+
+    /**
+     * table列选择
+     */
+    const rowSelection: TableRowSelection<Menu> = {
+        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+        getCheckboxProps: (record: Menu) => ({
+            disabled: !record.isAllowModified
+        }),
+    };
 
     const tableSearch = (tableSearch: { [key: string]: unknown }) => {
         setPageQuery({
@@ -196,7 +207,7 @@ export const Permission: React.FC = () => {
                     <Table
                         tableName={t('Permission.listName')}
                         columns={columns}
-                        setMultipleChooseRowKey={setRowKeys}
+                        rowSelection={rowSelection}
                         setPageQuery={tableSearch}
                         pageData={pageData}
                         components={[

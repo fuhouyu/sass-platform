@@ -41,6 +41,8 @@ import {userApi} from "@/apis/user";
 import {tenantApi} from "@/apis/tenant";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import type {TableRowSelection} from "antd/es/table/interface";
+import {Userinfo} from "@/model/user";
 
 /**
  * 转换映射关系
@@ -304,6 +306,13 @@ export const Tenant: React.FC = () => {
             })
     }
 
+    /**
+     * table列选择
+     */
+    const rowSelection: TableRowSelection<Userinfo> = {
+        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    };
+
     return (<>
         <PageList
             tableProps={{
@@ -311,7 +320,7 @@ export const Tenant: React.FC = () => {
                 columns: columns,
                 pageData: pageResult,
                 setPageQuery: setPageQuery,
-                setMultipleChooseRowKey: setRowKeys,
+                rowSelection: rowSelection,
                 components: [
                     <>
                         <AddButton onClick={() => openModal()}/>

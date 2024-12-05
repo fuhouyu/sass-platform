@@ -261,13 +261,13 @@ COMMENT ON COLUMN permissions.update_by IS '更新人';
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
                          owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, 'tenant', 'tenant', 2, 'i-zuhuguanli', '/tenant', 'tenant', '', false, 'C', false, true, 1, true,
+VALUES (1, -1, 'tenant', 'tenant', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'C', false, true, 1, true,
         false,
         '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
                          owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (2, -1, 'system', 'system', 3, 'i-xitongshezhi', '/system', null, '', false, 'M', false, true, 1, false, false,
+VALUES (2, -1, 'system', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'M', false, true, 1, false, false,
         '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,

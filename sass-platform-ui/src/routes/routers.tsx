@@ -72,7 +72,6 @@ export const commonRouter: RouterType[] = [
         title: '404',
         path: '/*',
         component: <NotFound/>,
-
     }
 
 ]

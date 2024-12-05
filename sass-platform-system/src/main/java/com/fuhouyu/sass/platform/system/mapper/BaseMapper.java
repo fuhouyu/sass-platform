@@ -86,7 +86,7 @@ public interface BaseMapper<ID, T extends BaseEntity> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    List<T> queryByIds(@Param("list") List<ID> list);
+    List<T> queryByIds(@Param("list") Collection<ID> list);
 
 
     /**

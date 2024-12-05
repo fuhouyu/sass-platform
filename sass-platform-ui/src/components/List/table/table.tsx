@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {Table as _Table, TableProps as _TableProps} from "antd";
-import React from "react";
 import {TableProps} from "@components/List/table/interface";
 import {IconFont} from "@/components";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
@@ -29,19 +28,8 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-const Table = (tableProps: TableProps) => {
-    const {setPageQuery, setMultipleChooseRowKey, tableName, pageData, columns, components} = tableProps;
-
-    const rowSelection: _TableProps['rowSelection'] = {
-        onChange: (selectedRowKeys: React.Key[]) => {
-            if (selectedRowKeys === undefined || selectedRowKeys.length === 0) {
-                setMultipleChooseRowKey!([]);
-                return;
-            }
-            setMultipleChooseRowKey!(selectedRowKeys);
-        },
-    };
-
+const Table = <T extends object>(tableProps: TableProps<T>) => {
+    const {setPageQuery, rowKey, rowSelection, tableName, pageData, columns, components} = tableProps;
 
     /**
      * change 事件
@@ -69,43 +57,43 @@ const Table = (tableProps: TableProps) => {
     return (
         <>
             <div className="table-container">
-                    <div className="title-line">
+                <div className="title-line">
                         <span className="title">
                             {tableName}
                         </span>
-                        <div className="components">
-                            {components?.map((component, index) => (
-                                <div className='component' key={index}>
-                                    {component}
-                                </div>
-                            ))
-                            }
-                        </div>
+                    <div className="components">
+                        {components?.map((component, index) => (
+                            <div className='component' key={index}>
+                                {component}
+                            </div>
+                        ))
+                        }
                     </div>
+                </div>
                 <div className="tips-container">
                     <IconFont className='tips' type="i-tips"/>
                     <span>选择列表数据后可进行批量操作</span>
-                    </div>
                 </div>
-                <div className="list">
-                    <_Table
-                        rowSelection={setMultipleChooseRowKey && {type: 'checkbox', ...rowSelection}}
-                        scroll={{x: '100%'}}
-                        columns={columns}
-                        style={{tableLayout: 'fixed'}}
-                        rowKey="id"
-                        dataSource={pageData?.list}
-                        onChange={onChange}
-                        pagination={{
-                            total: pageData?.total,
-                            hideOnSinglePage: false,
-                            showSizeChanger: true,
-                            defaultPageSize: pageData?.pageSize ?? 10,
-                            locale: {items_per_page: '条/页'}
-                        }}
-                        showSorterTooltip={{target: 'sorter-icon'}}
-                    />
-                </div>
+            </div>
+            <div className="list">
+                <_Table
+                    rowSelection={rowSelection}
+                    scroll={{x: '100%'}}
+                    columns={columns}
+                    style={{tableLayout: 'fixed'}}
+                    rowKey={rowKey ?? "id"}
+                    dataSource={pageData?.list}
+                    onChange={onChange}
+                    pagination={{
+                        total: pageData?.total,
+                        hideOnSinglePage: false,
+                        showSizeChanger: true,
+                        defaultPageSize: pageData?.pageSize ?? 10,
+                        locale: {items_per_page: '条/页'}
+                    }}
+                    showSorterTooltip={{target: 'sorter-icon'}}
+                />
+            </div>
         </>
     )
 }
