@@ -25,6 +25,7 @@ import {userApi} from "@/apis/user";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {TenantInfo} from "@/model/tenant";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import type {TableRowSelection} from "antd/es/table/interface";
 
 export const User: React.FC = () => {
 
@@ -186,6 +187,12 @@ export const User: React.FC = () => {
             })
     }
 
+    /**
+     * table列选择
+     */
+    const rowSelection: TableRowSelection<Userinfo> = {
+        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    };
 
     return (
         <>
@@ -195,7 +202,7 @@ export const User: React.FC = () => {
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,
-                    setMultipleChooseRowKey: setRowKeys,
+                    rowSelection: rowSelection,
                     components: [
                         <>
                             <AddButton onClick={() => openModal()}/>

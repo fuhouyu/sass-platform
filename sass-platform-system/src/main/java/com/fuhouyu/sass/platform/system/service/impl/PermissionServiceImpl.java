@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -109,6 +110,20 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public int removeByIds(Collection<Long> ids) {
+        List<Permissions> permissionsList = this.permissionMapper.queryByIds(ids);
+        if (CollectionUtils.isEmpty(permissionsList)) {
+            return 0;
+        }
+        List<Permissions> notAllowModifiedList = permissionsList.stream()
+                .filter(p -> !p.getIsAllowModified())
+                .toList();
+        if (!CollectionUtils.isEmpty(notAllowModifiedList)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    String.format("以下权限: [%s] 禁止删除，请重新选择后重试！",
+                            notAllowModifiedList.stream()
+                                    .map(Permissions::getPermissionName)
+                                    .collect(Collectors.joining(","))));
+        }
         return this.permissionMapper.deleteByIds(ids);
     }
 

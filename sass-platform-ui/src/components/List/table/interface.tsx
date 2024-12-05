@@ -18,10 +18,11 @@ import React from "react";
 import {TableColumnsType} from "antd";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AnyObject} from "antd/es/_util/type";
+import type {TableRowSelection} from "antd/es/table/interface";
 
 
 // 搜索组件的主接口
-export interface TableProps {
+export interface TableProps<RecordType = AnyObject> {
     /**
      * 名称
      */
@@ -39,10 +40,13 @@ export interface TableProps {
      */
     setPageQuery?: (pageQuery: PageQuery) => void;
     /**
-     * 多选时的回调
-     * @param rowKey 每行的key
+     * 行主键
      */
-    setMultipleChooseRowKey?: (rowKey: React.Key[]) => void;
+    rowKey?: string;
+    /**
+     * table 多选
+     */
+    rowSelection?: TableRowSelection<RecordType>;
     /**
      * 组件数组
      */

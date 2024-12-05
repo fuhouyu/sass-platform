@@ -25,12 +25,10 @@ import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -86,6 +84,20 @@ public class PermissionController {
     @GetMapping("/page")
     public BaseResponse<PageResultDTO<PermissionDTO>> pageList(PermissionPageQueryDTO pageQuery) {
         return ResponseHelper.success(this.permissionService.pageList(pageQuery));
+    }
+
+
+    /**
+     * deletePermission
+     *
+     * @param idList id 集合
+     * @return void
+     */
+    @DeleteMapping
+    @Operation(summary = "根据权限id删除权限")
+    public BaseResponse<Void> deletePermission(@RequestBody @NotEmpty(message = "未选择要删除的权限") List<Long> idList) {
+        this.permissionService.removeByIds(idList);
+        return ResponseHelper.success();
     }
 
 }
