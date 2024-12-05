@@ -24,6 +24,8 @@ import {fetchUserMenus} from "@/store/modules/user";
 import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import '@/i18n/index'
+import NotFound from "@/pages/error/notfound";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
 export const App: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -31,7 +33,7 @@ export const App: React.FC = () => {
     useEffect(() => {
         const accessToken = getAccessToken();
         if (!accessToken) {
-            // 都为空时，不再请求路由
+            router.navigate(BASE_LOGIN_URL, {state: {from: router.state.location.pathname}}).then()
             setLoading(false);
             return;
         }
@@ -46,6 +48,7 @@ export const App: React.FC = () => {
     }
     return (
         <RouterProvider
+            fallbackElement={<NotFound/>}
             router={router}/>
 
     );

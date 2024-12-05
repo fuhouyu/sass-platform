@@ -25,7 +25,6 @@ import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {parseRouters, router} from "@/routes/routers";
-import {Menu} from "@/model/menu";
 import {IconFont} from "@/components";
 import {changeLanguage} from "@/store/modules/locale";
 import {useTranslation} from "react-i18next";
@@ -46,25 +45,19 @@ export const Login: React.FC = () => {
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
-            router.navigate('/').then()
+            navigate('/');
             return
         }
     }, [isAuth, navigate]);
     const onFinish = (loginData: UserAuthentication) => {
         setLoginButtonLoading(true)
         loginData.accountType = AccountType.PASSWORD
-        dispatch(fetchLogin(loginData)).then(() => {
+        dispatch(fetchLogin(loginData)).then(async () => {
             setLoginButtonLoading(false)
             const fromRouter = location.state?.from;
             const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
-            router.navigate(from)
-                .then(() => {
-                    // 设置权限
-                    dispatch(fetchUserMenus())
-                        .then((menuItems: Menu[]) => {
-                            router.routes[0]?.children!.push(...parseRouters(menuItems))
-                        })
-                })
+            router.routes[0]?.children!.push(...parseRouters(await dispatch(fetchUserMenus())))
+            router.navigate(from).then()
         }).catch((err: Error) => {
             message.error(err.message).then()
         }).finally(() => {
