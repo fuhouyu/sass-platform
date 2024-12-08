@@ -345,11 +345,9 @@ export const Tenant: React.FC = () => {
 
         <Modal
             title={updateId ? "修改租户" : "新增租户"}
-            className="ant-modal-header"
             open={isModalOpen}
             onCancel={() => closeModal()}
             footer={[]}
-            width={600}
             closeIcon={<IconFont type="i-Close" style={{
                 fontSize: '1.5rem',
             }}/>}
@@ -358,8 +356,9 @@ export const Tenant: React.FC = () => {
             <Form
                 name="basic"
                 form={form}
-                labelCol={{span: 4}}
                 autoComplete="off"
+                labelCol={{span: 5}}
+                style={{width: 600}}
                 onFinish={handleTenantConfig}
                 initialValues={{isEnabled: isEnabled}}
             >

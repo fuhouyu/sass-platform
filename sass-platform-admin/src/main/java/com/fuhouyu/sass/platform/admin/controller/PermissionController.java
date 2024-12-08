@@ -49,6 +49,18 @@ public class PermissionController {
     private final PermissionService permissionService;
 
     /**
+     * 保存权限dto对象
+     *
+     * @param permissionDTO 权限dto对象
+     * @return 主键id
+     */
+    @PostMapping
+    @Operation(summary = "保存权限dto对象")
+    public BaseResponse<Long> savePermission(@RequestBody PermissionDTO permissionDTO) {
+        return ResponseHelper.success(this.permissionService.save(permissionDTO));
+    }
+
+    /**
      * 获取用户当前权限列表
      *
      * @return 用户当前的权限列表

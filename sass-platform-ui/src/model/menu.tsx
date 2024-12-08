@@ -34,11 +34,11 @@ export interface Menu extends BaseModel {
     /**
      * icon
      */
-    icon?: string;
+    icon?: string | number | null;
     /**
      * 主键id
      */
-    id: string;
+    id?: string;
     /**
      * 是否允许修改
      */
@@ -59,6 +59,10 @@ export interface Menu extends BaseModel {
      * 权限编码
      */
     permissionCode?: string;
+    /**
+     * 权限类型
+     */
+    permissionType?: string;
     /**
      * 权限名称
      */

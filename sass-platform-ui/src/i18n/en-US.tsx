@@ -22,13 +22,16 @@ const EnUS = {
         updateAt: 'Update At',
         status: 'Status',
         displayOrder: 'Display Order',
+        displayOrderPlaceholder: 'Please enter Display Order',
         remark: 'Remark',
         reset: 'Reset',
         action: 'Action',
         success: 'Success!',
         error: 'Error!',
         yes: 'Yes',
-        no: 'No'
+        no: 'No',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
 
     },
     // button
@@ -79,15 +82,26 @@ const EnUS = {
         MENU: 'Menu',
         BUTTON: 'Button',
         icon: 'Permission Icon',
-        iconPlaceholder: 'Please enter icon name',
+        iconPlaceholder: 'Please enter Icon Name',
         listName: 'Permission List',
         name: 'Permission Name',
-        namePlaceholder: 'Please enter permission name',
+        namePlaceholder: 'Please enter Permission Name',
+        nameCheckMessage: 'Please enter Permission Name',
         code: 'Permission Code',
+        codePlaceholder: 'Please enter Permission Code',
+        codeCheckMessage: 'Please enter Permission Code',
+        codeTips: 'Permission code, unique within the current tenant.',
         isFrame: 'Is Frame',
         routePath: 'Route Path',
-        routePathPlaceHolder: 'Please enter Route Path'
-
+        routePathTips: 'The accessed route address, relative path, such as: `system`',
+        routePathPlaceHolder: 'Please enter Route Path',
+        routePathCheckMessage: 'Please enter Route Path',
+        componentPath: 'Component Path',
+        componentPathPlaceholder: 'Please enter Component Path',
+        routeParams: 'Route Params',
+        routeParamsPlaceholder: 'Please enter Route Params',
+        displayStatus: 'Display Status',
+        status: 'Permission Status',
     }
 }
 

@@ -82,11 +82,18 @@ public class PermissionServiceImpl implements PermissionService {
         if (Objects.nonNull(permissions)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "权限编码:%s 已存在", permissionCode);
         }
+
         Permissions entity = PERMISSION_ASSEMBLER.toEntity(dto);
+        Long parentId = entity.getParentId();
+        this.checkParentPermissionExists(parentId);
         entity.setId(id);
+        entity.setIsAllowModified(true);
+        entity.setIsLeaf(true);
+        entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.permissionMapper.insert(entity);
         return id;
     }
+
 
     @Override
     public void saveBatch(List<PermissionDTO> dtoList) {
@@ -149,5 +156,26 @@ public class PermissionServiceImpl implements PermissionService {
     public List<PermissionTreeDTO> getTreeList() {
         List<Permissions> permissionsList = this.permissionMapper.queryList(new PermissionPageQueryDTO());
         return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionsList));
+    }
+
+    /**
+     * 检查父级是否存在，不存在则抛出异常
+     *
+     * @param parentId 父级id
+     */
+    private void checkParentPermissionExists(Long parentId) {
+        // 如果为-1，则是一级菜单不进行验证，否则进行校验
+        if (Objects.equals(-1L, parentId)) {
+            return;
+        }
+        Permissions parentPermission = this.permissionMapper.queryById(parentId);
+        if (Objects.isNull(parentPermission)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "父级权限不存在，请重新选择父级权限");
+        }
+        // 如果当前父级为叶子节点，进行修改
+        if (parentPermission.getIsLeaf()) {
+            this.permissionMapper.updateLeafById(false, parentId);
+        }
     }
 }

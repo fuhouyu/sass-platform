@@ -63,4 +63,12 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @return 权限集合
      */
     List<Permissions> queryListByParentId(@Param("parentId") Long parentId);
+
+    /**
+     * 修改叶子节点
+     *
+     * @param isLeaf 是否为叶子节点
+     * @param id     id
+     */
+    void updateLeafById(@Param("isLeaf") boolean isLeaf, @Param("id") Long id);
 }
