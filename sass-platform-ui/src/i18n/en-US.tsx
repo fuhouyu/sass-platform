@@ -24,6 +24,12 @@ const EnUS = {
         displayOrder: 'Display Order',
         remark: 'Remark',
         reset: 'Reset',
+        action: 'Action',
+        success: 'Success!',
+        error: 'Error!',
+        yes: 'Yes',
+        no: 'No'
+
     },
     // button
     Button: {
@@ -31,6 +37,9 @@ const EnUS = {
         edit: 'Edit',
         delete: 'Delete',
         search: 'Search',
+        confirm: 'Confirm',
+        submit: 'Submit',
+        cancel: 'Cancel'
     },
     // header
     Header: {
@@ -51,6 +60,7 @@ const EnUS = {
     },
     // 菜单
     Menu: {
+        main: 'Main Categories',
         home: 'Home',
         system: 'System Manage',
         tenant: 'Tenant Manage',
@@ -60,10 +70,24 @@ const EnUS = {
     },
     // 权限
     Permission: {
+        add: 'Add Permission',
+        edit: 'Edit Permission',
+        parentPermission: 'Parent Permission',
+        type: 'Permission Type',
+        typeCheckMessage: 'Please choose Permission Type',
+        DIR: 'Directory',
+        MENU: 'Menu',
+        BUTTON: 'Button',
+        icon: 'Permission Icon',
+        iconPlaceholder: 'Please enter icon name',
         listName: 'Permission List',
         name: 'Permission Name',
         namePlaceholder: 'Please enter permission name',
         code: 'Permission Code',
+        isFrame: 'Is Frame',
+        routePath: 'Route Path',
+        routePathPlaceHolder: 'Please enter Route Path'
+
     }
 }
 

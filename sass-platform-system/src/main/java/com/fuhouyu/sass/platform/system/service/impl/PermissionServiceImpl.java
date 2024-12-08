@@ -20,9 +20,11 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
@@ -69,7 +71,7 @@ public class PermissionServiceImpl implements PermissionService {
         User user = ContextHolderStrategy.getContext().getUser();
         Long userId = user.getId();
         List<Permissions> list = this.permissionMapper.queryUserPermissonList(user.getTenantId(), userId);
-        return PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(list);
+        return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(list));
     }
 
     @Override
@@ -134,12 +136,18 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Function<PageQueryDTO, List<PermissionDTO>> getPageResult() {
-        return (p) -> PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryList(p));
+        return p -> PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryList(p));
     }
 
     @Override
     public List<PermissionDTO> getPermissionList(Long parentId) {
         List<Permissions> list = this.permissionMapper.queryListByParentId(Optional.ofNullable(parentId).orElse(-1L));
         return PERMISSION_ASSEMBLER.toDTO(list);
+    }
+
+    @Override
+    public List<PermissionTreeDTO> getTreeList() {
+        List<Permissions> permissionsList = this.permissionMapper.queryList(new PermissionPageQueryDTO());
+        return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionsList));
     }
 }

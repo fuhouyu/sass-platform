@@ -38,6 +38,13 @@ class PermissionApi extends DefaultApiImpl<Menu> {
     getPermissionListApi: (parentId?: string) => Promise<Menu[]> = (parentId?: string): Promise<Menu[]> => {
         return parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
     }
+
+    /**
+     * 权限树选择器
+     */
+    getPermissionTreeSelect: () => Promise<Menu[]> = (): Promise<Menu[]> => {
+        return request(`${this.baseUrl}/tree`)
+    }
 }
 
 /**

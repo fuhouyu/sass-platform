@@ -54,4 +54,11 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @return 权限列表
      */
     List<PermissionDTO> getPermissionList(Long parentId);
+
+    /**
+     * 获取权限树集合
+     *
+     * @return 权限树dto对象
+     */
+    List<PermissionTreeDTO> getTreeList();
 }

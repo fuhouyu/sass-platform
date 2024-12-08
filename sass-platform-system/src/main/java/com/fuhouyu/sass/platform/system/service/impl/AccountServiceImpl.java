@@ -109,6 +109,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Function<PageQueryDTO, List<AccountDTO>> getPageResult() {
-        return (p) -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
+        return p -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
     }
 }

@@ -24,6 +24,12 @@ const ZhCN = {
         displayOrder: '排序',
         remark: '备注',
         reset: '重置',
+        action: '操作',
+        success: '成功！',
+        failed: '失败！',
+        yes: '是',
+        no: '否',
+
     },
     // button
     Button: {
@@ -31,6 +37,9 @@ const ZhCN = {
         edit: '修改',
         delete: '删除',
         search: '搜索',
+        confirm: '确定',
+        submit: '提交',
+        cancel: '取消'
     },
     // header
     Header: {
@@ -52,6 +61,7 @@ const ZhCN = {
     },
     // 菜单
     Menu: {
+        main: '主类别',
         home: '主页',
         system: '系统管理',
         tenant: '租户管理',
@@ -61,10 +71,23 @@ const ZhCN = {
     },
     // 权限
     Permission: {
+        add: '新增权限',
+        edit: '修改权限',
+        parentPermission: '上级权限',
+        type: '权限类型',
+        typeCheckMessage: '请选择权限类型！',
+        DIR: '目录',
+        MENU: '菜单',
+        BUTTON: '按钮',
+        icon: '权限图标',
+        iconPlaceholder: '请输入图标名称',
         listName: '权限列表',
         name: '权限名称',
         namePlaceholder: '请输入权限名称',
         code: '权限编码',
+        isFrame: '是否外链',
+        routePath: '路由地址',
+        routePathPlaceHolder: '请输入路由地址'
     }
 }
 

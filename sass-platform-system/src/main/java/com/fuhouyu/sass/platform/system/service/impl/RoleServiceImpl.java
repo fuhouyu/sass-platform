@@ -103,6 +103,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Function<PageQueryDTO, List<RoleDTO>> getPageResult() {
-        return (p) -> ROLES_ASSEMBLER.toDTO(this.roleMapper.queryList(p));
+        return p -> ROLES_ASSEMBLER.toDTO(this.roleMapper.queryList(p));
     }
 }

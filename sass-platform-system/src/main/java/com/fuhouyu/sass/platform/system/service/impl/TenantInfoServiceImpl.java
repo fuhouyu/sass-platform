@@ -113,7 +113,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public Function<PageQueryDTO, List<TenantInfoDTO>> getPageResult() {
-        return (p) -> TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryList(p));
+        return p -> TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryList(p));
     }
 
     @Override

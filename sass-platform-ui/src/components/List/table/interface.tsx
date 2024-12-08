@@ -30,7 +30,7 @@ export interface TableProps<RecordType = AnyObject> {
     /**
      * table的列
      */
-    columns: TableColumnsType;
+    columns: TableColumnsType<RecordType>;
     /**
      * 分页数据
      */

@@ -17,15 +17,16 @@
 
 import React, {Key, useEffect, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
-import {Col, Input, Row, TableColumnsType, Tree} from "antd";
+import {Button, Col, Form, Input, Modal, Radio, Row, Space, TableColumnsType, Tree, TreeSelect} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {SearchHeader, Table} from "@/components";
+import {IconFont, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
+import {AnyObject} from "antd/es/_util/type";
 
 /**
  * 设置树数据
@@ -53,7 +54,8 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 }
 
 export const Permission: React.FC = () => {
-    const [treeData, setTreeData] = useState<Menu[]>([]);
+    const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
+    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
@@ -62,6 +64,9 @@ export const Permission: React.FC = () => {
     const [search, setSearch] = useState<{ [key: string]: unknown }>({})
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [form] = Form.useForm();
 
     /**
      * table列选择
@@ -89,7 +94,7 @@ export const Permission: React.FC = () => {
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
                 res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-                setTreeData(res);
+                setLazyTreeData(res);
             });
     }, [t]);
 
@@ -102,9 +107,9 @@ export const Permission: React.FC = () => {
                 res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
                 setPageData(res);
             })
-    }, [pageQuery]);
+    }, [pageQuery, t]);
 
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<Menu> = [
         {
             title: t('Permission.name'),
             dataIndex: 'permissionName',
@@ -132,17 +137,17 @@ export const Permission: React.FC = () => {
             title: t('Common.updateBy'),
             dataIndex: 'updateBy',
         },
-        // {
-        //     title: '操作',
-        //     dataIndex: 'action',
-        //     render: (_, record: Userinfo) => {
-        //         return (<>
-        //             <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-        //                 <a onClick={() => openModal(record.id)}>修改</a>
-        //             </Space>
-        //         </>)
-        //     }
-        // }
+        {
+            title: t('Common.action'),
+            dataIndex: 'action',
+            render: (_: AnyObject, record: Menu) => {
+                return (<>
+                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+                        <a onClick={() => openModal(record.id)}>修改</a>
+                    </Space>
+                </>)
+            }
+        }
     ];
 
     /**
@@ -172,8 +177,36 @@ export const Permission: React.FC = () => {
         }
         const res = await permissionApi.getPermissionListApi(key.toString());
         res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-        setTreeData((origin) => updateTreeData(origin, key, res));
+        setLazyTreeData((origin) => updateTreeData(origin, key, res));
     }
+
+    /**
+     * 打开模态框
+     * @param updateId 修改的id
+     */
+    const openModal = (updateId?: string | undefined) => {
+        setUpdateId(updateId);
+        permissionApi.getPermissionTreeSelect()
+            .then((res) => {
+                setTreeSelectData([{
+                    id: '-1',
+                    permissionName: 'main',
+                    permissionCode: '',
+                    children: res
+                }]);
+            });
+        setIsModalOpen(true);
+    }
+
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setUpdateId(undefined);
+        form.resetFields();
+    }
+
     return (
         <>
             <Row gutter={24} className={'main-container'}>
@@ -187,7 +220,7 @@ export const Permission: React.FC = () => {
                             fieldNames={{key: 'id', title: 'permissionName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
-                            treeData={treeData}
+                            treeData={lazyTreeData}
                             onSelect={onSelectTree}
                         />
                     </div>
@@ -204,7 +237,7 @@ export const Permission: React.FC = () => {
                             setPageQuery({...pageQuery, ...search})
                         }}
                     />
-                    <Table
+                    <Table<Menu>
                         tableName={t('Permission.listName')}
                         columns={columns}
                         rowSelection={rowSelection}
@@ -212,7 +245,7 @@ export const Permission: React.FC = () => {
                         pageData={pageData}
                         components={[
                             <>
-                                <AddButton/>
+                                <AddButton onClick={() => openModal()}/>
                                 <DeleteButton onClick={async () => {
                                     permissionApi.deleteInfoApi(rowKeys as string[]).then();
                                     setPageQuery({...pageQuery})
@@ -223,7 +256,131 @@ export const Permission: React.FC = () => {
                 </Col>
             </Row>
 
+            <Modal
+                title={updateId ? t('Permission.edit') : t('Permission.add')}
+                className="ant-modal-header"
+                open={isModalOpen}
+                onCancel={() => closeModal()}
+                width={600}
+                footer={[
+                    <Button key='onOk' type="primary"
+                    >{t('Button.confirm')}</Button>,
+                    <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '24px',
+                }}/>}
+            >
+                <Form
+                    name="basic"
+                    form={form}
+                    style={{maxWidth: 600}}
+                    autoComplete="off"
+                    initialValues={{
+                        permissionType: 'DIR',
+                        isFrame: false,
+                    }}
+                >
+                    <Row gutter={24}>
+                        <Col span={24}>
+                            <Form.Item
+                                label={t('Permission.parentPermission')}
+                                name="parentId"
+                                validateTrigger="onBlur"
+                                key="parentId"
+                                colon={false}
+                                initialValue={{parentId: -1, permissionName: 'main'}}
+                                required={true}
+                            >
+                                <TreeSelect
+                                    style={{width: '100%'}}
+                                    treeTitleRender={(menu: Menu) => {
+                                        if (menu) {
+                                            return t(`Menu.${menu.permissionName}`)
+                                        }
+                                        console.log(menu)
+                                    }}
+                                    fieldNames={{
+                                        label: 'permissionName',
+                                        value: 'id',
+                                    }}
+                                    allowClear
+                                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                    treeData={treeSelectData}
+                                    treeDefaultExpandAll
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col span={24}>
+                            <Form.Item
+                                label={t('Permission.type')}
+                                name="permissionType"
+                                validateTrigger="onBlur"
+                                key="permissionType"
+                                colon={false}
+                                required={true}
+                                rules={[{required: true, message: t('Permission.typeCheckMessage')}]}
+                            >
+                                <Radio.Group>
+                                    <Radio value={'DIR'}>{t('Permission.DIR')}</Radio>
+                                    <Radio value={'MENU'}>{t('Permission.MENU')}</Radio>
+                                    <Radio value={'BUTTON'}>{t('Permission.BUTTON')}</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
+                    <Row gutter={24}>
+                        <Col span={24}>
+                            <Form.Item
+                                label={t('Permission.icon')}
+                                name="icon"
+                                key="icon"
+                                labelCol={{span: 6}}
+                                colon={false}
+                            >
+                                <Input placeholder={t('Permission.iconPlaceholder')} maxLength={20}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Permission.isFrame')}
+                                name="isFrame"
+                                key="isFrame"
+                                colon={false}
+                                labelCol={{span: 12}}
+                                wrapperCol={{span: 12}}
+                                required={true}
+                            >
+                                <Radio.Group>
+                                    <Radio value={true}>{t('Common.yes')}</Radio>
+                                    <Radio value={false}>{t('Common.no')}</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Permission.isFrame')}
+                                name="isFrame"
+                                key="isFrame"
+                                colon={false}
+                                required={true}
+                                labelCol={{span: 12}}
+                                wrapperCol={{span: 12}}
+                            >
+                                <Input placeholder={t('Permission.routePaht')} maxLength={20}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+
+
+            </Modal>
         </>
     )
 
