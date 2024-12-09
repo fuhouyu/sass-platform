@@ -61,4 +61,12 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @return 权限树dto对象
      */
     List<PermissionTreeDTO> getTreeList();
+
+    /**
+     * 检查权限编码是否存在
+     *
+     * @param permissionCode 权限编码
+     * @return true 已存在
+     */
+    Boolean checkPermissionCodeExists(String permissionCode);
 }

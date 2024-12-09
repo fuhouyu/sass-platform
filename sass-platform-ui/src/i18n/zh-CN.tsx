@@ -64,7 +64,7 @@ const ZhCN = {
     },
     // 菜单
     Menu: {
-        main: '主类别',
+        main: '权限列表',
         home: '主页',
         system: '系统管理',
         tenant: '租户管理',
@@ -92,6 +92,7 @@ const ZhCN = {
         codeTips: '权限编码，当前租户下唯一',
         codePlaceholder: '请输入权限编码',
         codeCheckMessage: '请输入权限编码',
+        codeExistsErrorMessage: '权限编码已存在！',
         isFrame: '是否外链',
         routePath: '路由地址',
         routePathTips: '访问的路由地址，相对路径，如：`system`',

@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.mapper;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -71,4 +72,11 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param id     id
      */
     void updateLeafById(@Param("isLeaf") boolean isLeaf, @Param("id") Long id);
+
+    /**
+     * 根据父级id设置叶子节点
+     *
+     * @param parentIdList 父级id集合
+     */
+    void setLeafByIdList(@Param("parentIdList") Collection<Long> parentIdList);
 }

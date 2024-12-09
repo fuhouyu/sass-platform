@@ -63,7 +63,7 @@ const EnUS = {
     },
     // 菜单
     Menu: {
-        main: 'Main Categories',
+        main: 'Permission List',
         home: 'Home',
         system: 'System Manage',
         tenant: 'Tenant Manage',
@@ -89,6 +89,7 @@ const EnUS = {
         nameCheckMessage: 'Please enter Permission Name',
         code: 'Permission Code',
         codePlaceholder: 'Please enter Permission Code',
+        codeExistsErrorMessage: 'Permission Code exists!',
         codeCheckMessage: 'Please enter Permission Code',
         codeTips: 'Permission code, unique within the current tenant.',
         isFrame: 'Is Frame',

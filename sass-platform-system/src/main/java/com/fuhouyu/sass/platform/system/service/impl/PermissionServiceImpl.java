@@ -133,6 +133,14 @@ public class PermissionServiceImpl implements PermissionService {
                                     .map(Permissions::getPermissionName)
                                     .collect(Collectors.joining(","))));
         }
+        List<Long> parentIdList = permissionsList.stream()
+                .map(Permissions::getParentId)
+                .filter(parentId -> !Objects.equals(parentId, -1L))
+                .toList();
+        if (CollectionUtils.isEmpty(parentIdList)) {
+            // 修改isLeaf
+            this.permissionMapper.setLeafByIdList(parentIdList);
+        }
         return this.permissionMapper.deleteByIds(ids);
     }
 
@@ -156,6 +164,11 @@ public class PermissionServiceImpl implements PermissionService {
     public List<PermissionTreeDTO> getTreeList() {
         List<Permissions> permissionsList = this.permissionMapper.queryList(new PermissionPageQueryDTO());
         return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionsList));
+    }
+
+    @Override
+    public Boolean checkPermissionCodeExists(String permissionCode) {
+        return Objects.nonNull(this.permissionMapper.queryByPermissionCode(permissionCode));
     }
 
     /**

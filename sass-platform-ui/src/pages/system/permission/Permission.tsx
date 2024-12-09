@@ -69,7 +69,7 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 }
 
 export const Permission: React.FC = () => {
-    const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
+
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
@@ -78,9 +78,9 @@ export const Permission: React.FC = () => {
     });
 
     const {t} = useTranslation();
-    const [search, setSearch] = useState<{ [key: string]: unknown }>({})
+    const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
-    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+    const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
@@ -89,7 +89,8 @@ export const Permission: React.FC = () => {
         id: '-1',
         permissionName: 'main',
         permissionCode: '',
-    })
+    });
+    const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
 
     const columns: TableColumnsType<Menu> = [
         {
@@ -161,8 +162,12 @@ export const Permission: React.FC = () => {
         // 先查询出一级菜单
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
-                res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-                setLazyTreeData(res);
+
+                setLazyTreeData([{
+                    id: '-1',
+                    permissionName: 'main',
+                    children: res
+                }]);
             });
     }, [t]);
 
@@ -187,8 +192,6 @@ export const Permission: React.FC = () => {
             return
         }
         // 这里只会有一条
-        const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
-        child.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
         setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
@@ -204,26 +207,32 @@ export const Permission: React.FC = () => {
             })
         }
         const res = await permissionApi.getPermissionListApi(key.toString());
-        res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
         setLazyTreeData((origin) => updateTreeData(origin, key, res));
+    }
+
+    /**
+     * 权限树
+     */
+    const permissionTreeSelect = async () => {
+        const res = await permissionApi.getPermissionTreeSelect()
+        const menu = formParentPermission;
+        menu.children = res
+        setTreeSelectData([menu])
     }
 
     /**
      * 打开模态框
      * @param updateId 修改的id
      */
-    const openModal = (updateId?: string | undefined) => {
+    const openModal = async (updateId?: string | undefined) => {
         form.resetFields()
         setUpdateId(updateId);
-        permissionApi.getPermissionTreeSelect()
-            .then((res) => {
-                const menu = formParentPermission;
-                menu.children = res
-                setTreeSelectData([
-                    menu
-                ]);
-            });
+        await permissionTreeSelect();
         setIsModalOpen(true);
+        if (updateId) {
+            const permissionDetails = await permissionApi.getInfoByIdApi(updateId);
+            form.setFieldsValue({...permissionDetails})
+        }
     }
 
     /**
@@ -232,7 +241,16 @@ export const Permission: React.FC = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setUpdateId(undefined);
-        form.resetFields();
+    }
+
+    /**
+     * 拼接父级权限
+     * @param value value
+     */
+    const concatPermissionCode = (value: string): string => {
+        return formParentPermission.permissionCode ?
+            formParentPermission.permissionCode.concat(`:${value}`)
+            : value;
     }
 
     /**
@@ -245,12 +263,15 @@ export const Permission: React.FC = () => {
         } catch {
             return
         }
+        values.permissionCode = concatPermissionCode(formParentPermission.permissionCode!)
         try {
             setIsModalButtonLoading(true);
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
-            message.success("操作成功").then()
+            message.success(t('Common.success')).then()
             setIsModalOpen(false);
-            form.resetFields();
+            const res = await permissionApi.pageInfoListApi(pageQuery);
+            res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
+            setPageData(res);
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -260,22 +281,24 @@ export const Permission: React.FC = () => {
     return (
         <>
             <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
+                <Col span={6} className={'tree-container'}>
                     <Input
                         className='search-input'
                         placeholder={t('Permission.namePlaceholder')} allowClear/>
                     <div className='tree-info'>
                         <Tree
+                            defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'permissionName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={lazyTreeData}
+                            titleRender={(menu: Menu) => t(`Menu.${menu.permissionName}`)}
                             onSelect={onSelectTree}
                         />
                     </div>
                 </Col>
-                <Col span={21}>
+                <Col span={18}>
                     <SearchHeader
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>
@@ -324,6 +347,7 @@ export const Permission: React.FC = () => {
                 }}/>}
             >
                 <Form
+                    clearOnDestroy
                     name="modal-form"
                     form={form}
                     labelCol={{span: 4}}
@@ -418,15 +442,29 @@ export const Permission: React.FC = () => {
                                 key="permissionCode"
                                 colon={false}
                                 required={true}
+                                validateTrigger="onBlur"
                                 rules={[
                                     {
                                         required: true,
                                         type: "string",
                                         message: t('Permission.codeCheckMessage')
-                                    }
+                                    },
+                                    () => ({
+                                        validator: async (_, value: string) => {
+                                            if (!value || value === '') {
+                                                return
+                                            }
+                                            const exists: boolean = await permissionApi.checkPermissionCodeExistsApi(concatPermissionCode(value));
+                                            if (exists) {
+                                                return Promise.reject(new Error(t('Permission.codeExistsErrorMessage')));
+                                            }
+
+                                        }
+                                    })
                                 ]}
                             >
                                 <Input
+                                    disabled={updateId !== undefined}
                                     addonBefore={formParentPermission.permissionCode}
                                     suffix={<Tooltip title={t('Permission.codeTips')}>
                                         <IconFont type={'i-tips-hint'}/>

@@ -279,4 +279,20 @@
         SET is_leaf = #{isLeaf}
         WHERE id = #{id}
     </update>
+
+    <update id="setLeafByIdList">
+        UPDATE permissions AS parent
+        SET is_leaf = CASE
+                          WHEN NOT EXISTS (
+                              SELECT 1
+                              FROM permissions AS child
+                              WHERE child.parent_id = parent.id
+                          ) THEN TRUE
+                          ELSE FALSE
+            END
+        WHERE parent.id IN
+            <foreach collection="parentIdList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </update>
 </mapper>

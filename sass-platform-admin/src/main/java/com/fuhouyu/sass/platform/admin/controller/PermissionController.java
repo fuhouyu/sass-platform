@@ -121,4 +121,28 @@ public class PermissionController {
     public BaseResponse<List<PermissionTreeDTO>> treeList() {
         return ResponseHelper.success(this.permissionService.getTreeList());
     }
+
+    /**
+     * 权限详情
+     *
+     * @param id 主键id
+     * @return 权限详情
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "权限详情")
+    public BaseResponse<PermissionDTO> permissionInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.permissionService.findById(id));
+    }
+
+    /**
+     * 检查权限编码是否存在
+     *
+     * @param permissionCode 权限编码
+     * @return true 已存在， false不存在
+     */
+    @GetMapping("/exists")
+    @Operation(summary = "检查权限编码是否存在， true已存在")
+    public BaseResponse<Boolean> checkPermissionCodeExists(@RequestParam("permissionCode") String permissionCode) {
+        return ResponseHelper.success(this.permissionService.checkPermissionCodeExists(permissionCode));
+    }
 }
