@@ -36,7 +36,6 @@ i18n
         },
         fallbackLng: "zh",
         lng: localStorage.getItem(LANGUAGE_KEY) ?? 'zh',
-        debug: true,
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         }

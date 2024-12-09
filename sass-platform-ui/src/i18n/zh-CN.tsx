@@ -21,9 +21,18 @@ const ZhCN = {
         updateBy: '操作人',
         updateAt: '操作时间',
         status: '状态',
-        displayOrder: '排序',
+        displayOrder: '显示顺序',
+        displayOrderPlaceholder: '请输入显示顺序',
         remark: '备注',
         reset: '重置',
+        action: '操作',
+        success: '成功！',
+        failed: '失败！',
+        yes: '是',
+        no: '否',
+        enabled: '启用',
+        disabled: '禁用',
+
     },
     // button
     Button: {
@@ -31,6 +40,9 @@ const ZhCN = {
         edit: '修改',
         delete: '删除',
         search: '搜索',
+        confirm: '确定',
+        submit: '提交',
+        cancel: '取消'
     },
     // header
     Header: {
@@ -52,6 +64,7 @@ const ZhCN = {
     },
     // 菜单
     Menu: {
+        main: '权限列表',
         home: '主页',
         system: '系统管理',
         tenant: '租户管理',
@@ -61,10 +74,37 @@ const ZhCN = {
     },
     // 权限
     Permission: {
+        add: '新增权限',
+        edit: '修改权限',
+        parentPermission: '上级权限',
+        type: '权限类型',
+        typeCheckMessage: '请选择权限类型！',
+        DIR: '目录',
+        MENU: '菜单',
+        BUTTON: '按钮',
+        icon: ' 权限图标',
+        iconPlaceholder: '请输入图标名称',
         listName: '权限列表',
         name: '权限名称',
         namePlaceholder: '请输入权限名称',
+        nameCheckMessage: '请输入权限名称',
         code: '权限编码',
+        codeTips: '权限编码，当前租户下唯一',
+        codePlaceholder: '请输入权限编码',
+        codeCheckMessage: '请输入权限编码',
+        codeExistsErrorMessage: '权限编码已存在！',
+        isFrame: '是否外链',
+        routePath: '路由地址',
+        routePathTips: '访问的路由地址，相对路径，如：`system`',
+        routePathPlaceHolder: '请输入路由地址',
+        routePathCheckMessage: '请输入路由地址',
+        componentPath: '组件路径',
+        componentPathPlaceholder: '请输入组件路径',
+        componentPathCheckMessage: '请输入组件路径',
+        routeParams: '路由参数',
+        routeParamsPlaceholder: '请输入路由参数',
+        displayStatus: '显示状态',
+        status: '权限状态',
     }
 }
 

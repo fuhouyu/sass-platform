@@ -17,15 +17,31 @@
 
 import React, {Key, useEffect, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
-import {Col, Input, Row, TableColumnsType, Tree} from "antd";
+import {
+    Button,
+    Col,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    TableColumnsType,
+    Tooltip,
+    Tree,
+    TreeSelect
+} from "antd";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {SearchHeader, Table} from "@/components";
+import {IconFont, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
+import {AnyObject} from "antd/es/_util/type";
 
 /**
  * 设置树数据
@@ -53,58 +69,30 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 }
 
 export const Permission: React.FC = () => {
-    const [treeData, setTreeData] = useState<Menu[]>([]);
+
+    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
         parentId: '-1',
     });
-    const [search, setSearch] = useState<{ [key: string]: unknown }>({})
-    const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
-    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
 
-    /**
-     * table列选择
-     */
-    const rowSelection: TableRowSelection<Menu> = {
-        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: Menu) => ({
-            disabled: !record.isAllowModified
-        }),
-    };
-
-    const tableSearch = (tableSearch: { [key: string]: unknown }) => {
-        setPageQuery({
-            ...pageQuery,
-            ...search,
-            ...tableSearch
-        });
-    }
     const {t} = useTranslation();
-    /**
-     * 左侧菜单树
-     */
-    useEffect(() => {
-        // 先查询出一级菜单
-        permissionApi.getPermissionListApi()
-            .then((res: Menu[]) => {
-                res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-                setTreeData(res);
-            });
-    }, [t]);
+    const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
+    const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
+    const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
+    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [form] = Form.useForm();
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
+    const [formParentPermission, setFormParentPermission] = useState<Menu>({
+        id: '-1',
+        permissionName: 'main',
+        permissionCode: '',
+    });
+    const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
 
-    /**
-     * 右侧列表
-     */
-    useEffect(() => {
-        permissionApi.pageInfoListApi(pageQuery)
-            .then((res) => {
-                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
-                setPageData(res);
-            })
-    }, [pageQuery]);
-
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<Menu> = [
         {
             title: t('Permission.name'),
             dataIndex: 'permissionName',
@@ -132,18 +120,68 @@ export const Permission: React.FC = () => {
             title: t('Common.updateBy'),
             dataIndex: 'updateBy',
         },
-        // {
-        //     title: '操作',
-        //     dataIndex: 'action',
-        //     render: (_, record: Userinfo) => {
-        //         return (<>
-        //             <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-        //                 <a onClick={() => openModal(record.id)}>修改</a>
-        //             </Space>
-        //         </>)
-        //     }
-        // }
+        {
+            title: t('Common.action'),
+            dataIndex: 'action',
+            render: (_: AnyObject, record: Menu) => {
+                return (<>
+                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
+                        <a onClick={() => openModal(record.id)}>修改</a>
+                    </Space>
+                </>)
+            }
+        }
     ];
+
+    /**
+     * table列选择
+     */
+    const rowSelection: TableRowSelection<Menu> = {
+        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+        getCheckboxProps: (record: Menu) => ({
+            disabled: !record.isAllowModified
+        }),
+    };
+
+    /**
+     * 表单搜索
+     * @param tableSearch 表单搜索
+     */
+    const tableSearch = (tableSearch: { [key: string]: unknown }) => {
+        setPageQuery({
+            ...pageQuery,
+            ...search,
+            ...tableSearch
+        });
+    }
+
+    /**
+     * 左侧菜单树
+     */
+    useEffect(() => {
+        // 先查询出一级菜单
+        permissionApi.getPermissionListApi()
+            .then((res: Menu[]) => {
+
+                setLazyTreeData([{
+                    id: '-1',
+                    permissionName: 'main',
+                    children: res
+                }]);
+            });
+    }, [t]);
+
+    /**
+     * 右侧列表
+     */
+    useEffect(() => {
+        permissionApi.pageInfoListApi(pageQuery)
+            .then((res) => {
+                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
+                setPageData(res);
+            })
+    }, [pageQuery, t]);
+
 
     /**
      * 树被点击时的事件
@@ -154,8 +192,6 @@ export const Permission: React.FC = () => {
             return
         }
         // 这里只会有一条
-        const child = await permissionApi.getPermissionListApi(selectedKeys[0].toLocaleString())
-        child.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
         setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
@@ -171,28 +207,98 @@ export const Permission: React.FC = () => {
             })
         }
         const res = await permissionApi.getPermissionListApi(key.toString());
-        res.forEach((item: Menu) => item.permissionName = t(`Menu.${item.permissionName}`))
-        setTreeData((origin) => updateTreeData(origin, key, res));
+        setLazyTreeData((origin) => updateTreeData(origin, key, res));
     }
+
+    /**
+     * 权限树
+     */
+    const permissionTreeSelect = async () => {
+        const res = await permissionApi.getPermissionTreeSelect()
+        const menu = formParentPermission;
+        menu.children = res
+        setTreeSelectData([menu])
+    }
+
+    /**
+     * 打开模态框
+     * @param updateId 修改的id
+     */
+    const openModal = async (updateId?: string | undefined) => {
+        form.resetFields()
+        setUpdateId(updateId);
+        await permissionTreeSelect();
+        setIsModalOpen(true);
+        if (updateId) {
+            const permissionDetails = await permissionApi.getInfoByIdApi(updateId);
+            form.setFieldsValue({...permissionDetails})
+        }
+    }
+
+    /**
+     * 关闭模态组
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setUpdateId(undefined);
+    }
+
+    /**
+     * 拼接父级权限
+     * @param value value
+     */
+    const concatPermissionCode = (value: string): string => {
+        return formParentPermission.permissionCode ?
+            formParentPermission.permissionCode.concat(`:${value}`)
+            : value;
+    }
+
+    /**
+     * 处理表单
+     */
+    const handlerForm = async () => {
+        let values: Menu;
+        try {
+            values = await form.validateFields();
+        } catch {
+            return
+        }
+        values.permissionCode = concatPermissionCode(formParentPermission.permissionCode!)
+        try {
+            setIsModalButtonLoading(true);
+            await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
+            message.success(t('Common.success')).then()
+            setIsModalOpen(false);
+            const res = await permissionApi.pageInfoListApi(pageQuery);
+            res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
+            setPageData(res);
+        } finally {
+            setIsModalButtonLoading(false);
+        }
+    }
+
+
     return (
         <>
             <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
+                <Col span={6} className={'tree-container'}>
                     <Input
                         className='search-input'
                         placeholder={t('Permission.namePlaceholder')} allowClear/>
                     <div className='tree-info'>
                         <Tree
+                            defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'permissionName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
-                            treeData={treeData}
+                            treeData={lazyTreeData}
+                            titleRender={(menu: Menu) => t(`Menu.${menu.permissionName}`)}
                             onSelect={onSelectTree}
                         />
                     </div>
                 </Col>
-                <Col span={21}>
+                <Col span={18}>
                     <SearchHeader
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>
@@ -204,7 +310,7 @@ export const Permission: React.FC = () => {
                             setPageQuery({...pageQuery, ...search})
                         }}
                     />
-                    <Table
+                    <Table<Menu>
                         tableName={t('Permission.listName')}
                         columns={columns}
                         rowSelection={rowSelection}
@@ -212,7 +318,7 @@ export const Permission: React.FC = () => {
                         pageData={pageData}
                         components={[
                             <>
-                                <AddButton/>
+                                <AddButton onClick={() => openModal()}/>
                                 <DeleteButton onClick={async () => {
                                     permissionApi.deleteInfoApi(rowKeys as string[]).then();
                                     setPageQuery({...pageQuery})
@@ -223,7 +329,318 @@ export const Permission: React.FC = () => {
                 </Col>
             </Row>
 
+            <Modal
+                title={updateId ? t('Permission.edit') : t('Permission.add')}
+                className="ant-modal-header"
+                open={isModalOpen}
+                onCancel={() => closeModal()}
+                width={600}
+                footer={[
+                    <Button key='onOk' type="primary"
+                            loading={isModalButtonLoading}
+                            onClick={handlerForm}
+                    >{t('Button.confirm')}</Button>,
+                    <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '24px',
+                }}/>}
+            >
+                <Form
+                    clearOnDestroy
+                    name="modal-form"
+                    form={form}
+                    labelCol={{span: 4}}
+                    style={{width: 600}}
+                    autoComplete="off"
+                    initialValues={{
+                        permissionType: 'DIR',
+                        isFrame: false,
+                        isVisible: true,
+                        isEnabled: true,
+                    }}
+                >
+                    <Form.Item
+                        label={t('Permission.parentPermission')}
+                        name="parentId"
+                        validateTrigger="onBlur"
+                        key="parentId"
+                        colon={false}
+                        initialValue={-1}
+                        required={true}
+                    >
+                        <TreeSelect
+                            style={{width: '100%'}}
+                            treeTitleRender={(menu: Menu) => {
+                                if (menu) {
+                                    return t(`Menu.${menu.permissionName}`);
+                                }
+                                return t('Menu.main')
+                            }}
+                            fieldNames={{
+                                label: 'permissionName',
+                                value: 'id',
+                            }}
+                            onSelect={(_: string, node: Menu) => {
+                                setFormParentPermission(node)
+                            }}
+                            allowClear
+                            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                            treeData={treeSelectData}
+                            treeDefaultExpandAll
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label={t('Permission.type')}
+                        name="permissionType"
+                        validateTrigger="onBlur"
+                        key="permissionType"
+                        colon={false}
+                        required={true}
+                        rules={[
+                            {
+                                required: true,
+                                type: "string",
+                                message: t('Permission.typeCheckMessage')
+                            }
+                        ]}
+                    >
+                        <Radio.Group onChange={(e) => {
+                            form.setFieldValue('permissionType', e.target.value)
+                        }}>
+                            <Radio value={'DIR'}>{t('Permission.DIR')}</Radio>
+                            <Radio value={'MENU'}>{t('Permission.MENU')}</Radio>
+                            <Radio value={'BUTTON'}>{t('Permission.BUTTON')}</Radio>
+                        </Radio.Group>
+                    </Form.Item>
 
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                labelCol={{span: 8}}
+                                label={t('Permission.name')}
+                                name="permissionName"
+                                key="permissionName"
+                                colon={false}
+                                required={true}
+                                rules={[
+                                    {
+                                        required: true,
+                                        type: "string",
+                                        message: t('Permission.nameCheckMessage')
+                                    }
+                                ]}
+                            >
+                                <Input placeholder={t('Permission.namePlaceholder')} maxLength={20}/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                labelCol={{span: 8}}
+                                label={t('Permission.code')}
+                                name="permissionCode"
+                                key="permissionCode"
+                                colon={false}
+                                required={true}
+                                validateTrigger="onBlur"
+                                rules={[
+                                    {
+                                        required: true,
+                                        type: "string",
+                                        message: t('Permission.codeCheckMessage')
+                                    },
+                                    () => ({
+                                        validator: async (_, value: string) => {
+                                            if (!value || value === '') {
+                                                return
+                                            }
+                                            const exists: boolean = await permissionApi.checkPermissionCodeExistsApi(concatPermissionCode(value));
+                                            if (exists) {
+                                                return Promise.reject(new Error(t('Permission.codeExistsErrorMessage')));
+                                            }
+
+                                        }
+                                    })
+                                ]}
+                            >
+                                <Input
+                                    disabled={updateId !== undefined}
+                                    addonBefore={formParentPermission.permissionCode}
+                                    suffix={<Tooltip title={t('Permission.codeTips')}>
+                                        <IconFont type={'i-tips-hint'}/>
+                                    </Tooltip>}
+                                    placeholder={t('Permission.codePlaceholder')} maxLength={20}/>
+                            </Form.Item>
+                        </Col>
+
+                    </Row>
+
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                labelCol={{span: 8}}
+                                label={t('Common.displayOrder')}
+                                name="displayOrder"
+                                key="displayOrder"
+                                colon={false}
+                                required={true}
+                                validateTrigger="onBlur"
+                                rules={[
+                                    {
+                                        required: true,
+                                        type: "number",
+                                        message: t('Common.displayOrderPlaceholder')
+                                    }
+                                ]}
+                            >
+                                <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '100%'}}
+                                             min={1}/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                labelCol={{span: 8}}
+                                label={t('Permission.status')}
+                                name="isEnabled"
+                                key="isEnabled"
+                                colon={false}
+                                required={true}
+                            >
+                                <Radio.Group>
+                                    <Radio value={true}>{t('Common.enabled')}</Radio>
+                                    <Radio value={false}>{t('Common.disabled')}</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item noStyle shouldUpdate>
+                        {() => form.getFieldValue('permissionType') !== 'BUTTON' && (
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        labelCol={{span: 8}}
+                                        label={t('Permission.isFrame')}
+                                        name="isFrame"
+                                        key="isFrame"
+                                        colon={false}
+                                        required={true}
+                                    >
+                                        <Radio.Group>
+                                            <Radio value={true}>{t('Common.yes')}</Radio>
+                                            <Radio value={false}>{t('Common.no')}</Radio>
+                                        </Radio.Group>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        labelCol={{span: 8}}
+                                        label={t('Permission.routePath')}
+                                        name="routePath"
+                                        key="routePath"
+                                        colon={false}
+                                        required={true}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                type: "string",
+                                                message: t('Permission.routePathCheckMessage')
+                                            }
+                                        ]}
+                                    >
+                                        <Input placeholder={t('Permission.routePath')} maxLength={20}
+                                               addonBefore={formParentPermission.routePath}
+                                               suffix={
+                                                   <Tooltip title={t('Permission.routePathTips')}>
+                                                       <IconFont type={'i-tips-hint'}/>
+                                                   </Tooltip>
+                                               }
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        )}
+                    </Form.Item>
+
+                    <Form.Item noStyle shouldUpdate>
+                        {() => form.getFieldValue('permissionType') === 'MENU' && (
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        labelCol={{span: 8}}
+                                        label={t('Permission.componentPath')}
+                                        name="componentPath"
+                                        key="componentPath"
+                                        colon={false}
+                                        required={true}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                type: "string",
+                                                message: t('Permission.componentPathCheckMessage')
+                                            }
+                                        ]}
+                                    >
+                                        <Input placeholder={t('Permission.componentPathPlaceholder')}
+                                               maxLength={50}/>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        labelCol={{span: 8}}
+                                        label={t('Permission.routeParams')}
+                                        name="urlParams"
+                                        key="urlParams"
+                                        colon={false}
+                                    >
+                                        <Input placeholder={t('Permission.routeParamsPlaceholder')}
+                                               maxLength={100}/>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        )}
+                    </Form.Item>
+
+                    <Form.Item noStyle shouldUpdate>
+                        {
+                            () => form.getFieldValue('permissionType') !== 'BUTTON' &&
+                                <Row gutter={24}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            labelCol={{span: 8}}
+                                            label={t('Permission.icon')}
+                                            name="icon"
+                                            key="icon"
+                                            colon={false}
+                                        >
+                                            <Input placeholder={t('Permission.iconPlaceholder')} maxLength={20}/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            labelCol={{span: 8}}
+                                            label={t('Permission.displayStatus')}
+                                            name="isVisible"
+                                            key="isVisible"
+                                            colon={false}
+                                            required={true}
+                                        >
+                                            <Radio.Group>
+                                                <Radio value={true}>{t('Common.yes')}</Radio>
+                                                <Radio value={false}>{t('Common.no')}</Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                    </Col>
+
+                                </Row>
+                        }
+                    </Form.Item>
+
+
+                </Form>
+
+
+            </Modal>
         </>
     )
 

@@ -91,12 +91,14 @@ export const Login: React.FC = () => {
                         <h3 className="title">{t('Header.title')}</h3>
                         <Form.Item
                             name="identify"
+                            initialValue={'admin'}
                             rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                         >
                             <Input prefix={<UserOutlined/>} placeholder={t('Login.usernamePlaceholder')}/>
                         </Form.Item>
                         <Form.Item
                             name="credentials"
+                            initialValue={'admin'}
                             rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                         >
                             <Input prefix={<LockOutlined/>} type="password"

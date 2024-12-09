@@ -100,6 +100,33 @@
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
+                <version>${apache-rat-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>Dockerfile</exclude>
+                        <exclude>.dockerignore</exclude>
+                        <exclude>..gitignore</exclude>
+                        <exclude>CHANGELOG.md</exclude>
+                        <exclude>qodana.yaml</exclude>
+                        <exclude>.flattened-pom.xml</exclude>
+                        <exclude>qodana.yaml</exclude>
+                        <exclude>style/*</exclude>
+                        <exclude>**/README.md</exclude>
+                        <exclude>.github/**/*</exclude>
+                        <exclude>logs/*</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.imports</exclude>
+                        <exclude>**/**.yaml</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -41,7 +41,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/v1/tenant")
-@Tag(name = "租户 web接口层")
+@Tag(name = "租户 web接口")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

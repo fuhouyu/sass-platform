@@ -30,39 +30,43 @@ export interface Menu extends BaseModel {
     /**
      * 显示顺序
      */
-    displayOrder: number;
+    displayOrder?: number;
     /**
      * icon
      */
-    icon?: string;
+    icon?: string | number | null;
     /**
      * 主键id
      */
-    id: string;
+    id?: string;
     /**
      * 是否允许修改
      */
-    isAllowModified: boolean;
+    isAllowModified?: boolean;
     /**
      * 是否外链
      */
-    isFrame: boolean;
+    isFrame?: boolean;
     /**
      * 是否显示
      */
-    isVisible: boolean;
+    isVisible?: boolean;
     /**
      * 父级id，一级时为-1
      */
-    parentId: number;
+    parentId?: number;
     /**
      * 权限编码
      */
-    permissionCode: string;
+    permissionCode?: string;
+    /**
+     * 权限类型
+     */
+    permissionType?: string;
     /**
      * 权限名称
      */
-    permissionName: string;
+    permissionName?: string;
     /**
      * 路由路径
      */

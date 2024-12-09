@@ -47,7 +47,7 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping("/v1/user")
-@Tag(name = "用户 web接口层")
+@Tag(name = "用户 web接口")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

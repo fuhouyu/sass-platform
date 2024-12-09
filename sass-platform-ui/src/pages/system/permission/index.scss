@@ -35,3 +35,9 @@
 .search-input {
   margin: .5rem 0;
 }
+
+.ant-modal-body {
+  display: flex;
+  justify-content: center;
+  padding: .5rem 1.25rem !important;
+}

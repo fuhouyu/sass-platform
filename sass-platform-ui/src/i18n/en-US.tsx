@@ -22,8 +22,17 @@ const EnUS = {
         updateAt: 'Update At',
         status: 'Status',
         displayOrder: 'Display Order',
+        displayOrderPlaceholder: 'Please enter Display Order',
         remark: 'Remark',
         reset: 'Reset',
+        action: 'Action',
+        success: 'Success!',
+        error: 'Error!',
+        yes: 'Yes',
+        no: 'No',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
+
     },
     // button
     Button: {
@@ -31,6 +40,9 @@ const EnUS = {
         edit: 'Edit',
         delete: 'Delete',
         search: 'Search',
+        confirm: 'Confirm',
+        submit: 'Submit',
+        cancel: 'Cancel'
     },
     // header
     Header: {
@@ -51,6 +63,7 @@ const EnUS = {
     },
     // 菜单
     Menu: {
+        main: 'Permission List',
         home: 'Home',
         system: 'System Manage',
         tenant: 'Tenant Manage',
@@ -60,10 +73,36 @@ const EnUS = {
     },
     // 权限
     Permission: {
+        add: 'Add Permission',
+        edit: 'Edit Permission',
+        parentPermission: 'Parent Permission',
+        type: 'Permission Type',
+        typeCheckMessage: 'Please choose Permission Type',
+        DIR: 'Directory',
+        MENU: 'Menu',
+        BUTTON: 'Button',
+        icon: 'Permission Icon',
+        iconPlaceholder: 'Please enter Icon Name',
         listName: 'Permission List',
         name: 'Permission Name',
-        namePlaceholder: 'Please enter permission name',
+        namePlaceholder: 'Please enter Permission Name',
+        nameCheckMessage: 'Please enter Permission Name',
         code: 'Permission Code',
+        codePlaceholder: 'Please enter Permission Code',
+        codeExistsErrorMessage: 'Permission Code exists!',
+        codeCheckMessage: 'Please enter Permission Code',
+        codeTips: 'Permission code, unique within the current tenant.',
+        isFrame: 'Is Frame',
+        routePath: 'Route Path',
+        routePathTips: 'The accessed route address, relative path, such as: `system`',
+        routePathPlaceHolder: 'Please enter Route Path',
+        routePathCheckMessage: 'Please enter Route Path',
+        componentPath: 'Component Path',
+        componentPathPlaceholder: 'Please enter Component Path',
+        routeParams: 'Route Params',
+        routeParamsPlaceholder: 'Please enter Route Params',
+        displayStatus: 'Display Status',
+        status: 'Permission Status',
     }
 }
 

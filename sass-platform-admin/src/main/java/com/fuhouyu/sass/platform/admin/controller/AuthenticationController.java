@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/v1/auth")
-@Tag(name = "认证 web接口层")
+@Tag(name = "认证 web接口")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

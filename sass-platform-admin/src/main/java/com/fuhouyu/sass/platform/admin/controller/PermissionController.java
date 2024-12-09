@@ -17,7 +17,6 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionPageQueryDTO;
@@ -50,6 +49,18 @@ public class PermissionController {
     private final PermissionService permissionService;
 
     /**
+     * 保存权限dto对象
+     *
+     * @param permissionDTO 权限dto对象
+     * @return 主键id
+     */
+    @PostMapping
+    @Operation(summary = "保存权限dto对象")
+    public BaseResponse<Long> savePermission(@RequestBody PermissionDTO permissionDTO) {
+        return ResponseHelper.success(this.permissionService.save(permissionDTO));
+    }
+
+    /**
      * 获取用户当前权限列表
      *
      * @return 用户当前的权限列表
@@ -57,7 +68,7 @@ public class PermissionController {
     @GetMapping("/me")
     @Operation(summary = "获取用户当前权限列表")
     public BaseResponse<List<PermissionTreeDTO>> getPermissionByMe() {
-        return ResponseHelper.success(TreeConvertUtil.buildTree(permissionService.findPermissionListByMe()));
+        return ResponseHelper.success(permissionService.findPermissionListByMe());
     }
 
     /**
@@ -100,4 +111,38 @@ public class PermissionController {
         return ResponseHelper.success();
     }
 
+    /**
+     * 权限树集合，需要有菜单权限
+     *
+     * @return 权限树集合
+     */
+    @GetMapping("/tree")
+    @Operation(summary = "权限树集合,需要有菜单权限")
+    public BaseResponse<List<PermissionTreeDTO>> treeList() {
+        return ResponseHelper.success(this.permissionService.getTreeList());
+    }
+
+    /**
+     * 权限详情
+     *
+     * @param id 主键id
+     * @return 权限详情
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "权限详情")
+    public BaseResponse<PermissionDTO> permissionInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.permissionService.findById(id));
+    }
+
+    /**
+     * 检查权限编码是否存在
+     *
+     * @param permissionCode 权限编码
+     * @return true 已存在， false不存在
+     */
+    @GetMapping("/exists")
+    @Operation(summary = "检查权限编码是否存在， true已存在")
+    public BaseResponse<Boolean> checkPermissionCodeExists(@RequestParam("permissionCode") String permissionCode) {
+        return ResponseHelper.success(this.permissionService.checkPermissionCodeExists(permissionCode));
+    }
 }

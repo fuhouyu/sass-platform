@@ -38,6 +38,20 @@ class PermissionApi extends DefaultApiImpl<Menu> {
     getPermissionListApi: (parentId?: string) => Promise<Menu[]> = (parentId?: string): Promise<Menu[]> => {
         return parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
     }
+
+    /**
+     * 权限树选择器
+     */
+    getPermissionTreeSelect: () => Promise<Menu[]> = (): Promise<Menu[]> => {
+        return request(`${this.baseUrl}/tree`)
+    }
+
+    /**
+     * 检查权限是否存在
+     * @param permissionCode 权限编码
+     */
+    checkPermissionCodeExistsApi: (permissionCode: string) => Promise<boolean> = (permissionCode: string): Promise<boolean> =>
+        request.get(`${this.baseUrl}/exists?permissionCode=${permissionCode}`)
 }
 
 /**
