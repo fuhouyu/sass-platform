@@ -271,6 +271,7 @@
         <include refid="TableName"/> p
         WHERE parent_id = #{parentId}
         AND is_deleted = false
+        ORDER BY display_order
     </select>
 
     <update id="updateLeafById">
