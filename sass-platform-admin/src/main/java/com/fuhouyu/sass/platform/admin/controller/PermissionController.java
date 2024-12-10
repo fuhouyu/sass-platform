@@ -23,6 +23,7 @@ import com.fuhouyu.sass.platform.system.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -142,6 +143,7 @@ public class PermissionController {
      */
     @GetMapping("/exists")
     @Operation(summary = "检查权限编码是否存在， true已存在")
+    @Parameter(name = "permissionCode", description = "权限编码已存在")
     public BaseResponse<Boolean> checkPermissionCodeExists(@RequestParam("permissionCode") String permissionCode) {
         return ResponseHelper.success(this.permissionService.checkPermissionCodeExists(permissionCode));
     }

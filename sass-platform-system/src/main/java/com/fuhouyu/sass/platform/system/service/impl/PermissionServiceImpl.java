@@ -137,11 +137,12 @@ public class PermissionServiceImpl implements PermissionService {
                 .map(Permissions::getParentId)
                 .filter(parentId -> !Objects.equals(parentId, -1L))
                 .toList();
-        if (CollectionUtils.isEmpty(parentIdList)) {
+        int deleteCount = this.permissionMapper.deleteByIds(ids);
+        if (!CollectionUtils.isEmpty(parentIdList)) {
             // 修改isLeaf
             this.permissionMapper.setLeafByIdList(parentIdList);
         }
-        return this.permissionMapper.deleteByIds(ids);
+        return deleteCount;
     }
 
     @Override

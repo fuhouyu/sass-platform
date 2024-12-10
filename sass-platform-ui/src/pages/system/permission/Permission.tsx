@@ -80,6 +80,7 @@ export const Permission: React.FC = () => {
     const {t} = useTranslation();
     const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
+    const [initParentId, setInitParentId] = useState<string>('-1')
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -162,7 +163,6 @@ export const Permission: React.FC = () => {
         // 先查询出一级菜单
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
-
                 setLazyTreeData([{
                     id: '-1',
                     permissionName: 'main',
@@ -191,6 +191,7 @@ export const Permission: React.FC = () => {
         if (!selectedKeys || selectedKeys.length === 0) {
             return
         }
+        setInitParentId(selectedKeys[0] as string)
         // 这里只会有一条
         setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
@@ -225,7 +226,6 @@ export const Permission: React.FC = () => {
      * @param updateId 修改的id
      */
     const openModal = async (updateId?: string | undefined) => {
-        form.resetFields()
         setUpdateId(updateId);
         await permissionTreeSelect();
         setIsModalOpen(true);
@@ -248,6 +248,9 @@ export const Permission: React.FC = () => {
      * @param value value
      */
     const concatPermissionCode = (value: string): string => {
+        console.log(formParentPermission.permissionCode ?
+            formParentPermission.permissionCode.concat(`:${value}`)
+            : value)
         return formParentPermission.permissionCode ?
             formParentPermission.permissionCode.concat(`:${value}`)
             : value;
@@ -263,15 +266,15 @@ export const Permission: React.FC = () => {
         } catch {
             return
         }
-        values.permissionCode = concatPermissionCode(formParentPermission.permissionCode!)
+        values.permissionCode = concatPermissionCode(form.getFieldValue('permissionCode'));
         try {
             setIsModalButtonLoading(true);
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
-            setIsModalOpen(false);
             const res = await permissionApi.pageInfoListApi(pageQuery);
             res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
             setPageData(res);
+            setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -281,7 +284,7 @@ export const Permission: React.FC = () => {
     return (
         <>
             <Row gutter={24} className={'main-container'}>
-                <Col span={6} className={'tree-container'}>
+                <Col span={4} className={'tree-container'}>
                     <Input
                         className='search-input'
                         placeholder={t('Permission.namePlaceholder')} allowClear/>
@@ -298,7 +301,7 @@ export const Permission: React.FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={18}>
+                <Col span={20}>
                     <SearchHeader
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>
@@ -321,7 +324,8 @@ export const Permission: React.FC = () => {
                                 <AddButton onClick={() => openModal()}/>
                                 <DeleteButton onClick={async () => {
                                     permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                    setPageQuery({...pageQuery})
+                                    setPageQuery({...pageQuery});
+                                    await permissionTreeSelect();
                                 }}/>
                             </>
                         ]}
@@ -347,13 +351,14 @@ export const Permission: React.FC = () => {
                 }}/>}
             >
                 <Form
-                    clearOnDestroy
+                    clearOnDestroy={true}
                     name="modal-form"
                     form={form}
                     labelCol={{span: 4}}
                     style={{width: 600}}
                     autoComplete="off"
                     initialValues={{
+                        parentId: initParentId,
                         permissionType: 'DIR',
                         isFrame: false,
                         isVisible: true,
@@ -364,9 +369,7 @@ export const Permission: React.FC = () => {
                         label={t('Permission.parentPermission')}
                         name="parentId"
                         validateTrigger="onBlur"
-                        key="parentId"
                         colon={false}
-                        initialValue={-1}
                         required={true}
                     >
                         <TreeSelect

@@ -102,8 +102,8 @@ export const parseRouters = (menuProps: Menu[]): RouterType[] => {
     }
     return menuProps.map((item) => {
         return {
-            id: item.id,
-            title: item.permissionName,
+            id: item.id!,
+            title: item.permissionName ?? '',
             path: item.routePath ?? '',
             children: item.children ? parseRouters(item.children) : [],
             element: item.componentPath && lazyElement(item.componentPath),
