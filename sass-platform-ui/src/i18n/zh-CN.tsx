@@ -32,7 +32,6 @@ const ZhCN = {
         no: '否',
         enabled: '启用',
         disabled: '禁用',
-
     },
     // button
     Button: {
@@ -49,7 +48,6 @@ const ZhCN = {
         title: '多租户后台管理系统',
         personCenter: '个人中心',
         logout: '退出',
-
     },
     //登录
     Login: {
@@ -105,6 +103,17 @@ const ZhCN = {
         routeParamsPlaceholder: '请输入路由参数',
         displayStatus: '显示状态',
         status: '权限状态',
+    },
+    Role: {
+        list: '角色列表',
+        add: '新增角色',
+        edit: '修改角色',
+        name: '角色名称',
+        namePlaceholder: '请输入角色名称',
+        code: '角色编码',
+        codePlaceholder: '请输入角色编码',
+        dataScope: '数据权限',
+        dataScopePlaceholder: '请选择数据权限',
     }
 }
 

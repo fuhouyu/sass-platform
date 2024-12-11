@@ -15,40 +15,44 @@
  */
 
 
+import {BaseModel} from "@/model/base";
+
 /**
- * api常量
+ * 角色详情
  */
-export class BaseUrlConstant {
+export interface Role extends BaseModel {
+    /**
+     * 主键id
+     */
+    id?: string;
 
     /**
-     * 版本
+     * 角色名称
      */
-    static readonly VERSION: string = '/v1';
+    roleName?: string;
 
     /**
-     * 用户api
+     * 角色编码
      */
-    static readonly USER_API_PREFIX = `${BaseUrlConstant.VERSION}/user`;
+    roleCode?: string;
 
     /**
-     *认证api
+     * 显示顺序
      */
-    static readonly AUTHENTICATION_API_PREFIX = `${BaseUrlConstant.VERSION}/auth`;
+    displayOrder?: number;
 
     /**
-     * 权限api
+     * 数据范围
      */
-    static readonly PERMISSION_API_PREFIX = `${BaseUrlConstant.VERSION}/permission`;
+    dataScope?: string;
 
     /**
-     * 租户api
+     * 状态：true 启用
      */
-    static readonly TENANT_API_PREFIX = `${BaseUrlConstant.VERSION}/tenant`;
-
+    isEnabled?: boolean;
 
     /**
-     * 角色api
+     * 是否允许修改
      */
-    static readonly ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/role`;
-
+    isAllowModified?: boolean;
 }

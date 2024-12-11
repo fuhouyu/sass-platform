@@ -16,9 +16,9 @@
 
 import {useEffect} from "react";
 import {getAccessToken} from "@/utils";
-import {router} from "@/routes/routers";
 import {Button, Result} from "antd";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {router} from "@/routes/routers";
 
 export const NotFound = () => {
     // 如果用户未登录，跳回登录页

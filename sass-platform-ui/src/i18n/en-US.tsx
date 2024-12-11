@@ -103,6 +103,18 @@ const EnUS = {
         routeParamsPlaceholder: 'Please enter Route Params',
         displayStatus: 'Display Status',
         status: 'Permission Status',
+    },
+    // 角色
+    Role: {
+        list: 'Role List',
+        add: 'Add Role',
+        edit: 'Edit Role',
+        name: 'Role Name',
+        namePlaceholder: 'Please enter Role Name',
+        code: 'Role Code',
+        codePlaceholder: 'Please enter Role Code',
+        dataScope: 'Data Scope',
+        dataScopePlaceholder: 'Please choose Role Code',
     }
 }
 

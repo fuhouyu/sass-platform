@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,7 +95,7 @@ public class PermissionController {
      */
     @Operation(summary = "权限分页查询dto对象")
     @GetMapping("/page")
-    public BaseResponse<PageResultDTO<PermissionDTO>> pageList(PermissionPageQueryDTO pageQuery) {
+    public BaseResponse<PageResultDTO<PermissionDTO>> pageList(@ParameterObject PermissionPageQueryDTO pageQuery) {
         return ResponseHelper.success(this.permissionService.pageList(pageQuery));
     }
 

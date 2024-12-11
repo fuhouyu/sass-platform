@@ -31,6 +31,7 @@
         <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
         <result column="is_visible" property="isVisible" jdbcType="BOOLEAN"/>
         <result column="is_leaf" property="isLeaf" jdbcType="BOOLEAN"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
         <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BOOLEAN"/>
     </resultMap>
 
@@ -53,6 +54,7 @@
         is_allow_modified,
         is_visible,
         is_leaf,
+        is_enabled,
         owner_tenant_id,
         is_deleted,
         create_at,
@@ -76,6 +78,7 @@
         p.is_allow_modified,
         p.is_visible,
         p.is_leaf,
+        p.is_enabled,
         p.owner_tenant_id,
         p.is_deleted,
         p.create_at,
@@ -106,6 +109,7 @@
             #{isAllowModified},
             #{isVisible},
             #{isLeaf},
+            #{isEnabled},
             #{ownerTenantId},
             #{isDeleted},
             #{createAt},
@@ -138,6 +142,7 @@
                 #{entity.isAllowModified},
                 #{entity.isVisible},
                 #{entity.isLeaf},
+                #{entity.isEnabled},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
                 #{entity.createAt},
@@ -180,6 +185,9 @@
         <if test="isLeaf != null">
             is_leaf = #{isLeaf},
         </if>
+        <if test="isEnabled != null">
+            is_enabled = #{isEnabled},
+        </if>
         update_at = #{updateAt},
         update_by = #{updateBy}
         WHERE id = #{id}
@@ -200,8 +208,9 @@
 
     <select id="queryById" resultMap="BaseResultMap">
         SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
+        FROM <include refid="TableName"/> p
         WHERE id = #{id}
+        AND p.is_deleted = false
     </select>
 
 
@@ -213,6 +222,7 @@
             #{id}
         </foreach>
         ORDER BY display_order
+        AND p.is_deleted = false
     </select>
 
 
@@ -234,7 +244,7 @@
             <if test="pageQuery.permissionName != null and pageQuery.permissionName != ''">
                 AND p.permission_name LIKE CONCAT('%',#{pageQuery.permissionName},'%')
             </if>
-
+            AND p.is_deleted = false
         </where>
     </select>
 
@@ -248,6 +258,7 @@
         <foreach collection="roleIdList" separator="," item="roleId" open="rhp.role_id IN (" close=")">
             #{roleId}
         </foreach>
+        AND p.is_deleted = false
     </select>
 
     <select id="queryUserPermissonList" resultMap="BaseResultMap">
@@ -257,7 +268,7 @@
         FROM
         user_has_role uhr
         LEFT JOIN role_has_permission uhp ON uhr.role_id = uhp.role_id
-        LEFT JOIN permissions p ON p.id = uhp.permission_id
+        LEFT JOIN permissions p ON p.id = uhp.permission_id AND p.is_deleted = false
         WHERE
         p.owner_tenant_id = #{tenantId}
         AND

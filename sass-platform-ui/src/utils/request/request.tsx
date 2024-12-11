@@ -16,9 +16,9 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, removeToken} from "@/utils";
-import {router} from "@/routes/routers";
 import {message} from "antd";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {router} from "@/routes/routers";
 
 
 const request: AxiosInstance = axios.create({
