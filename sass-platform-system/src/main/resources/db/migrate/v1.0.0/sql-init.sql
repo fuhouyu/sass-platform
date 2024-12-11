@@ -157,12 +157,12 @@ CREATE TABLE roles
     is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
-    tenant_id         BIGINT                NOT NULL,
+    owner_tenant_id BIGINT NOT NULL,
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
     update_by         VARCHAR(32)           NOT NULL,
-    UNIQUE (role_code)
+    UNIQUE (owner_tenant_id, role_code)
 );
 
 COMMENT ON TABLE roles IS '角色表';
@@ -174,16 +174,15 @@ COMMENT ON COLUMN roles.data_scope IS '数据权限，字典项';
 COMMENT ON COLUMN roles.is_enabled IS '启用/禁用';
 COMMENT ON COLUMN roles.is_deleted IS '删除标记';
 COMMENT ON COLUMN roles.is_allow_modified IS '是否允许修改';
+COMMENT ON COLUMN roles.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN roles.create_at IS '创建时间';
 COMMENT ON COLUMN roles.create_by IS '创建人';
 COMMENT ON COLUMN roles.update_at IS '更新时间';
 COMMENT ON COLUMN roles.update_by IS '更新人';
 
-INSERT INTO roles(id, tenant_id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
+INSERT INTO roles(id, owner_tenant_id, role_name, role_code, data_scope, create_at, create_by, update_at, update_by)
 VALUES (1, 1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'admin');
 
-CREATE INDEX idx_role_tenant_id ON roles (tenant_id);
-COMMENT ON INDEX idx_role_tenant_id IS '角色中的租户id索引';
 
 -- 用户角色表
 DROP TABLE IF EXISTS user_has_role;
@@ -205,8 +204,8 @@ COMMENT ON COLUMN user_has_role.create_by IS '创建人';
 INSERT INTO user_has_role(user_id, role_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin');
 
-DROP TABLE IF EXISTS permissions;
 -- 权限表
+DROP TABLE IF EXISTS permissions;
 CREATE TABLE permissions
 (
     id                BIGINT PRIMARY KEY    NOT NULL,
@@ -222,8 +221,9 @@ CREATE TABLE permissions
     permission_type   VARCHAR(16)           NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
     is_visible        BOOLEAN DEFAULT TRUE  NOT NULL,
-    owner_tenant_id   BIGINT                NOT NULL,
     is_leaf           BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
+    owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
@@ -253,6 +253,7 @@ COMMENT ON COLUMN permissions.is_visible IS '是否显示标记';
 COMMENT ON COLUMN permissions.is_deleted IS '删除标记';
 COMMENT ON COLUMN permissions.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN permissions.is_leaf IS '是否为叶子节点：true 是 false 否';
+COMMENT ON COLUMN permissions.is_enabled IS '启禁用状态：true 启用，false 禁用';
 COMMENT ON COLUMN permissions.create_at IS '创建时间';
 COMMENT ON COLUMN permissions.create_by IS '创建人';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';

@@ -24,10 +24,10 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
-import {parseRouters, router} from "@/routes/routers";
 import {IconFont} from "@/components";
 import {changeLanguage} from "@/store/modules/locale";
 import {useTranslation} from "react-i18next";
+import {parseRouters, router} from "@/routes/routers";
 
 /**
  * 登录组件

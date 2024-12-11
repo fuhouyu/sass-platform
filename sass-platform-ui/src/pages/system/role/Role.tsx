@@ -14,72 +14,65 @@
  * limitations under the License.
  */
 
-
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, Space, TableColumnsType} from "antd";
-import {IconFont, PageList} from "@/components";
 import './index.scss'
-import {Userinfo} from "@/model/user";
-import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
-import {userApi} from "@/apis/user";
+import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType, Tag} from "antd";
+import {Role as RoleModel} from "@/model/role";
+import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
-import {AddButton, DeleteButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
+import {IconFont, PageList} from "@/components";
+import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
+import {useTranslation} from "react-i18next";
 
-export const User: React.FC = () => {
+export const Role: React.FC = () => {
+    const {t} = useTranslation();
 
     const columns: TableColumnsType = [
         {
-            title: '用户名',
-            dataIndex: 'username',
+            title: t('Role.name'),
+            dataIndex: 'roleName',
             showSorterTooltip: {target: 'full-header'},
         },
         {
-            title: '真实姓名',
-            dataIndex: 'realName',
+            title: t('Role.code'),
+            dataIndex: 'roleCode',
             defaultSortOrder: 'descend',
         },
         {
-            title: '昵称',
-            dataIndex: 'nickname',
+            title: t('Common.displayOrder'),
+            dataIndex: 'displayOrder',
         },
         {
-            title: '性别',
-            dataIndex: 'gender',
+            title: t('Common.status'),
+            dataIndex: 'isEnabled',
+            align: 'center',
+            render: (isEnabled: boolean) => (
+                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
+                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
+                    </Tag> :
+                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
+                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
+                    </Tag>
+            )
         },
+
         {
-            title: '登录时间',
-            dataIndex: 'loginDate',
-        },
-        {
-            title: '登录ip',
-            dataIndex: 'loginIp',
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createAt',
-            sorter: true,
-            showSorterTooltip: false
-        },
-        {
-            title: '创建人',
-            dataIndex: 'createBy'
-        },
-        {
-            title: '更新时间',
+            title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
             showSorterTooltip: false
         },
         {
-            title: '操作人',
+            title: t('Common.updateBy'),
             dataIndex: 'updateBy',
         },
         {
-            title: '操作',
+            title: t('Common.action'),
             dataIndex: 'action',
-            render: (_, record: Userinfo) => {
+            render: (_, record: RoleModel) => {
                 return (<>
                     <Space size="middle" style={{whiteSpace: 'nowrap'}}>
                         <a onClick={() => openModal(record.id)}>修改</a>
@@ -89,30 +82,24 @@ export const User: React.FC = () => {
         }
     ];
 
-    const [updateUserId, setUpdateUserId] = useState<string | undefined>();
+    const [updateId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+    const [roleQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
 
     /**
      * 打开模态组
-     * @param userId 用户id
+     * @param roleId 角色id
      */
-    const openModal = (userId?: string) => {
-        setIsModalOpen(true);
-        setUpdateUserId(userId);
-        if (!userId) {
-            return;
+    const openModal = async (roleId?: string) => {
+        setUpdateUserId(roleId);
+        if (roleId) {
+            const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
+            form.setFieldsValue({...roleInfo})
         }
-        userApi.getInfoByIdApi(userId!)
-            .then((res: Userinfo) => {
-                form.setFieldsValue({...res})
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            })
+        setIsModalOpen(true);
     }
 
     /**
@@ -124,13 +111,13 @@ export const User: React.FC = () => {
     }
 
     /**
-     * 处理用户表单
+     * 处理角色表单
      */
     const handlerUserForm = async () => {
         await form.validateFields();
         setIsModalButtonLoading(true);
         try {
-            await (updateUserId ? updateUserDetail() : saveUserDetail());
+            await (updateId ? updateUserDetail() : saveUserDetail());
             message.success("操作成功").then()
             setIsModalOpen(false);
             form.resetFields();
@@ -142,19 +129,19 @@ export const User: React.FC = () => {
     }
 
     /**
-     * 保存用户详情
+     * 保存角色详情
      */
     const saveUserDetail: () => Promise<string> = () => {
-        const userDetail = form.getFieldsValue();
-        return userApi.saveInfoApi(userDetail)
+        const roleDetail = form.getFieldsValue();
+        return roleApi.saveInfoApi(roleDetail)
     }
 
     /**
-     * 修改用户详情
+     * 修改角色详情
      */
     const updateUserDetail: () => Promise<void> = () => {
-        const userinfo: Userinfo = form.getFieldsValue();
-        return userApi.editInfoApi(userinfo.id!, userinfo);
+        const roleInfo: RoleModel = form.getFieldsValue();
+        return roleApi.editInfoApi(roleInfo.id!, roleInfo);
     }
 
     /**
@@ -168,10 +155,10 @@ export const User: React.FC = () => {
     /**
      * 分页查询结果
      */
-    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
+    const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
     useEffect(() => {
-        userApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<Userinfo>) => {
+        roleApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<RoleModel>) => {
                 setPageResult({...res});
             })
     }, [pageQuery])
@@ -180,8 +167,8 @@ export const User: React.FC = () => {
      * 分页查询请求
      */
     const pageRequest = () => {
-        userApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<Userinfo>) => {
+        roleApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<RoleModel>) => {
                 setPageResult({...res})
             })
     }
@@ -189,7 +176,7 @@ export const User: React.FC = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Userinfo> = {
+    const rowSelection: TableRowSelection<RoleModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
@@ -197,7 +184,7 @@ export const User: React.FC = () => {
         <>
             <PageList
                 tableProps={{
-                    tableName: '用户列表',
+                    tableName: t('Role.list'),
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,
@@ -206,7 +193,7 @@ export const User: React.FC = () => {
                         <>
                             <AddButton onClick={() => openModal()}/>
                             <DeleteButton onClick={async () => {
-                                userApi.deleteInfoApi(rowKeys as string[]).then();
+                                roleApi.deleteInfoApi(rowKeys as string[]).then();
                                 pageRequest()
                             }}/>
                         </>
@@ -214,38 +201,26 @@ export const User: React.FC = () => {
                 }}
                 headerSearchProps={{
                     components: [
-                        <><label htmlFor="username">用户名</label>
-                            <Input placeholder={'请输入用户名'} id={'username'} onChange={(e) => {
-                                setUserQuery({username: e.target.value})
+                        <><label htmlFor="roleCode">{t('Role.code')}</label>
+                            <Input placeholder={t('Role.codePlaceholder')} id={'roleCode'} onChange={(e) => {
+                                setUserQuery({roleName: e.target.value})
                             }}/>
                         </>,
-                        <>
-                            <span>性别</span>
-                            <Select
-                                key={'gender'}
-                                placeholder={'用户性别'}
-                                onChange={(value) => userQuery['gender'] = value}
-                                options={[
-                                    {value: 'male', label: <span>男</span>},
-                                    {value: 'female', label: <span>女</span>}
-                                ]}
-                            />
-                        </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                    onSearchClick: () => setPageQuery({...pageQuery, ...roleQuery})
                 }}
             />
 
             <Modal
-                title={updateUserId ? "修改用户" : "新增用户"}
+                title={updateId ? t('Role.add') : t('Role.edit')}
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
                 width={600}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerUserForm}>确定</Button>,
-                    <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
+                            onClick={handlerUserForm}>{t('Button.submit')}</Button>,
+                    <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
                 closeIcon={<IconFont type="i-Close" style={{
                     fontSize: '24px',
@@ -259,14 +234,14 @@ export const User: React.FC = () => {
                     style={{maxWidth: 600}}
                     autoComplete="off"
                 >
-                    {!updateUserId &&
+                    {!updateId &&
                         <Row gutter={24}>
                             <Col span={12}>
                                 <Form.Item
-                                    label="用户名"
-                                    name="username"
+                                    label="角色名"
+                                    name="rolename"
                                     validateTrigger="onBlur"
-                                    key="username"
+                                    key="rolename"
                                     wrapperCol={{offset: 1}}
                                     colon={false}
                                     required={true}
@@ -280,18 +255,18 @@ export const User: React.FC = () => {
                                         () => ({
                                             validator: async (_, value: string) => {
                                                 if (!USERNAME_REGEX.regex.test(value)) {
-                                                    return Promise.reject(new Error("用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
+                                                    return Promise.reject(new Error("角色名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
                                                 }
-                                                const exists: boolean = await userApi.checkUsernameExistsApi(value);
+                                                const exists: boolean = await roleApi.checkRoleCodeExists(value);
                                                 if (exists) {
-                                                    return Promise.reject(new Error('用户名已存在'));
+                                                    return Promise.reject(new Error('角色名已存在'));
                                                 }
 
                                             }
                                         })
                                     ]}
                                 >
-                                    <Input placeholder='请输入用户名' maxLength={20}/>
+                                    <Input placeholder='请输入角色名' maxLength={20}/>
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
@@ -309,7 +284,7 @@ export const User: React.FC = () => {
                                         message: PASSWORD_REGEX.message,
                                     }]}
                                 >
-                                    <Input placeholder='请输入用户密码' type='password'/>
+                                    <Input placeholder='请输入角色密码' type='password'/>
                                 </Form.Item>
                             </Col>
                         </Row>}
@@ -332,13 +307,13 @@ export const User: React.FC = () => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="用户昵称"
+                                label="角色昵称"
                                 name="nickname"
                                 key="nickname"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
                             >
-                                <Input placeholder='请输入用户昵称'/>
+                                <Input placeholder='请输入角色昵称'/>
                             </Form.Item>
                         </Col>
                     </Row>

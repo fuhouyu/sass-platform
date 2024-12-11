@@ -111,4 +111,9 @@ public class Permissions extends BaseEntity {
      * 是否为叶子节点
      */
     private Boolean isLeaf;
+
+    /**
+     * 是否启用
+     */
+    private Boolean isEnabled;
 }

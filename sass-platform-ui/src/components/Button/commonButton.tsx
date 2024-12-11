@@ -16,27 +16,41 @@
 
 import {Button} from "antd";
 import {IconFont} from "@/components";
-import {ButtonProps} from "@components/Button/index.d";
+import {ButtonProps} from "@components/Button/interface";
 import './index.scss'
+import {useTranslation} from "react-i18next";
 
 
+/**
+ * 添加按钮
+ * @param buttonProps 按钮属性
+ * @constructor 构造函数
+ */
 export const AddButton = (buttonProps: ButtonProps) => {
+    const {t} = useTranslation();
+
     return (
         <Button className="add-button"
                 onClick={buttonProps.onClick}
                 icon={<IconFont type="i-add"/>}
         >
-            新增
+            {t('Button.add')}
         </Button>
     )
 }
 
+/**
+ * 删除按钮
+ * @param buttonProps 按钮属性
+ * @constructor 构造函数
+ */
 export const DeleteButton = (buttonProps: ButtonProps) => {
+    const {t} = useTranslation();
     return (
         <Button className="del-button"
                 onClick={buttonProps.onClick}
                 icon={<IconFont type="i-delete"/>}>
-            删除
+            {t('Button.delete')}
         </Button>
     )
 }

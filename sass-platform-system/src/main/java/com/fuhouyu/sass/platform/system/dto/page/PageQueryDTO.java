@@ -51,9 +51,6 @@ public class PageQueryDTO implements Serializable {
     @Schema(name = "pageSize", description = "每页显示条数", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
 
-    @Schema(name = "keyword", description = "关键字查询", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String keyword;
-
     @Schema(name = "isAsc", description = "是否顺序排序", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Boolean isAsc;
 
