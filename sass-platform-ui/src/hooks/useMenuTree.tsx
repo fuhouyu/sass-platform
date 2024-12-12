@@ -39,11 +39,11 @@ export function useMenuTree(menus: Menu[]): MenuTreeType[] {
         return permissionInterfaces?.map((item: Menu) => {
             return {
                 id: item.id,
-                key: item.routePath ?? item.id,
+                key: item.routePath ?? item.id!,
                 title: t(`Menu.${item.permissionName}`),
                 label: t(`Menu.${item.permissionName}`),
                 icon: item.icon ?
-                    <IconFont type={item.icon} style={{fontSize: '16px'}}/> : undefined,
+                    <IconFont type={item.icon} style={{fontSize: '1rem'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
             };
         })

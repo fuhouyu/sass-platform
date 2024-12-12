@@ -503,7 +503,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 labelCol={{span: 8}}
-                                label={t('Permission.status')}
+                                label={t('Common.status')}
                                 name="isEnabled"
                                 key="isEnabled"
                                 colon={false}

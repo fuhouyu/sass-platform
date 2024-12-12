@@ -35,6 +35,9 @@ import lombok.ToString;
 @Schema(name = "UserPageQueryDTO", description = "用户查询dto对象")
 public class UserPageQueryDTO extends PageQueryDTO {
 
+    @Schema(name = "keyword", description = "关键字搜索，用户名、姓名、昵称")
+    private String keyword;
+
     @Schema(name = "gender", description = "性别筛选项")
     private String gender;
 }

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
+.menu-list {
+  padding-top: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+
+  .menu-tree {
+    padding: 0.2rem 0;
+    border: 1px solid #E5E6E7;
+  }
 }

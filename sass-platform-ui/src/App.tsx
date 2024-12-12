@@ -42,7 +42,6 @@ export const App: React.FC = () => {
                 setLoading(false);
                 router.routes[0]?.children!.push(...parseRouters(userMenus))
             });
-        console.log(router.routes[0])
     }, [dispatch])
     if (loading) {
         return <PageLoading/>

@@ -54,3 +54,21 @@ export const DeleteButton = (buttonProps: ButtonProps) => {
         </Button>
     )
 }
+
+
+/**
+ * 修改按钮
+ * @param buttonProps 按钮属性
+ * @constructor 构造函数
+ */
+export const EditButton = (buttonProps: ButtonProps) => {
+    const {t} = useTranslation();
+    return (
+        <Button className="edit-button"
+                onClick={buttonProps.onClick}
+                icon={<IconFont type="i-edit"/>}>
+            {t('Button.edit')}
+        </Button>
+    )
+
+}
