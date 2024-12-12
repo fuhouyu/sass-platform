@@ -112,8 +112,11 @@ const ZhCN = {
         namePlaceholder: '请输入角色名称',
         code: '角色编码',
         codePlaceholder: '请输入角色编码',
+        codeTips: '角色编码当前租户下唯一',
+        codeExistsErrorMessage: '角色编码已存在',
         dataScope: '数据权限',
         dataScopePlaceholder: '请选择数据权限',
+        permissionIds: '角色权限',
     }
 }
 

@@ -34,7 +34,7 @@ export interface Menu extends BaseModel {
     /**
      * icon
      */
-    icon?: string | number | null;
+    icon?: string | null;
     /**
      * 主键id
      */

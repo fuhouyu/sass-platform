@@ -16,15 +16,16 @@
 
 import React, {useEffect, useState} from "react";
 import './index.scss'
-import {Button, Col, Form, Input, message, Modal, Radio, Row, Space, TableColumnsType, Tag} from "antd";
+import {Button, Form, Input, InputNumber, message, Modal, Radio, TableColumnsType, Tag, Tooltip} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {IconFont, PageList} from "@/components";
-import {AddButton, DeleteButton} from "@components/Button/commonButton";
-import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
+import {FormTree, IconFont, PageList} from "@/components";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import {useTranslation} from "react-i18next";
+import {permissionApi} from "@/apis/permission";
+import {Menu} from "@/model/menu";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -34,15 +35,18 @@ export const Role: React.FC = () => {
             title: t('Role.name'),
             dataIndex: 'roleName',
             showSorterTooltip: {target: 'full-header'},
+            align: "center",
         },
         {
             title: t('Role.code'),
             dataIndex: 'roleCode',
             defaultSortOrder: 'descend',
+            align: "center",
         },
         {
             title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
+            align: "center",
         },
         {
             title: t('Common.status'),
@@ -63,20 +67,21 @@ export const Role: React.FC = () => {
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
+            align: "center",
             showSorterTooltip: false
         },
         {
             title: t('Common.updateBy'),
             dataIndex: 'updateBy',
+            align: "center",
         },
         {
             title: t('Common.action'),
             dataIndex: 'action',
+            align: "center",
             render: (_, record: RoleModel) => {
                 return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => openModal(record.id)}>修改</a>
-                    </Space>
+                    <EditButton onClick={() => openModal(record.id)}/>
                 </>)
             }
         }
@@ -88,6 +93,8 @@ export const Role: React.FC = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [roleQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+    const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
+    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
 
     /**
      * 打开模态组
@@ -95,10 +102,13 @@ export const Role: React.FC = () => {
      */
     const openModal = async (roleId?: string) => {
         setUpdateUserId(roleId);
+        const treeData = await permissionApi.getPermissionTreeSelect();
+        setTreeSelectData(treeData);
         if (roleId) {
             const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
             form.setFieldsValue({...roleInfo})
         }
+
         setIsModalOpen(true);
     }
 
@@ -152,25 +162,20 @@ export const Role: React.FC = () => {
         pageSize: 10,
     });
 
-    /**
-     * 分页查询结果
-     */
-    const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
+
     useEffect(() => {
         roleApi.pageInfoListApi(pageQuery)
             .then((res: PageResult<RoleModel>) => {
                 setPageResult({...res});
-            })
+            });
     }, [pageQuery])
 
     /**
      * 分页查询请求
      */
-    const pageRequest = () => {
-        roleApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<RoleModel>) => {
-                setPageResult({...res})
-            })
+    const pageRequest = async () => {
+        const res = await roleApi.pageInfoListApi(pageQuery);
+        setPageResult({...res});
     }
 
     /**
@@ -216,7 +221,7 @@ export const Role: React.FC = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
-                width={600}
+                width={450}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerUserForm}>{t('Button.submit')}</Button>,
@@ -229,127 +234,117 @@ export const Role: React.FC = () => {
                 <Form
                     name="basic"
                     form={form}
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 16}}
-                    style={{maxWidth: 600}}
+                    labelCol={{span: 5}}
                     autoComplete="off"
+                    initialValues={{
+                        displayOrder: 1,
+                        isEnabled: true,
+                    }}
                 >
-                    {!updateId &&
-                        <Row gutter={24}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="角色名"
-                                    name="rolename"
-                                    validateTrigger="onBlur"
-                                    key="rolename"
-                                    wrapperCol={{offset: 1}}
-                                    colon={false}
-                                    required={true}
-                                    hasFeedback
-                                    rules={[{
-                                        required: true,
-                                        type: "string",
-                                        message: USERNAME_REGEX.message,
-                                        max: 20,
-                                    },
-                                        () => ({
-                                            validator: async (_, value: string) => {
-                                                if (!USERNAME_REGEX.regex.test(value)) {
-                                                    return Promise.reject(new Error("角色名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
-                                                }
-                                                const exists: boolean = await roleApi.checkRoleCodeExists(value);
-                                                if (exists) {
-                                                    return Promise.reject(new Error('角色名已存在'));
-                                                }
+                    <Form.Item
+                        label={t('Role.name')}
+                        name="roleName"
+                        validateTrigger="onBlur"
+                        key="roleName"
+                        colon={false}
+                        required={true}
+                        hasFeedback
+                        rules={[{
+                            required: true,
+                            type: "string",
+                            message: t('Role.namePlaceholder'),
+                            max: 50,
+                        }
+                        ]}
+                    >
+                        <Input placeholder={t('Role.namePlaceholder')} maxLength={50}/>
+                    </Form.Item>
 
-                                            }
-                                        })
-                                    ]}
-                                >
-                                    <Input placeholder='请输入角色名' maxLength={20}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="密码"
-                                    name="password"
-                                    key="password"
-                                    hasFeedback
-                                    wrapperCol={{offset: 1}}
-                                    colon={false}
+                    <Form.Item
+                        label={t('Role.code')}
+                        name="roleCode"
+                        validateTrigger="onBlur"
+                        key="roleCode"
+                        colon={false}
+                        required={true}
+                        hasFeedback
+                        rules={[{
+                            required: true,
+                            type: "string",
+                            message: t('Role.codePlaceholder'),
+                            max: 50,
+                        },
+                            {
+                                required: true,
+                                validator: async (_, value: string) => {
+                                    if (updateId != null) {
+                                        return;
+                                    }
+                                    if (value == null || value == '') {
+                                        return;
+                                    }
+                                    const exists = await roleApi.checkRoleCodeExists(value);
+                                    if (exists) {
+                                        return Promise.reject(new Error(t('Role.codeExistsErrorMessage')));
+                                    }
+                                }
+                            }
+                        ]}
+                    >
+                        <Input
+                            suffix={<Tooltip title={t('Role.codeTips')}>
+                                <IconFont type={'i-tips-hint'}/>
+                            </Tooltip>}
+                            placeholder={t('Role.namePlaceholder')}
+                            maxLength={50}/>
+                    </Form.Item>
 
-                                    rules={[{
-                                        required: true,
-                                        pattern: PASSWORD_REGEX.regex,
-                                        message: PASSWORD_REGEX.message,
-                                    }]}
-                                >
-                                    <Input placeholder='请输入角色密码' type='password'/>
-                                </Form.Item>
-                            </Col>
-                        </Row>}
-                    <Row gutter={24}>
-                        <Form.Item name="id" hidden>
-                            <Input/>
-                        </Form.Item>
+                    <Form.Item
+                        label={t('Common.displayOrder')}
+                        name="displayOrder"
+                        validateTrigger="onBlur"
+                        key="displayOrder"
+                        colon={false}
+                        required={true}
+                        hasFeedback
+                        rules={[{
+                            required: true,
+                            type: "number",
+                            message: t('Common.displayOrderPlaceholder'),
+                        }]}
+                    >
+                        <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '30%'}}
+                                     min={1}/>
+                    </Form.Item>
 
-                        <Col span={12}>
-                            <Form.Item
-                                label="真实姓名"
-                                name="realName"
-                                key="realName"
-                                wrapperCol={{offset: 1}}
-                                colon={false}
-                                rules={[{required: true, message: '真实姓名未填写'}]}
-                            >
-                                <Input placeholder='请输入真实姓名'/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="角色昵称"
-                                name="nickname"
-                                key="nickname"
-                                wrapperCol={{offset: 1}}
-                                colon={false}
-                            >
-                                <Input placeholder='请输入角色昵称'/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label="邮箱"
-                                name="email"
-                                key="email"
-                                wrapperCol={{offset: 1}}
-                                colon={false}
-                                rules={[{
-                                    type: 'email',
-                                    message: "请输入正确的邮箱账号"
-                                }]}
-                            >
-                                <Input placeholder='请输入邮箱地址'/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label="性别"
-                                name="gender"
-                                key="gender"
-                                wrapperCol={{offset: 1}}
-                                colon={false}
-                                rules={[{required: true}]}
-                                initialValue={'male'}
-                            >
-                                <Radio.Group>
-                                    <Radio value="male">男</Radio>
-                                    <Radio value="female">女</Radio>
-                                </Radio.Group>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                    <Form.Item
+                        label={t('Common.status')}
+                        name="isEnabled"
+                        key="isEnabled"
+                        colon={false}
+                        required={true}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>{t('Common.enabled')}</Radio>
+                            <Radio value={false}>{t('Common.disabled')}</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Form.Item
+                        label={t('Role.permissionIds')}
+                        key="permissionIds"
+                        colon={false}
+                        required={true}
+                        valuePropName={'checkedKeys'}
+                    >
+                        <FormTree<Menu>
+                            fieldNames={{
+                                key: 'id'
+                            }}
+                            titleRender={(menu: Menu) => t(`Menu.${menu.permissionName}`)}
+                            treeData={treeSelectData}
+
+                        />
+                    </Form.Item>
 
                 </Form>
             </Modal>

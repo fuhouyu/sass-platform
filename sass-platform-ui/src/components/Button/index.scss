@@ -41,3 +41,16 @@
   background-color: #FF4949 !important;
   border-color: #FF4949 !important;
 }
+
+// 删除按钮
+.edit-button {
+  color: #72E3A3;
+  background-color: #E8FAF1;
+  border: 1px solid #72E3A3;
+}
+
+.edit-button:hover {
+  color: white !important;
+  background-color: #42D885 !important;
+  border-color: #42D885 !important;
+}

@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
+import {FieldNames} from "rc-tree/lib/interface";
+import * as React from "react";
+import {AnyObject} from "antd/es/_util/type";
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
+/**
+ * 表单树属性
+ */
+export interface FormTreeProps<T = AnyObject> {
+    /**
+     * 树数据
+     */
+    treeData: T[];
+
+    /**
+     * fieldNames
+     */
+    fieldNames: FieldNames;
+
+    /**
+     * titleRender
+     * @param node node节点
+     */
+    titleRender?: (node: T) => React.ReactNode;
 }
