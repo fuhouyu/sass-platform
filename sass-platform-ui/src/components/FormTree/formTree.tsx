@@ -15,20 +15,39 @@
  */
 
 import React, {Key, useState} from "react";
-import {Checkbox, CheckboxProps, Space, Tree} from "antd";
-import {FormTreeProps} from "@components/FormTree/interface";
+import {Checkbox, CheckboxProps, Space, Tree, TreeProps} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import './index.scss'
 
-export const FormTree = <T extends object>(formTreeProps: FormTreeProps<T>) => {
 
-    const {treeData, titleRender, fieldNames} = formTreeProps;
+export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
+    formTreeProps: TreeProps<T>,
+    onSelectedAll?: (ids: string[]) => void
+}) => {
 
+    // 递归函数，用于提取所有节点的ids
+    const extractAllIds = (treeData?: T[], key?: string): string[] => {
+        if (!treeData) {
+            return []
+        }
+        const allIds: string[] = [];
+        const extractIdsFromNode = (node: AnyObject): void => {
+            // 获取当前节点的id并添加到allIds数组
+            allIds.push(node[key ?? 'id']);
+            // 如果当前节点有子节点，递归调用extractIdsFromNode处理子节点
+            if (node.children && node.children.length > 0) {
+                node.children.forEach((child: T) => {
+                    extractIdsFromNode(child);
+                });
+            }
+        };
+        treeData.forEach((node) => {
+            extractIdsFromNode(node);
+        });
+        return allIds;
+    };
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-    const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-    const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-    const ids = treeData.map(item => (item as AnyObject)[fieldNames.key!]);
+    const ids: string[] = extractAllIds(formTreeProps.treeData, formTreeProps.fieldNames?.key)
 
     /**
      * 展开/折叠
@@ -42,44 +61,33 @@ export const FormTree = <T extends object>(formTreeProps: FormTreeProps<T>) => {
         }
     };
 
-    /**
-     * 全选/全不选
-     * @param e 事件
-     */
-    const onSelectedAll: CheckboxProps['onChange'] = (e) => {
-        console.log(ids)
-        if (e.target.checked) {
-            setCheckedKeys(ids);
-        } else {
-            setCheckedKeys([]);
-        }
-    }
-
     return (
         <>
             <div className="menu-list">
                 <div>
                     <Space>
                         <Checkbox onChange={onExpanded}>展开/折叠</Checkbox>
-                        <Checkbox onChange={onSelectedAll}>全选/全不选</Checkbox>
+                        <Checkbox onChange={e => {
+                            if (!onSelectedAll) {
+                                return
+                            }
+                            if (e.target.checked) {
+                                onSelectedAll(ids);
+                            } else {
+                                onSelectedAll([]);
+                            }
+                        }}>全选/全不选</Checkbox>
                     </Space>
                 </div>
                 <Tree<T>
                     className="menu-tree"
                     checkable
+                    blockNode={true}
+                    expandedKeys={expandedKeys}
                     onExpand={(expandedKeysValue: Key[]) => {
                         setExpandedKeys(expandedKeysValue);
-                        setAutoExpandParent(false);
                     }}
-                    expandedKeys={expandedKeys}
-                    autoExpandParent={autoExpandParent}
-                    onCheck={(checkedKeysValue) => setCheckedKeys(checkedKeysValue as React.Key[])}
-                    checkedKeys={checkedKeys}
-                    fieldNames={fieldNames}
-                    titleRender={titleRender}
-                    onSelect={(selectedKeysValue: Key[]) => setSelectedKeys(selectedKeysValue)}
-                    selectedKeys={selectedKeys}
-                    treeData={treeData}
+                    {...formTreeProps}
                 />
             </div>
         </>

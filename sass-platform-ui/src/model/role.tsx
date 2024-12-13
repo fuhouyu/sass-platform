@@ -16,6 +16,7 @@
 
 
 import {BaseModel} from "@/model/base";
+import React from "react";
 
 /**
  * 角色详情
@@ -55,4 +56,9 @@ export interface Role extends BaseModel {
      * 是否允许修改
      */
     isAllowModified?: boolean;
+
+    /**
+     * 权限id集合
+     */
+    permissionIds?: React.Key[]
 }
