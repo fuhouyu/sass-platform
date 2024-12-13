@@ -94,6 +94,7 @@ export const Role: React.FC = () => {
     const [form] = Form.useForm();
     const [roleQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
+    const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
 
     /**
@@ -124,15 +125,13 @@ export const Role: React.FC = () => {
      * 处理角色表单
      */
     const handlerUserForm = async () => {
+        form.setFieldValue('permissionIds', permissionIds);
         await form.validateFields();
         setIsModalButtonLoading(true);
         try {
             await (updateId ? updateUserDetail() : saveUserDetail());
-            message.success("操作成功").then()
-            setIsModalOpen(false);
+            message.success(t('Common.success')).then()
             form.resetFields();
-        } catch (error: unknown) {
-            message.error(error instanceof Error ? error.message : '未知错误').then()
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -198,8 +197,8 @@ export const Role: React.FC = () => {
                         <>
                             <AddButton onClick={() => openModal()}/>
                             <DeleteButton onClick={async () => {
-                                roleApi.deleteInfoApi(rowKeys as string[]).then();
-                                pageRequest()
+                                await roleApi.deleteInfoApi(rowKeys as string[]);
+                                await pageRequest();
                             }}/>
                         </>
                     ]
@@ -231,7 +230,7 @@ export const Role: React.FC = () => {
                     fontSize: '24px',
                 }}/>}
             >
-                <Form
+                <Form<RoleModel>
                     name="basic"
                     form={form}
                     labelCol={{span: 5}}
@@ -332,17 +331,21 @@ export const Role: React.FC = () => {
                     <Form.Item
                         label={t('Role.permissionIds')}
                         key="permissionIds"
+                        name="permissionIds"
                         colon={false}
                         required={true}
-                        valuePropName={'checkedKeys'}
                     >
                         <FormTree<Menu>
-                            fieldNames={{
-                                key: 'id'
+                            formTreeProps={{
+                                fieldNames: {key: 'id'},
+                                checkedKeys: permissionIds,
+                                onCheck: (key) => setPermissionIds(key as React.Key[]),
+                                titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
+                                treeData: treeSelectData,
                             }}
-                            titleRender={(menu: Menu) => t(`Menu.${menu.permissionName}`)}
-                            treeData={treeSelectData}
-
+                            onSelectedAll={(ids: string[]) => {
+                                setPermissionIds(ids)
+                            }}
                         />
                     </Form.Item>
 
