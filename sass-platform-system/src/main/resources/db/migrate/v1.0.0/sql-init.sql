@@ -357,28 +357,44 @@ CREATE TABLE dict_type
 (
     id                BIGINT                NOT NULL PRIMARY KEY,
     dict_name         VARCHAR(128)          NOT NULL,
-    type_code         VARCHAR(128)          NOT NULL,
+    dict_code       VARCHAR(128)         NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
+    display_order   INT     DEFAULT 0    NOT NULL,
+    owner_tenant_id BIGINT               NOT NULL,
     remark            VARCHAR(128)          NOT NULL,
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
     update_by         VARCHAR(32)           NOT NULL,
-    UNIQUE (type_code)
+    UNIQUE (owner_tenant_id, dict_code)
 );
 
 COMMENT ON TABLE dict_type IS '字典类型表';
 COMMENT ON COLUMN dict_type.id IS '主键id';
 COMMENT ON COLUMN dict_type.dict_name IS '字典类型名称';
-COMMENT ON COLUMN dict_type.type_code IS '类型编码';
+COMMENT ON COLUMN dict_type.dict_code IS '字典类型编码';
+COMMENT ON COLUMN dict_type.display_order IS '排序字段';
+COMMENT ON COLUMN dict_type.is_enabled IS '启禁用状态： true 启用 false 禁用';
 COMMENT ON COLUMN dict_type.is_deleted IS '删除标记';
 COMMENT ON COLUMN dict_type.is_allow_modified IS '是否允许修改';
 COMMENT ON COLUMN dict_type.remark IS '备注';
+COMMENT ON COLUMN dict_type.owner_tenant_id IS '所属租户的id';
 COMMENT ON COLUMN dict_type.create_at IS '创建时间';
 COMMENT ON COLUMN dict_type.create_by IS '创建人';
 COMMENT ON COLUMN dict_type.update_at IS '更新时间';
 COMMENT ON COLUMN dict_type.update_by IS '更新人';
+
+INSERT INTO dict_type
+(id, dict_name, dict_code, display_order, is_enabled, is_deleted, is_allow_modified, remark, owner_tenant_id, create_at,
+ create_by, update_at, update_by)
+VALUES (1, '性别', 'GENDER', 1, true, false, false, '性别', 1, now(), 'admin', now(), 'admin');
+
+INSERT INTO dict_type
+(id, dict_name, dict_code, display_order, is_enabled, is_deleted, is_allow_modified, remark, owner_tenant_id, create_at,
+ create_by, update_at, update_by)
+VALUES (2, '租户类型', 'TENANT_TYPE', 2, true, false, false, '租户类型', 1, now(), 'admin', now(), 'admin');
 
 
 DROP TABLE IF EXISTS dict_item;
@@ -390,13 +406,15 @@ CREATE TABLE dict_item
     item_code         VARCHAR(128)          NOT NULL,
     display_order     INT                   NOT NULL DEFAULT 0,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
+    owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     remark            VARCHAR(128)          NOT NULL,
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
     update_by         VARCHAR(32)           NOT NULL,
-    UNIQUE (item_code)
+    UNIQUE (owner_tenant_id, item_code)
 );
 
 CREATE INDEX idx_dict_item_type_code ON dict_item (type_code);
@@ -409,9 +427,30 @@ COMMENT ON COLUMN dict_item.item_name IS '字典项名称';
 COMMENT ON COLUMN dict_item.item_code IS '字典项名称';
 COMMENT ON COLUMN dict_item.display_order IS '显示顺序';
 COMMENT ON COLUMN dict_item.is_deleted IS '删除标记';
+COMMENT ON COLUMN dict_item.is_enabled IS '启禁用状态：true 启用';
 COMMENT ON COLUMN dict_item.is_allow_modified IS '是否允许修改';
+COMMENT ON COLUMN dict_item.owner_tenant_id IS '所属租户的id';
 COMMENT ON COLUMN dict_item.remark IS '备注';
 COMMENT ON COLUMN dict_item.create_at IS '创建时间';
 COMMENT ON COLUMN dict_item.create_by IS '创建人';
 COMMENT ON COLUMN dict_item.update_at IS '更新时间';
 COMMENT ON COLUMN dict_item.update_by IS '更新人';
+
+-- 性别
+INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, create_at, create_by, update_at, update_by)
+VALUES (1, 'GENDER', '男', 'MALE', 1, true, false, false, 1, '性别男', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, create_at, create_by, update_at, update_by)
+VALUES (2, 'GENDER', '女', 'FEMALE', 2, true, false, false, 1, '性别女', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, create_at, create_by, update_at, update_by)
+VALUES (3, 'GENDER', '未知', 'UNKNOWN', 3, true, false, false, 1, '未知', now(), 'admin', now(), 'admin');
+
+-- 租户类型
+INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, create_at, create_by, update_at, update_by)
+VALUES (4, 'TENANT_TYPE', '公司', 'COMPANY', 1, true, false, false, 1, '公司', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, create_at, create_by, update_at, update_by)
+VALUES (5, 'TENANT_TYPE', '学校', 'SCHOOL', 2, true, false, false, 1, '学校', now(), 'admin', now(), 'admin');
