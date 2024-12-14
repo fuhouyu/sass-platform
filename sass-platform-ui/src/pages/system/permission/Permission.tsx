@@ -354,7 +354,7 @@ export const Permission: React.FC = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
-                    labelCol={{span: 4}}
+                    wrapperCol={{offset: 0.5}}
                     style={{width: 600}}
                     autoComplete="off"
                     initialValues={{

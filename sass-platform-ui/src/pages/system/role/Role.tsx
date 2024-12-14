@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react";
+import React, {Key, useEffect, useState} from "react";
 import './index.scss'
-import {Button, Form, Input, InputNumber, message, Modal, Radio, TableColumnsType, Tag, Tooltip} from "antd";
+import {Button, Form, Input, InputNumber, message, Modal, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
@@ -29,7 +29,11 @@ import {Menu} from "@/model/menu";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
-
+    const initForm: RoleModel = {
+        displayOrder: 1,
+        isEnabled: true,
+        dataScope: 'ALL',
+    }
     const columns: TableColumnsType = [
         {
             title: t('Role.name'),
@@ -92,11 +96,11 @@ export const Role: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [roleQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+    const [roleQuery, setRoleQuery] = useState<{ [key: string]: unknown }>({});
     const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-
+    const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
     /**
      * 打开模态组
      * @param roleId 角色id
@@ -107,50 +111,31 @@ export const Role: React.FC = () => {
         setTreeSelectData(treeData);
         if (roleId) {
             const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
-            form.setFieldsValue({...roleInfo})
+            setFormInitValues(roleInfo);
+            setPermissionIds(roleInfo.permissionIds as Key[]);
+        } else {
+            setFormInitValues(initForm);
+            setPermissionIds([]);
         }
-
         setIsModalOpen(true);
-    }
-
-    /**
-     * 关闭模态组
-     */
-    const closeModal = () => {
-        setIsModalOpen(false);
-        form.resetFields();
     }
 
     /**
      * 处理角色表单
      */
-    const handlerUserForm = async () => {
-        form.setFieldValue('permissionIds', permissionIds);
+    const handlerForm = async () => {
         await form.validateFields();
+        const role: RoleModel = form.getFieldsValue();
+        role.permissionIds = permissionIds;
         setIsModalButtonLoading(true);
         try {
-            await (updateId ? updateUserDetail() : saveUserDetail());
+            await (updateId ? roleApi.editInfoApi(updateId, role) : roleApi.saveInfoApi(role));
             message.success(t('Common.success')).then()
-            form.resetFields();
+            await pageRequest();
+            setIsModalOpen(false);
         } finally {
-            setIsModalButtonLoading(false);
+            setIsModalButtonLoading(false)
         }
-    }
-
-    /**
-     * 保存角色详情
-     */
-    const saveUserDetail: () => Promise<string> = () => {
-        const roleDetail = form.getFieldsValue();
-        return roleApi.saveInfoApi(roleDetail)
-    }
-
-    /**
-     * 修改角色详情
-     */
-    const updateUserDetail: () => Promise<void> = () => {
-        const roleInfo: RoleModel = form.getFieldsValue();
-        return roleApi.editInfoApi(roleInfo.id!, roleInfo);
     }
 
     /**
@@ -206,25 +191,43 @@ export const Role: React.FC = () => {
                 headerSearchProps={{
                     components: [
                         <><label htmlFor="roleCode">{t('Role.code')}</label>
-                            <Input placeholder={t('Role.codePlaceholder')} id={'roleCode'} onChange={(e) => {
-                                setUserQuery({roleName: e.target.value})
+                            <Input
+                                allowClear={true}
+                                placeholder={t('Role.codePlaceholder')}
+                                id={'roleCode'}
+                                onChange={(e) => {
+                                    setRoleQuery({roleCode: e.target.value})
                             }}/>
                         </>,
+                        <>
+                            <span>{t('Common.status')}</span>
+                            <Select
+                                allowClear={true}
+                                key={'isEnabled'}
+                                placeholder={t('Common.statusPlaceholder')}
+                                onChange={(value) => roleQuery['isEnabled'] = value}
+                                options={[
+                                    {value: true, label: <span>{t('Common.enabled')}</span>},
+                                    {value: false, label: <span>{t('Common.disabled')}</span>}
+                                ]}
+                            />
+                        </>
                     ],
                     onSearchClick: () => setPageQuery({...pageQuery, ...roleQuery})
                 }}
             />
 
             <Modal
+                destroyOnClose={true}
                 title={updateId ? t('Role.add') : t('Role.edit')}
                 className="ant-modal-header"
                 open={isModalOpen}
-                onCancel={() => closeModal()}
+                onCancel={() => setIsModalOpen(false)}
                 width={450}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerUserForm}>{t('Button.submit')}</Button>,
-                    <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+                            onClick={handlerForm}>{t('Button.submit')}</Button>,
+                    <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
                 closeIcon={<IconFont type="i-Close" style={{
                     fontSize: '24px',
@@ -234,11 +237,10 @@ export const Role: React.FC = () => {
                     name="basic"
                     form={form}
                     labelCol={{span: 5}}
+                    wrapperCol={{offset: .5}}
+                    clearOnDestroy={true}
                     autoComplete="off"
-                    initialValues={{
-                        displayOrder: 1,
-                        isEnabled: true,
-                    }}
+                    initialValues={{...formInitValues}}
                 >
                     <Form.Item
                         label={t('Role.name')}
@@ -248,6 +250,7 @@ export const Role: React.FC = () => {
                         colon={false}
                         required={true}
                         hasFeedback
+                        validateFirst={true}
                         rules={[{
                             required: true,
                             type: "string",
@@ -266,6 +269,7 @@ export const Role: React.FC = () => {
                         key="roleCode"
                         colon={false}
                         required={true}
+                        validateFirst={true}
                         hasFeedback
                         rules={[{
                             required: true,
@@ -276,10 +280,7 @@ export const Role: React.FC = () => {
                             {
                                 required: true,
                                 validator: async (_, value: string) => {
-                                    if (updateId != null) {
-                                        return;
-                                    }
-                                    if (value == null || value == '') {
+                                    if (updateId != null || value == null || value == '') {
                                         return;
                                     }
                                     const exists = await roleApi.checkRoleCodeExists(value);
@@ -306,6 +307,7 @@ export const Role: React.FC = () => {
                         colon={false}
                         required={true}
                         hasFeedback
+                        validateFirst={true}
                         rules={[{
                             required: true,
                             type: "number",
@@ -315,6 +317,26 @@ export const Role: React.FC = () => {
                         <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '30%'}}
                                      min={1}/>
                     </Form.Item>
+
+                    <Form.Item
+                        label={t('Role.dataScope')}
+                        name="dataScope"
+                        key="dataScope"
+                        colon={false}
+                        required={true}
+                    >
+                        <Select
+                            key={'dataScope'}
+                            placeholder={t('Role.dataScopePlaceholder')}
+                            options={[
+                                {value: 'ALL', label: <span>全部</span>},
+                                {value: 'DEPT', label: <span>当前部门</span>},
+                                {value: 'DEPT_AND_SUB', label: <span>部门及下辖</span>},
+                                {value: 'ONLY_USER', label: <span>仅本人</span>},
+                            ]}
+                        />
+                    </Form.Item>
+
 
                     <Form.Item
                         label={t('Common.status')}
@@ -334,6 +356,7 @@ export const Role: React.FC = () => {
                         name="permissionIds"
                         colon={false}
                         required={true}
+                        valuePropName={'checked'}
                     >
                         <FormTree<Menu>
                             formTreeProps={{
@@ -343,11 +366,10 @@ export const Role: React.FC = () => {
                                 titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
                                 treeData: treeSelectData,
                             }}
-                            onSelectedAll={(ids: string[]) => {
-                                setPermissionIds(ids)
-                            }}
+                            onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
                         />
                     </Form.Item>
+
 
                 </Form>
             </Modal>

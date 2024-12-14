@@ -24,6 +24,7 @@
         <result column="data_scope" property="dataScope" jdbcType="VARCHAR"/>
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
         <result column="is_allow_modified" property="isAllowModified" jdbcType="BOOLEAN"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
@@ -36,6 +37,7 @@
        role_code,
        display_order,
        data_scope,
+       owner_tenant_id,
        is_enabled,
        is_allow_modified,
        is_deleted,
@@ -51,6 +53,7 @@
        r.role_code,
        r.display_order,
        r.data_scope,
+       r.owner_tenant_id,
        r.is_enabled,
        r.is_allow_modified,
        r.is_deleted,
@@ -73,6 +76,7 @@
             #{roleCode},
             #{displayOrder},
             #{dataScope},
+            #{ownerTenantId},
             #{isEnabled},
             #{isAllowModified},
             #{isDeleted},
@@ -97,6 +101,7 @@
                 #{entity.roleCode},
                 #{entity.displayOrder},
                 #{entity.dataScope},
+                #{entity.ownerTenantId},
                 #{entity.isEnabled},
                 #{entity.isAllowModified},
                 #{entity.isDeleted},
@@ -122,7 +127,9 @@
         <if test="isEnabled != null ">
             is_enabled = #{isEnabled},
         </if>
-
+        <if test="dataScope != null and dataScope != ''">
+            data_scope = #{dataScope},
+        </if>
         update_at = #{updateAt},
         update_by = #{updateBy}
         WHERE id = #{id}
@@ -169,6 +176,15 @@
         <include refid="QueryColumns"/>
                 FROM
         <include refid="TableName"/> r
+        <where>
+            <if test="pageQuery.roleCode != null and pageQuery.roleCode != ''">
+                r.role_code = #{pageQuery.roleCode}
+            </if>
+            <if test="pageQuery.isEnabled != null">
+                AND r.is_enabled = #{pageQuery.isEnabled}
+            </if>
+            AND r.is_deleted = false
+        </where>
     </select>
 
 </mapper>

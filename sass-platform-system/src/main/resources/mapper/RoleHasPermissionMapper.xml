@@ -15,20 +15,20 @@
   limitations under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantPermissionMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
-        <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.RoleHasPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.RoleHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
         <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
         <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
-        tenant_has_permission
+        role_has_permission
     </sql>
 
     <sql id="AllColumns">
-        tenant_id,
+        role_id,
         permission_id,
         create_at,
         create_by
@@ -41,9 +41,9 @@
             <include refid="AllColumns"/>
         </trim>
         VALUES
-        <foreach collection="tenantPermissions" separator="," item="entity">
+        <foreach collection="roleHasPermissions" separator="," item="entity">
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            #{entity.tenantId},
+            #{entity.roleId},
             #{entity.permissionId},
             #{entity.createAt},
             #{entity.createBy},
@@ -51,33 +51,23 @@
         </foreach>
     </insert>
 
-    <delete id="delete">
+    <delete id="deleteByRoleId">
         DELETE FROM
         <include refid="TableName">
         </include>
-        WHERE tenant_id = #{tenantId}
-        <if test="permissionIds != null and permissionIds.size() > 0">
-            AND permission_id IN
-            <foreach collection="permissionIds" open="(" close=")" item="permissionId" separator=",">
+        WHERE role_id = #{roleId}
+        <if test="excludePermissionIds != null and excludePermissionIds.size() > 0">
+            AND excludePermissionIds NOT IN
+            <foreach collection="excludePermissionIds" open="(" close=")" item="permissionId" separator=",">
                 #{permissionId}
             </foreach>
         </if>
     </delete>
 
-    <delete id="deleteTenantPermissions">
-        DELETE
-            FROM
-        <include refid="TableName">
-        </include>
-        WHERE tenant_id IN
-        <foreach collection="configIds" open="(" close=")" separator="," item="configId">
-            #{configId}
-        </foreach>
-    </delete>
-
-    <select id="queryPermissionIdByTenantId" resultType="java.lang.Long">
+    <select id="queryPermissionIdByRoleId" resultType="java.lang.Long">
         SELECT permission_id
-        FROM tenant_has_permission
-        WHERE tenant_id = #{configId}
+        FROM
+        <include refid="TableName"/>
+        WHERE role_id = #{roleId}
     </select>
 </mapper>

@@ -15,173 +15,102 @@
  */
 
 
-import React, {Key, useEffect, useState} from "react";
-import {
-    Button,
-    Checkbox,
-    CheckboxProps,
-    Form,
-    Input,
-    message,
-    Modal,
-    Radio,
-    Space,
-    TableColumnsType,
-    Tag,
-    Tree
-} from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Form, Input, message, Modal, Radio, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {IconFont, PageList} from "@/components";
-import {MenuTreeType, useMenuTree} from "@/hooks/useMenuTree";
+import {FormTree, IconFont, PageList} from "@/components";
 import {Menu} from "@/model/menu";
-import {useAppSelector} from "@/store";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'
-import {userApi} from "@/apis/user";
 import {tenantApi} from "@/apis/tenant";
 import {PageQuery, PageResult} from "@/model/pageQuery";
-import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user";
-
-/**
- * 转换映射关系
- * @param trees tree数据
- * @param idKeyMap idKeyMap的映射对象
- */
-const parseIdKeyMap = (trees: MenuTreeType[], idKeyMap: Map<Key, string>) => {
-    trees.forEach(tree => {
-        idKeyMap.set(tree.key, tree.id!);
-        if (tree.children) {
-            parseIdKeyMap(tree.children, idKeyMap);
-        }
-    });
-}
-
-/**
- * 解析修改时已选中的菜单项
- * @param trees 树
- * @param ids id集合
- */
-const parseMenuKey = (trees: MenuTreeType[], ids?: Key[]): Key[] => {
-    if (!ids || ids.length === 0) {
-        return [];
-    }
-    const keys: Key[] = []
-    trees.forEach(tree => {
-        ids.forEach(id => {
-            if (id === tree.id) {
-                keys.push(tree.key)
-            }
-        })
-        if (tree.children) {
-            keys.push(...parseMenuKey(tree.children, ids));
-        }
-    });
-
-    return keys;
-}
+import {useTranslation} from "react-i18next";
+import {Role as RoleModel} from "@/model/role";
+import {permissionApi} from "@/apis/permission";
 
 /**
  * 租户组件
  * @constructor
  */
 export const Tenant: React.FC = () => {
-
+    const {t} = useTranslation();
     const columns: TableColumnsType = [
         {
-            title: '租户编码',
+            title: t('Tenant.code'),
             dataIndex: 'tenantCode',
             showSorterTooltip: {target: 'full-header'},
         },
         {
-            title: '租户名称',
+            title: t('Tenant.name'),
             dataIndex: 'tenantName',
             defaultSortOrder: 'descend',
         },
         {
-            title: '租户类型',
+            title: t('Tenant.type'),
             dataIndex: 'tenantType',
         },
         {
-            title: '联系人',
+            title: t('Tenant.contactPerson'),
             dataIndex: 'contactPerson',
         },
         {
-            title: '联系方式',
+            title: t('Tenant.contactInfo'),
             dataIndex: 'contactInfo',
         },
         {
-            title: '是否启用',
+            title: t('Common.status'),
             dataIndex: 'isEnabled',
             align: 'center',
             render: (isEnabled: boolean) => (
                 isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
-                        <span style={{color: '#2090FF'}}>启用</span>
+                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
                     </Tag> :
                     <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
-                        <span style={{color: '#FF9696'}}>禁用</span>
+                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
                     </Tag>
             )
         },
         {
-            title: '创建时间',
-            dataIndex: 'createAt',
-            sorter: true,
-            showSorterTooltip: false
-        },
-        {
-            title: '创建人',
-            dataIndex: 'createBy'
-        },
-        {
-            title: '更新时间',
+            title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
+            align: "center",
             showSorterTooltip: false
         },
         {
-            title: '操作人',
+            title: t('Common.updateBy'),
             dataIndex: 'updateBy',
+            align: "center",
         },
         {
-            title: '操作',
+            title: t('Common.action'),
             dataIndex: 'action',
-            render: (_, tenantConfig: TenantInfo) => {
+            align: "center",
+            render: (_, record: RoleModel) => {
                 return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => {
-                            openModal(tenantConfig.id)
-                        }}>修改</a>
-                    </Space>
+                    <EditButton onClick={() => openModal(record.id)}/>
                 </>)
             }
         }
     ];
-
+    const initForm: TenantInfo = {
+        isEnabled: true,
+    }
 
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [updateId, setUpdateId] = useState<string>();
     const [form] = Form.useForm();
-    const [isEnabled, setIsEnabled] = useState<boolean>(true);
-    const userMenus: Menu[] = useAppSelector((state) => state.user.userMenus);
-    const menuTree = useMenuTree(userMenus);
     const [tenantQuery, setTenantQuery] = useState<{ [key: string]: unknown }>({});
-
-    // key 和 id映射
-    const idKeyMap = new Map<Key, string>();
-    parseIdKeyMap(menuTree, idKeyMap);
-
-    /**
-     * 权限树相关
-     */
-    const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-    const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-    const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+    const [pageResult, setPageResult] = useState<PageResult<TenantInfo>>();
+    const [formInitValues, setFormInitValues] = useState<TenantInfo>(initForm);
+    const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
+    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
 
 
     /**
@@ -195,70 +124,39 @@ export const Tenant: React.FC = () => {
     /**
      * 分页查询结果
      */
-    const [pageResult, setPageResult] = useState<PageResult<TenantInfo>>();
     useEffect(() => {
         tenantApi.pageInfoListApi(pageQuery)
             .then((res: PageResult<TenantInfo>) => {
                 setPageResult({...res});
-            })
+            });
     }, [pageQuery])
 
     /**
      * 分页查询请求
      */
-    const pageRequest = () => {
-        tenantApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<TenantInfo>) => {
-                setPageResult({...res})
-            })
+    const pageRequest = async () => {
+        const res = await tenantApi.pageInfoListApi(pageQuery);
+        setPageResult({...res});
     }
 
-
-    /**
-     * 展开/折叠
-     * @param e 事件
-     */
-    const onExpanded: CheckboxProps['onChange'] = (e) => {
-        if (e.target.checked) {
-            setExpandedKeys(Array.from(idKeyMap.keys()));
-        } else {
-            setExpandedKeys([]);
-        }
-    };
-
-    /**
-     * 全选/全不选
-     * @param e 事件
-     */
-    const onSelectedAll: CheckboxProps['onChange'] = (e) => {
-        if (e.target.checked) {
-            setCheckedKeys(Array.from(idKeyMap.keys()));
-        } else {
-            setCheckedKeys([]);
-        }
-    }
 
     /**
      * 打开模态组
      * @param tenantId 租户id
      */
-    const openModal = (tenantId?: string) => {
-        setIsModalOpen(true);
+    const openModal = async (tenantId?: string) => {
         setUpdateId(tenantId);
+        const treeData = await permissionApi.getPermissionTreeSelect();
+        setTreeSelectData(treeData);
         if (!tenantId) {
+            setIsModalOpen(true);
             return
         }
         // 修改获取租户数据，先获取详情
-        userApi.getInfoByIdApi(tenantId!)
-            .then((res: TenantInfo) => {
-                form.setFieldsValue({...res})
-                if (res.permissionIds) {
-                    setCheckedKeys(parseMenuKey(menuTree, res.permissionIds))
-                }
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            });
+        const res = await tenantApi.getInfoByIdApi(tenantId!);
+        setFormInitValues(res);
+        setPermissionIds(res.permissionIds ?? [])
+        setIsModalOpen(true);
     }
 
 
@@ -267,43 +165,27 @@ export const Tenant: React.FC = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        cleanFormValues();
+        setFormInitValues(initForm);
+        setPermissionIds([]);
     }
 
-    /**
-     * 清除form表单中的值
-     */
-    const cleanFormValues = () => {
-        setExpandedKeys([]);
-        setCheckedKeys([]);
-        form.resetFields();
-    }
 
     /**
      * 处理租户
-     * @param value 租户
      */
-    const handleTenantConfig = (value: TenantInfo) => {
+    const handleTenant = async () => {
+        await form.validateFields();
+        const tenantInfo: TenantInfo = form.getFieldsValue();
+        tenantInfo.permissionIds = permissionIds;
         setIsModalButtonLoading(true);
-        const ids: string[] = [];
-        checkedKeys.forEach(checkedKey => {
-            const id = idKeyMap.get(checkedKey);
-            if (id) ids.push(id);
-        });
-        value.permissionIds = ids;
-        const promise = updateId ? tenantApi.editInfoApi(updateId, value) : tenantApi.saveInfoApi(value);
-        promise.then(() => {
+        try {
+            await (updateId ? tenantApi.editInfoApi(updateId, tenantInfo) : tenantApi.saveInfoApi(tenantInfo));
+            message.success(t('Common.success')).then();
+            await pageRequest();
             setIsModalOpen(false);
-            cleanFormValues();
-            message.success("操作成功").then();
-            pageRequest()
-        })
-            .catch((error: Error) => {
-                message.error(error.message).then();
-            })
-            .finally(() => {
-                setIsModalButtonLoading(false);
-            })
+        } finally {
+            setIsModalButtonLoading(false);
+        }
     }
 
     /**
@@ -316,7 +198,7 @@ export const Tenant: React.FC = () => {
     return (<>
         <PageList
             tableProps={{
-                tableName: '租户列表',
+                tableName: t('Tenant.list'),
                 columns: columns,
                 pageData: pageResult,
                 setPageQuery: setPageQuery,
@@ -326,15 +208,15 @@ export const Tenant: React.FC = () => {
                         <AddButton onClick={() => openModal()}/>
                         <DeleteButton onClick={async () => {
                             tenantApi.deleteInfoApi(rowKeys as string[]).then();
-                            pageRequest()
+                            await pageRequest();
                         }}/>
                     </>
                 ]
             }}
             headerSearchProps={{
                 components: [
-                    <><label htmlFor="tenantName">租户名称</label>
-                        <Input placeholder={'请输入租户名称'} id={'tenantName'} onChange={(e) => {
+                    <><label htmlFor="tenantName">{t('Tenant.name')}</label>
+                        <Input placeholder={t('Tenant.namePlaceholder')} id={'tenantName'} onChange={(e) => {
                             setTenantQuery({tenantName: e.target.value})
                         }}/>
                     </>
@@ -344,137 +226,133 @@ export const Tenant: React.FC = () => {
         />
 
         <Modal
-            title={updateId ? "修改租户" : "新增租户"}
+            title={updateId ? t('Tenant.edit') : t('Tenant.add')}
             open={isModalOpen}
             onCancel={() => closeModal()}
-            footer={[]}
+            footer={[
+                <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                        onClick={handleTenant}>{t('Button.submit')}</Button>,
+                <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+            ]}
             closeIcon={<IconFont type="i-Close" style={{
                 fontSize: '1.5rem',
             }}/>}
-            destroyOnClose
+            destroyOnClose={true}
         >
             <Form
+                clearOnDestroy={true}
                 name="basic"
                 form={form}
                 autoComplete="off"
                 labelCol={{span: 5}}
-                style={{width: 600}}
-                onFinish={handleTenantConfig}
-                initialValues={{isEnabled: isEnabled}}
+                wrapperCol={{offset: .5}}
+                onFinish={handleTenant}
+                initialValues={formInitValues}
             >
                 <Form.Item
-                    label="租户名称"
+                    label={t('Tenant.name')}
                     name="tenantName"
                     validateTrigger="onBlur"
                     key="tenantName"
                     colon={false}
                     required={true}
                     hasFeedback
-                    rules={[{required: true, message: '请输入${label}'}]}
+                    rules={[{required: true, message: t('Tenant.namePlaceholder')}]}
                 >
-                    <Input placeholder='请输入租户名称' maxLength={20}/>
+                    <Input placeholder={t('Tenant.namePlaceholder')} maxLength={20}/>
                 </Form.Item>
                 <Form.Item
-                    label="租户编码"
+                    label={t('Tenant.code')}
                     name="tenantCode"
                     validateTrigger="onBlur"
                     key="tenantCode"
                     colon={false}
                     required={true}
-                    hasFeedback={updateId === null}
-                    rules={[{required: true, message: '请输入${label}'}]}
+                    hasFeedback={true}
+                    validateFirst={true}
+                    rules={[
+                        {required: true, message: t('Tenant.codePlaceholder')},
+                        {
+                            required: true,
+                            validator: async (_, value: string) => {
+                                if (updateId != null || value == null || value == '') {
+                                    return;
+                                }
+                                const exists = await tenantApi.checkTenantCodeExists(value);
+                                if (exists) {
+                                    return Promise.reject(new Error(t('Tenant.codeExistsErrorMessage')));
+                                }
+                            }
+                        }
+                    ]}
                 >
-                    <Input disabled={updateId != null} placeholder='请输入租户编码' maxLength={20}/>
+                    <Input disabled={updateId != null} placeholder={t('Tenant.codePlaceholder')} maxLength={20}/>
                 </Form.Item>
                 <Form.Item
-                    label="租户权限"
-                    key="permissionList"
+                    label={t('Tenant.permissions')}
+                    key="permissionIds"
+                    name='permissionIds'
                     colon={false}
                     required={true}
+                    hasFeedback={true}
+                    rules={[
+                        {required: true, message: t('Tenant.permissionsPlaceholder')}
+                    ]}
                 >
-                    <div className="menu-list">
-                        <div>
-                            <Space>
-                                <Checkbox onChange={onExpanded}>展开/折叠</Checkbox>
-                                <Checkbox onChange={onSelectedAll}>全选/全不选</Checkbox>
-                            </Space>
-                        </div>
-                        <Tree
-                            className="menu-tree"
-                            checkable
-                            onExpand={(expandedKeysValue: Key[]) => {
-                                setExpandedKeys(expandedKeysValue);
-                                setAutoExpandParent(false);
-                            }}
-                            expandedKeys={expandedKeys}
-                            autoExpandParent={autoExpandParent}
-                            onCheck={(checkedKeysValue) => setCheckedKeys(checkedKeysValue as React.Key[])}
-                            checkedKeys={checkedKeys}
-                            onSelect={(selectedKeysValue: Key[]) => setSelectedKeys(selectedKeysValue)}
-                            selectedKeys={selectedKeys}
-                            treeData={menuTree}
-                        />
-                    </div>
+                    <FormTree<Menu>
+                        formTreeProps={{
+                            fieldNames: {key: 'id'},
+                            checkedKeys: permissionIds,
+                            onCheck: (key) => setPermissionIds(key as React.Key[]),
+                            titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
+                            treeData: treeSelectData,
+                        }}
+                        onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
+                    />
                 </Form.Item>
                 <Form.Item
-                    label="联系人"
+                    label={t('Tenant.contactPerson')}
                     name="contactPerson"
                     validateTrigger="onBlur"
                     key="contactPerson"
                     colon={false}
                     required={true}
-
                     hasFeedback
-                    rules={[{required: true, message: '请输入${label}'}]}
+                    rules={[{required: true, message: t('Tenant.contactPersonPlaceholder')}]}
                 >
-                    <Input placeholder='请输入联系人' maxLength={20}/>
+                    <Input placeholder={t('Tenant.contactPersonPlaceholder')} maxLength={20}/>
                 </Form.Item>
                 <Form.Item
-                    label="联系方式"
+                    label={t('Tenant.contactInfo')}
                     name="contactInfo"
                     validateTrigger="onBlur"
                     key="contactInfo"
                     colon={false}
                     required={true}
                     hasFeedback
-                    rules={[{required: true, message: '请输入${label}'}]}
+                    rules={[{required: true, message: t('Tenant.contactInfoPlaceholder')}]}
                 >
-                    <Input placeholder='请输入联系方式' maxLength={20}/>
+                    <Input placeholder={t('Tenant.contactInfoPlaceholder')} maxLength={20}/>
                 </Form.Item>
                 <Form.Item
-                    label="状态"
-                    name="isEnabled"
+                    label={t('Common.status')}
+                    name='isEnabled'
                     key="isEnabled"
                     colon={false}
                     hasFeedback
                 >
-                    <Radio.Group onChange={(e) => {
-                        setIsEnabled(e.target.value);
-                    }}>
-                        <Radio value={true}>启用</Radio>
-                        <Radio value={false}>禁用</Radio>
+                    <Radio.Group>
+                        <Radio value={true}>{t('Common.enabled')}</Radio>
+                        <Radio value={false}>{t('Common.enabled')}</Radio>
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item
-                    label="备注"
+                    label={t('Common.remark')}
                     name="remark"
                     key="remark"
                     colon={false}
                 >
-                    <TextArea className="remark" showCount maxLength={500}/>
-                </Form.Item>
-                <Form.Item
-                    className="form-button"
-                >
-                    <Space
-                        size="middle"
-                    >
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={isModalButtonLoading}>确定</Button>
-                        <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
-                    </Space>
+                    <TextArea className="remark" placeholder={t('Common.remark')} showCount maxLength={500}/>
                 </Form.Item>
             </Form>
         </Modal>

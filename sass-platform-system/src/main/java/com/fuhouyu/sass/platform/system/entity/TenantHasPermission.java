@@ -15,43 +15,34 @@
  */
 package com.fuhouyu.sass.platform.system.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-
 /**
  * <p>
- * 角色实体
+ * 租户权限dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 20:50
+ * @since 2024/11/24 19:41
  */
-@Getter
-@Setter
-@ToString(callSuper = true)
-public class Roles extends BaseEntity {
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TenantHasPermission extends BaseEntity {
 
     @Serial
-    private static final long serialVersionUID = 1231239807123812611L;
+    private static final long serialVersionUID = 1241236412641233112L;
 
-    private Long id;
+    /**
+     * 租户id
+     */
+    private Long tenantId;
 
-    private String roleName;
-
-    private String roleCode;
-
-    private Integer displayOrder;
-
-    private String dataScope;
-
-    private Boolean isEnabled;
-
-    private Boolean isAllowModified;
-
-    private Long ownerTenantId;
+    /**
+     * 权限id
+     */
+    private Long permissionId;
 
 }

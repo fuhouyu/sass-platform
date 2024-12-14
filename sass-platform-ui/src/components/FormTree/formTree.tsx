@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Key, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {Checkbox, CheckboxProps, Space, Tree, TreeProps} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import './index.scss'
@@ -25,7 +25,6 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
     onSelectedAll?: (ids: string[]) => void
 }) => {
 
-    // 递归函数，用于提取所有节点的ids
     const extractAllIds = (treeData?: T[], key?: string): string[] => {
         if (!treeData) {
             return []
@@ -48,29 +47,50 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
     };
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const ids: string[] = extractAllIds(formTreeProps.treeData, formTreeProps.fieldNames?.key)
+    const [selectedAll, setSelectedAll] = useState<boolean>(false);
+    const [expanded, setExpanded] = useState<boolean>(false);
+
 
     /**
      * 展开/折叠
      * @param e 事件
      */
     const onExpanded: CheckboxProps['onChange'] = (e) => {
-        if (e.target.checked) {
+        const value: boolean = e.target.checked;
+        setExpanded(value);
+        if (value) {
             setExpandedKeys(ids);
         } else {
             setExpandedKeys([]);
         }
     };
+    const initValueRef = useRef(() => {
+        const checkedKeys = formTreeProps.checkedKeys;
+        if (checkedKeys && Array.isArray(checkedKeys)) {
+            if (ids.length === checkedKeys.length) {
+                setSelectedAll(true);
+                setExpandedKeys(ids);
+                setExpanded(true);
+            }
+        }
+    });
+
+    useEffect(() => {
+        initValueRef.current();
+    }, [])
+
 
     return (
         <>
             <div className="menu-list">
                 <div>
                     <Space>
-                        <Checkbox onChange={onExpanded}>展开/折叠</Checkbox>
-                        <Checkbox onChange={e => {
+                        <Checkbox checked={expanded} onChange={onExpanded}>展开/折叠</Checkbox>
+                        <Checkbox checked={selectedAll} onChange={e => {
                             if (!onSelectedAll) {
                                 return
                             }
+                            setSelectedAll(e.target.checked)
                             if (e.target.checked) {
                                 onSelectedAll(ids);
                             } else {
@@ -88,6 +108,17 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
                         setExpandedKeys(expandedKeysValue);
                     }}
                     {...formTreeProps}
+                    onCheck={(checked, info) => {
+                        if (!formTreeProps.onCheck) {
+                            return
+                        }
+                        formTreeProps.onCheck(checked, info);
+                        if ((checked as Key[]).length === ids.length) {
+                            setSelectedAll(true)
+                        } else {
+                            setSelectedAll(false)
+                        }
+                    }}
                 />
             </div>
         </>

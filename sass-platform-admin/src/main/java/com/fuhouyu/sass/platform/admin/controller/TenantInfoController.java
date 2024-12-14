@@ -22,6 +22,7 @@ import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -113,6 +115,20 @@ public class TenantInfoController {
                                                   List<Long> ids) {
         int count = this.tenantInfoService.removeByIds(ids);
         return ResponseHelper.success(count > 0);
+    }
+
+
+    /**
+     * 检查租户编码是否存在
+     *
+     * @param tenantCode 租户编码
+     * @return true 已存在 false 不存在
+     */
+    @GetMapping("/exists")
+    @Operation(summary = "检查租户编码是否已存在，true 已存在")
+    @Parameter(name = "tenantCode", description = "租户编码")
+    public BaseResponse<Boolean> checkTenantCodeExists(@RequestParam("tenantCode") String tenantCode) {
+        return ResponseHelper.success(Objects.nonNull(this.tenantInfoService.findByTenantCode(tenantCode)));
     }
     
     

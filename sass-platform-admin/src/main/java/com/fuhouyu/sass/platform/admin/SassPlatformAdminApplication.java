@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan(basePackages = "com.fuhouyu.sass.platform.system.mapper")
 public class SassPlatformAdminApplication {
 
+
     public static void main(String[] args) {
         SpringApplication.run(SassPlatformAdminApplication.class, args);
     }

@@ -21,6 +21,7 @@ const ZhCN = {
         updateBy: '操作人',
         updateAt: '操作时间',
         status: '状态',
+        statusPlaceholder: '请选择状态',
         displayOrder: '显示顺序',
         displayOrderPlaceholder: '请输入显示顺序',
         remark: '备注',
@@ -49,7 +50,7 @@ const ZhCN = {
         personCenter: '个人中心',
         logout: '退出',
     },
-    //登录
+    // 登录
     Login: {
         usernamePlaceholder: '请输入用户名',
         usernameEmptyMessage: '请输入用户名!',
@@ -59,6 +60,26 @@ const ZhCN = {
         wechatLogin: '微信登录',
         weLinkLogin: 'WeLink 扫码',
         loginButton: '登录',
+    },
+    // 租户
+    Tenant: {
+        add: '新增租户',
+        edit: '修改租户',
+        list: '租户列表',
+        name: '租户名称',
+        namePlaceholder: '请输入租户名称',
+        code: '租户编码',
+        codePlaceholder: '请输入租户编码',
+        codeExistsErrorMessage: '租户编码已存在',
+        type: '租户类型',
+        typePlaceholder: '请选择租户类型',
+        contactPerson: '联系人',
+        contactPersonPlaceholder: '请输入联系人',
+        contactInfo: '联系信息',
+        contactInfoPlaceholder: '请输入联系信息',
+        permissions: '租户权限',
+        permissionsPlaceholder: '请选择租户权限',
+
     },
     // 菜单
     Menu: {

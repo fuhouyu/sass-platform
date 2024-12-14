@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.entity.TenantPermission;
-import com.fuhouyu.sass.platform.system.mapper.TenantPermissionMapper;
+import com.fuhouyu.sass.platform.system.entity.TenantHasPermission;
+import com.fuhouyu.sass.platform.system.mapper.TenantHasPermissionMapper;
 import com.fuhouyu.sass.platform.system.service.TenantPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,38 +40,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TenantPermissionServiceImpl implements TenantPermissionService {
 
-    private final TenantPermissionMapper tenantPermissionMapper;
+    private final TenantHasPermissionMapper tenantHasPermissionMapper;
 
     @Override
     public void saveTenantPermission(Long tenantId, Collection<Long> permissionIds) {
         // 先删除所有
-        tenantPermissionMapper.delete(tenantId, null);
+        tenantHasPermissionMapper.delete(tenantId, null);
         if (CollectionUtils.isEmpty(permissionIds)) {
             return;
         }
-        List<TenantPermission> list = new ArrayList<>(permissionIds.size());
+        List<TenantHasPermission> list = new ArrayList<>(permissionIds.size());
         for (Long permissionId : permissionIds) {
-            TenantPermission tenantPermission = new TenantPermission();
-            tenantPermission.setPermissionId(permissionId);
-            tenantPermission.setTenantId(tenantId);
-            list.add(tenantPermission);
+            TenantHasPermission tenantHasPermission = new TenantHasPermission();
+            tenantHasPermission.setPermissionId(permissionId);
+            tenantHasPermission.setTenantId(tenantId);
+            list.add(tenantHasPermission);
         }
-        this.tenantPermissionMapper.insertBatch(list);
+        this.tenantHasPermissionMapper.insertBatch(list);
 
     }
 
     @Override
-    public void deleteTenantPermission(Long tenantId, Collection<Long> permissionIds) {
-        this.tenantPermissionMapper.delete(tenantId, permissionIds);
+    public void removeTenantPermission(Long tenantId, Collection<Long> permissionIds) {
+        this.tenantHasPermissionMapper.delete(tenantId, permissionIds);
     }
 
     @Override
-    public void deleteTenantPermissions(Collection<Long> tenantIds) {
-        this.tenantPermissionMapper.deleteTenantPermissions(tenantIds);
+    public void removeTenantPermissions(Collection<Long> tenantIds) {
+        this.tenantHasPermissionMapper.deleteByTenantIds(tenantIds);
     }
 
     @Override
     public List<Long> findPermissionIdByTenantId(Long tenantId) {
-        return this.tenantPermissionMapper.queryPermissionIdByTenantId(tenantId);
+        return this.tenantHasPermissionMapper.queryPermissionIdByTenantId(tenantId);
     }
 }

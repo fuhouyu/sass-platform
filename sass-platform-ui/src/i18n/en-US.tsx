@@ -21,6 +21,7 @@ const EnUS = {
         updateBy: 'Update By',
         updateAt: 'Update At',
         status: 'Status',
+        statusPlaceholder: 'Please choose Status',
         displayOrder: 'Display Order',
         displayOrderPlaceholder: 'Please enter Display Order',
         remark: 'Remark',
@@ -70,6 +71,25 @@ const EnUS = {
         user: 'User Manage',
         role: 'Role Manage',
         permission: 'Permission Manage',
+    },
+    // 租户
+    Tenant: {
+        add: 'Add Tenant',
+        edit: 'Edit Tenant',
+        list: 'Tenant List',
+        name: 'Tenant Name',
+        namePlaceholder: 'Please enter Tenant Name',
+        code: 'Tenant Code',
+        codePlaceholder: 'Please enter Tenant Code',
+        codeExistsErrorMessage: 'Tenant Code is exists',
+        type: 'Tenant Type',
+        typePlaceholder: 'Please choose Tenant Type',
+        contactPerson: 'Contact Person',
+        contactPersonPlaceholder: 'Please enter Contact Person',
+        contactInfo: 'Contact Info',
+        contactInfoPlaceholder: 'Please enter Contact Info',
+        permissions: 'Tenant Permission',
+        permissionsPlaceholder: 'Please choose Tenant Permission',
     },
     // 权限
     Permission: {

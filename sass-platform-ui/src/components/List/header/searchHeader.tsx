@@ -18,12 +18,16 @@ import {SearchComponentProps} from "./interface";
 import {Button} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import './index.scss'
+import {useTranslation} from "react-i18next";
+import {useState} from "react";
 
 /**
  * 搜索头
  */
 const SearchHeader = (searchComponentProps: SearchComponentProps) => {
     const {components, onSearchClick} = searchComponentProps;
+    const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+    const {t} = useTranslation()
     return (
         <div className="search-header">
             <div className='search-components'>
@@ -36,8 +40,15 @@ const SearchHeader = (searchComponentProps: SearchComponentProps) => {
                 )}
                 <div className='search-button'>
                     {(components?.length ?? 0) > 0 &&
-                        <Button type="primary" icon={<SearchOutlined/>}
-                                onClick={onSearchClick}>搜索</Button>
+                        <Button type="primary" loading={buttonLoading} icon={<SearchOutlined/>}
+                                onClick={() => {
+                                    if (!onSearchClick) {
+                                        return
+                                    }
+                                    setButtonLoading(true);
+                                    onSearchClick();
+                                    setButtonLoading(false);
+                                }}>{t('Button.search')}</Button>
                     }
                 </div>
             </div>

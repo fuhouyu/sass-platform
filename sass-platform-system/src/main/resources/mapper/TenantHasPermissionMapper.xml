@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantHasPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
+        <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="TableName">
+        tenant_has_permission
+    </sql>
+
+    <sql id="AllColumns">
+        tenant_id,
+        permission_id,
+        create_at,
+        create_by
+    </sql>
+
+    <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="tenantHasPermissions" separator="," item="entity">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{entity.tenantId},
+            #{entity.permissionId},
+            #{entity.createAt},
+            #{entity.createBy},
+        </trim>
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM
+        <include refid="TableName">
+        </include>
+        WHERE tenant_id = #{tenantId}
+        <if test="permissionIds != null and permissionIds.size() > 0">
+            AND permission_id IN
+            <foreach collection="permissionIds" open="(" close=")" item="permissionId" separator=",">
+                #{permissionId}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteByTenantIds">
+        DELETE
+            FROM
+        <include refid="TableName">
+        </include>
+        WHERE tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" separator="," item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
+
+    <select id="queryPermissionIdByTenantId" resultType="java.lang.Long">
+        SELECT permission_id
+        FROM <include refid="TableName"/>
+        WHERE tenant_id = #{tenantId}
+    </select>
+</mapper>
