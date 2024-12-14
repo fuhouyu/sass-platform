@@ -17,6 +17,7 @@
 import {TenantInfo} from "@/model/tenant";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 import {DefaultApiImpl} from "@/apis/baseApi";
+import {request} from "@/utils";
 
 
 const baseTenantUrl = BaseUrlConstant.TENANT_API_PREFIX;
@@ -27,6 +28,12 @@ class TenantApi extends DefaultApiImpl<TenantInfo> {
         super(baseTenantUrl);
     }
 
+    /**
+     * 检查租户编码是否存在
+     * true 已存在 false 不存在
+     * @param tenantCode 租户编码
+     */
+    checkTenantCodeExists: (tenantCode: string) => Promise<boolean> = (tenantCode: string): Promise<boolean> => request.get(`${this.baseUrl}/exists?tenantCode=${tenantCode}`)
 }
 
 export const tenantApi: TenantApi = new TenantApi()

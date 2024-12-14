@@ -70,14 +70,14 @@
         <include refid="TableName">
         </include>
         WHERE tenant_id IN
-        <foreach collection="configIds" open="(" close=")" separator="," item="configId">
-            #{configId}
+        <foreach collection="tenantIds" open="(" close=")" separator="," item="tenantId">
+            #{tenantId}
         </foreach>
     </delete>
 
     <select id="queryPermissionIdByTenantId" resultType="java.lang.Long">
         SELECT permission_id
         FROM <include refid="TableName"/>
-        WHERE tenant_id = #{configId}
+        WHERE tenant_id = #{tenantId}
     </select>
 </mapper>

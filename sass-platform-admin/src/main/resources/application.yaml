@@ -10,6 +10,7 @@ spring:
       database: 1
       host: ENC(UUHNPvtHpEfFl+zqZBXI1HXZ26zpQ6c0ZHaYTq+n+BZrQ42diN7FGUDTYksIS8NN)
       port: 6379
+      connect-timeout: 6s
 base:
   framework:
     cache:

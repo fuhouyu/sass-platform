@@ -112,10 +112,10 @@ export const Role: React.FC = () => {
         if (roleId) {
             const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
             setFormInitValues(roleInfo);
-            setPermissionIds(roleInfo.permissionIds as Key[])
+            setPermissionIds(roleInfo.permissionIds as Key[]);
         } else {
             setFormInitValues(initForm);
-            setPermissionIds([])
+            setPermissionIds([]);
         }
         setIsModalOpen(true);
     }
@@ -237,6 +237,7 @@ export const Role: React.FC = () => {
                     name="basic"
                     form={form}
                     labelCol={{span: 5}}
+                    wrapperCol={{offset: .5}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
@@ -279,10 +280,7 @@ export const Role: React.FC = () => {
                             {
                                 required: true,
                                 validator: async (_, value: string) => {
-                                    if (updateId != null) {
-                                        return;
-                                    }
-                                    if (value == null || value == '') {
+                                    if (updateId != null || value == null || value == '') {
                                         return;
                                     }
                                     const exists = await roleApi.checkRoleCodeExists(value);

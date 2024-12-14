@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {Checkbox, CheckboxProps, Space, Tree, TreeProps} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import './index.scss'
@@ -50,19 +50,21 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
     const [selectedAll, setSelectedAll] = useState<boolean>(false);
     const [expanded, setExpanded] = useState<boolean>(false);
 
+
     /**
      * 展开/折叠
      * @param e 事件
      */
     const onExpanded: CheckboxProps['onChange'] = (e) => {
-        if (e.target.checked) {
+        const value: boolean = e.target.checked;
+        setExpanded(value);
+        if (value) {
             setExpandedKeys(ids);
         } else {
             setExpandedKeys([]);
         }
     };
-
-    useEffect(() => {
+    const initValueRef = useRef(() => {
         const checkedKeys = formTreeProps.checkedKeys;
         if (checkedKeys && Array.isArray(checkedKeys)) {
             if (ids.length === checkedKeys.length) {
@@ -71,8 +73,12 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
                 setExpanded(true);
             }
         }
+    });
 
+    useEffect(() => {
+        initValueRef.current();
     }, [])
+
 
     return (
         <>
