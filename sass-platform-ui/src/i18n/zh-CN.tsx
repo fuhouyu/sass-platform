@@ -21,6 +21,7 @@ const ZhCN = {
         updateBy: '操作人',
         updateAt: '操作时间',
         status: '状态',
+        statusPlaceholder: '请选择状态',
         displayOrder: '显示顺序',
         displayOrderPlaceholder: '请输入显示顺序',
         remark: '备注',

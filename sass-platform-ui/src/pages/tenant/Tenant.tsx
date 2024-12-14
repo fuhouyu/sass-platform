@@ -43,6 +43,7 @@ import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user";
+import {useTranslation} from "react-i18next";
 
 /**
  * 转换映射关系
@@ -170,6 +171,7 @@ export const Tenant: React.FC = () => {
     const userMenus: Menu[] = useAppSelector((state) => state.user.userMenus);
     const menuTree = useMenuTree(userMenus);
     const [tenantQuery, setTenantQuery] = useState<{ [key: string]: unknown }>({});
+    const {t} = useTranslation();
 
     // key 和 id映射
     const idKeyMap = new Map<Key, string>();
@@ -281,17 +283,17 @@ export const Tenant: React.FC = () => {
 
     /**
      * 处理租户
-     * @param value 租户
      */
-    const handleTenantConfig = (value: TenantInfo) => {
+    const handleTenant = () => {
+        const tenantInfo: TenantInfo = form.getFieldsValue();
         setIsModalButtonLoading(true);
         const ids: string[] = [];
         checkedKeys.forEach(checkedKey => {
             const id = idKeyMap.get(checkedKey);
             if (id) ids.push(id);
         });
-        value.permissionIds = ids;
-        const promise = updateId ? tenantApi.editInfoApi(updateId, value) : tenantApi.saveInfoApi(value);
+        tenantInfo.permissionIds = ids;
+        const promise = updateId ? tenantApi.editInfoApi(updateId, tenantInfo) : tenantApi.saveInfoApi(tenantInfo);
         promise.then(() => {
             setIsModalOpen(false);
             cleanFormValues();
@@ -347,7 +349,11 @@ export const Tenant: React.FC = () => {
             title={updateId ? "修改租户" : "新增租户"}
             open={isModalOpen}
             onCancel={() => closeModal()}
-            footer={[]}
+            footer={[
+                <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                        onClick={handleTenant}>{t('Button.submit')}</Button>,
+                <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+            ]}
             closeIcon={<IconFont type="i-Close" style={{
                 fontSize: '1.5rem',
             }}/>}
@@ -358,8 +364,9 @@ export const Tenant: React.FC = () => {
                 form={form}
                 autoComplete="off"
                 labelCol={{span: 5}}
+                wrapperCol={{span: 12}}
                 style={{width: 600}}
-                onFinish={handleTenantConfig}
+                onFinish={handleTenant}
                 initialValues={{isEnabled: isEnabled}}
             >
                 <Form.Item
@@ -462,19 +469,6 @@ export const Tenant: React.FC = () => {
                     colon={false}
                 >
                     <TextArea className="remark" showCount maxLength={500}/>
-                </Form.Item>
-                <Form.Item
-                    className="form-button"
-                >
-                    <Space
-                        size="middle"
-                    >
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={isModalButtonLoading}>确定</Button>
-                        <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
-                    </Space>
                 </Form.Item>
             </Form>
         </Modal>

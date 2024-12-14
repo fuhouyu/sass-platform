@@ -4,11 +4,17 @@ spring:
   profiles:
     include:
       - postgresql
+  data:
+    redis:
+      password: wfyrgqgyy
+      database: 1
+      host: ENC(UUHNPvtHpEfFl+zqZBXI1HXZ26zpQ6c0ZHaYTq+n+BZrQ42diN7FGUDTYksIS8NN)
+      port: 6379
 base:
   framework:
     cache:
       service:
-        cache-service-type: caffeine
+        cache-service-type: redis
     kms-national:
       sm2:
         auto-generate: true

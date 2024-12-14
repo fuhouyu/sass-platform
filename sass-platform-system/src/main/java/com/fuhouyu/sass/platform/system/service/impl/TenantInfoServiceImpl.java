@@ -96,7 +96,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "当前登录的租户不允许删除操作！");
         }
         int count = this.tenantInfoMapper.deleteByIds(ids);
-        this.tenantPermissionService.deleteTenantPermissions(ids);
+        this.tenantPermissionService.removeTenantPermissions(ids);
         return count;
     }
 

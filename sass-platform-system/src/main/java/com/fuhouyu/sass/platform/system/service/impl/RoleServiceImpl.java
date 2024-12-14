@@ -17,12 +17,14 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.RolesAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.entity.Roles;
 import com.fuhouyu.sass.platform.system.mapper.RoleMapper;
+import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
 import com.fuhouyu.sass.platform.system.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +52,10 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
 
+    private final RoleHasPermissionService roleHasPermissionService;
+
     private final SnowflakeIdWorker snowflakeIdWorker;
+
 
     @Override
     public RoleDTO findByRoleCode(String roleCode) {
@@ -67,23 +72,21 @@ public class RoleServiceImpl implements RoleService {
         }
         long id = snowflakeIdWorker.nextId();
         Roles entity = ROLES_ASSEMBLER.toEntity(dto);
+        entity.setIsAllowModified(true);
         entity.setId(id);
+        entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.roleMapper.insert(entity);
+        // 保存角色和权限关系
+        this.roleHasPermissionService.saveRolePermission(id, dto.getPermissionIds());
         return id;
-    }
-
-    @Override
-    public void saveBatch(List<RoleDTO> dtoList) {
-        List<Roles> rolesList = dtoList.stream().map(dto -> {
-            dto.setId(snowflakeIdWorker.nextId());
-            return ROLES_ASSEMBLER.toEntity(dto);
-        }).toList();
-        this.roleMapper.insertBatch(rolesList);
     }
 
     @Override
     public void edit(RoleDTO dto) {
         this.roleMapper.update(ROLES_ASSEMBLER.toEntity(dto));
+        // 保存角色和权限关系
+        this.roleHasPermissionService.removeRolePermission(dto.getId());
+        this.roleHasPermissionService.saveRolePermission(dto.getId(), dto.getPermissionIds());
     }
 
     @Override
@@ -98,7 +101,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO findById(Long id) {
-        return ROLES_ASSEMBLER.toDTO(this.roleMapper.queryById(id));
+        Roles roles = this.roleMapper.queryById(id);
+        if (Objects.isNull(roles)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "角色不存在");
+        }
+        RoleDTO roleDTO = ROLES_ASSEMBLER.toDTO(roles);
+        roleDTO.setPermissionIds(this.roleHasPermissionService.findPermissionIdsByRoleId(id));
+        return roleDTO;
     }
 
     @Override

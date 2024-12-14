@@ -21,6 +21,7 @@ const EnUS = {
         updateBy: 'Update By',
         updateAt: 'Update At',
         status: 'Status',
+        statusPlaceholder: 'Please choose Status',
         displayOrder: 'Display Order',
         displayOrderPlaceholder: 'Please enter Display Order',
         remark: 'Remark',

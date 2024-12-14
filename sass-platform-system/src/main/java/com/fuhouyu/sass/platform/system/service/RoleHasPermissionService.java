@@ -20,43 +20,45 @@ import java.util.List;
 
 /**
  * <p>
- * 租户权限接口
+ * 角色权限接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/24 19:46
+ * @since 2024/12/14 16:35
  */
-public interface TenantPermissionService {
+public interface RoleHasPermissionService {
 
     /**
-     * 保存关联关系
+     * 保存角色id和权限id集合
      *
-     * @param tenantId      租户id
+     * @param roleId        角色id
      * @param permissionIds 权限id集合
      */
-    void saveTenantPermission(Long tenantId,
-                              Collection<Long> permissionIds);
+    void saveRolePermission(Long roleId,
+                            Collection<Long> permissionIds);
 
     /**
-     * 删除关联关系
+     * 删除角色和id的关联关系
      *
-     * @param tenantId      租户id
-     * @param permissionIds 权限id集合
+     * @param roleId 角色id
      */
-    void removeTenantPermission(Long tenantId, Collection<Long> permissionIds);
+    void removeRolePermission(Long roleId);
 
     /**
-     * 通过租户id批量删除
+     * 删除角色和id的关联关系
      *
-     * @param tenantIds 租户id
+     * @param roleId               角色id
+     * @param excludePermissionIds 需要排除的权限id，为空则删除所有
      */
-    void removeTenantPermissions(Collection<Long> tenantIds);
+    void removeRolePermission(Long roleId,
+                              Collection<Long> excludePermissionIds);
+
 
     /**
-     * 通过租户id查询权限id
+     * 通过角色id查询出权限id集合
      *
-     * @param tenantId 租户id
+     * @param roleId 角色id
      * @return 权限id集合
      */
-    List<Long> findPermissionIdByTenantId(Long tenantId);
+    List<Long> findPermissionIdsByRoleId(Long roleId);
 }
