@@ -48,7 +48,7 @@ export const Menu = () => {
 
     const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
 
-    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[];
+    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[]
     menuItems.unshift(...commonMenus);
 
     // 点击菜单时进行跳转

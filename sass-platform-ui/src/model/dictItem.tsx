@@ -13,35 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
 
-import java.util.List;
+import {BaseModel} from "@/model/base";
 
 /**
- * <p>
- * 字典类型接口
- * </p>
- *
- * @author fuhouyu
- * @since 2024/12/15 17:09
+ * 字典项类型
  */
-public interface DictTypeService extends BaseService<Long, DictTypeDTO> {
-
-
-    /**
-     * 检查字典编码是否存在
-     *
-     * @param dictCode 字典编码
-     * @return true 已存在，false 不存在
-     */
-    Boolean checkDictCodeExists(String dictCode);
+export interface DictItem extends BaseModel {
 
     /**
-     * 查询字典类型集合
-     *
-     * @return 字典类型集合
+     * 主键id
      */
-    List<DictTypeDTO> findList();
+    id?: string;
+
+    /**
+     * 字典编码
+     */
+    dictCode?: string;
+
+    /**
+     * 字典名称
+     */
+    itemName?: string;
+
+    /**
+     * 字典编码
+     */
+    itemCode?: string;
+
+    /**
+     * 允许修改
+     */
+    isAllowModified?: boolean;
+
+    /**
+     * 是否启禁用
+     */
+    isEnabled?: boolean;
+
+    /**
+     * 显示
+     */
+    displayOrder?: number;
+
+    /**
+     * 备注
+     */
+    remark?: string;
 }

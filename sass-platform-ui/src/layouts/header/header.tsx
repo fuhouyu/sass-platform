@@ -63,13 +63,13 @@ export const Header = () => {
     ];
 
     // onClick
-    const onDropDownClick: MenuProps['onClick'] = (e: ItemType) => {
+    const onDropDownClick: MenuProps['onClick'] = async (e: ItemType) => {
         if (!e) {
             return;
         }
         switch (e.key) {
             case 'logout':
-                dispatch(fetchLogout());
+                await dispatch(fetchLogout());
                 navigate(BASE_LOGIN_URL);
                 break;
             case 'userinfo':

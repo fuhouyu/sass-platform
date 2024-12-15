@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.assembler;
 
-import {DictType} from "@/pages/dict/type/DictType";
+import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.entity.DictItem;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-export default DictType
+/**
+ * <p>
+ * 字典类型转换
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/2 19:48
+ */
+@Mapper
+public interface DictItemAssembler extends BaseAssembler<DictItem, DictItemDTO> {
+
+    DictItemAssembler INSTANCE = Mappers.getMapper(DictItemAssembler.class);
+}

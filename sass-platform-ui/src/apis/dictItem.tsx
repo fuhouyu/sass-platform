@@ -16,28 +16,23 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi";
+import {DictItem} from "@/model/dictItem";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 import {request} from "@/utils";
-import {DictType} from "@/model/dictType";
 
-class DictTypeApi extends DefaultApiImpl<DictType> {
+class DictItemApi extends DefaultApiImpl<DictItem> {
 
     constructor() {
-        super(BaseUrlConstant.DICT_TYPE_API_PREFIX);
+        super(BaseUrlConstant.DICT_ITEM_API_PREFIX);
     }
 
     /**
-     * 检查字典编码是否存在
-     * @param dictCode 字典编码
+     * 检查项编码是否存在
+     * @param dictCode 字典项编码
+     * @param itemCode 字典项编码
      */
-    checkDictCode: (dictCode: string) => Promise<boolean> = (dictCode: string): Promise<boolean> =>
-        request.get(`${this.baseUrl}/exists?dictCode=${dictCode}`)
-
-    /**
-     * 获取字典项列表
-     */
-    getList: () => Promise<DictType[]> = (): Promise<DictType[]> => request.get(`${this.baseUrl}/list`)
+    checkItemCodeExists: (dictCode: string, itemCode: string) => Promise<boolean> = (dictCode: string, itemCode: string): Promise<boolean> =>
+        request.get(`${this.baseUrl}/exists?dictCode=${dictCode}&itemCode=${itemCode}`)
 }
 
-
-export const dictTypeApi: DictTypeApi = new DictTypeApi();
+export const dictItemApi: DictItemApi = new DictItemApi();

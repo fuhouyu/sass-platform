@@ -13,35 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
 
-import java.util.List;
+import com.fuhouyu.sass.platform.system.entity.DictItem;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
- * 字典类型接口
+ * 字典项mapper对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/15 17:09
+ * @since 2024/10/9 18:00
  */
-public interface DictTypeService extends BaseService<Long, DictTypeDTO> {
-
+public interface DictItemMapper extends BaseMapper<Long, DictItem> {
 
     /**
-     * 检查字典编码是否存在
+     * 通过字典项编码查询出字典项对象
      *
      * @param dictCode 字典编码
-     * @return true 已存在，false 不存在
+     * @param itemCode 字典项编码
+     * @return 字典项dto对象
      */
-    Boolean checkDictCodeExists(String dictCode);
-
-    /**
-     * 查询字典类型集合
-     *
-     * @return 字典类型集合
-     */
-    List<DictTypeDTO> findList();
+    DictItem queryByDictCodeAndItemCode(@Param("dictCode") String dictCode,
+                                        @Param("itemCode") String itemCode);
 }

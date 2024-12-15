@@ -26,6 +26,7 @@ import {IconFont, PageList} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
 import TextArea from "antd/es/input/TextArea";
 import {Menu} from "@/model/menu";
+import {Link} from "react-router-dom";
 
 /**
  * 字典类型
@@ -50,6 +51,9 @@ export const DictType = () => {
             dataIndex: 'dictCode',
             defaultSortOrder: 'descend',
             align: "center",
+            render: (_, record: DictTypeModel) => {
+                return <Link to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
+            }
         },
         {
             title: t('Common.displayOrder'),
@@ -299,7 +303,8 @@ export const DictType = () => {
                             suffix={<Tooltip title={t('DictType.codeTips')}>
                                 <IconFont type={'i-tips-hint'}/>
                             </Tooltip>}
-                            placeholder={t('DictType.namePlaceholder')}
+                            disabled={updateId != null}
+                            placeholder={t('DictType.codePlaceholder')}
                             maxLength={50}/>
                     </Form.Item>
 

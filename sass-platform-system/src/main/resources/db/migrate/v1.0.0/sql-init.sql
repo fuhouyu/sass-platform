@@ -363,7 +363,7 @@ CREATE TABLE dict_type
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     display_order   INT     DEFAULT 0    NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
-    remark            VARCHAR(128)          NOT NULL,
+    remark VARCHAR(128),
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
@@ -401,7 +401,7 @@ DROP TABLE IF EXISTS dict_item;
 CREATE TABLE dict_item
 (
     id                BIGINT                NOT NULL PRIMARY KEY,
-    type_code         VARCHAR(128)          NOT NULL,
+    dict_code VARCHAR(128) NOT NULL,
     item_name         VARCHAR(128)          NOT NULL,
     item_code         VARCHAR(128)          NOT NULL,
     display_order     INT                   NOT NULL DEFAULT 0,
@@ -409,20 +409,17 @@ CREATE TABLE dict_item
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    remark            VARCHAR(128)          NOT NULL,
+    remark    VARCHAR(128),
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
     update_by         VARCHAR(32)           NOT NULL,
-    UNIQUE (owner_tenant_id, item_code)
+    UNIQUE (owner_tenant_id, dict_code, item_code)
 );
-
-CREATE INDEX idx_dict_item_type_code ON dict_item (type_code);
-COMMENT ON INDEX idx_dict_item_type_code IS '字典类型编码索引';
 
 COMMENT ON TABLE dict_item IS '字典类型';
 COMMENT ON COLUMN dict_item.id IS '主键id';
-COMMENT ON COLUMN dict_item.type_code IS '类型编码';
+COMMENT ON COLUMN dict_item.dict_code IS '类型编码';
 COMMENT ON COLUMN dict_item.item_name IS '字典项名称';
 COMMENT ON COLUMN dict_item.item_code IS '字典项名称';
 COMMENT ON COLUMN dict_item.display_order IS '显示顺序';
@@ -437,20 +434,20 @@ COMMENT ON COLUMN dict_item.update_at IS '更新时间';
 COMMENT ON COLUMN dict_item.update_by IS '更新人';
 
 -- 性别
-INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (1, 'GENDER', '男', 'MALE', 1, true, false, false, 1, '性别男', now(), 'admin', now(), 'admin');
-INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (2, 'GENDER', '女', 'FEMALE', 2, true, false, false, 1, '性别女', now(), 'admin', now(), 'admin');
-INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (3, 'GENDER', '未知', 'UNKNOWN', 3, true, false, false, 1, '未知', now(), 'admin', now(), 'admin');
 
 -- 租户类型
-INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (4, 'TENANT_TYPE', '公司', 'COMPANY', 1, true, false, false, 1, '公司', now(), 'admin', now(), 'admin');
-INSERT INTO dict_item(id, type_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (5, 'TENANT_TYPE', '学校', 'SCHOOL', 2, true, false, false, 1, '学校', now(), 'admin', now(), 'admin');

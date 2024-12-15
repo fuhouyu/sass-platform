@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
-import './index.scss'
 
-/**
- * 字典项
- * @constructor 构造函数
- */
-export const DictItem = () => {
+import {DictItem} from "@/pages/system/dictItem/DictItem";
 
-    return (
-        <>
-            字典项
-        </>
-    )
-}
+export default DictItem;

@@ -17,15 +17,16 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
-import com.fuhouyu.sass.platform.system.dto.dict.DictTypePageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.dto.dict.DictItemPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.service.DictTypeService;
+import com.fuhouyu.sass.platform.system.service.DictItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,46 +35,47 @@ import java.util.List;
 
 /**
  * <p>
- * 字典类型 api接口
+ * 字典项 web 控制器
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/15 16:50
+ * @since 2024/12/15 18:50
  */
 @RestController
-@RequestMapping("/v1/dict-type")
-@Tag(name = "字典类型 web接口")
-@Validated
+@RequestMapping("/v1/dict-item")
+@Tag(name = "字典项 web接口")
 @RequiredArgsConstructor
-public class DictTypeController {
+@Slf4j
+@Validated
+public class DictItemController {
 
-    private final DictTypeService dictTypeService;
+    private final DictItemService dictItemService;
 
 
     /**
-     * 保存字典类型
+     * 保存字典项
      *
-     * @param dictTypeDTO 字典类型dto对象
+     * @param dictItemDTO 字典项dto对象
      * @return 主键id
      */
     @PostMapping
-    @Operation(summary = "保存字典类型")
-    public BaseResponse<Long> save(@Validated @RequestBody DictTypeDTO dictTypeDTO) {
-        return ResponseHelper.success(this.dictTypeService.save(dictTypeDTO));
+    @Operation(summary = "保存字典项")
+    public BaseResponse<Long> save(@Validated @RequestBody DictItemDTO dictItemDTO) {
+        return ResponseHelper.success(this.dictItemService.save(dictItemDTO));
     }
 
     /**
-     * 修改字典类型
+     * 修改字典项
      *
-     * @param dictTypeDTO 字典类型dto
+     * @param dictItemDTO 字典项dto
      * @return void
      */
     @PutMapping("/{id}")
-    @Operation(summary = "修改字典类型")
+    @Operation(summary = "修改字典项")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
-                                     @Validated @RequestBody DictTypeDTO dictTypeDTO) {
-        dictTypeDTO.setId(id);
-        this.dictTypeService.edit(dictTypeDTO);
+                                     @Validated @RequestBody DictItemDTO dictItemDTO) {
+        dictItemDTO.setId(id);
+        this.dictItemService.edit(dictItemDTO);
         return ResponseHelper.success();
     }
 
@@ -85,8 +87,8 @@ public class DictTypeController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过主键id获取详情")
-    public BaseResponse<DictTypeDTO> getById(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.dictTypeService.findById(id));
+    public BaseResponse<DictItemDTO> getById(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.dictItemService.findById(id));
     }
 
     /**
@@ -98,45 +100,36 @@ public class DictTypeController {
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
-        return ResponseHelper.success(this.dictTypeService.removeByIds(ids));
+        return ResponseHelper.success(this.dictItemService.removeByIds(ids));
     }
 
 
     /**
-     * 字典类型分页查询列表
+     * 字典项分页查询列表
      *
      * @param pageQueryDTO 分页查询dto对象
      * @return 分页查询的dto对象
      */
     @GetMapping("/page")
-    @Operation(summary = "字典类型分页查询列表")
-    public BaseResponse<PageResultDTO<DictTypeDTO>> pageList(@ParameterObject DictTypePageQueryDTO pageQueryDTO) {
-        return ResponseHelper.success(this.dictTypeService.pageList(pageQueryDTO));
+    @Operation(summary = "字典项分页查询列表")
+    public BaseResponse<PageResultDTO<DictItemDTO>> pageList(@ParameterObject DictItemPageQueryDTO pageQueryDTO) {
+        return ResponseHelper.success(this.dictItemService.pageList(pageQueryDTO));
     }
 
 
     /**
-     * 检查字典类型编码是否存在
+     * 检查字典项编码是否存在
      *
-     * @param dictCode 字典类型编码
+     * @param dictCode 字典编码
+     * @param itemCode 字典项编码
      * @return true 已存在
      */
     @GetMapping("/exists")
-    @Operation(summary = "检查字典类型编码是否存在")
-    @Parameter(name = "dictCode", description = "字典类型编码")
-    public BaseResponse<Boolean> checkCodeExists(@RequestParam("dictCode") String dictCode) {
-        return ResponseHelper.success(this.dictTypeService.checkDictCodeExists(dictCode));
+    @Operation(summary = "检查字典项编码是否存在")
+    @Parameter(name = "dictCode", description = "字典编码")
+    @Parameter(name = "itemCode", description = "字典项编码")
+    public BaseResponse<Boolean> checkCodeExists(@RequestParam("dictCode") String dictCode,
+                                                 @RequestParam("itemCode") String itemCode) {
+        return ResponseHelper.success(this.dictItemService.checkItemCodeExists(dictCode, itemCode));
     }
-
-    /**
-     * 查询出字典类型列表
-     *
-     * @return 字典类型列表
-     */
-    @GetMapping("/list")
-    @Operation(summary = "查询出所有的字典类型列表")
-    public BaseResponse<List<DictTypeDTO>> findList() {
-        return ResponseHelper.success(this.dictTypeService.findList());
-    }
-
 }

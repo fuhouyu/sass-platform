@@ -54,6 +54,11 @@ export class BaseUrlConstant {
     /**
      * 字典类型api
      */
-    static readonly DICT_TYPE_API_PERFIX = `${BaseUrlConstant.VERSION}/dict-type`
+    static readonly DICT_TYPE_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-type`
+
+    /**
+     * 字典项api
+     */
+    static readonly DICT_ITEM_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-item`
 
 }

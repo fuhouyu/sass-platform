@@ -72,7 +72,6 @@ const EnUS = {
         roleManage: 'Role Manage',
         permissionManage: 'Permission Manage',
         dictManage: 'Dictionary Manage',
-        dictType: 'Dictionary Type',
         dictItem: 'Dictionary Item',
 
     },
@@ -152,6 +151,15 @@ const EnUS = {
         namePlaceholder: 'Please enter Dictionary Name',
         code: 'Dictionary Code',
         codePlaceholder: 'Please enter Dictionary Code',
+    },
+    DictItem: {
+        add: 'Add Dictionary Item',
+        edit: 'Edit Dictionary Item',
+        list: 'Dictionary Item List',
+        name: 'Dictionary Item Name',
+        namePlaceholder: 'Please enter Dictionary Item Name',
+        code: 'Dictionary Item Code',
+        codePlaceholder: 'Please enter Dictionary Item Code',
     }
 }
 

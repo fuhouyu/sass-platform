@@ -91,7 +91,6 @@ const ZhCN = {
         roleManage: '角色管理',
         permissionManage: '权限管理',
         dictManage: '字典管理',
-        dictType: '字典类型',
         dictItem: '字典项',
 
     },
@@ -151,7 +150,17 @@ const ZhCN = {
         namePlaceholder: '请输入字典名称',
         code: '字典编码',
         codePlaceholder: '请输入字典编码',
-        
+        codeTips: '字典编码，当前租户下唯一'
+    },
+    DictItem: {
+        add: '新增字典项',
+        edit: '修改字典项',
+        list: '字典项列表',
+        name: '字典项名称',
+        namePlaceholder: '请输入字典项名称',
+        code: '字典项编码',
+        codePlaceholder: '请输入字典项编码',
+        codeTips: '字典项编码，当前字典类型下唯一'
     }
 }
 

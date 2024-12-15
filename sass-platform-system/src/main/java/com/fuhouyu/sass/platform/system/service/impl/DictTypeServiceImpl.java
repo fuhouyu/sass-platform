@@ -21,6 +21,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.DictTypeAssembler;
 import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
+import com.fuhouyu.sass.platform.system.dto.dict.DictTypePageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.DictType;
 import com.fuhouyu.sass.platform.system.mapper.DictTypeMapper;
@@ -57,6 +58,13 @@ public class DictTypeServiceImpl implements DictTypeService {
     public Boolean checkDictCodeExists(String dictCode) {
         DictType dictType = this.dictTypeMapper.queryByDictCode(dictCode);
         return Objects.nonNull(dictType);
+    }
+
+    @Override
+    public List<DictTypeDTO> findList() {
+        DictTypePageQueryDTO dictTypePageQueryDTO = new DictTypePageQueryDTO();
+        dictTypePageQueryDTO.setSortColumn("display_order");
+        return DICT_TYPE_ASSEMBLER.toDTO(this.dictTypeMapper.queryList(dictTypePageQueryDTO));
     }
 
     @Override

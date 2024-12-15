@@ -32,7 +32,7 @@ export type RouterType = {
     path: string,
     element?: React.ReactNode | null | undefined,
     component?: React.ReactNode,
-    children?: RouterType[]
+    children?: RouterType[];
 }
 
 
