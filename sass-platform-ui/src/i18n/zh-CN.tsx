@@ -85,11 +85,14 @@ const ZhCN = {
     Menu: {
         main: '权限列表',
         home: '主页',
-        system: '系统管理',
-        tenant: '租户管理',
-        user: '用户管理',
-        role: '角色管理',
-        permission: '权限管理',
+        systemManage: '系统管理',
+        tenantManage: '租户管理',
+        userManage: '用户管理',
+        roleManage: '角色管理',
+        permissionManage: '权限管理',
+        dictManage: '字典管理',
+        dictItem: '字典项',
+
     },
     // 权限
     Permission: {
@@ -138,6 +141,26 @@ const ZhCN = {
         dataScope: '数据权限',
         dataScopePlaceholder: '请选择数据权限',
         permissionIds: '角色权限',
+    },
+    DictType: {
+        add: '新增字典类型',
+        edit: '修改字典类型',
+        list: '字典类型列表',
+        name: '字典名称',
+        namePlaceholder: '请输入字典名称',
+        code: '字典编码',
+        codePlaceholder: '请输入字典编码',
+        codeTips: '字典编码，当前租户下唯一'
+    },
+    DictItem: {
+        add: '新增字典项',
+        edit: '修改字典项',
+        list: '字典项列表',
+        name: '字典项名称',
+        namePlaceholder: '请输入字典项名称',
+        code: '字典项编码',
+        codePlaceholder: '请输入字典项编码',
+        codeTips: '字典项编码，当前字典类型下唯一'
     }
 }
 

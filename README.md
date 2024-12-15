@@ -2,11 +2,4 @@
 
 ---
 
-## 原型图
-
-![首页](./docs/用户登录.png)
-![首页](./docs/首页.png)
-![首页](./docs/租户管理.png)
-![首页](./docs/租户配置.png)
-![首页](./docs/角色管理.png)
-![首页](./docs/用户管理.png)
+[原型图](https://modao.cc/proto/s8e5hkZ6smx8ntWZVRIifH/sharing?view_mode=device&screen=rbpUU4LoHP1x9eOmY&canvasId=rcUU4LoHWwgwFXpH)

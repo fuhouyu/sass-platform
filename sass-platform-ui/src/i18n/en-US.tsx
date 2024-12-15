@@ -66,11 +66,14 @@ const EnUS = {
     Menu: {
         main: 'Permission List',
         home: 'Home',
-        system: 'System Manage',
-        tenant: 'Tenant Manage',
-        user: 'User Manage',
-        role: 'Role Manage',
-        permission: 'Permission Manage',
+        systemManage: 'System Manage',
+        tenantManage: 'Tenant Manage',
+        userManage: 'User Manage',
+        roleManage: 'Role Manage',
+        permissionManage: 'Permission Manage',
+        dictManage: 'Dictionary Manage',
+        dictItem: 'Dictionary Item',
+
     },
     // 租户
     Tenant: {
@@ -138,6 +141,25 @@ const EnUS = {
         dataScopePlaceholder: 'Please choose Role Code',
         permissionIds: 'Role Permission',
 
+    },
+    // 字典类型
+    DictType: {
+        add: 'Add Dictionary Type',
+        edit: 'Edit Dictionary Type',
+        list: 'Dictionary Type List',
+        name: 'Dictionary Name',
+        namePlaceholder: 'Please enter Dictionary Name',
+        code: 'Dictionary Code',
+        codePlaceholder: 'Please enter Dictionary Code',
+    },
+    DictItem: {
+        add: 'Add Dictionary Item',
+        edit: 'Edit Dictionary Item',
+        list: 'Dictionary Item List',
+        name: 'Dictionary Item Name',
+        namePlaceholder: 'Please enter Dictionary Item Name',
+        code: 'Dictionary Item Code',
+        codePlaceholder: 'Please enter Dictionary Item Code',
     }
 }
 

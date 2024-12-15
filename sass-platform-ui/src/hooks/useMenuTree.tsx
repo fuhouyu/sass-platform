@@ -37,6 +37,9 @@ export function useMenuTree(menus: Menu[]): MenuTreeType[] {
             return undefined;
         }
         return permissionInterfaces?.map((item: Menu) => {
+            if (!item.isVisible) {
+                return
+            }
             return {
                 id: item.id,
                 key: item.routePath ?? item.id!,
@@ -46,8 +49,8 @@ export function useMenuTree(menus: Menu[]): MenuTreeType[] {
                     <IconFont type={item.icon} style={{fontSize: '1rem'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
             };
-        })
-    }, [])
+        }).filter(Boolean) as MenuTreeType[]
+    }, [t])
 
 
     return convertMenuItem(menus) ?? [];

@@ -31,7 +31,7 @@ const getBreadcrumbName = (path: string, routers: Menu[]) => {
         }
         const children = item.children;
         if (children) {
-            const childName: string = getBreadcrumbName(path, children);
+            const childName: string = getBreadcrumbName(path, children) ?? '';
             if (childName) return childName;
         }
     }
@@ -46,6 +46,10 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
         <Link to={`/${paths.join("/")}`}>{currentRoute.title}</Link>
     );
 }
+
+const extractPathSegments = (pathname: string) => {
+    return pathname.match(/[^/]+(?:\/:[^/]+)?/g) || [];
+};
 
 export const Bread = () => {
     const userMenus = useAppSelector(state => state.user.userMenus);
@@ -63,7 +67,8 @@ export const Bread = () => {
                 path: pathname,
             }];
         }
-        const pathSnippets = pathname.split('/').filter(i => i);
+
+        const pathSnippets = extractPathSegments(pathname);
         return pathSnippets.map((path) => {
             const breadcrumbName = getBreadcrumbName(path, userMenus);
             return {

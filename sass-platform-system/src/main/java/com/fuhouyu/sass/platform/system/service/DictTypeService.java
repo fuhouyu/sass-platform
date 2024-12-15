@@ -13,17 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
+
+import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
+
+import java.util.List;
 
 /**
- * 基类model
+ * <p>
+ * 字典类型接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/15 17:09
  */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
+public interface DictTypeService extends BaseService<Long, DictTypeDTO> {
+
+
+    /**
+     * 检查字典编码是否存在
+     *
+     * @param dictCode 字典编码
+     * @return true 已存在，false 不存在
+     */
+    Boolean checkDictCodeExists(String dictCode);
+
+    /**
+     * 查询字典类型集合
+     *
+     * @return 字典类型集合
+     */
+    List<DictTypeDTO> findList();
 }

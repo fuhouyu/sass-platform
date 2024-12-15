@@ -16,9 +16,9 @@
 
 import {Button} from "antd";
 import {IconFont} from "@/components";
-import {ButtonProps} from "@components/Button/interface";
 import './index.scss'
 import {useTranslation} from "react-i18next";
+import {ButtonProps} from "antd/es/button/button";
 
 
 /**
@@ -31,7 +31,7 @@ export const AddButton = (buttonProps: ButtonProps) => {
 
     return (
         <Button className="add-button"
-                onClick={buttonProps.onClick}
+                {...buttonProps}
                 icon={<IconFont type="i-add"/>}
         >
             {t('Button.add')}
@@ -48,7 +48,7 @@ export const DeleteButton = (buttonProps: ButtonProps) => {
     const {t} = useTranslation();
     return (
         <Button className="del-button"
-                onClick={buttonProps.onClick}
+                {...buttonProps}
                 icon={<IconFont type="i-delete"/>}>
             {t('Button.delete')}
         </Button>
@@ -65,7 +65,7 @@ export const EditButton = (buttonProps: ButtonProps) => {
     const {t} = useTranslation();
     return (
         <Button className="edit-button"
-                onClick={buttonProps.onClick}
+                {...buttonProps}
                 icon={<IconFont type="i-edit"/>}>
             {t('Button.edit')}
         </Button>

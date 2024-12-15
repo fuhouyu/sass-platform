@@ -13,17 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.mapper;
+
+
+import com.fuhouyu.sass.platform.system.entity.DictType;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 基类model
+ * <p>
+ * 字典类型mapper对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/10/9 18:00
  */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
+public interface DictTypeMapper extends BaseMapper<Long, DictType> {
+
+    /**
+     * 通过字典类型编码查询出字典类型对象
+     *
+     * @param dictCode 字典类型编码
+     * @return 字典类型do对象
+     */
+    DictType queryByDictCode(@Param("dictCode") String dictCode);
 }

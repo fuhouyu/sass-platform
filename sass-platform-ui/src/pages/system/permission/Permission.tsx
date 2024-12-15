@@ -27,7 +27,6 @@ import {
     Modal,
     Radio,
     Row,
-    Space,
     TableColumnsType,
     Tooltip,
     Tree,
@@ -39,7 +38,7 @@ import './index.scss'
 import {useTranslation} from "react-i18next";
 import {IconFont, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
-import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {AnyObject} from "antd/es/_util/type";
 
@@ -68,6 +67,12 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 }
 
+const mainPermission: Menu = {
+    id: '-1',
+    permissionName: 'main',
+    permissionCode: '',
+}
+
 export const Permission: React.FC = () => {
 
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
@@ -80,17 +85,12 @@ export const Permission: React.FC = () => {
     const {t} = useTranslation();
     const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
-    const [initParentId, setInitParentId] = useState<string>('-1')
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-    const [formParentPermission, setFormParentPermission] = useState<Menu>({
-        id: '-1',
-        permissionName: 'main',
-        permissionCode: '',
-    });
+    const [formParentPermission, setFormParentPermission] = useState<Menu>({});
     const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
 
     const columns: TableColumnsType<Menu> = [
@@ -126,9 +126,7 @@ export const Permission: React.FC = () => {
             dataIndex: 'action',
             render: (_: AnyObject, record: Menu) => {
                 return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => openModal(record.id)}>修改</a>
-                    </Space>
+                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
                 </>)
             }
         }
@@ -164,8 +162,7 @@ export const Permission: React.FC = () => {
         permissionApi.getPermissionListApi()
             .then((res: Menu[]) => {
                 setLazyTreeData([{
-                    id: '-1',
-                    permissionName: 'main',
+                    ...mainPermission,
                     children: res
                 }]);
             });
@@ -186,12 +183,13 @@ export const Permission: React.FC = () => {
     /**
      * 树被点击时的事件
      * @param selectedKeys 当前选中的key
+     * @param node 选中的树节点
      */
-    const onSelectTree = async (selectedKeys: Key[]) => {
+    const onSelectTree = async (selectedKeys: Key[], {node}: { node: Menu }) => {
         if (!selectedKeys || selectedKeys.length === 0) {
             return
         }
-        setInitParentId(selectedKeys[0] as string)
+        setFormParentPermission(node);
         // 这里只会有一条
         setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
@@ -216,7 +214,7 @@ export const Permission: React.FC = () => {
      */
     const permissionTreeSelect = async () => {
         const res = await permissionApi.getPermissionTreeSelect()
-        const menu = formParentPermission;
+        const menu = mainPermission;
         menu.children = res
         setTreeSelectData([menu])
     }
@@ -228,11 +226,11 @@ export const Permission: React.FC = () => {
     const openModal = async (updateId?: string | undefined) => {
         setUpdateId(updateId);
         await permissionTreeSelect();
-        setIsModalOpen(true);
         if (updateId) {
             const permissionDetails = await permissionApi.getInfoByIdApi(updateId);
             form.setFieldsValue({...permissionDetails})
         }
+        setIsModalOpen(true);
     }
 
     /**
@@ -241,6 +239,7 @@ export const Permission: React.FC = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setUpdateId(undefined);
+        setFormParentPermission({})
     }
 
     /**
@@ -248,9 +247,6 @@ export const Permission: React.FC = () => {
      * @param value value
      */
     const concatPermissionCode = (value: string): string => {
-        console.log(formParentPermission.permissionCode ?
-            formParentPermission.permissionCode.concat(`:${value}`)
-            : value)
         return formParentPermission.permissionCode ?
             formParentPermission.permissionCode.concat(`:${value}`)
             : value;
@@ -334,6 +330,7 @@ export const Permission: React.FC = () => {
             </Row>
 
             <Modal
+                destroyOnClose={true}
                 title={updateId ? t('Permission.edit') : t('Permission.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
@@ -358,7 +355,7 @@ export const Permission: React.FC = () => {
                     style={{width: 600}}
                     autoComplete="off"
                     initialValues={{
-                        parentId: initParentId,
+                        parentId: formParentPermission.id,
                         permissionType: 'DIR',
                         isFrame: false,
                         isVisible: true,
@@ -385,7 +382,11 @@ export const Permission: React.FC = () => {
                                 value: 'id',
                             }}
                             onSelect={(_: string, node: Menu) => {
-                                setFormParentPermission(node)
+                                // console.log('=====')
+                                // console.log(node)
+                                // console.log(formParentPermission)
+                                setFormParentPermission(node);
+                                // setFormParentPermission(node)
                             }}
                             allowClear
                             dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
@@ -446,7 +447,7 @@ export const Permission: React.FC = () => {
                                 colon={false}
                                 required={true}
                                 validateTrigger="onBlur"
-                                rules={[
+                                rules={updateId ? [] : [
                                     {
                                         required: true,
                                         type: "string",
@@ -547,7 +548,9 @@ export const Permission: React.FC = () => {
                                             {
                                                 required: true,
                                                 type: "string",
-                                                message: t('Permission.routePathCheckMessage')
+                                                message: t('Permission.routePathCheckMessage'),
+                                                validateTrigger: 'onBlur',
+
                                             }
                                         ]}
                                     >

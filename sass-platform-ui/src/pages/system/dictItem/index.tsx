@@ -15,6 +15,6 @@
  */
 
 
-export interface ButtonProps {
-    onClick?: () => void
-}
+import {DictItem} from "@/pages/system/dictItem/DictItem";
+
+export default DictItem;

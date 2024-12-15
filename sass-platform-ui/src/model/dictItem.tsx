@@ -14,16 +14,51 @@
  * limitations under the License.
  */
 
+
+import {BaseModel} from "@/model/base";
+
 /**
- * 基类model
+ * 字典项类型
  */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
+export interface DictItem extends BaseModel {
+
+    /**
+     * 主键id
+     */
+    id?: string;
+
+    /**
+     * 字典编码
+     */
+    dictCode?: string;
+
+    /**
+     * 字典名称
+     */
+    itemName?: string;
+
+    /**
+     * 字典编码
+     */
+    itemCode?: string;
+
+    /**
+     * 允许修改
+     */
+    isAllowModified?: boolean;
+
+    /**
+     * 是否启禁用
+     */
+    isEnabled?: boolean;
+
+    /**
+     * 显示
+     */
+    displayOrder?: number;
+
+    /**
+     * 备注
+     */
+    remark?: string;
 }

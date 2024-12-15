@@ -48,7 +48,7 @@ export const Menu = () => {
 
     const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
 
-    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[];
+    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[]
     menuItems.unshift(...commonMenus);
 
     // 点击菜单时进行跳转
@@ -62,7 +62,7 @@ export const Menu = () => {
             <Sider className='layout-sider' collapsible collapsed={collapsed}
                    onCollapse={(value) => setCollapsed(value)}>
                 <h3 className="platform-title">
-                    {t('Header.title')}
+                    {!collapsed && t('Header.title')}
                 </h3>
                 <Divider/>
                 <_Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"

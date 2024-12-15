@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * 基类model
- */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
-}
+
+import {DictType} from "@/pages/system/dictType/DictType";
+
+export default DictType

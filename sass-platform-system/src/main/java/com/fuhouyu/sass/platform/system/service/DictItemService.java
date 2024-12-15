@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
+
+import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
 
 /**
- * 基类model
+ * <p>
+ * 字典项接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/15 18:27
  */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
+public interface DictItemService extends BaseService<Long, DictItemDTO> {
+
+
+    /**
+     * 检查字典项编码是否存在
+     *
+     * @param dictCode 字典编码
+     * @param itemCode 字典项编码
+     * @return true 已存在 false 不存在
+     */
+    Boolean checkItemCodeExists(String dictCode,
+                                String itemCode);
 }
