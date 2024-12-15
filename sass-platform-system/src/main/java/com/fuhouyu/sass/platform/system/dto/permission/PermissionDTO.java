@@ -83,4 +83,7 @@ public class PermissionDTO extends BaseDTO implements Serializable {
 
     @Schema(name = "isLeaf", description = "是否为叶子节点，true 叶子，false 非叶子节点, 仅返回")
     private Boolean isLeaf;
+
+    @Schema(name = "isEnabled", description = "启禁用状态：true启用")
+    private Boolean isEnabled;
 }

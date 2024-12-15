@@ -14,36 +14,40 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useState} from "react";
 import './index.scss'
+import {useTranslation} from "react-i18next";
+import {DictType as DictTypeModel} from "@/model/dictType";
 import {Button, Form, Input, InputNumber, message, Modal, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
-import {Role as RoleModel} from "@/model/role";
-import {roleApi} from "@/apis/role";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
+import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {FormTree, IconFont, PageList} from "@/components";
-import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import {useTranslation} from "react-i18next";
-import {permissionApi} from "@/apis/permission";
+import {IconFont, PageList} from "@/components";
+import {dictTypeApi} from '@/apis/dictType';
+import TextArea from "antd/es/input/TextArea";
 import {Menu} from "@/model/menu";
 
-export const Role: React.FC = () => {
+/**
+ * 字典类型
+ * @constructor 构造函数
+ */
+export const DictType = () => {
+
     const {t} = useTranslation();
-    const initForm: RoleModel = {
+    const initForm: DictTypeModel = {
         displayOrder: 1,
         isEnabled: true,
-        dataScope: 'ALL',
     }
     const columns: TableColumnsType = [
         {
-            title: t('Role.name'),
-            dataIndex: 'roleName',
+            title: t('DictType.name'),
+            dataIndex: 'dictName',
             showSorterTooltip: {target: 'full-header'},
             align: "center",
         },
         {
-            title: t('Role.code'),
-            dataIndex: 'roleCode',
+            title: t('DictType.code'),
+            dataIndex: 'dictCode',
             defaultSortOrder: 'descend',
             align: "center",
         },
@@ -86,9 +90,9 @@ export const Role: React.FC = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: "center",
-            render: (_, record: RoleModel) => {
+            render: (_, record: DictTypeModel) => {
                 return (<>
-                    <EditButton onClick={() => openModal(record.id)}/>
+                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
                 </>)
             }
         }
@@ -99,26 +103,20 @@ export const Role: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [roleQuery, setRoleQuery] = useState<{ [key: string]: unknown }>({});
-    const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
-    const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
-    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-    const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
+    const [dictTypeQuery, setDictTypeQuery] = useState<{ [key: string]: unknown }>({});
+    const [pageResult, setPageResult] = useState<PageResult<DictTypeModel>>();
+    const [formInitValues, setFormInitValues] = useState<DictTypeModel>(initForm);
     /**
      * 打开模态组
-     * @param roleId 角色id
+     * @param dictTypeId 角色id
      */
-    const openModal = async (roleId?: string) => {
-        setUpdateUserId(roleId);
-        const treeData = await permissionApi.getPermissionTreeSelect();
-        setTreeSelectData(treeData);
-        if (roleId) {
-            const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
-            setFormInitValues(roleInfo);
-            setPermissionIds(roleInfo.permissionIds as Key[]);
+    const openModal = async (dictTypeId?: string) => {
+        setUpdateUserId(dictTypeId);
+        if (dictTypeId) {
+            const dictTypeInfo: DictTypeModel = await dictTypeApi.getInfoByIdApi(dictTypeId);
+            setFormInitValues(dictTypeInfo);
         } else {
             setFormInitValues(initForm);
-            setPermissionIds([]);
         }
         setIsModalOpen(true);
     }
@@ -128,11 +126,10 @@ export const Role: React.FC = () => {
      */
     const handlerForm = async () => {
         await form.validateFields();
-        const role: RoleModel = form.getFieldsValue();
-        role.permissionIds = permissionIds;
+        const dictType: DictTypeModel = form.getFieldsValue();
         setIsModalButtonLoading(true);
         try {
-            await (updateId ? roleApi.editInfoApi(updateId, role) : roleApi.saveInfoApi(role));
+            await (updateId ? dictTypeApi.editInfoApi(updateId, dictType) : dictTypeApi.saveInfoApi(dictType));
             message.success(t('Common.success')).then()
             await pageRequest();
             setIsModalOpen(false);
@@ -151,8 +148,8 @@ export const Role: React.FC = () => {
 
 
     useEffect(() => {
-        roleApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<RoleModel>) => {
+        dictTypeApi.pageInfoListApi(pageQuery)
+            .then((res: PageResult<DictTypeModel>) => {
                 setPageResult({...res});
             });
     }, [pageQuery])
@@ -161,22 +158,25 @@ export const Role: React.FC = () => {
      * 分页查询请求
      */
     const pageRequest = async () => {
-        const res = await roleApi.pageInfoListApi(pageQuery);
+        const res = await dictTypeApi.pageInfoListApi(pageQuery);
         setPageResult({...res});
     }
 
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<RoleModel> = {
+    const rowSelection: TableRowSelection<DictTypeModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+        getCheckboxProps: (record: Menu) => ({
+            disabled: !record.isAllowModified
+        }),
     };
 
     return (
         <>
             <PageList
                 tableProps={{
-                    tableName: t('Role.list'),
+                    tableName: t('DictType.list'),
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,
@@ -185,7 +185,7 @@ export const Role: React.FC = () => {
                         <>
                             <AddButton onClick={() => openModal()}/>
                             <DeleteButton onClick={async () => {
-                                await roleApi.deleteInfoApi(rowKeys as string[]);
+                                await dictTypeApi.deleteInfoApi(rowKeys as string[]);
                                 await pageRequest();
                             }}/>
                         </>
@@ -193,14 +193,14 @@ export const Role: React.FC = () => {
                 }}
                 headerSearchProps={{
                     components: [
-                        <><label htmlFor="roleCode">{t('Role.code')}</label>
+                        <><label htmlFor="dictTypeCode">{t('DictType.code')}</label>
                             <Input
                                 allowClear={true}
-                                placeholder={t('Role.codePlaceholder')}
-                                id={'roleCode'}
+                                placeholder={t('DictType.codePlaceholder')}
+                                id={'dictTypeCode'}
                                 onChange={(e) => {
-                                    setRoleQuery({roleCode: e.target.value})
-                            }}/>
+                                    setDictTypeQuery({dictTypeCode: e.target.value})
+                                }}/>
                         </>,
                         <>
                             <span>{t('Common.status')}</span>
@@ -208,7 +208,7 @@ export const Role: React.FC = () => {
                                 allowClear={true}
                                 key={'isEnabled'}
                                 placeholder={t('Common.statusPlaceholder')}
-                                onChange={(value) => roleQuery['isEnabled'] = value}
+                                onChange={(value) => dictTypeQuery['isEnabled'] = value}
                                 options={[
                                     {value: true, label: <span>{t('Common.enabled')}</span>},
                                     {value: false, label: <span>{t('Common.disabled')}</span>}
@@ -216,17 +216,18 @@ export const Role: React.FC = () => {
                             />
                         </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...roleQuery})
+                    onSearchClick: () => setPageQuery({...pageQuery, ...dictTypeQuery})
                 }}
             />
 
             <Modal
+                centered
                 destroyOnClose={true}
-                title={updateId ? t('Role.edit') : t('Role.add')}
+                title={updateId ? t('DictType.edit') : t('DictType.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
-                width={450}
+                width={400}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
@@ -236,7 +237,7 @@ export const Role: React.FC = () => {
                     fontSize: '24px',
                 }}/>}
             >
-                <Form<RoleModel>
+                <Form<DictTypeModel>
                     name="basic"
                     form={form}
                     labelCol={{span: 5}}
@@ -246,10 +247,10 @@ export const Role: React.FC = () => {
                     initialValues={{...formInitValues}}
                 >
                     <Form.Item
-                        label={t('Role.name')}
-                        name="roleName"
+                        label={t('DictType.name')}
+                        name="dictName"
                         validateTrigger="onBlur"
-                        key="roleName"
+                        key="dictName"
                         colon={false}
                         required={true}
                         hasFeedback
@@ -257,19 +258,19 @@ export const Role: React.FC = () => {
                         rules={[{
                             required: true,
                             type: "string",
-                            message: t('Role.namePlaceholder'),
+                            message: t('DictType.namePlaceholder'),
                             max: 50,
                         }
                         ]}
                     >
-                        <Input placeholder={t('Role.namePlaceholder')} maxLength={50}/>
+                        <Input placeholder={t('DictType.namePlaceholder')} maxLength={50}/>
                     </Form.Item>
 
                     <Form.Item
-                        label={t('Role.code')}
-                        name="roleCode"
+                        label={t('DictType.code')}
+                        name="dictCode"
                         validateTrigger="onBlur"
-                        key="roleCode"
+                        key="dictCode"
                         colon={false}
                         required={true}
                         validateFirst={true}
@@ -277,7 +278,7 @@ export const Role: React.FC = () => {
                         rules={[{
                             required: true,
                             type: "string",
-                            message: t('Role.codePlaceholder'),
+                            message: t('DictType.codePlaceholder'),
                             max: 50,
                         },
                             {
@@ -286,19 +287,19 @@ export const Role: React.FC = () => {
                                     if (updateId != null || value == null || value == '') {
                                         return;
                                     }
-                                    const exists = await roleApi.checkRoleCodeExists(value);
+                                    const exists = await dictTypeApi.checkDictCode(value);
                                     if (exists) {
-                                        return Promise.reject(new Error(t('Role.codeExistsErrorMessage')));
+                                        return Promise.reject(new Error(t('DictType.codeExistsErrorMessage')));
                                     }
                                 }
                             }
                         ]}
                     >
                         <Input
-                            suffix={<Tooltip title={t('Role.codeTips')}>
+                            suffix={<Tooltip title={t('DictType.codeTips')}>
                                 <IconFont type={'i-tips-hint'}/>
                             </Tooltip>}
-                            placeholder={t('Role.namePlaceholder')}
+                            placeholder={t('DictType.namePlaceholder')}
                             maxLength={50}/>
                     </Form.Item>
 
@@ -322,26 +323,6 @@ export const Role: React.FC = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label={t('Role.dataScope')}
-                        name="dataScope"
-                        key="dataScope"
-                        colon={false}
-                        required={true}
-                    >
-                        <Select
-                            key={'dataScope'}
-                            placeholder={t('Role.dataScopePlaceholder')}
-                            options={[
-                                {value: 'ALL', label: <span>全部</span>},
-                                {value: 'DEPT', label: <span>当前部门</span>},
-                                {value: 'DEPT_AND_SUB', label: <span>部门及下辖</span>},
-                                {value: 'ONLY_USER', label: <span>仅本人</span>},
-                            ]}
-                        />
-                    </Form.Item>
-
-
-                    <Form.Item
                         label={t('Common.status')}
                         name="isEnabled"
                         key="isEnabled"
@@ -353,27 +334,16 @@ export const Role: React.FC = () => {
                             <Radio value={false}>{t('Common.disabled')}</Radio>
                         </Radio.Group>
                     </Form.Item>
+
                     <Form.Item
-                        label={t('Role.permissionIds')}
-                        key="permissionIds"
-                        name="permissionIds"
+                        label={t('Common.remark')}
+                        name="remark"
+                        key="remark"
                         colon={false}
-                        required={true}
-                        valuePropName={'checked'}
+                        validateFirst={true}
                     >
-                        <FormTree<Menu>
-                            formTreeProps={{
-                                fieldNames: {key: 'id'},
-                                checkedKeys: permissionIds,
-                                onCheck: (key) => setPermissionIds(key as React.Key[]),
-                                titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
-                                treeData: treeSelectData,
-                            }}
-                            onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
-                        />
+                        <TextArea className="remark" placeholder={t('Common.remark')} showCount maxLength={500}/>
                     </Form.Item>
-
-
                 </Form>
             </Modal>
         </>

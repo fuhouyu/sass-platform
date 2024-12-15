@@ -15,45 +15,44 @@
  */
 
 
+import {BaseModel} from "@/model/base";
+
 /**
- * api常量
+ * 字典类型
  */
-export class BaseUrlConstant {
+export interface DictType extends BaseModel {
+    /**
+     * 主键id
+     */
+    id?: string;
 
     /**
-     * 版本
+     * 字典名称
      */
-    static readonly VERSION: string = '/v1';
+    dictName?: string;
 
     /**
-     * 用户api
+     * 字典编码
      */
-    static readonly USER_API_PREFIX = `${BaseUrlConstant.VERSION}/user`;
+    dictCode?: string;
 
     /**
-     *认证api
+     * 允许修改
      */
-    static readonly AUTHENTICATION_API_PREFIX = `${BaseUrlConstant.VERSION}/auth`;
+    isAllowModified?: boolean;
 
     /**
-     * 权限api
+     * 是否启禁用
      */
-    static readonly PERMISSION_API_PREFIX = `${BaseUrlConstant.VERSION}/permission`;
+    isEnabled?: boolean;
 
     /**
-     * 租户api
+     * 显示
      */
-    static readonly TENANT_API_PREFIX = `${BaseUrlConstant.VERSION}/tenant`;
-
+    displayOrder?: number;
 
     /**
-     * 角色api
+     * 备注
      */
-    static readonly ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/role`;
-
-    /**
-     * 字典类型api
-     */
-    static readonly DICT_TYPE_API_PERFIX = `${BaseUrlConstant.VERSION}/dict-type`
-
+    remark?: string;
 }

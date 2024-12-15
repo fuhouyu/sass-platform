@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+import './index.scss'
+
 /**
- * 基类model
+ * 字典项
+ * @constructor 构造函数
  */
-export type BaseModel = {
-    // 创建时间
-    createAt?: string;
-    // 创建人
-    createBy?: string;
-    // 更新时间
-    updateAt?: string;
-    // 更新人
-    updateBy?: string;
+export const DictItem = () => {
+
+    return (
+        <>
+            字典项
+        </>
+    )
 }

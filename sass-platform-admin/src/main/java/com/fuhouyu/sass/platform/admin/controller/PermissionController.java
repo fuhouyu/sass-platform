@@ -63,6 +63,22 @@ public class PermissionController {
     }
 
     /**
+     * 修改权限
+     *
+     * @param id            主键id
+     * @param permissionDTO dto对象
+     * @return void
+     */
+    @PutMapping("/{id}")
+    @Operation(summary = "修改权限")
+    public BaseResponse<Void> updatePermission(@PathVariable("id") Long id,
+                                               @RequestBody PermissionDTO permissionDTO) {
+        permissionDTO.setId(id);
+        this.permissionService.edit(permissionDTO);
+        return ResponseHelper.success();
+    }
+
+    /**
      * 获取用户当前权限列表
      *
      * @return 用户当前的权限列表

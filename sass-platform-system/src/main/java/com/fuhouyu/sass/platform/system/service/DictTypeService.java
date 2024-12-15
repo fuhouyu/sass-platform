@@ -13,8 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
+
+import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
+
+/**
+ * <p>
+ * 字典类型接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/15 17:09
+ */
+public interface DictTypeService extends BaseService<Long, DictTypeDTO> {
 
 
-export interface ButtonProps {
-    onClick?: () => void
+    /**
+     * 检查字典编码是否存在
+     *
+     * @param dictCode 字典编码
+     * @return true 已存在，false 不存在
+     */
+    Boolean checkDictCodeExists(String dictCode);
 }
