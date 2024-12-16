@@ -33,7 +33,7 @@ interface UserinfoFormInterface {
  * 用户详情
  * @constructor 构造函数
  */
-export const Userinfo: React.FC = () => {
+export const Profile: React.FC = () => {
 
     const userinfo: _Userinfo = useAppSelector((state: {
         user: { userinfo: _Userinfo }

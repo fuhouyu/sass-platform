@@ -29,7 +29,7 @@ import './index.scss'
 import {changeLanguage} from "@/store/modules/locale";
 import i18n from "i18next";
 import {useTranslation} from "react-i18next";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant";
 
 
 export const Header = () => {
@@ -51,8 +51,8 @@ export const Header = () => {
      */
     const dropDownMenus: MenuProps['items'] = [
         {
-            key: 'personCenter',
-            label: t('Header.personCenter'),
+            key: 'profile',
+            label: t('Header.profile'),
             icon: <UserOutlined/>,
         },
         {
@@ -67,13 +67,14 @@ export const Header = () => {
         if (!e) {
             return;
         }
+        console.log(e.key)
         switch (e.key) {
             case 'logout':
                 await dispatch(fetchLogout());
                 navigate(BASE_LOGIN_URL);
                 break;
-            case 'userinfo':
-                navigate('/userinfo');
+            case 'profile':
+                navigate(BASE_USER_PROFILE_URL);
                 break;
         }
     };
