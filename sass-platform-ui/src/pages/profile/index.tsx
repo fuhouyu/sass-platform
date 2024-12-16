@@ -15,6 +15,6 @@
  */
 
 import {PersonCenter} from "./PersonCenter";
-import {Userinfo} from "./Userinfo";
+import {Profile} from "./Profile";
 
-export {PersonCenter, Userinfo}
+export {PersonCenter, Profile}

@@ -24,3 +24,8 @@ export const LANGUAGE_KEY: string = 'site_language';
  * 登录页
  */
 export const BASE_LOGIN_URL: string = '/login';
+
+/**
+ * 个人资料
+ */
+export const BASE_USER_PROFILE_URL: string = '/profile';

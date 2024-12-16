@@ -48,7 +48,7 @@ const EnUS = {
     // header
     Header: {
         title: 'Sass Platform',
-        personCenter: 'Person Center',
+        profile: 'User Profile',
         logout: 'Logout',
     },
     // 登录

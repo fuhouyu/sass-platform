@@ -21,7 +21,7 @@ import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icon
 import {Avatar} from "antd";
 import {useAppSelector} from "@/store";
 import {Userinfo as _UserInfo} from "@/model/user";
-import {Userinfo} from "@/pages/userinfo/Userinfo";
+import {Profile} from "@/pages/profile/Profile";
 
 interface MenuLiInterface {
     key: string;
@@ -89,7 +89,7 @@ export const PersonCenter: React.FC = () => {
                     <div className="userinfo-right-title">
                         {selectedMenuInterface.label}
                     </div>
-                    <Userinfo/>
+                    <Profile/>
                 </div>
             </div>
         </>

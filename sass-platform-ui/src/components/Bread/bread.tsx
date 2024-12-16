@@ -47,9 +47,6 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
     );
 }
 
-const extractPathSegments = (pathname: string) => {
-    return pathname.match(/[^/]+(?:\/:[^/]+)?/g) || [];
-};
 
 export const Bread = () => {
     const userMenus = useAppSelector(state => state.user.userMenus);
@@ -68,16 +65,20 @@ export const Bread = () => {
             }];
         }
 
-        const pathSnippets = extractPathSegments(pathname);
+        const pathSnippets = pathname.split('/').filter(i => i);
         return pathSnippets.map((path) => {
             const breadcrumbName = getBreadcrumbName(path, userMenus);
+            if (breadcrumbName === '') {
+                return undefined
+            }
             return {
                 title: t(`Menu.${breadcrumbName}`),
                 key: path,
                 path: path,
             };
         });
-    }, [pathname, t, userMenus]);
+    }, [pathname, t, userMenus])
+        .filter(item => item !== undefined);
     return (
         <>
             <Breadcrumb className="breadcrumb"
@@ -89,6 +90,19 @@ export const Bread = () => {
 };
 
 const matchPath = (currentPath: string, routePath: string) => {
-    const pathRegex = new RegExp(`^${routePath.replace(/:\w+/g, '\\w+')}$`);
-    return pathRegex.test(currentPath);
+    const normalizedCurrentPath = currentPath.replace(/^\//, '');   // 移除开头的斜杠
+    const normalizedRoutePath = routePath.replace(/^\//, '');      // 移除开头的斜杠
+
+    const pathSegments = normalizedCurrentPath.split('/');
+    const routeSegments = normalizedRoutePath.split('/');
+
+    // 逐段匹配
+    return routeSegments.every((segment, index) => {
+        if (segment.startsWith(':')) {
+            // 动态参数匹配
+            return true;
+        }
+        // 精确匹配路径段
+        return pathSegments[index] === segment;
+    });
 };

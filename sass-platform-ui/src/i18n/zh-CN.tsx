@@ -47,7 +47,7 @@ const ZhCN = {
     // header
     Header: {
         title: '多租户后台管理系统',
-        personCenter: '个人中心',
+        profile: '个人资料',
         logout: '退出',
     },
     // 登录

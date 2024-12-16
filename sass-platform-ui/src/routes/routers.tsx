@@ -22,7 +22,7 @@ import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
-import {PersonCenter} from "@/pages/userinfo/PersonCenter";
+import {PersonCenter} from "@/pages/profile/PersonCenter";
 import Login from "@/pages/login";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 
@@ -54,9 +54,9 @@ export const commonRouter: RouterType[] = [
                 element: <Home/>
             },
             {
-                id: 'userinfo',
-                title: 'userinfo',
-                path: '/userinfo',
+                id: 'profile',
+                title: 'profile',
+                path: '/profile',
                 element: <PersonCenter/>
             }
         ]
