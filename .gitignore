@@ -71,6 +71,7 @@ atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
 .idea/replstate.xml
+.vite
 
 # SonarLint plugin
 .idea/sonarlint/
