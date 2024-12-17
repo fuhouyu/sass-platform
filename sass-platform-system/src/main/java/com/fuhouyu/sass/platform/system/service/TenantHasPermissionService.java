@@ -26,16 +26,16 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/24 19:46
  */
-public interface TenantPermissionService {
+public interface TenantHasPermissionService {
 
     /**
-     * 保存关联关系
+     * 保存或更新关联关系
      *
      * @param tenantId      租户id
      * @param permissionIds 权限id集合
      */
-    void saveTenantPermission(Long tenantId,
-                              Collection<Long> permissionIds);
+    void saveOrUpdateTenantPermission(Long tenantId,
+                                      Collection<Long> permissionIds);
 
     /**
      * 删除关联关系

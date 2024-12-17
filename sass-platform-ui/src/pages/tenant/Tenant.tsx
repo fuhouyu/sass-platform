@@ -174,9 +174,9 @@ export const Tenant: React.FC = () => {
      * 处理租户
      */
     const handleTenant = async () => {
-        await form.validateFields();
         const tenantInfo: TenantInfo = form.getFieldsValue();
         tenantInfo.permissionIds = permissionIds;
+        await form.validateFields();
         setIsModalButtonLoading(true);
         try {
             await (updateId ? tenantApi.editInfoApi(updateId, tenantInfo) : tenantApi.saveInfoApi(tenantInfo));
@@ -270,12 +270,12 @@ export const Tenant: React.FC = () => {
                     required={true}
                     hasFeedback={true}
                     validateFirst={true}
-                    rules={[
+                    rules={updateId ? [] : [
                         {required: true, message: t('Tenant.codePlaceholder')},
                         {
                             required: true,
                             validator: async (_, value: string) => {
-                                if (updateId != null || value == null || value == '') {
+                                if (value == null || value == '') {
                                     return;
                                 }
                                 const exists = await tenantApi.checkTenantCodeExists(value);
@@ -295,9 +295,6 @@ export const Tenant: React.FC = () => {
                     colon={false}
                     required={true}
                     hasFeedback={true}
-                    rules={[
-                        {required: true, message: t('Tenant.permissionsPlaceholder')}
-                    ]}
                 >
                     <FormTree<Menu>
                         formTreeProps={{

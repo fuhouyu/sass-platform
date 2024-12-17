@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.constants;
 
-import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
-
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
- * 角色接口
+ * 租户常量类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 20:47
+ * @since 2024/12/17 21:25
  */
-public interface RoleService extends BaseService<Long, RoleDTO> {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class TenantConstant {
 
     /**
-     * 通过角色编码获取角色
-     *
-     * @param roleCode 角色编码
-     * @return 角色dto对象
+     * 默认的租户角色名称
      */
-    RoleDTO findByRoleCode(String roleCode);
+    public static final String DEFAULT_TENANT_ROLE_NAME = "管理员";
 
     /**
-     * 创建默认的租户角色
-     *
-     * @param tenantId      租户id
-     * @param permissionIds 权限id集合
-     * @return 主键id
+     * 默认的租户角色编码
      */
-    Long createTenantDefaultRole(Long tenantId, List<Long> permissionIds);
+    public static final String DEFAULT_TENANT_ROLE_CODE = "ADMIN";
 
+    /**
+     * 默认的租户角色数据权限
+     */
+    public static final String DEFAULT_TENANT_ROLE_DATASCOPE = "ALL";
 }

@@ -17,7 +17,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.sass.platform.system.entity.TenantHasPermission;
 import com.fuhouyu.sass.platform.system.mapper.TenantHasPermissionMapper;
-import com.fuhouyu.sass.platform.system.service.TenantPermissionService;
+import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,12 +38,12 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TenantPermissionServiceImpl implements TenantPermissionService {
+public class TenantHasPermissionServiceImpl implements TenantHasPermissionService {
 
     private final TenantHasPermissionMapper tenantHasPermissionMapper;
 
     @Override
-    public void saveTenantPermission(Long tenantId, Collection<Long> permissionIds) {
+    public void saveOrUpdateTenantPermission(Long tenantId, Collection<Long> permissionIds) {
         // 先删除所有
         tenantHasPermissionMapper.delete(tenantId, null);
         if (CollectionUtils.isEmpty(permissionIds)) {
