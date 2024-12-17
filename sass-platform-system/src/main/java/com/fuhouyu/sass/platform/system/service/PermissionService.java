@@ -19,6 +19,7 @@ package com.fuhouyu.sass.platform.system.service;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -69,4 +70,12 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @return true 已存在
      */
     Boolean checkPermissionCodeExists(String permissionCode);
+
+    /**
+     * 通过ids查询权限集合
+     *
+     * @param permissionIds 权限id集合
+     * @return 权限集合
+     */
+    List<PermissionDTO> findByIds(Collection<Long> permissionIds);
 }

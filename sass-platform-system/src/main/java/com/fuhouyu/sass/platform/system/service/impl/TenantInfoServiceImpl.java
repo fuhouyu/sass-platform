@@ -23,11 +23,14 @@ import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
+import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
+import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
+import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
-import com.fuhouyu.sass.platform.system.service.TenantPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -52,10 +55,11 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final TenantInfoMapper tenantInfoMapper;
 
-    private final TenantPermissionService tenantPermissionService;
+    private final TenantHasPermissionService tenantHasPermissionService;
 
     private final SnowflakeIdWorker snowflakeIdWorker;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
@@ -68,7 +72,9 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         TenantInfo entity = TENANTS_ASSEMBLER.toEntity(tenantInfoDTO);
         entity.setId(id);
         tenantInfoMapper.insert(entity);
-        this.tenantPermissionService.saveTenantPermission(id, tenantInfoDTO.getPermissionIds());
+
+        tenantInfoDTO.setId(id);
+        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.CREATE));
         return id;
     }
 
@@ -80,7 +86,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "租户: %s 不存在", tenantInfoDTO.getTenantCode());
         }
         this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
-        this.tenantPermissionService.saveTenantPermission(tenantInfoDTO.getId(), tenantInfoDTO.getPermissionIds());
+        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.UPDATE));
     }
 
     @Override
@@ -96,7 +102,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "当前登录的租户不允许删除操作！");
         }
         int count = this.tenantInfoMapper.deleteByIds(ids);
-        this.tenantPermissionService.removeTenantPermissions(ids);
+        this.tenantHasPermissionService.removeTenantPermissions(ids);
         return count;
     }
 
@@ -107,7 +113,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             return null;
         }
         TenantInfoDTO result = TENANTS_ASSEMBLER.toDTO(tenantInfo);
-        result.setPermissionIds(this.tenantPermissionService.findPermissionIdByTenantId(id));
+        result.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
         return result;
     }
 

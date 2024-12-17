@@ -20,6 +20,7 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.RolesAssembler;
+import com.fuhouyu.sass.platform.system.constants.TenantConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.entity.Roles;
@@ -60,6 +61,24 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO findByRoleCode(String roleCode) {
         return ROLES_ASSEMBLER.toDTO(this.roleMapper.queryByRoleCode(roleCode));
+    }
+
+    @Override
+    public Long createTenantDefaultRole(Long tenantId, List<Long> permissionIds) {
+        long id = this.snowflakeIdWorker.nextId();
+        Roles role = new Roles();
+        role.setId(id);
+        role.setRoleName(TenantConstant.DEFAULT_TENANT_ROLE_NAME);
+        role.setRoleCode(TenantConstant.DEFAULT_TENANT_ROLE_CODE);
+        role.setDisplayOrder(1);
+        role.setIsAllowModified(false);
+        role.setDataScope(TenantConstant.DEFAULT_TENANT_ROLE_DATASCOPE);
+        role.setIsEnabled(true);
+        role.setOwnerTenantId(tenantId);
+        this.roleMapper.insert(role);
+        // 保存权限
+        this.roleHasPermissionService.saveRolePermission(id, permissionIds);
+        return id;
     }
 
     @Override

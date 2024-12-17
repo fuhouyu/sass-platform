@@ -280,10 +280,10 @@ export const Permission: React.FC = () => {
     return (
         <>
             <Row gutter={24} className={'main-container'}>
-                <Col span={4} className={'tree-container'}>
-                    <Input
-                        className='search-input'
-                        placeholder={t('Permission.namePlaceholder')} allowClear/>
+                <Col span={3} className={'tree-container'}>
+                    {/*<Input*/}
+                    {/*    className='search-input'*/}
+                    {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
@@ -297,7 +297,7 @@ export const Permission: React.FC = () => {
                         />
                     </div>
                 </Col>
-                <Col span={20}>
+                <Col span={21}>
                     <SearchHeader
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>

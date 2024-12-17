@@ -13,35 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.enums;
 
-.main-container {
-  height: 100%;
-}
+/**
+ * <p>
+ * 租户事件枚举
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/17 21:14
+ */
+public enum TenantEventEnum {
 
-.tree-container {
-  height: 100%;
-  background-color: #fff;
+    /**
+     * 创建
+     */
+    CREATE,
 
-  .ant-tree-list-holder-inner {
-    gap: .5rem;
-  }
+    /**
+     * 修改
+     */
+    UPDATE,
 
-  .ant-tree-node-content-wrapper {
-    font-size: 1.1rem;
-    padding-inline: 0;
-  }
-}
-
-.search-input {
-  margin: .5rem 0;
-}
-
-.ant-modal-body {
-  display: flex;
-  justify-content: center;
-  padding: .5rem 1.25rem !important;
-}
-
-.tree-info {
-  padding: 1rem 0;
+    /**
+     * 删除
+     */
+    DELETE,
+    ;
 }

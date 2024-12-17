@@ -172,6 +172,11 @@ public class PermissionServiceImpl implements PermissionService {
         return Objects.nonNull(this.permissionMapper.queryByPermissionCode(permissionCode));
     }
 
+    @Override
+    public List<PermissionDTO> findByIds(Collection<Long> permissionIds) {
+        return PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryByIds(permissionIds));
+    }
+
     /**
      * 检查父级是否存在，不存在则抛出异常
      *

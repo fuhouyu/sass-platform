@@ -221,8 +221,8 @@
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
-        ORDER BY display_order
         AND p.is_deleted = false
+        ORDER BY display_order
     </select>
 
 

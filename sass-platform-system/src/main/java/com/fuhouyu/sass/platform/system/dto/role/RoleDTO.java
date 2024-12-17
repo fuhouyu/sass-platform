@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
+import java.util.Collection;
 
 
 /**
@@ -65,5 +65,5 @@ public class RoleDTO extends BaseDTO {
 
     @Schema(name = "permissionIds", description = "权限id集合")
     @NotEmpty(message = "权限未选择")
-    private List<Long> permissionIds;
+    private Collection<Long> permissionIds;
 }
