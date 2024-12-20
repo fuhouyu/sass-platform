@@ -24,7 +24,8 @@ import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {PersonCenter} from "@/pages/profile/PersonCenter";
 import Login from "@/pages/login";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {BASE_HOME_URL, BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant";
+import MainPortal from "@/pages/portal";
 
 export type RouterType = {
     id: string;
@@ -50,22 +51,28 @@ export const commonRouter: RouterType[] = [
             {
                 id: 'home',
                 title: 'Home',
-                path: '/home',
+                path: BASE_HOME_URL,
                 element: <Home/>
             },
             {
                 id: 'profile',
                 title: 'profile',
-                path: '/profile',
+                path: BASE_USER_PROFILE_URL,
                 element: <PersonCenter/>
             }
         ]
     },
     {
         id: 'login',
-        title: '登录',
+        title: 'login',
         path: BASE_LOGIN_URL,
         element: <Login/>,
+    },
+    {
+        id: 'portal',
+        title: 'portal',
+        path: BASE_PORTAL_URL,
+        element: <MainPortal/>,
     },
     {
         id: '404',

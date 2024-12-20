@@ -65,10 +65,7 @@ public class AuthFilter implements ParseHttpRequest {
         if (Objects.isNull(authentication)) {
             throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
         }
-        UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
+        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
-        // 先固定为1L
-        userEntity.setTenantId(1L);
-        return userEntity;
     }
 }

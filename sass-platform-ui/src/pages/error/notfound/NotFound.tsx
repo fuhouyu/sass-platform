@@ -17,7 +17,7 @@
 import {useEffect} from "react";
 import {getAccessToken} from "@/utils";
 import {Button, Result} from "antd";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {BASE_HOME_URL, BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {router} from "@/routes/routers";
 
 export const NotFound = () => {
@@ -29,7 +29,7 @@ export const NotFound = () => {
         }
     }, [])
     const backHome = () => {
-        router.navigate('/home').then()
+        router.navigate(BASE_HOME_URL).then()
     }
     return (
         <Result

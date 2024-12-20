@@ -58,3 +58,12 @@
   margin: 0 auto;
   color: white;
 }
+
+.switch-tenant-container {
+  max-height: 6rem;
+  max-width: 12rem;
+}
+
+.switch-tenant-container:hover {
+  background-color: #2196f3;
+}

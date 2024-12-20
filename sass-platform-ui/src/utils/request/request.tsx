@@ -16,9 +16,9 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, removeToken} from "@/utils";
-import {message} from "antd";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {router} from "@/routes/routers";
+import {message} from "antd";
 
 
 const request: AxiosInstance = axios.create({
@@ -47,7 +47,7 @@ request.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-request.interceptors.response.use(function (response) {
+request.interceptors.response.use(async function (response) {
     // 检查 isSuccess 字段
     if (response.data.isSuccess) {
         // 如果 isSuccess 为 true，返回 data 数据
@@ -61,7 +61,7 @@ request.interceptors.response.use(function (response) {
             return
         }
         const error = new Error(response.data.message || '请求失败');
-        message.error(error.message).then();
+        await message.error(error.message);
         return Promise.reject(error);
     }
 }, function (error: Error) {

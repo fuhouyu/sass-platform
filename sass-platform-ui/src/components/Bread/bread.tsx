@@ -22,6 +22,7 @@ import {Menu} from "@/model/menu";
 import './index.scss'
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import {BASE_HOME_URL} from "@/constants/commonConstant";
 
 
 const getBreadcrumbName = (path: string, routers: Menu[]) => {
@@ -57,7 +58,7 @@ export const Bread = () => {
         if (pathname === '/') {
             return [];
         }
-        if (pathname === '/home') {
+        if (pathname === BASE_HOME_URL) {
             return [{
                 title: t(`Menu.home`),
                 key: pathname,

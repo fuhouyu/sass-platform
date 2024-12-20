@@ -14,28 +14,6 @@
  * limitations under the License.
  */
 
+import {MainPortal} from "@/pages/portal/MainPortal";
 
-/**
- * localStore语言key
- */
-export const LANGUAGE_KEY: string = 'site_language';
-
-/**
- * 登录页
- */
-export const BASE_LOGIN_URL: string = '/login';
-
-/**
- * 门户页
- */
-export const BASE_PORTAL_URL: string = '/portal';
-
-/**
- * 首页
- */
-export const BASE_HOME_URL: string = '/home';
-
-/**
- * 个人资料
- */
-export const BASE_USER_PROFILE_URL: string = '/profile';
+export default MainPortal

@@ -19,15 +19,16 @@ import "./index.scss"
 import {Button, Divider, Form, Input, message} from "antd";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useLocation, useNavigate} from "react-router-dom";
-import {fetchLogin, fetchUserMenus} from "@/store/modules/user";
-import {useAppDispatch, useAppSelector} from "@/store";
+import {fetchLogin} from "@/store/modules/user";
+import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
 import {IconFont} from "@/components";
-import {changeLanguage} from "@/store/modules/locale";
 import {useTranslation} from "react-i18next";
-import {parseRouters, router} from "@/routes/routers";
+import {router} from "@/routes/routers";
+import {BASE_PORTAL_URL} from "@/constants/commonConstant";
+import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 
 /**
  * 登录组件
@@ -39,8 +40,8 @@ export const Login: React.FC = () => {
     const location = useLocation();
     const dispatch = useAppDispatch();
     const isAuth = useAuth();
-    const {t, i18n} = useTranslation();
-    const [language, setLanguage] = useState<string>(useAppSelector(state => state.locale.language));
+    const {LanguageSwitcherButton} = useLanguageSwitcher('switch-language-button');
+    const {t} = useTranslation();
 
     // 如果本身存在token，跳转回首页
     useEffect(() => {
@@ -54,10 +55,7 @@ export const Login: React.FC = () => {
         loginData.accountType = AccountType.PASSWORD
         dispatch(fetchLogin(loginData)).then(async () => {
             setLoginButtonLoading(false)
-            const fromRouter = location.state?.from;
-            const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
-            router.routes[0]?.children!.push(...parseRouters(await dispatch(fetchUserMenus())))
-            router.navigate(from).then()
+            router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
         }).catch((err: Error) => {
             message.error(err.message).then()
         }).finally(() => {
@@ -72,17 +70,8 @@ export const Login: React.FC = () => {
         <>
             <div className="container">
                 <div className="login-container">
-                    <Button
-                        className='switch-language-button'
-                        onClick={async () => {
-                            const switchLanguage: string = language === 'zh' ? 'en' : 'zh'
-                            setLanguage(switchLanguage);
-                            dispatch(changeLanguage(switchLanguage));
-                            await i18n.changeLanguage(switchLanguage).then();
-                        }}
-                        icon={
-                            <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>
-                        }/>
+                    {LanguageSwitcherButton}
+
                     <Form className="login-form"
                           name="login"
                           initialValues={{remember: true}}
