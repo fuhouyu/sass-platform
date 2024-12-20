@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
+.portal-container {
+  height: 100%;
+  padding: 0 1rem;
+}
 
-/**
- * localStore语言key
- */
-export const LANGUAGE_KEY: string = 'site_language';
+.switch-tenant-container {
+  background-color: rgba(0, 0, 0, 0.3); /* Dark semi-transparent background */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  max-height: 6rem;
+  max-width: 12rem;
+}
 
-/**
- * 登录页
- */
-export const BASE_LOGIN_URL: string = '/login';
+.tenant-active {
+  background-color: #2196f3;
+}
 
-/**
- * 门户页
- */
-export const BASE_PORTAL_URL: string = '/portal';
-
-/**
- * 首页
- */
-export const BASE_HOME_URL: string = '/home';
-
-/**
- * 个人资料
- */
-export const BASE_USER_PROFILE_URL: string = '/profile';
+.switch-tenant-container:hover {
+  background-color: #2196f3;
+}

@@ -27,5 +27,5 @@ export {
     SearchHeader,
     Bread,
     PageLoading,
-    FormTree,
+    FormTree
 }

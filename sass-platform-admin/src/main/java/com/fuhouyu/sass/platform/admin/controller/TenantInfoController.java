@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantPageQueryDTO;
@@ -130,6 +131,31 @@ public class TenantInfoController {
     public BaseResponse<Boolean> checkTenantCodeExists(@RequestParam("tenantCode") String tenantCode) {
         return ResponseHelper.success(Objects.nonNull(this.tenantInfoService.findByTenantCode(tenantCode)));
     }
-    
+
+
+    /**
+     * 查询出当前用户关联的租户
+     *
+     * @return 用户关联的租户
+     */
+    @GetMapping("/me")
+    @Operation(summary = "查询出当前用户关联的租户")
+    public BaseResponse<List<TenantInfoDTO>> findTenantForMe() {
+        return ResponseHelper.success(this.tenantInfoService.findTenantByUserId(ContextHolderStrategy.getContext().getUser().getId()));
+    }
+
+
+    /**
+     * 租户切换
+     *
+     * @param id 租户id
+     * @return void
+     */
+    @GetMapping("/switch/{id}")
+    @Operation(summary = "租户切换")
+    public BaseResponse<Void> switchTenant(@PathVariable("id") Long id) {
+        this.tenantInfoService.switchTenant(id);
+        return ResponseHelper.success();
+    }
     
 }

@@ -73,5 +73,8 @@ public class UserDTO extends BaseDTO {
     @Schema(name = "loginIp", description = "登录ip", requiredMode = Schema.RequiredMode.REQUIRED)
     private String loginIp;
 
+    @Schema(name = "tenantId", description = "用户当前登录的租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long tenantId;
+
 
 }

@@ -32,6 +32,23 @@
         tenant_info
     </sql>
 
+    <sql id="QueryColumns">
+        ti.id,
+        ti.tenant_code,
+        ti.tenant_name,
+        ti.tenant_type,
+        ti.remark,
+        ti.icon,
+        ti.contact_person,
+        ti.contact_info,
+        ti.is_enabled,
+        ti.is_deleted,
+        ti.create_at,
+        ti.update_at,
+        ti.create_by,
+        ti.update_by
+    </sql>
+
     <sql id="AllColumns">
         id,
         tenant_code,
@@ -137,16 +154,16 @@
     </delete>
 
     <select id="queryById" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE id = #{id}
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE ti.id = #{id}
     </select>
 
 
     <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE id IN
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE ti.id IN
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
@@ -154,20 +171,39 @@
 
 
     <select id="queryByTenantCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE tenant_code = #{tenantCode}
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE ti.tenant_code = #{tenantCode}
     </select>
 
     <select id="queryList" resultMap="BaseResultMap" >
         SELECT
-        <include refid="AllColumns"/>
+        <include refid="QueryColumns"/>
                 FROM
-        <include refid="TableName"/>
+        <include refid="TableName"/> ti
         <where>
             <if test="pageQuery.tenantName != null and pageQuery.tenantName != ''">
-                tenant_name LIKE CONCAT('%', #{pageQuery.tenantName}, '%')
+                ti.tenant_name LIKE CONCAT('%', #{pageQuery.tenantName}, '%')
             </if>
         </where>
+    </select>
+
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM  tenant_has_user thu
+        LEFT JOIN <include refid="TableName"/> ti ON ti.id = thu.tenant_id
+        WHERE thu.user_id = #{userId}
+
+    </select>
+
+    <select id="existsUserTenant" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM tenant_has_user thu
+        LEFT JOIN
+        <include refid="TableName"/>
+        ti ON ti.id = thu.tenant_id
+        WHERE thu.user_id = #{userId}
+        AND ti.id = #{tenantId}
     </select>
 </mapper>

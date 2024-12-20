@@ -15,7 +15,7 @@
  */
 
 
-import {Button, Col, Dropdown, Image, MenuProps, Row, Space} from "antd";
+import {Avatar, Card, Col, Dropdown, Flex, Image, MenuProps, Modal, Row, Space} from "antd";
 import {Bread, IconFont} from "@/components";
 import {DownOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {Header as _Header} from "antd/es/layout/layout";
@@ -26,17 +26,21 @@ import {Userinfo} from "@/model/user";
 import {useNavigate} from "react-router-dom";
 import type {ItemType} from "antd/es/menu/interface";
 import './index.scss'
-import {changeLanguage} from "@/store/modules/locale";
-import i18n from "i18next";
 import {useTranslation} from "react-i18next";
 import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant";
+import useTenant from "@/hooks/useTenant";
+import {tenantApi} from "@/apis/tenant";
+import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 
 
 export const Header = () => {
 
     const dispatch = useAppDispatch();
-    const [language, setLanguage] = useState<string>(useAppSelector(state => state.locale.language));
     const {t} = useTranslation();
+    const [switchTenantModalOpen, setSwitchTenantModalOpen] = useState<boolean>(false);
+    const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
+    const tenantInfos = useTenant();
+
     useEffect(() => {
         dispatch(fetchUserinfo());
     }, [dispatch])
@@ -61,6 +65,15 @@ export const Header = () => {
             icon: <LogoutOutlined/>,
         },
     ];
+
+    /**
+     * 租户切换
+     * @param tenantId 租户id
+     */
+    const switchTenant = async (tenantId: string) => {
+        await tenantApi.switchTenant(tenantId);
+        setSwitchTenantModalOpen(false);
+    }
 
     // onClick
     const onDropDownClick: MenuProps['onClick'] = async (e: ItemType) => {
@@ -87,21 +100,22 @@ export const Header = () => {
                         <Bread/>
                     </Col>
                     <Col className="user-header">
-                        <Button
-                            className='language-button'
-                            onClick={async () => {
-                                const switchLanguage: string = language === 'zh' ? 'en' : 'zh'
-                                setLanguage(switchLanguage);
-                                dispatch(changeLanguage(switchLanguage));
-                                await i18n.changeLanguage(switchLanguage).then();
-                            }}
-                            icon={
-                                <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>
-                            }/>
+                        {LanguageSwitcherButton}
+                        {/*<Button*/}
+                        {/*    className='language-button'*/}
+                        {/*    onClick={async () => {*/}
+                        {/*        const switchLanguage: string = language === 'zh' ? 'en' : 'zh'*/}
+                        {/*        setLanguage(switchLanguage);*/}
+                        {/*        dispatch(changeLanguage(switchLanguage));*/}
+                        {/*        await i18n.changeLanguage(switchLanguage).then();*/}
+                        {/*    }}*/}
+                        {/*    icon={*/}
+                        {/*        <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>*/}
+                        {/*    }/>*/}
                         <div>
                                       <span className="tenant">
                                     我的租户
-                               <IconFont type='i-24gl-swapHorizontal3'/>
+                               <IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>
                                </span>
                             <Dropdown menu={{
                                 items: dropDownMenus,
@@ -126,6 +140,35 @@ export const Header = () => {
                 </Row>
 
             </_Header>
+            <Modal
+                centered
+                destroyOnClose={true}
+                title={t('Tenant.list')}
+                className="switch-tenant"
+                closable={false}
+                onCancel={() => setSwitchTenantModalOpen(false)}
+                open={switchTenantModalOpen}
+                width={'auto'}
+                footer={[]}>
+                <Flex justify="space-around" vertical>
+                    {tenantInfos?.map(tenant => {
+                        return <Card
+                            onClick={() => switchTenant(tenant.id!)}
+                            key={tenant.id}
+                            className={"switch-tenant-container"}
+                            hoverable
+                        >
+                            <Card.Meta
+                                avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"/>}
+                                title={tenant.tenantName}
+                                description={<p>{tenant.remark}</p>}
+                            />
+
+                        </Card>
+
+                    })}
+                </Flex>
+            </Modal>
         </>
     )
 }

@@ -18,10 +18,12 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
@@ -31,6 +33,8 @@ import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -60,6 +64,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final TokenStore tokenStore;
 
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
@@ -125,5 +131,39 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     @Override
     public TenantInfoDTO findByTenantCode(String tenantCode) {
         return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryByTenantCode(tenantCode));
+    }
+
+    @Override
+    public List<TenantInfoDTO> findTenantByUserId(Long userId) {
+        return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryByUserId(userId));
+    }
+
+    @Override
+    public void switchTenant(Long id) {
+        this.checkUserTenantExists(id);
+        // 切换租户
+        String userToken = ContextHolderStrategy
+                .getContext()
+                .getRequest()
+                .getAuthorization()
+                .replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
+        Authentication authentication = tokenStore.readAuthentication(userToken);
+        UserDTO userDetailsDTO = (UserDTO) authentication.getDetails();
+        userDetailsDTO.setTenantId(id);
+        this.tokenStore.storeAuth2Token(tokenStore.readAuth2Token(userToken), authentication);
+    }
+
+    /**
+     * 检查用户当前是否可以访问该租户，不能访问则抛出异常
+     *
+     * @param id 主键id
+     */
+    private void checkUserTenantExists(Long id) {
+        Long userId = ContextHolderStrategy.getContext().getUser().getId();
+        Integer count = this.tenantInfoMapper.existsUserTenant(userId, id);
+        if (Objects.isNull(count) || count == 0) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "用户当前无可访问该租户的权限");
+        }
     }
 }
