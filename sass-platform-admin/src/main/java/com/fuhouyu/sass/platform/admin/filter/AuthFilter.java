@@ -22,7 +22,9 @@ import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.web.handler.ParseHttpRequest;
+import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 
 import java.util.Objects;
 
@@ -51,10 +54,13 @@ public class AuthFilter implements ParseHttpRequest {
     private final TokenStore tokenStore;
 
     @Override
-    public User parseUser(@NonNull HttpServletRequest request) {
+    public User parseUser(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                          @NonNull Object handler) {
+        if (this.checkNoAuth(handler)) {
+            return null;
+        }
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (request.getRequestURI().endsWith("/login")
-                || request.getRequestURI().startsWith("/v3/api-docs")) {
+        if (request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }
         if (Objects.isNull(bearerToken) || bearerToken.isEmpty()) {
@@ -67,5 +73,19 @@ public class AuthFilter implements ParseHttpRequest {
         }
         return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
+    }
+
+
+    /**
+     * 检查是否是noAuth
+     *
+     * @param handler 处理器
+     * @return true 有noAuth注解 false无注解
+     */
+    private boolean checkNoAuth(Object handler) {
+        if (handler instanceof HandlerMethod handlerMethod) {
+            return Objects.nonNull(handlerMethod.getMethodAnnotation(NoAuth.class)) || handlerMethod.getBeanType().isAnnotationPresent(NoAuth.class);
+        }
+        return false;
     }
 }

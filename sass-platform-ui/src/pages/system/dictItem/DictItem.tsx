@@ -90,14 +90,12 @@ export const DictItem = () => {
             dataIndex: 'action',
             align: "center",
             render: (_, record: DictItemModel) => {
-                return (<>
-                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
-                </>)
+                return <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
             }
         }
     ];
 
-    const [updateId, setUpdateUserId] = useState<string | undefined>();
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -118,7 +116,7 @@ export const DictItem = () => {
      * @param dictItemId 角色id
      */
     const openModal = async (dictItemId?: string) => {
-        setUpdateUserId(dictItemId);
+        setUpdateId(dictItemId);
         if (dictItemId) {
             const dictItemInfo: DictItemModel = await dictItemApi.getInfoByIdApi(dictItemId);
             setFormInitValues(dictItemInfo);
@@ -154,12 +152,12 @@ export const DictItem = () => {
         ...params
     });
 
+
     useEffect(() => {
         // 分页字典类型列表
         dictTypeApi.getList()
             .then((res: DictType[]) => {
                 setDictTypeList(res);
-                setDictItemQuery({dictCode: res[0].dictCode ?? ''})
             });
     }, []);
 
