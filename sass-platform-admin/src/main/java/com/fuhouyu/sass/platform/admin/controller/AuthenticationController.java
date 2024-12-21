@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -58,6 +59,7 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录接口")
+    @NoAuth
     public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
         UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
         return ResponseHelper.success(userTokenDTO);
