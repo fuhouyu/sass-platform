@@ -289,7 +289,7 @@ VALUES (2, -1, 'systemManage', 'system', 3, 'i-xitongshezhi', 'system', null, ''
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (25, 2, 'dictItem', 'system:dict-item', 4, 'i-zidian1', 'dict-item/:dict-code?', 'system/dictItem', null, false,
+VALUES (25, 2, 'dictItem', 'system:dict-item', 4, 'i-zidian1', 'dict-item/:dictCode?', 'system/dictItem', null, false,
         'MENU', false, false, true, true, 1, false, '2024-12-21 13:05:27.607801', 'admin', '2024-12-21 13:10:38.495476',
         'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
