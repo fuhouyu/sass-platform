@@ -15,13 +15,13 @@
  */
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {removeToken, storeToken} from "@/utils/Token/token";
 import {Userinfo,} from "@/model/user";
 import {UserAuthentication, UserToken} from "@/model/authentication";
 import {loginApi, logoutApi} from "@/apis/authentication";
 import {Menu} from "@/model/menu";
 import {userApi} from "@/apis/user";
 import {permissionApi} from "@/apis/permission";
+import {removeToken, storeToken} from "@/utils";
 
 
 const userStore = createSlice({
