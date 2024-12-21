@@ -22,11 +22,5 @@
       "vite/client"
     ],
     "jsx": "react"
-  },
-  "include": [
-    "src/**/*.tsx",
-    "src/**/*.ts",
-    "src/**/*.d.tsx",
-    "src/**/*.d.ts"
-  ]
+  }
 }

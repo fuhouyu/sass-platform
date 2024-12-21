@@ -105,13 +105,14 @@
                     <excludes>
                         <exclude>Dockerfile</exclude>
                         <exclude>.dockerignore</exclude>
-                        <exclude>..gitignore</exclude>
+                        <exclude>.gitignore</exclude>
                         <exclude>CHANGELOG.md</exclude>
                         <exclude>qodana.yaml</exclude>
                         <exclude>.flattened-pom.xml</exclude>
                         <exclude>qodana.yaml</exclude>
                         <exclude>style/*</exclude>
                         <exclude>**/README.md</exclude>
+                        <exclude>*.env.*</exclude>
                         <exclude>.github/**/*</exclude>
                         <exclude>logs/*</exclude>
                         <exclude>**/*.txt</exclude>

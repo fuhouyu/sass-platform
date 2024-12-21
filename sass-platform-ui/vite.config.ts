@@ -20,6 +20,7 @@ import {resolve} from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: process.env.VITE_BASE_URL,
     plugins: [
         react(),
     ],
@@ -27,7 +28,11 @@ export default defineConfig({
         alias: {
             '@': resolve(__dirname, 'src'),
             '@components': resolve(__dirname, 'src/components'),
+            '@assets': resolve(__dirname, 'public'),
         }
+    },
+    build: {
+        assetsDir: 'public'
     },
     server: {
         host: '0.0.0.0',

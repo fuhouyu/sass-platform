@@ -67,7 +67,6 @@ export const Login: React.FC = () => {
     };
 
     return (
-        <>
             <div className="container">
                 <div className="login-container">
                     {LanguageSwitcherButton}
@@ -119,6 +118,5 @@ export const Login: React.FC = () => {
                     </Form>
                 </div>
             </div>
-        </>
     )
 }

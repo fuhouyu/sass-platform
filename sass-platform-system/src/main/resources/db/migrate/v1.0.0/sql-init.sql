@@ -259,33 +259,46 @@ COMMENT ON COLUMN permissions.create_by IS '创建人';
 COMMENT ON COLUMN permissions.update_at IS '更新时间';
 COMMENT ON COLUMN permissions.update_by IS '更新人';
 
+
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (1, -1, 'tenant', 'tenant', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'C', false, true, 1, true,
-        false,
-        '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (23, 2, 'permissionManage', 'system:permission', 3, 'i-icon-quanxian', 'permission', 'system/permission', '',
+        false, 'MENU', false, true, true, true, 1, false, '2024-11-25 14:21:22.056900', 'admin',
+        '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (2, -1, 'system', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'M', false, true, 1, false, false,
-        '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (21, 2, 'userManage', 'system:user', 1, 'i-yonghu1', 'user', 'system/user', '', false, 'MENU', false, true, true,
+        true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (21, 2, 'user', 'system:user', 1, 'i-yonghu1', 'user', 'system/user', '', false, 'C', false, true, 1,
-        true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (22, 2, 'roleManage', 'system:role', 2, 'i-jiaoseguanli2', 'role', 'system/role', '', false, 'MENU', false, true,
+        true, true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (22, 2, 'role', 'system:role', 2, 'i-jiaoseguanli2', 'role', 'system/role', '', false, 'C', false,
-        true, 1, true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (1, -1, 'tenantManage', 'tenant', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'MENU', false, true, true,
+        true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible,
-                         owner_tenant_id, is_leaf, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (23, 2, 'permission', 'system:permission', 3, 'i-icon-quanxian', 'permission', 'system/permission', '',
-        false, 'C', false, true, 1, true, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900',
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (2, -1, 'systemManage', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'DIR', false, true, false,
+        true, 1, false, '2024-11-25 14:21:22.056900', 'admin', '2024-11-25 14:21:22.056900', 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (25, 2, 'dictItem', 'system:dict-item', 4, 'i-zidian1', 'dict-item/:dict-code?', 'system/dictItem', null, false,
+        'MENU', false, false, true, true, 1, false, '2024-12-21 13:05:27.607801', 'admin', '2024-12-21 13:10:38.495476',
         'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (24, 2, 'dictManage', 'system:dict-type', 4, 'i-zidian1', 'dict-type', 'system/dictType', null, false, 'MENU',
+        false, true, true, true, 1, false, '2024-12-21 13:05:27.607801', 'admin', '2024-12-21 13:05:27.607801',
+        'admin');
+
 
 
 -- 角色关联的权限
@@ -311,7 +324,9 @@ VALUES (1, 1, now(), 'admin'),
        (1, 21, now(), 'admin'),
        (1, 12, now(), 'admin'),
        (1, 22, now(), 'admin'),
-       (1, 23, now(), 'admin');
+       (1, 23, now(), 'admin'),
+       (1, 24, now(), 'admin'),
+       (1, 25, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
