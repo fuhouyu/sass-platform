@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Table as _Table, TableProps as _TableProps} from "antd";
+import {Table as CustomTable, TableProps as CustomTableProps} from "antd";
 import {TableProps} from "@components/List/table/interface";
 import {IconFont} from "@/components";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
@@ -37,7 +37,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
      * @param _ 过滤，暂不使用
      * @param sorters 排序
      */
-    const onChange: _TableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
+    const onChange: CustomTableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
         if (!setPageQuery) {
             return
         }
@@ -76,7 +76,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 </div>
             </div>
             <div className="list">
-                <_Table
+                <CustomTable
                     rowSelection={rowSelection}
                     scroll={{x: '100%'}}
                     columns={columns}
