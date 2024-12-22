@@ -62,7 +62,7 @@ const EnUS = {
         passwordEmptyMessage: 'Please enter your password',
         otherLogin: 'Alternative Login Options',
         wechatLogin: 'Wechat Login',
-        weLinkLogin: 'WeLink Long',
+        weLinkLogin: 'WeLink Login',
         usernamePasswordLogin: 'Username and Password',
         usernamePasswordLoginTitle: 'Please use<span> Username and Password </span> Login',
         weLinkLoginTitle: 'Please use<span> WeLink QR </span>Login',
