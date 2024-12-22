@@ -30,7 +30,12 @@ import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 export const App: React.FC = () => {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
+    const pathname = location.pathname;
     useEffect(() => {
+        if (pathname.includes(BASE_LOGIN_URL)) {
+            setLoading(false);
+            return;
+        }
         const accessToken = getAccessToken();
         if (!accessToken) {
             router.navigate(BASE_LOGIN_URL, {state: {from: router.state.location.pathname}}).then()

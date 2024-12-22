@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.common.constants;
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin
+/**
+ * <p>
+ * 配置常量类
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/21 20:36
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class ConfigPropertiesConstant {
+
+    public static final String PROPERTIES_PREFIX = "sass.platform.";
 }

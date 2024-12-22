@@ -53,13 +53,20 @@ const EnUS = {
     },
     // 登录
     Login: {
+        loginTitlePrefix: '',
+        loginTitleSuffix: 'Login',
+
         usernamePlaceholder: 'Please enter your username',
         usernameEmptyMessage: 'Please enter your username!',
         passwordPlaceholder: 'Please enter your password',
-        passwordEmptyMessage: 'Please enter your password!',
+        passwordEmptyMessage: 'Please enter your password',
         otherLogin: 'Alternative Login Options',
         wechatLogin: 'Wechat Login',
-        weLinkLogin: 'WeLink QR Login',
+        weLinkLogin: 'WeLink Long',
+        usernamePasswordLogin: 'Username and Password',
+        usernamePasswordLoginTitle: 'Please use<span> Username and Password </span> Login',
+        weLinkLoginTitle: 'Please use<span> WeLink QR </span>Login',
+        weLinkQRTips: 'Open the <span>WeLink app</span> - Tap the "<span>+</span>" icon in the top right corner - Tap "<span>Scan QR Code</span>"',
         loginButton: 'Login',
     },
     // 菜单

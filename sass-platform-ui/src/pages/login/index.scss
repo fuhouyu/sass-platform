@@ -25,12 +25,27 @@
 }
 
 .login-container {
-  position: absolute;
+  height: 30rem;
+  width: 25rem;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+}
+
+// 标题头
+.title {
+  text-align: center;
+  margin: 0 auto 0 auto;
+
+  span {
+    color: #0d53ff;
+    margin: 0 0.25rem;
+  }
 }
 
 .switch-language-button {
   position: relative;
-  top: 2.3rem;
+  top: 0.5rem;
   left: .3rem;
   border: 0;
   background-color: #fff;
@@ -39,45 +54,50 @@
 
 .login-form {
   width: 25rem;
-  padding: 1.5625rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background: #fff;
-  // 标题头
-  .title {
-    text-align: center;
-    margin: 0 auto 1.875rem auto;
+  margin-top: 1.875rem;
+  padding: 1.25rem 1.5625rem 0 1.5625rem;
+
+  .ant-input {
+    height: 2.5rem;
+    line-height: 2.5rem;
+    padding: 0 0.75rem;
   }
 
-  .other-login-divider {
-    margin: 0 0 0.7rem 0;
+  .login-button-container {
+    padding-top: 3.1875rem;
 
-    p {
-      font-size: 0.875rem;
-      line-height: 0.875rem;
-      font-weight: 600;
-      margin: 0;
+    button {
+      height: 3.25rem;
+      line-height: 3.25rem;
+      font-size: 1rem;
     }
   }
+}
 
-  .other-login-methods {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 0.3rem;
-    // icon固定大小
-    svg {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
 
-    div {
-      display: flex;
-      gap: 0.3rem;
+.other-login-divider {
+  margin: 0 0 0.7rem 0;
 
-    }
-
+  p {
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+    font-weight: 600;
+    margin: 0;
   }
+}
+
+.other-login-methods {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  // icon固定大小
+  svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+
 }
 
 

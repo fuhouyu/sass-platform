@@ -80,7 +80,6 @@ export const Header = () => {
         if (!e) {
             return;
         }
-        console.log(e.key)
         switch (e.key) {
             case 'logout':
                 await dispatch(fetchLogout());

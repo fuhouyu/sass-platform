@@ -82,6 +82,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
+        } catch (ServiceException e) {
+            throw e;
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
                     userLoginDTO.getIdentify(), userLoginDTO.getAccountType(), e.getMessage());

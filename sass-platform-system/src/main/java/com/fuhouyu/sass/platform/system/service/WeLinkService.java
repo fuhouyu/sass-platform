@@ -13,21 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin
+/**
+ * <p>
+ * weLink
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/22 18:13
+ */
+public interface WeLinkService {
+
+    /**
+     * 获取accessToken
+     *
+     * @return accessToken
+     */
+    String getAccessToken();
+
+    /**
+     * 通过code登录
+     *
+     * @param code code
+     * @return 登录
+     */
+    WeLinkLoginUserDTO login(String code);
 }

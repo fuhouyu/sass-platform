@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.admin;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /**
  * <p>
@@ -29,6 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages = "com.fuhouyu.sass.platform")
 @MapperScan(basePackages = "com.fuhouyu.sass.platform.system.mapper")
+@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.sass.platform.system.properties")
 public class SassPlatformAdminApplication {
 
 

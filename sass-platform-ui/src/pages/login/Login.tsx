@@ -17,14 +17,13 @@
 import React, {useEffect, useState} from "react";
 import "./index.scss"
 import {Button, Divider, Form, Input, message} from "antd";
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {AccountType} from "@/constants/accountTypeConstant";
-import {IconFont} from "@/components";
+import {IconFont, WeLinkLogin} from "@/components";
 import {useTranslation} from "react-i18next";
 import {router} from "@/routes/routers";
 import {BASE_PORTAL_URL} from "@/constants/commonConstant";
@@ -42,15 +41,31 @@ export const Login: React.FC = () => {
     const isAuth = useAuth();
     const {LanguageSwitcherButton} = useLanguageSwitcher('switch-language-button');
     const {t} = useTranslation();
-
+    const [qrCodeUrl, setQrCodeUrl] = useState<string>(import.meta.env.VITE_WELINK_QR_URL);
+    const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
+    const [searchParams] = useSearchParams();
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
-            return
         }
     }, [isAuth, navigate]);
+
+    useEffect(() => {
+        const accountType = searchParams.get('accountType');
+        if (!accountType) {
+            return;
+        }
+        const code = searchParams.get('code');
+        dispatch(fetchLogin({accountType: accountType as AccountType, identify: code as string})).then(async () => {
+            router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
+        }).catch((err: Error) => {
+            message.error(err.message).then()
+        })
+    }, [dispatch, location.state, searchParams]);
+
     const onFinish = (loginData: UserAuthentication) => {
+
         setLoginButtonLoading(true)
         loginData.accountType = AccountType.PASSWORD
         dispatch(fetchLogin(loginData)).then(async () => {
@@ -61,62 +76,84 @@ export const Login: React.FC = () => {
         }).finally(() => {
             setTimeout(() => {
                 setLoginButtonLoading(false);
-            }, 1500)
+            }, 1000)
         })
-
     };
 
+
     return (
-            <div className="container">
-                <div className="login-container">
-                    {LanguageSwitcherButton}
+        <div className="container">
+            <div className="login-container">
+                {LanguageSwitcherButton}
+                <h3 className="title" dangerouslySetInnerHTML={{__html: t(`Login.${loginTitle}`)}}/>
+                {
+                    qrCodeUrl ?
+                        <WeLinkLogin/>
+                        :
 
                     <Form className="login-form"
                           name="login"
                           initialValues={{remember: true}}
                           onFinish={onFinish}
                     >
-                        <h3 className="title">{t('Header.title')}</h3>
                         <Form.Item
                             name="identify"
                             initialValue={'admin'}
                             rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                         >
-                            <Input prefix={<UserOutlined/>} placeholder={t('Login.usernamePlaceholder')}/>
+                            <Input prefix={<IconFont type={'i-zhanghao'}/>}
+                                   placeholder={t('Login.usernamePlaceholder')}/>
                         </Form.Item>
                         <Form.Item
                             name="credentials"
                             initialValue={'admin'}
                             rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                         >
-                            <Input prefix={<LockOutlined/>} type="password"
+                            <Input.Password prefix={<IconFont type={'i-mima'}/>}
+
                                    placeholder={t('Login.passwordPlaceholder')}/>
                         </Form.Item>
+
                         {/*<Form.Item name="remember" valuePropName="checked">*/}
                         {/*    <Checkbox>同意用户协议</Checkbox>*/}
                         {/*</Form.Item>*/}
-                        <Divider className='other-login-divider'>
-                            <p>{t('Login.otherLogin')}</p>
-                        </Divider>
-                        <div className='other-login-methods'>
-                            {/*微信扫码*/}
-                            <div className='other-login-method'>
-                                <IconFont type="i-weixin"/>
-                                <p>{t('Login.wechatLogin')}</p>
-                            </div>
-                            {/*weLink登录*/}
-                            <div className='other-login-method'>
-                                <IconFont type="i-WeLink"/>
-                                <p>{t('Login.weLinkLogin')}</p>
-                            </div>
-                        </div>
-                        <Form.Item>
+                        <Form.Item className={'login-button-container'}>
                             <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
                                 {t('Login.loginButton')}
                             </Button>
                         </Form.Item>
                     </Form>
+                }
+                <Divider className='other-login-divider'>
+                    <p>{t('Login.otherLogin')}</p>
+                </Divider>
+                <div className='other-login-methods'>
+                    {qrCodeUrl ? <Button icon={<IconFont type="i-zhanghao"/>}
+                                         color="default"
+                                         variant="link"
+                                         className='other-login-method'
+                                         onClick={() => {
+                                             setQrCodeUrl('');
+                                             setLoginTitle('usernamePasswordLoginTitle');
+                                         }}>
+                            <p>{t('Login.usernamePasswordLogin')}</p>
+                        </Button> :
+                        <Button icon={<IconFont type="i-WeLink"/>}
+                                color="default"
+                                variant="link"
+                                className='other-login-method'
+                                onClick={() => {
+                                    setQrCodeUrl(import.meta.env.VITE_WELINK_QR_URL);
+                                    setLoginTitle('weLinkLoginTitle');
+                                }}>
+
+                            <p>{t('Login.weLinkLogin')}</p>
+                        </Button>
+                    }
+
+
                 </div>
             </div>
+        </div>
     )
 }

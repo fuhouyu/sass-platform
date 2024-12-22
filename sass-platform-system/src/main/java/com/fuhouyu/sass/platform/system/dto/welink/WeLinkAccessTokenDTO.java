@@ -13,21 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.dto.welink;
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin
+/**
+ * <p>
+ * weLink 获取token的dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/22 18:22
+ */
+@Data
+public class WeLinkAccessTokenDTO {
+
+    private String code;
+
+    private String message;
+
+    @JsonProperty("access_token")
+    private String accessToken;
+
+    @JsonProperty("expires_in")
+    private Long expiresIn;
 }

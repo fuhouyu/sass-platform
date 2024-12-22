@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin
+.qrcode-container {
+  display: flex;
+  height: 17.5rem;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 3rem;
+
+  .qrcode-title {
+    color: #9c9ea3;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: center;
+
+    span {
+      color: #242830;
+    }
+  }
 }

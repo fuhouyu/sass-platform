@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
 
-import {Bread} from "./Bread/bread";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+/**
+ * <p>
+ * 微信开放平台接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/21 20:27
+ */
+public interface WechatPlatformService {
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin
+    /**
+     * 检查签名
+     *
+     * @param signature 签名
+     * @param timestamp 时间戳
+     * @param nonce     随机数
+     */
+    void checkSignature(String signature, String timestamp, String nonce);
+
+    /**
+     * 获取开放平台的token
+     *
+     * @return token
+     */
+    String getAccessToken();
 }

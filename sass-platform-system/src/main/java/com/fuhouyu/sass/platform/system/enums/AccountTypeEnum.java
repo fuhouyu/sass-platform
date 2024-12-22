@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.enums;
 
 import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
+import com.fuhouyu.sass.platform.system.security.provider.WeLinkAuthenticationProvider;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -43,6 +44,13 @@ public enum AccountTypeEnum {
             return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getIdentify());
         }
     },
+
+    WELINK {
+        @Override
+        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+            return new WeLinkAuthenticationProvider.WeLinkAuthenticationToken(userLoginDTO.getIdentify());
+        }
+    }
     ;
 
     public abstract AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO);

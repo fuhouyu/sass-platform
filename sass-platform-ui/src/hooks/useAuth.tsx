@@ -30,7 +30,7 @@ const useAuth = () => {
     const token = getAccessToken();
     const dispatch = useAppDispatch();
     useEffect(() => {
-        if (pathname.endsWith(BASE_LOGIN_URL)) {
+        if (pathname.includes(BASE_LOGIN_URL)) {
             return;
         }
         if (!token) {
