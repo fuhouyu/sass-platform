@@ -53,12 +53,16 @@ const ZhCN = {
     // 登录
     Login: {
         usernamePlaceholder: '请输入用户名',
-        usernameEmptyMessage: '请输入用户名!',
-        passwordEmptyMessage: '请输入用户密码!',
-        passwordPlaceholder: '请输入密码',
+        usernameEmptyMessage: '请输入用户名',
+        passwordEmptyMessage: '请输入用户密码',
+        passwordPlaceholder: '请输入用户密码',
         otherLogin: '其它登录方式',
         wechatLogin: '微信登录',
-        weLinkLogin: 'WeLink 扫码',
+        usernamePasswordLogin: '账号密码',
+        usernamePasswordLoginTitle: '请使用<span>账号密码</span>登录',
+        weLinkLogin: 'WeLink 登录',
+        weLinkLoginTitle: '请使用<span>WeLink 扫码</span>登录',
+        weLinkQRTips: "打开<span>WeLink APP</span> - 点击右上角“<span>+</span>”图标 - 点击<span>扫一扫</span>",
         loginButton: '登录',
     },
     // 租户
