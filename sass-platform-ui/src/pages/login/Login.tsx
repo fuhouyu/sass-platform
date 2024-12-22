@@ -17,7 +17,7 @@
 import React, {useEffect, useState} from "react";
 import "./index.scss"
 import {Button, Divider, Form, Input, message} from "antd";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
@@ -43,14 +43,26 @@ export const Login: React.FC = () => {
     const {t} = useTranslation();
     const [qrCodeUrl, setQrCodeUrl] = useState<string>(import.meta.env.VITE_WELINK_QR_URL);
     const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
-    const queryParams = new URLSearchParams(location.search);
+    const [searchParams] = useSearchParams();
     // 如果本身存在token，跳转回首页
     useEffect(() => {
-        console.log(queryParams);
         if (isAuth) {
             navigate('/');
         }
     }, [isAuth, navigate]);
+
+    useEffect(() => {
+        const accountType = searchParams.get('accountType');
+        if (!accountType) {
+            return;
+        }
+        const code = searchParams.get('code');
+        dispatch(fetchLogin({accountType: accountType as AccountType, identify: code as string})).then(async () => {
+            router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
+        }).catch((err: Error) => {
+            message.error(err.message).then()
+        })
+    }, [dispatch, location.state, searchParams]);
 
     const onFinish = (loginData: UserAuthentication) => {
 

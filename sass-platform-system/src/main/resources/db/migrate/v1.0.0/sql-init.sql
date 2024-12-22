@@ -334,7 +334,7 @@ CREATE TABLE accounts
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
     user_id   BIGINT    NOT NULL,
-    credentials                 VARCHAR(128)         NOT NULL,
+    credentials VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
     is_enabled                  BOOLEAN DEFAULT true NOT NULL,

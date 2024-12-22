@@ -15,9 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
-import com.fuhouyu.framework.common.exception.ServiceException;
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
@@ -57,8 +54,7 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
         AccountIdDTO accountIdDTO = new AccountIdDTO(account, accountType);
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
         if (Objects.isNull(accountDTO)) {
-            LoggerUtil.warn(log, "account: {}, accountType:{} 登录失败,未找到对应账号", account, accountType);
-            throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "用户名或密码错误");
+            return null;
         }
         return SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
     }

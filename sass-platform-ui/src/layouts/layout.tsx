@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Layout as _Layout} from "antd";
+import {Layout as CustomLayout} from "antd";
 import {Content} from "antd/es/layout/layout";
 import {Outlet} from "react-router-dom";
 import {Menu} from "@/layouts/menu/menu";
@@ -24,16 +24,14 @@ import withAuth from "@components/Auth/withAuth";
 
 export const Layout = withAuth(() => {
     return (
-        <>
-            <_Layout className="layout-container">
-                <Menu/>
-                <_Layout>
-                    <Header/>
-                    <Content className="layout-content">
-                        <Outlet/>
-                    </Content>
-                </_Layout>
-            </_Layout>
-        </>
+        <CustomLayout className="layout-container">
+            <Menu/>
+            <CustomLayout>
+                <Header/>
+                <Content className="layout-content">
+                    <Outlet/>
+                </Content>
+            </CustomLayout>
+        </CustomLayout>
     )
 })

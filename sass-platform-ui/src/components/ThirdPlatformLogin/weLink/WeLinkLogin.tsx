@@ -88,7 +88,7 @@ export const WeLinkLogin = () => {
         const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
         const response_type = "code";
         const scope = "snsapi_login";
-        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI);
+        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + "?accountType=WELINK");
 
         const url = serverUrl + "?"
             + "client_id" + "=" + client_id + "&"
@@ -97,7 +97,7 @@ export const WeLinkLogin = () => {
             + "state" + "=" + "234kki55o4k4i4i" + "&"
             + "redirect_uri" + "=" + redirect_uri + "&"
             + "code" + "=" + code;
-        console.log(url);
+        console.log("=======", url);
         window.location.href = url;
     }
 
