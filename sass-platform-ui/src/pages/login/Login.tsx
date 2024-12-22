@@ -41,7 +41,7 @@ export const Login: React.FC = () => {
     const isAuth = useAuth();
     const {LanguageSwitcherButton} = useLanguageSwitcher('switch-language-button');
     const {t} = useTranslation();
-    const [qrCodeUrl, setQrCodeUrl] = useState<string>(import.meta.env.VITE_WELINK_QR_URL);
+    const [weLinkQr, setWeLinkQr] = useState<boolean>(true);
     const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
     const [searchParams] = useSearchParams();
     // 如果本身存在token，跳转回首页
@@ -87,7 +87,7 @@ export const Login: React.FC = () => {
                 {LanguageSwitcherButton}
                 <h3 className="title" dangerouslySetInnerHTML={{__html: t(`Login.${loginTitle}`)}}/>
                 {
-                    qrCodeUrl ?
+                    weLinkQr ?
                         <WeLinkLogin/>
                         :
 
@@ -128,12 +128,12 @@ export const Login: React.FC = () => {
                     <p>{t('Login.otherLogin')}</p>
                 </Divider>
                 <div className='other-login-methods'>
-                    {qrCodeUrl ? <Button icon={<IconFont type="i-zhanghao"/>}
+                    {weLinkQr ? <Button icon={<IconFont type="i-zhanghao"/>}
                                          color="default"
                                          variant="link"
                                          className='other-login-method'
                                          onClick={() => {
-                                             setQrCodeUrl('');
+                                             setWeLinkQr(false);
                                              setLoginTitle('usernamePasswordLoginTitle');
                                          }}>
                             <p>{t('Login.usernamePasswordLogin')}</p>
@@ -143,7 +143,7 @@ export const Login: React.FC = () => {
                                 variant="link"
                                 className='other-login-method'
                                 onClick={() => {
-                                    setQrCodeUrl(import.meta.env.VITE_WELINK_QR_URL);
+                                    setWeLinkQr(true);
                                     setLoginTitle('weLinkLoginTitle');
                                 }}>
 
