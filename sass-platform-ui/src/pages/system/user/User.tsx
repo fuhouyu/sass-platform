@@ -16,75 +16,73 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, Space, TableColumnsType} from "antd";
+import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, TableColumnsType} from "antd";
 import {IconFont, PageList} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
 import {userApi} from "@/apis/user";
 import {PageQuery, PageResult} from "@/model/pageQuery";
-import {AddButton, DeleteButton} from "@components/Button/commonButton";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
+import {useTranslation} from "react-i18next";
 
 export const User: React.FC = () => {
 
+    const {t} = useTranslation();
     const columns: TableColumnsType = [
         {
-            title: '用户名',
+            title: t('User.username'),
             dataIndex: 'username',
             showSorterTooltip: {target: 'full-header'},
         },
         {
-            title: '真实姓名',
+            title: t('User.realName'),
             dataIndex: 'realName',
             defaultSortOrder: 'descend',
         },
         {
-            title: '昵称',
+            title: t('User.nickname'),
             dataIndex: 'nickname',
         },
         {
-            title: '性别',
+            title: t('User.gender'),
             dataIndex: 'gender',
         },
         {
-            title: '登录时间',
+            title: t('User.loginDate'),
             dataIndex: 'loginDate',
         },
         {
-            title: '登录ip',
+            title: t('User.loginIp'),
             dataIndex: 'loginIp',
         },
         {
-            title: '创建时间',
+            title: t('Common.createAt'),
             dataIndex: 'createAt',
             sorter: true,
             showSorterTooltip: false
         },
         {
-            title: '创建人',
+            title: t('Common.createBy'),
             dataIndex: 'createBy'
         },
         {
-            title: '更新时间',
+            title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
             showSorterTooltip: false
         },
         {
-            title: '操作人',
+            title: t('Common.updateBy'),
             dataIndex: 'updateBy',
         },
         {
             title: '操作',
             dataIndex: 'action',
             render: (_, record: Userinfo) => {
-                return (<>
-                    <Space size="middle" style={{whiteSpace: 'nowrap'}}>
-                        <a onClick={() => openModal(record.id)}>修改</a>
-                    </Space>
-                </>)
+                return (<EditButton onClick={() => openModal(record.id)}/>)
             }
         }
     ];
@@ -100,19 +98,16 @@ export const User: React.FC = () => {
      * 打开模态组
      * @param userId 用户id
      */
-    const openModal = (userId?: string) => {
+    const openModal = async (userId?: string) => {
         setIsModalOpen(true);
         setUpdateUserId(userId);
         if (!userId) {
             return;
         }
-        userApi.getInfoByIdApi(userId!)
-            .then((res: Userinfo) => {
-                form.setFieldsValue({...res})
-            })
-            .catch((err: Error) => {
-                message.error(err.message).then()
-            })
+        const userinfo = await userApi.getInfoByIdApi(userId)
+        form.setFieldsValue({...userinfo})
+        setUpdateUserId(userId);
+
     }
 
     /**
@@ -131,11 +126,9 @@ export const User: React.FC = () => {
         setIsModalButtonLoading(true);
         try {
             await (updateUserId ? updateUserDetail() : saveUserDetail());
-            message.success("操作成功").then()
+            message.success(t('Common.success')).then();
             setIsModalOpen(false);
             form.resetFields();
-        } catch (error: unknown) {
-            message.error(error instanceof Error ? error.message : '未知错误').then()
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -179,11 +172,8 @@ export const User: React.FC = () => {
     /**
      * 分页查询请求
      */
-    const pageRequest = () => {
-        userApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<Userinfo>) => {
-                setPageResult({...res})
-            })
+    const pageRequest = async () => {
+        setPageResult(await userApi.pageInfoListApi(pageQuery))
     }
 
     /**
@@ -197,7 +187,7 @@ export const User: React.FC = () => {
         <>
             <PageList
                 tableProps={{
-                    tableName: '用户列表',
+                    tableName: t('User.title'),
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,
@@ -207,27 +197,27 @@ export const User: React.FC = () => {
                             <AddButton onClick={() => openModal()}/>
                             <DeleteButton onClick={async () => {
                                 userApi.deleteInfoApi(rowKeys as string[]).then();
-                                pageRequest()
+                                await pageRequest()
                             }}/>
                         </>
                     ]
                 }}
                 headerSearchProps={{
                     components: [
-                        <><label htmlFor="username">用户名</label>
-                            <Input placeholder={'请输入用户名'} id={'username'} onChange={(e) => {
+                        <><label htmlFor="username">{t('User.username')}</label>
+                            <Input placeholder={t('User.usernamePlaceholder')} id={'username'} onChange={(e) => {
                                 setUserQuery({username: e.target.value})
                             }}/>
                         </>,
                         <>
-                            <span>性别</span>
+                            <span>{t('User.gender')}</span>
                             <Select
                                 key={'gender'}
-                                placeholder={'用户性别'}
+                                placeholder={t('User.genderPlaceholder')}
                                 onChange={(value) => userQuery['gender'] = value}
                                 options={[
-                                    {value: 'male', label: <span>男</span>},
-                                    {value: 'female', label: <span>女</span>}
+                                    {value: 'male', label: <span>{t('User.male')}</span>},
+                                    {value: 'female', label: <span>{t('User.female')}</span>}
                                 ]}
                             />
                         </>
@@ -237,15 +227,15 @@ export const User: React.FC = () => {
             />
 
             <Modal
-                title={updateUserId ? "修改用户" : "新增用户"}
+                title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
                 width={600}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerUserForm}>确定</Button>,
-                    <Button key='onCancel' onClick={() => closeModal()}>取消</Button>
+                            onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
+                    <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
                 closeIcon={<IconFont type="i-Close" style={{
                     fontSize: '24px',
@@ -263,7 +253,7 @@ export const User: React.FC = () => {
                         <Row gutter={24}>
                             <Col span={12}>
                                 <Form.Item
-                                    label="用户名"
+                                    label={t('User.username')}
                                     name="username"
                                     validateTrigger="onBlur"
                                     key="username"
@@ -284,19 +274,19 @@ export const User: React.FC = () => {
                                                 }
                                                 const exists: boolean = await userApi.checkUsernameExistsApi(value);
                                                 if (exists) {
-                                                    return Promise.reject(new Error('用户名已存在'));
+                                                    return Promise.reject(new Error(t('User.usernameExistsErrorMessage')));
                                                 }
 
                                             }
                                         })
                                     ]}
                                 >
-                                    <Input placeholder='请输入用户名' maxLength={20}/>
+                                    <Input placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="密码"
+                                    label={t('User.password')}
                                     name="password"
                                     key="password"
                                     hasFeedback
@@ -309,7 +299,7 @@ export const User: React.FC = () => {
                                         message: PASSWORD_REGEX.message,
                                     }]}
                                 >
-                                    <Input placeholder='请输入用户密码' type='password'/>
+                                    <Input placeholder={t('User.passwordPlaceholder')} type='password'/>
                                 </Form.Item>
                             </Col>
                         </Row>}
@@ -320,47 +310,47 @@ export const User: React.FC = () => {
 
                         <Col span={12}>
                             <Form.Item
-                                label="真实姓名"
+                                label={t('User.realName')}
                                 name="realName"
                                 key="realName"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
-                                rules={[{required: true, message: '真实姓名未填写'}]}
+                                rules={[{required: true, message: t('User.realNamePlaceholder')}]}
                             >
-                                <Input placeholder='请输入真实姓名'/>
+                                <Input placeholder={t('User.realNamePlaceholder')}/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="用户昵称"
+                                label={t('User.nickname')}
                                 name="nickname"
                                 key="nickname"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
                             >
-                                <Input placeholder='请输入用户昵称'/>
+                                <Input placeholder={t('User.realNamePlaceholder')}/>
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={24}>
                         <Col span={12}>
                             <Form.Item
-                                label="邮箱"
+                                label={t('User.email')}
                                 name="email"
                                 key="email"
                                 wrapperCol={{offset: 1}}
                                 colon={false}
                                 rules={[{
                                     type: 'email',
-                                    message: "请输入正确的邮箱账号"
+                                    message: t('User.emailCheckMessage')
                                 }]}
                             >
-                                <Input placeholder='请输入邮箱地址'/>
+                                <Input placeholder={t('User.emailPlaceholder')}/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="性别"
+                                label={t('User.gender')}
                                 name="gender"
                                 key="gender"
                                 wrapperCol={{offset: 1}}
@@ -369,8 +359,8 @@ export const User: React.FC = () => {
                                 initialValue={'male'}
                             >
                                 <Radio.Group>
-                                    <Radio value="male">男</Radio>
-                                    <Radio value="female">女</Radio>
+                                    <Radio value="male">{t('User.male')}</Radio>
+                                    <Radio value="female">{t('User.female')}</Radio>
                                 </Radio.Group>
                             </Form.Item>
                         </Col>

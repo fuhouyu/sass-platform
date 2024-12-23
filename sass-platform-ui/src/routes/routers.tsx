@@ -22,7 +22,7 @@ import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
-import {PersonCenter} from "@/pages/profile/PersonCenter";
+import {Profile} from "@/pages/profile/Profile.tsx";
 import Login from "@/pages/login";
 import {BASE_HOME_URL, BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant";
 import MainPortal from "@/pages/portal";
@@ -58,7 +58,7 @@ export const commonRouter: RouterType[] = [
                 id: 'profile',
                 title: 'profile',
                 path: BASE_USER_PROFILE_URL,
-                element: <PersonCenter/>
+                element: <Profile/>
             }
         ]
     },

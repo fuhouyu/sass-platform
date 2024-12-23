@@ -87,14 +87,12 @@ export const Role: React.FC = () => {
             dataIndex: 'action',
             align: "center",
             render: (_, record: RoleModel) => {
-                return (<>
-                    <EditButton onClick={() => openModal(record.id)}/>
-                </>)
+                return (<EditButton onClick={() => openModal(record.id)}/>)
             }
         }
     ];
 
-    const [updateId, setUpdateUserId] = useState<string | undefined>();
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -109,7 +107,7 @@ export const Role: React.FC = () => {
      * @param roleId 角色id
      */
     const openModal = async (roleId?: string) => {
-        setUpdateUserId(roleId);
+        setUpdateId(roleId);
         const treeData = await permissionApi.getPermissionTreeSelect();
         setTreeSelectData(treeData);
         if (roleId) {
