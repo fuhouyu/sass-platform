@@ -16,11 +16,19 @@
 
 
 import React, {useEffect, useState} from "react";
+import "./index.scss"
+import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
+import {Avatar, Button, Form, Input, message, Radio} from "antd";
 import {useAppDispatch, useAppSelector} from "@/store";
-import {Userinfo as _Userinfo} from "@/model/user";
-import {Button, Form, Input, message, Radio} from "antd";
-import './index.scss'
-import {fetchEditUserinfo} from "@/store/modules/user";
+import {Userinfo as UserinfoModal} from "@/model/user";
+import {fetchEditUserinfo} from "@/store/modules/user.tsx";
+import {useTranslation} from "react-i18next";
+
+interface MenuLiInterface {
+    key: string;
+    icon: React.ReactElement;
+    label: string;
+}
 
 interface UserinfoFormInterface {
     label: string;
@@ -28,24 +36,35 @@ interface UserinfoFormInterface {
     value: string;
     disabled: boolean;
 }
-
 /**
- * 用户详情
+ * 个人中心用户详情
  * @constructor 构造函数
  */
 export const Profile: React.FC = () => {
+    const {t} = useTranslation();
+    const menuItems: MenuLiInterface[] = [
+        {key: 'userinfo', icon: <UserOutlined/>, label: t('Menu.profile')},
+        {key: 'accountSettings', icon: <SettingOutlined/>, label: t('Menu.accountSettings')},
+        // 可以继续添加其他菜单项
+    ];
 
-    const userinfo: _Userinfo = useAppSelector((state: {
-        user: { userinfo: _Userinfo }
+    const [selectedMenuInterface, setSelectedMenuInterface] = useState<MenuLiInterface>(menuItems[0]);
+
+    const handleClick = (item: MenuLiInterface) => {
+        setSelectedMenuInterface(item); // 更新选中项的索引
+    };
+
+    const userinfo: UserinfoModal = useAppSelector((state: {
+        user: { userinfo: UserinfoModal }
     }) => state.user.userinfo);
 
     const formItem: UserinfoFormInterface[] = [
-        {key: 'username', label: '登录名', value: userinfo.username!, disabled: true},
-        {key: 'realName', label: '真实姓名', value: userinfo.realName!, disabled: false},
-        {key: 'nickname', label: '昵称', value: userinfo.nickname!, disabled: false},
-        {key: 'email', label: '邮箱', value: userinfo.email!, disabled: false},
-        {key: 'loginDate', label: '最后登录时间', value: userinfo.loginDate!, disabled: true},
-        {key: 'loginIp', label: '最后登录ip', value: userinfo.loginIp!, disabled: true},
+        {key: 'username', label: t('User.username'), value: userinfo.username!, disabled: true},
+        {key: 'realName', label: t('User.realName'), value: userinfo.realName!, disabled: false},
+        {key: 'nickname', label: t('User.nickname'), value: userinfo.nickname!, disabled: false},
+        {key: 'email', label: t('User.email'), value: userinfo.email!, disabled: false},
+        {key: 'loginDate', label: t('User.loginDate'), value: userinfo.loginDate!, disabled: true},
+        {key: 'loginIp', label: t('User.loginIp'), value: userinfo.loginIp!, disabled: true},
     ]
     const dispatch = useAppDispatch();
     const [form] = Form.useForm();
@@ -62,7 +81,7 @@ export const Profile: React.FC = () => {
     }
 
 
-    const onFinish = (values: _Userinfo): void => {
+    const onFinish = (values: UserinfoModal): void => {
         setButtonLoading(true);
         dispatch(fetchEditUserinfo(values))
             .then(() => {
@@ -74,44 +93,79 @@ export const Profile: React.FC = () => {
         })
     }
 
+
     return (
-        <>
-            <Form className="userinfo-form"
-                  form={form}
-                  name="basic"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 16}}
-                  style={{maxWidth: 600}}
-                  onFinish={onFinish}
-                  disabled={buttonLoading}
-                  autoComplete="off"
-            >
-                {formItem.map((item: UserinfoFormInterface,) => (
-                    <Form.Item
-                        label={item.label}
-                        name={item.key}
-                        key={item.key}
-                    >
-                        <Input disabled={item.disabled} key={item.key}/>
+        <div className="profile-container">
+            <div className="profile-left">
+                <div>
+                    <Avatar
+                        size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
+                        src={userinfo.avatar}
+                        icon={<AntDesignOutlined/>}
+                    />
+                    <p className="text-align-center">
+                        您好，{userinfo.realName}
+                    </p>
+                </div>
+                <div className="profile-menu">
+                    {
+                        menuItems.map((item: MenuLiInterface) => (
+                            <Button key={item.key}
+                                    type={selectedMenuInterface.key === item.key ? 'primary' : 'default'}
+                                    className={'menu-button'}
+                                    onClick={() => {
+                                        handleClick(item)
+                                    }}
+                            >
+                                {item.icon} {item.label}
+                            </Button>
+                        ))
+                    }
+                </div>
+            </div>
+            <div className="profile-right">
+                <div className="profile-right-title">
+                    {selectedMenuInterface.label}
+                </div>
+                <Form className="profile-form"
+                      form={form}
+                      name="basic"
+                      labelCol={{span: 8}}
+                      wrapperCol={{span: 16}}
+                      style={{maxWidth: 600}}
+                      onFinish={onFinish}
+                      disabled={buttonLoading}
+                      autoComplete="off"
+                >
+                    {formItem.map((item: UserinfoFormInterface,) => (
+                        <Form.Item
+                            label={item.label}
+                            name={item.key}
+                            key={item.key}
+                        >
+                            <Input disabled={item.disabled} key={item.key}/>
+                        </Form.Item>
+                    ))}
+
+                    <Form.Item name="gender" key="gender" label={t('User.gender')}>
+                        <Radio.Group>
+                            <Radio value='male'>{t('User.male')}</Radio>
+                            <Radio value='female'>{t('User.female')}</Radio>
+                        </Radio.Group>
                     </Form.Item>
-                ))}
 
-                <Form.Item name="gender" key="gender" label="性别">
-                    <Radio.Group>
-                        <Radio value='male'>男</Radio>
-                        <Radio value='female'>女</Radio>
-                    </Radio.Group>
-                </Form.Item>
+                    <Form.Item className="profile-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
+                        <Button type="primary" htmlType="submit" loading={buttonLoading}>
+                            {t('Button.confirm')}
+                        </Button>
+                        <Button type="primary" danger onClick={onCancel}>
+                            {t('Button.cancel')}
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
 
-                <Form.Item className="userinfo-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
-                    <Button type="primary" htmlType="submit" loading={buttonLoading}>
-                        保存
-                    </Button>
-                    <Button type="primary" danger onClick={onCancel}>
-                        取消
-                    </Button>
-                </Form.Item>
-            </Form>
-        </>
-    );
+        </div>
+    )
 }
+

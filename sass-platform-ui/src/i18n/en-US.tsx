@@ -48,7 +48,6 @@ const EnUS = {
     // header
     Header: {
         title: 'Sass Platform',
-        profile: 'User Profile',
         logout: 'Logout',
     },
     // 登录
@@ -59,10 +58,10 @@ const EnUS = {
         usernamePlaceholder: 'Please enter your username',
         usernameEmptyMessage: 'Please enter your username!',
         passwordPlaceholder: 'Please enter your password',
-        passwordEmptyMessage: 'Please enter your password',
+        passwordEmptyMessage: 'Password is required',
         otherLogin: 'Alternative Login Options',
         wechatLogin: 'Wechat Login',
-        weLinkLogin: 'WeLink Long',
+        weLinkLogin: 'WeLink Login',
         usernamePasswordLogin: 'Username and Password',
         usernamePasswordLoginTitle: 'Please use<span> Username and Password </span> Login',
         weLinkLoginTitle: 'Please use<span> WeLink QR </span>Login',
@@ -80,7 +79,8 @@ const EnUS = {
         permissionManage: 'Permission Manage',
         dictManage: 'Dictionary Manage',
         dictItem: 'Dictionary Item',
-
+        profile: 'User Profile',
+        accountSettings: 'Account Settings',
     },
     // 租户
     Tenant: {
@@ -133,6 +133,32 @@ const EnUS = {
         routeParamsPlaceholder: 'Please enter Route Params',
         displayStatus: 'Display Status',
     },
+    User: {
+        list: 'User List',
+        add: 'Add User',
+        edit: 'Edit User',
+        email: 'Email',
+        emailPlaceholder: 'Please enter your email',
+        emailCheckMessage: 'Please enter a valid email',
+        gender: 'Gender',
+        genderPlaceholder: 'Please select your gender',
+        loginDate: 'Last Login Date',
+        loginIp: 'Last Login IP',
+        realName: 'Full Name',
+        realNamePlaceholder: 'Please enter your full name',
+        nickname: 'Nickname',
+        nicknamePlaceholder: 'Please enter your nickname',
+        username: 'Username',
+        usernamePlaceholder: 'Please enter your username',
+        usernameCheckMessage: 'Please enter a username',
+        usernameExistsErrorMessage: 'Username already exists',
+        password: 'Password',
+        passwordPlaceholder: 'Please enter your password',
+        passwordCheckMessage: 'Please enter a password',
+        male: 'Male',
+        female: 'Female',
+    },
+
     // 角色
     Role: {
         list: 'Role List',

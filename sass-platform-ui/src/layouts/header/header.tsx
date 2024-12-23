@@ -56,7 +56,7 @@ export const Header = () => {
     const dropDownMenus: MenuProps['items'] = [
         {
             key: 'profile',
-            label: t('Header.profile'),
+            label: t('Menu.profile'),
             icon: <UserOutlined/>,
         },
         {
