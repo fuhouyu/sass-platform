@@ -86,28 +86,30 @@ export const User: React.FC = () => {
             }
         }
     ];
-
+    const initForm: Userinfo = {
+        gender: 'male',
+    }
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+    const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
 
     /**
      * 打开模态组
      * @param userId 用户id
      */
     const openModal = async (userId?: string) => {
-        setIsModalOpen(true);
         setUpdateUserId(userId);
         if (!userId) {
+            setIsModalOpen(true);
             return;
         }
         const userinfo = await userApi.getInfoByIdApi(userId)
-        form.setFieldsValue({...userinfo})
-        setUpdateUserId(userId);
-
+        setFormInitValues(userinfo);
+        setIsModalOpen(true);
     }
 
     /**
@@ -115,6 +117,7 @@ export const User: React.FC = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
+        setFormInitValues(initForm);
         form.resetFields();
     }
 
@@ -230,6 +233,7 @@ export const User: React.FC = () => {
                 title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
+                destroyOnClose={true}
                 onCancel={() => closeModal()}
                 width={600}
                 footer={[
@@ -242,11 +246,13 @@ export const User: React.FC = () => {
                 }}/>}
             >
                 <Form
+                    clearOnDestroy={true}
                     name="basic"
                     form={form}
                     labelCol={{span: 8}}
                     wrapperCol={{span: 16}}
                     style={{maxWidth: 600}}
+                    initialValues={formInitValues}
                     autoComplete="off"
                 >
                     {!updateUserId &&
@@ -356,7 +362,6 @@ export const User: React.FC = () => {
                                 wrapperCol={{offset: 1}}
                                 colon={false}
                                 rules={[{required: true}]}
-                                initialValue={'male'}
                             >
                                 <Radio.Group>
                                     <Radio value="male">{t('User.male')}</Radio>

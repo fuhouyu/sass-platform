@@ -108,6 +108,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<AccountDTO> getThirdPartyAccountByUserId(Long userId) {
+        List<Accounts> results = this.accountMapper.getThirdPartyAccountByUserId(userId);
+        return ACCOUNT_ASSEMBLER.toDTO(results);
+    }
+
+    @Override
     public Function<PageQueryDTO, List<AccountDTO>> getPageResult() {
         return p -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
     }

@@ -23,6 +23,7 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {Userinfo as UserinfoModal} from "@/model/user";
 import {fetchEditUserinfo} from "@/store/modules/user.tsx";
 import {useTranslation} from "react-i18next";
+import {AccountSettings} from "@/pages/profile/account/AccountSettings.tsx";
 
 interface MenuLiInterface {
     key: string;
@@ -127,42 +128,44 @@ export const Profile: React.FC = () => {
                 <div className="profile-right-title">
                     {selectedMenuInterface.label}
                 </div>
-                <Form className="profile-form"
-                      form={form}
-                      name="basic"
-                      labelCol={{span: 8}}
-                      wrapperCol={{span: 16}}
-                      style={{maxWidth: 600}}
-                      onFinish={onFinish}
-                      disabled={buttonLoading}
-                      autoComplete="off"
-                >
-                    {formItem.map((item: UserinfoFormInterface,) => (
-                        <Form.Item
-                            label={item.label}
-                            name={item.key}
-                            key={item.key}
-                        >
-                            <Input disabled={item.disabled} key={item.key}/>
+                {
+                    selectedMenuInterface.key === 'userinfo' ? <Form className="profile-form"
+                                                                     form={form}
+                                                                     name="basic"
+                                                                     labelCol={{span: 8}}
+                                                                     wrapperCol={{span: 16}}
+                                                                     style={{maxWidth: 600}}
+                                                                     onFinish={onFinish}
+                                                                     disabled={buttonLoading}
+                                                                     autoComplete="off"
+                    >
+                        {formItem.map((item: UserinfoFormInterface,) => (
+                            <Form.Item
+                                label={item.label}
+                                name={item.key}
+                                key={item.key}
+                            >
+                                <Input disabled={item.disabled} key={item.key}/>
+                            </Form.Item>
+                        ))}
+
+                        <Form.Item name="gender" key="gender" label={t('User.gender')}>
+                            <Radio.Group>
+                                <Radio value='male'>{t('User.male')}</Radio>
+                                <Radio value='female'>{t('User.female')}</Radio>
+                            </Radio.Group>
                         </Form.Item>
-                    ))}
 
-                    <Form.Item name="gender" key="gender" label={t('User.gender')}>
-                        <Radio.Group>
-                            <Radio value='male'>{t('User.male')}</Radio>
-                            <Radio value='female'>{t('User.female')}</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-
-                    <Form.Item className="profile-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
-                        <Button type="primary" htmlType="submit" loading={buttonLoading}>
-                            {t('Button.confirm')}
-                        </Button>
-                        <Button type="primary" danger onClick={onCancel}>
-                            {t('Button.cancel')}
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        <Form.Item className="profile-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
+                            <Button type="primary" htmlType="submit" loading={buttonLoading}>
+                                {t('Button.confirm')}
+                            </Button>
+                            <Button type="primary" danger onClick={onCancel}>
+                                {t('Button.cancel')}
+                            </Button>
+                        </Form.Item>
+                    </Form> : <AccountSettings/>
+                }
             </div>
 
         </div>

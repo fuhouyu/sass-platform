@@ -164,4 +164,13 @@
             #{userId}
         </foreach>
     </delete>
+
+    <select id="getThirdPartyAccountByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM
+        <include refid="TableName"/>
+        WHERE user_id = #{userId}
+        AND account_type != 'PASSWORD'
+    </select>
 </mapper>
