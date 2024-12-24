@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.dto.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,41 +35,29 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Schema(name = "AccountDTO", description = "账号dto对象")
 public class AccountDTO extends BaseDTO {
 
-    /**
-     * 账号
-     */
+
+    @Schema(name = "account", description = "账号")
     private String account;
 
-    /**
-     * 账号类型
-     */
+    @Schema(name = "accountType", description = "账号类型")
     private String accountType;
 
-    /**
-     * 用户id
-     */
+    @Schema(name = "userId", description = "用户id")
     private Long userId;
 
-    /**
-     * 凭证
-     */
+    @JsonIgnore
     private String credentials;
 
-    /**
-     * 凭证过期时间
-     */
+    @JsonIgnore
     private LocalDateTime credentialsExpirationTime;
 
-    /**
-     * 第三方所属的账号id
-     */
+    @Schema(name = "refAccountId", description = "第三方所属的账号id")
     private String refAccountId;
 
-    /**
-     * 是否启用标记
-     */
+    @Schema(name = "isEnabled", description = "是否启用标记")
     private Boolean isEnabled;
 
 }

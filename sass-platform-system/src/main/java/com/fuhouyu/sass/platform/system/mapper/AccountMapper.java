@@ -48,4 +48,12 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param userIds 用户id集合
      */
     void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
+
+    /**
+     * 通过用户id查询第三方账号
+     *
+     * @param userId 用户id
+     * @return 第三方账号信息
+     */
+    List<Accounts> getThirdPartyAccountByUserId(@Param("userId") Long userId);
 }
