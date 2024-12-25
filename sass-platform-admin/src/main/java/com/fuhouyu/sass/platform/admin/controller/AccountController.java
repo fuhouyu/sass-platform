@@ -55,8 +55,8 @@ public class AccountController {
      * @return 第三方账号信息
      */
     @GetMapping("/me")
-    @Operation(summary = "获取当前登录用户关联的第三方账号信息")
-    public BaseResponse<List<AccountDTO>> getThirdPartyAccount() {
-        return ResponseHelper.success(this.accountService.getThirdPartyAccountByUserId(ContextHolderStrategy.getContext().getUser().getId()));
+    @Operation(summary = "获取当前登录用户关联的账号信息")
+    public BaseResponse<List<AccountDTO>> getAccountListForMe() {
+        return ResponseHelper.success(this.accountService.getAccountListForMe(ContextHolderStrategy.getContext().getUser().getId()));
     }
 }

@@ -61,4 +61,9 @@ export class BaseUrlConstant {
      */
     static readonly DICT_ITEM_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-item`
 
+    /**
+     * 账号api接口
+     */
+    static readonly ACCOUNT_API_PREFIX = `${BaseUrlConstant.VERSION}/account`
+
 }

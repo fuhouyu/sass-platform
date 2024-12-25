@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 import './index.scss'
-import {Button, Card, Flex} from "antd";
-import {IconFont} from "@/components";
+import {Button, Card, Flex, Modal} from "antd";
+import {IconFont, WeLinkLogin} from "@/components";
+import {useEffect, useState} from "react";
+import {accountApi} from "@/apis/account.tsx";
+import {Account, AccountType} from "@/model/account.tsx";
 
 /**
  * 账号设置
  * @constructor 构造函数
  */
 export const AccountSettings = () => {
+
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const weLinkBind = accounts.some(account => account.accountType === AccountType.WELINK);
+    const [open, setOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+        const getAccounts = async () => {
+            setAccounts(await accountApi.getAccountForme());
+        }
+        getAccounts().then();
+    }, []);
 
     return (
         <div className={'account-container'}>
@@ -33,11 +47,24 @@ export const AccountSettings = () => {
                                 <IconFont type={'i-WeLink'} className={'account-icon'}/>
                                 <span>WeLink 账号</span>
                             </div>
-                            <Button icon={<IconFont type={'i-bangdingpingtai'}/>}>绑定</Button>
+                            <Button onClick={() => setOpen(true)}
+                                    icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
+                                {weLinkBind ? '取消绑定' : '绑定'}
+                            </Button>
                         </Flex>
                     </li>
                 </ul>
             </Card>
+
+            <Modal
+                title={'绑定第三方账号'}
+                footer={[]}
+                open={open}
+                closable={false}
+                onCancel={() => setOpen(false)}
+            >
+                <WeLinkLogin redirectUrl={''}/>
+            </Modal>
         </div>
     );
 };
