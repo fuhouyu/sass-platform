@@ -47,11 +47,11 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
     void removeByUserIds(Collection<Long> userIds);
 
     /**
-     * 通过用户id查询第三方账号
+     * 通过用户id查询关联的第三方账号信息
      *
      * @param userId 用户id
      * @return 第三方账号信息
      */
-    List<AccountDTO> getThirdPartyAccountByUserId(Long userId);
+    List<AccountDTO> getAccountListForMe(Long userId);
 
 }

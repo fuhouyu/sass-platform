@@ -22,12 +22,12 @@ import {fetchLogin} from "@/store/modules/user";
 import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
-import {AccountType} from "@/constants/accountTypeConstant";
 import {IconFont, WeLinkLogin} from "@/components";
 import {useTranslation} from "react-i18next";
 import {router} from "@/routes/routers";
 import {BASE_PORTAL_URL} from "@/constants/commonConstant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
+import {AccountType} from "@/model/account.tsx";
 
 /**
  * 登录组件
@@ -88,7 +88,7 @@ export const Login: React.FC = () => {
                 <h3 className="title" dangerouslySetInnerHTML={{__html: t(`Login.${loginTitle}`)}}/>
                 {
                     weLinkQr ?
-                        <WeLinkLogin/>
+                        <WeLinkLogin redirectUrl={import.meta.env.VITE_LGOIN_REDIRECT_URI}/>
                         :
 
                     <Form className="login-form"

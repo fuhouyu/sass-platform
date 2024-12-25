@@ -15,9 +15,10 @@
  */
 
 
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {useTranslation} from "react-i18next";
 import './index.scss'
+import {WeLinkLoginProps} from "@components/ThirdPlatformLogin/weLink/interface.tsx";
 
 declare global {
     interface Window {
@@ -50,25 +51,15 @@ const generateRandomChars = () => {
     return result;
 };
 
-export const WeLinkLogin = () => {
+export const WeLinkLogin = ({redirectUrl}: WeLinkLoginProps) => {
     const state: string = generateRandomChars();
 
     const {t} = useTranslation();
-    useEffect(() => {
-        openWeLinkQr();
-        window.addEventListener("message", handleLoginCode);
-
-        // 清理事件监听
-        return () => {
-            window.removeEventListener("message", handleLoginCode);
-        };
-    }, []);
-
     /**
      * 处理扫码事件
      * @param event 事件
      */
-    const handleLoginCode = (event: MessageEvent) => {
+    const handleLoginCode = useCallback((event: MessageEvent) => {
         const origin = event.origin;
         if (origin == "https://login.welink.huaweicloud.com") { //判断是否来自WeLink wlLogin扫码事件。 测试环境先注释，上线后需放开
             const loginCode = event.data;
@@ -76,41 +67,14 @@ export const WeLinkLogin = () => {
             console.log("loginCode", loginCode);
             redirectWithCode(loginCode);
         }
-    };
+    }, []);
 
-
-    /**
-     * 重定向到指定链接
-     * @param code code
-     */
-    const redirectWithCode = (code: string) => {
-        const serverUrl = "https://login.welink.huaweicloud.com/sso/oauth2/sns_authorize"
-        const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
-        const response_type = "code";
-        const scope = "snsapi_login";
-        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + "?accountType=WELINK");
-
-        const url = serverUrl + "?"
-            + "client_id" + "=" + client_id + "&"
-            + "response_type" + "=" + response_type + "&"
-            + "scope" + "=" + scope + "&"
-            + "state" + "=" + "234kki55o4k4i4i" + "&"
-            + "redirect_uri" + "=" + redirect_uri + "&"
-            + "code" + "=" + code;
-        console.log("=======", url);
-        window.location.href = url;
-    }
-
-    /**
-     * 打开weLink打码
-     */
-    const openWeLinkQr = () => {
+    const openWeLinkQr = useCallback(() => {
         const script = document.createElement("script");
         script.src = "/js/weLink.js"; // 替换为实际路径
         script.async = true;
         script.onload = () => {
             if (window.wlQrcodeLogin) {
-
                 window.wlQrcodeLogin({
                     id: "qrcode-frame", // 放置二维码的容器 ID
                     state: state,
@@ -127,7 +91,41 @@ export const WeLinkLogin = () => {
             }
         };
         document.body.appendChild(script);
+    }, [state]);
+
+
+    useEffect(() => {
+        openWeLinkQr();
+        window.addEventListener("message", handleLoginCode);
+
+        // 清理事件监听
+        return () => {
+            window.removeEventListener("message", handleLoginCode);
+        };
+
+    }, [handleLoginCode, openWeLinkQr]);
+
+
+    /**
+     * 重定向到指定链接
+     * @param code code
+     */
+    const redirectWithCode = (code: string) => {
+        const serverUrl = "https://login.welink.huaweicloud.com/sso/oauth2/sns_authorize"
+        const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
+        const response_type = "code";
+        const scope = "snsapi_login";
+        const redirect_uri = encodeURIComponent(redirectUrl + "?accountType=WELINK");
+
+        window.location.href = serverUrl + "?"
+            + "client_id" + "=" + client_id + "&"
+            + "response_type" + "=" + response_type + "&"
+            + "scope" + "=" + scope + "&"
+            + "state" + "=" + "234kki55o4k4i4i" + "&"
+            + "redirect_uri" + "=" + redirect_uri + "&"
+            + "code" + "=" + code;
     }
+
 
     return (
         <div className={'qrcode-container'}>

@@ -165,12 +165,11 @@
         </foreach>
     </delete>
 
-    <select id="getThirdPartyAccountByUserId" resultMap="BaseResultMap">
+    <select id="getAccountListForMe" resultMap="BaseResultMap">
         SELECT
         <include refid="AllColumns"/>
         FROM
         <include refid="TableName"/>
         WHERE user_id = #{userId}
-        AND account_type != 'PASSWORD'
     </select>
 </mapper>

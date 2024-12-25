@@ -20,8 +20,8 @@ import {message} from 'antd';
 import {useAppDispatch} from "@/store";
 import {getAccessToken, getRefreshToken, removeToken} from "@/utils";
 import {fetchLogin} from "@/store/modules/user";
-import {AccountType} from "@/constants/accountTypeConstant";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {AccountType} from "@/model/account.tsx";
 
 const useAuth = () => {
     const navigate = useNavigate();

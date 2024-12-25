@@ -14,8 +14,52 @@
  * limitations under the License.
  */
 
+
+/**
+ * 账号类型
+ */
 export enum AccountType {
+    /**
+     * 密码
+     */
     PASSWORD = "PASSWORD",
+
+    /**
+     * 刷新令牌
+     */
     REFRESH_TOKEN = "REFRESH_TOKEN",
 
+    /**
+     * weLink
+     */
+    WELINK = "WELINK",
+}
+
+
+export interface Account {
+
+    /**
+     * 账号
+     */
+    account: string;
+
+    /**
+     * 账号类型
+     */
+    accountType: AccountType;
+
+    /**
+     * 用户id
+     */
+    userId: string;
+
+    /**
+     * 所属的第三方账号id
+     */
+    refAccountId?: string;
+
+    /**
+     * 是否启用
+     */
+    isEnabled: boolean;
 }
