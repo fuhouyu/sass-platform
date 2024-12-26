@@ -20,7 +20,7 @@
 export interface WeLinkLoginProps {
 
     /**
-     * 回调地址
+     * 回调类型
      */
-    redirectUrl: string;
+    redirectType: string;
 }

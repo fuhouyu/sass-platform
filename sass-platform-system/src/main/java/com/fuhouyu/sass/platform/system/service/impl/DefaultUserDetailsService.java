@@ -18,7 +18,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String account, String accountType) throws UsernameNotFoundException {
-        AccountIdDTO accountIdDTO = new AccountIdDTO(account, accountType);
+        AccountIdDTO accountIdDTO = new AccountIdDTO(account, AccountTypeEnum.valueOf(accountType));
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
         if (Objects.isNull(accountDTO)) {
             return null;

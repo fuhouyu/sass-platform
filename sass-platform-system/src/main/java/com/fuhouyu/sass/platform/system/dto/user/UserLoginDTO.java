@@ -15,11 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.dto.user;
 
-import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * <p>
@@ -30,24 +29,10 @@ import lombok.Data;
  * @since 2024/10/4 22:00
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Schema(name = "UserLoginDTO", description = "用户登录的dto对象")
-public class UserLoginDTO {
+public class UserLoginDTO extends AccountIdDTO {
 
-    /**
-     * 用户名
-     */
-    @NotBlank(message = "登录标识未填写")
-    @Schema(name = "identify", description = """
-            登录标识，如用户名，刷新令牌等
-            """, requiredMode = Schema.RequiredMode.REQUIRED)
-    private String identify;
-
-    /**
-     * 账号类型
-     */
-    @NotNull(message = "登录类型未选择")
-    @Schema(name = "accountType", description = "账号类型", defaultValue = "PASSWORD", requiredMode = Schema.RequiredMode.REQUIRED)
-    private AccountTypeEnum accountType;
 
     /**
      * 凭证

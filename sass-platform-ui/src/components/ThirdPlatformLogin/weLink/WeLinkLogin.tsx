@@ -51,7 +51,7 @@ const generateRandomChars = () => {
     return result;
 };
 
-export const WeLinkLogin = ({redirectUrl}: WeLinkLoginProps) => {
+export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
     const state: string = generateRandomChars();
 
     const {t} = useTranslation();
@@ -115,7 +115,7 @@ export const WeLinkLogin = ({redirectUrl}: WeLinkLoginProps) => {
         const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
         const response_type = "code";
         const scope = "snsapi_login";
-        const redirect_uri = encodeURIComponent(redirectUrl + "?accountType=WELINK");
+        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + `?redirectType=${redirectType}` + "&accountType=WELINK");
 
         window.location.href = serverUrl + "?"
             + "client_id" + "=" + client_id + "&"

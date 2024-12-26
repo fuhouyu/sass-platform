@@ -15,14 +15,18 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.assembler.AccountsAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountId;
-import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.entity.Accounts;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.mapper.AccountMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.WeLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,12 +57,14 @@ public class AccountServiceImpl implements AccountService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final WeLinkService weLinkService;
+
     @Override
     public AccountIdDTO save(AccountDTO accountDTO) {
         accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
         accountDTO.setIsEnabled(true);
         this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
-        return new AccountIdDTO(accountDTO.getAccount(), accountDTO.getAccountType());
+        return new AccountIdDTO(accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
     }
 
     @Override
@@ -73,19 +79,19 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int removeById(AccountIdDTO accountIdDTO) {
-        return this.accountMapper.deleteById(new AccountId(accountIdDTO.account(), accountIdDTO.accountType()));
+        return this.accountMapper.deleteById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name()));
     }
 
     @Override
     public int removeByIds(Collection<AccountIdDTO> accountIdList) {
-        List<AccountId> ids = accountIdList.stream().map(account -> new AccountId(account.account(), account.accountType()))
+        List<AccountId> ids = accountIdList.stream().map(account -> new AccountId(account.getAccount(), account.getAccountType().name()))
                 .toList();
         return this.accountMapper.deleteByIds(ids);
     }
 
     @Override
     public AccountDTO findById(AccountIdDTO accountIdDTO) {
-        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.account(), accountIdDTO.accountType()));
+        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name()));
         if (Objects.isNull(accounts)) {
             return null;
         }
@@ -116,5 +122,19 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Function<PageQueryDTO, List<AccountDTO>> getPageResult() {
         return p -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
+    }
+
+    @Override
+    public void saveThirdPartyAccount(AccountIdDTO accountIdDTO) {
+        // TODO 目前这里只会有weLink，先临时处理，后面需要抽到accountTypeEnum中
+        WeLinkLoginUserDTO weLinkLoginUserDTO = this.weLinkService.login(accountIdDTO.getAccount());
+        Accounts accounts = new Accounts();
+        accounts.setAccount(weLinkLoginUserDTO.getUserId());
+        accounts.setAccountType(accountIdDTO.getAccountType().name());
+        accounts.setUserId(ContextHolderStrategy.getContext().getUser().getId());
+        accounts.setRefAccountId(weLinkLoginUserDTO.getUserId());
+        accounts.setIsEnabled(true);
+        this.accountMapper.insert(accounts);
+
     }
 }

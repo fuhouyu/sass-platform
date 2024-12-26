@@ -86,7 +86,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw e;
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginDTO.getIdentify(), userLoginDTO.getAccountType(), e.getMessage());
+                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage());
             throw new ServiceException(
                     ResponseStatusEnum.INVALID_PARAM,
                     "用户名或密码错误");

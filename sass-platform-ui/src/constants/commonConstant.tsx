@@ -31,6 +31,11 @@ export const BASE_LOGIN_URL: string = '/login';
 export const BASE_PORTAL_URL: string = '/portal';
 
 /**
+ * 第三方登录的回调地址
+ */
+export const BASE_REDIRECT_URL: string = '/redirect';
+
+/**
  * 首页
  */
 export const BASE_HOME_URL: string = '/home';

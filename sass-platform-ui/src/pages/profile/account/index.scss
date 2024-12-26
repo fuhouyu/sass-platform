@@ -21,6 +21,24 @@
 .account-left {
   display: flex;
   align-items: center;
+
+  .text-block {
+    display: flex;
+    flex-direction: column; /* 文字垂直排列 */
+    text-align: left; /* 左对齐 */
+  }
+
+  .account-title {
+    font-size: 1rem;
+  }
+
+  .sub-title {
+    font-size: 0.75rem;
+    color: gray;
+  }
+
+
+
 }
 
 .account-icon {

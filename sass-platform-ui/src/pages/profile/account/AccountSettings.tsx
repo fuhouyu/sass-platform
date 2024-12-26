@@ -27,12 +27,12 @@ import {Account, AccountType} from "@/model/account.tsx";
 export const AccountSettings = () => {
 
     const [accounts, setAccounts] = useState<Account[]>([]);
-    const weLinkBind = accounts.some(account => account.accountType === AccountType.WELINK);
+    const weLinkBind = accounts.find(account => account.accountType === AccountType.WELINK);
     const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const getAccounts = async () => {
-            setAccounts(await accountApi.getAccountForme());
+            setAccounts(await accountApi.getAccountForMe());
         }
         getAccounts().then();
     }, []);
@@ -45,7 +45,10 @@ export const AccountSettings = () => {
                         <Flex justify={'space-between'} align={'center'}>
                             <div className={'account-left'}>
                                 <IconFont type={'i-WeLink'} className={'account-icon'}/>
-                                <span>WeLink 账号</span>
+                                <div className={'text-block'}>
+                                    <span className={'account-title'}>WeLink 账号</span>
+                                    {weLinkBind && <span className={'sub-title'}>已绑定：{weLinkBind.account}</span>}
+                                </div>
                             </div>
                             <Button onClick={() => setOpen(true)}
                                     icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
@@ -63,7 +66,7 @@ export const AccountSettings = () => {
                 closable={false}
                 onCancel={() => setOpen(false)}
             >
-                <WeLinkLogin redirectUrl={''}/>
+                <WeLinkLogin redirectType={'bind'}/>
             </Modal>
         </div>
     );
