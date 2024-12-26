@@ -70,4 +70,18 @@ public class AccountController {
         this.accountService.saveThirdPartyAccount(accountIdDTO);
         return ResponseHelper.success();
     }
+
+
+    /**
+     * 第三方账号取消绑定
+     *
+     * @param accountIdDTO 账号id
+     * @return void
+     */
+    @DeleteMapping("/unbind")
+    @Operation(summary = "第三方账号取消绑定")
+    public BaseResponse<Void> unbindThirdPartyAccount(@RequestBody AccountIdDTO accountIdDTO) {
+        this.accountService.removeById(accountIdDTO);
+        return ResponseHelper.success();
+    }
 }

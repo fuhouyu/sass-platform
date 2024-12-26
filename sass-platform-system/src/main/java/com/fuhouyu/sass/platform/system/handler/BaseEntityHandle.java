@@ -70,7 +70,7 @@ public class BaseEntityHandle implements Interceptor {
     @SuppressWarnings("unchecked")
     private void doHandlerParam(Object parameter, SqlCommandType sqlCommandType) {
         if (parameter instanceof List<?> list
-                && list.get(0) instanceof BaseEntity) {
+                && list.getFirst() instanceof BaseEntity) {
             List<? extends BaseEntity> baseDOList = (List<? extends BaseEntity>) parameter;
             this.doHandlerBaseDO(baseDOList, sqlCommandType);
         } else if (parameter instanceof BaseEntity baseDO) {

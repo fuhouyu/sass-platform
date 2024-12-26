@@ -37,6 +37,10 @@ export const AccountSettings = () => {
         getAccounts().then();
     }, []);
 
+    const unbind = async () => {
+        await accountApi.unbindThirdPartyAccount(AccountType.WELINK, weLinkBind!.account);
+    }
+
     return (
         <div className={'account-container'}>
             <Card title="第三方账号绑定" bordered={false}>
@@ -50,7 +54,10 @@ export const AccountSettings = () => {
                                     {weLinkBind && <span className={'sub-title'}>已绑定：{weLinkBind.account}</span>}
                                 </div>
                             </div>
-                            <Button onClick={() => setOpen(true)}
+                            <Button onClick={() =>
+                                weLinkBind ? unbind() :
+                                    setOpen(true)
+                            }
                                     icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
                                 {weLinkBind ? '取消绑定' : '绑定'}
                             </Button>

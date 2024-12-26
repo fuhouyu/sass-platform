@@ -60,4 +60,6 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      * @param accountIdDTO 账号dto对象
      */
     void saveThirdPartyAccount(AccountIdDTO accountIdDTO);
+
+
 }
