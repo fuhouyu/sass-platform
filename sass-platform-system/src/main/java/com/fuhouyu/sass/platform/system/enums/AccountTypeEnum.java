@@ -34,21 +34,21 @@ public enum AccountTypeEnum {
     PASSWORD {
         @Override
         public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
-            return new UsernamePasswordAuthenticationToken(userLoginDTO.getIdentify(), userLoginDTO.getCredentials());
+            return new UsernamePasswordAuthenticationToken(userLoginDTO.getAccount(), userLoginDTO.getCredentials());
         }
     },
 
     REFRESH_TOKEN {
         @Override
         public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
-            return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getIdentify());
+            return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getAccount());
         }
     },
 
     WELINK {
         @Override
         public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
-            return new WeLinkAuthenticationProvider.WeLinkAuthenticationToken(userLoginDTO.getIdentify());
+            return new WeLinkAuthenticationProvider.WeLinkAuthenticationToken(userLoginDTO.getAccount());
         }
     }
     ;

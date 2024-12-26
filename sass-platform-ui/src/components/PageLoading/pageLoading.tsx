@@ -27,10 +27,8 @@ export const PageLoading = () => {
 
     const content = <div style={contentStyle}/>;
     return (
-        <>
-            <Spin delay={1000} tip="页面加载中..." fullscreen={true} size="large" className="page-loading">
-                {content}
-            </Spin>
-        </>
+        <Spin delay={1000} tip="页面加载中..." fullscreen={true} size="large" className="page-loading">
+            {content}
+        </Spin>
     )
 }

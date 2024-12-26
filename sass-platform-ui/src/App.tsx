@@ -25,14 +25,14 @@ import {Menu} from "@/model/menu";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import '@/i18n/index'
 import NotFound from "@/pages/error/notfound";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
+import {BASE_LOGIN_URL, BASE_REDIRECT_URL} from "@/constants/commonConstant";
 
 export const App: React.FC = () => {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
     const pathname = location.pathname;
     useEffect(() => {
-        if (pathname.includes(BASE_LOGIN_URL)) {
+        if (pathname.includes(BASE_LOGIN_URL) || pathname.includes(BASE_REDIRECT_URL)) {
             setLoading(false);
             return;
         }

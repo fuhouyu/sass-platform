@@ -19,15 +19,14 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -58,5 +57,31 @@ public class AccountController {
     @Operation(summary = "获取当前登录用户关联的账号信息")
     public BaseResponse<List<AccountDTO>> getAccountListForMe() {
         return ResponseHelper.success(this.accountService.getAccountListForMe(ContextHolderStrategy.getContext().getUser().getId()));
+    }
+
+    /**
+     * 绑定第三方账号信息
+     *
+     * @return void
+     */
+    @PostMapping("/bind")
+    @Operation(summary = "第三方账号绑定")
+    public BaseResponse<Void> bindThirdPartyAccount(@RequestBody AccountIdDTO accountIdDTO) {
+        this.accountService.saveThirdPartyAccount(accountIdDTO);
+        return ResponseHelper.success();
+    }
+
+
+    /**
+     * 第三方账号取消绑定
+     *
+     * @param accountIdDTO 账号id
+     * @return void
+     */
+    @DeleteMapping("/unbind")
+    @Operation(summary = "第三方账号取消绑定")
+    public BaseResponse<Void> unbindThirdPartyAccount(@RequestBody AccountIdDTO accountIdDTO) {
+        this.accountService.removeById(accountIdDTO);
+        return ResponseHelper.success();
     }
 }

@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.entity.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,5 +53,13 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      * @return 第三方账号信息
      */
     List<AccountDTO> getAccountListForMe(Long userId);
+
+    /**
+     * 绑定第三方账号
+     *
+     * @param accountIdDTO 账号dto对象
+     */
+    void saveThirdPartyAccount(AccountIdDTO accountIdDTO);
+
 
 }

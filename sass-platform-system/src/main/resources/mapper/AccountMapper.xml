@@ -109,10 +109,10 @@
         AND account_type = #{accountType}
     </update>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="deleteById">
         DELETE FROM <include refid="TableName"/>
-        WHERE #{account}
-        AND #{accountType}
+        WHERE account = #{account}
+        AND account_type = #{accountType}
     </delete>
 
     <delete id="deleteByIds" parameterType="java.util.List">

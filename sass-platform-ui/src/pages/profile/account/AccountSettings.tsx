@@ -27,15 +27,19 @@ import {Account, AccountType} from "@/model/account.tsx";
 export const AccountSettings = () => {
 
     const [accounts, setAccounts] = useState<Account[]>([]);
-    const weLinkBind = accounts.some(account => account.accountType === AccountType.WELINK);
+    const weLinkBind = accounts.find(account => account.accountType === AccountType.WELINK);
     const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const getAccounts = async () => {
-            setAccounts(await accountApi.getAccountForme());
+            setAccounts(await accountApi.getAccountForMe());
         }
         getAccounts().then();
     }, []);
+
+    const unbind = async () => {
+        await accountApi.unbindThirdPartyAccount(AccountType.WELINK, weLinkBind!.account);
+    }
 
     return (
         <div className={'account-container'}>
@@ -45,9 +49,15 @@ export const AccountSettings = () => {
                         <Flex justify={'space-between'} align={'center'}>
                             <div className={'account-left'}>
                                 <IconFont type={'i-WeLink'} className={'account-icon'}/>
-                                <span>WeLink 账号</span>
+                                <div className={'text-block'}>
+                                    <span className={'account-title'}>WeLink 账号</span>
+                                    {weLinkBind && <span className={'sub-title'}>已绑定：{weLinkBind.account}</span>}
+                                </div>
                             </div>
-                            <Button onClick={() => setOpen(true)}
+                            <Button onClick={() =>
+                                weLinkBind ? unbind() :
+                                    setOpen(true)
+                            }
                                     icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
                                 {weLinkBind ? '取消绑定' : '绑定'}
                             </Button>
@@ -63,7 +73,7 @@ export const AccountSettings = () => {
                 closable={false}
                 onCancel={() => setOpen(false)}
             >
-                <WeLinkLogin redirectUrl={''}/>
+                <WeLinkLogin redirectType={'bind'}/>
             </Modal>
         </div>
     );

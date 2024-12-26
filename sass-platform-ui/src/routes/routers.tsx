@@ -24,8 +24,15 @@ import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {Profile} from "@/pages/profile/Profile.tsx";
 import Login from "@/pages/login";
-import {BASE_HOME_URL, BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant";
+import {
+    BASE_HOME_URL,
+    BASE_LOGIN_URL,
+    BASE_PORTAL_URL,
+    BASE_REDIRECT_URL,
+    BASE_USER_PROFILE_URL
+} from "@/constants/commonConstant";
 import MainPortal from "@/pages/portal";
+import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
 
 export type RouterType = {
     id: string;
@@ -73,6 +80,13 @@ export const commonRouter: RouterType[] = [
         title: 'portal',
         path: BASE_PORTAL_URL,
         element: <MainPortal/>,
+    },
+    {
+        id: 'redirect',
+        title: 'redirect',
+        path: BASE_REDIRECT_URL,
+        element: <PostThirdPartyRedirect/>,
+
     },
     {
         id: '404',
