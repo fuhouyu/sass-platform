@@ -307,4 +307,21 @@
                 #{id}
             </foreach>
     </update>
+
+    <select id="queryUserPermissionCodeList" resultType="java.lang.String">
+        SELECT p.permission_code
+
+        FROM
+        user_has_role uhr
+        LEFT JOIN roles r ON uhr.role_id = r.id
+        LEFT JOIN role_has_permission uhp ON uhr.role_id = uhp.role_id
+        LEFT JOIN
+        <include refid="TableName"/>
+        p ON p.id = uhp.permission_id
+        WHERE
+        r.owner_tenant_id = #{tenantId}
+        AND uhr.user_id = #{userId}
+        AND r.is_deleted = false
+        AND p.is_deleted = false
+    </select>
 </mapper>

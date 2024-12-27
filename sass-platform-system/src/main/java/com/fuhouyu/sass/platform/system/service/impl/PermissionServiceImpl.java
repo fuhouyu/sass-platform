@@ -31,13 +31,11 @@ import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -175,6 +173,15 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<PermissionDTO> findByIds(Collection<Long> permissionIds) {
         return PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryByIds(permissionIds));
+    }
+
+    @Override
+    public Set<SimpleGrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId) {
+        Set<String> permissionCodeList = this.permissionMapper.queryUserPermissionCodeList(tenantId, userId);
+        if (CollectionUtils.isEmpty(permissionCodeList)) {
+            return Collections.emptySet();
+        }
+        return permissionCodeList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
     /**

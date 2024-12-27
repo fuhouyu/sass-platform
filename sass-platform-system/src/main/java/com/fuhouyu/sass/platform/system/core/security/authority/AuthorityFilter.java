@@ -13,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.config;
-
-import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.fuhouyu.sass.platform.system.core.security.authority;
 
 /**
  * <p>
- * 雪花算法id配置
+ * 权限拦截
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/28 17:41
+ * @since 2024/12/27 21:04
  */
-@Configuration(proxyBeanMethods = false)
-public class SnowIdConfigure {
-
-
-    @Bean
-    public SnowflakeIdWorker snowflakeIdWorker() {
-        return new SnowflakeIdWorker(0, 0);
-    }
+public class AuthorityFilter {
 }
