@@ -20,7 +20,7 @@ import {useCallback, useEffect} from "react";
 import {fetchLogin} from "@/store/modules/user.tsx";
 import {AccountType} from "@/model/account.tsx";
 import {router} from "@/routes/routers.tsx";
-import {BASE_LOGIN_URL, BASE_PORTAL_URL} from "@/constants/commonConstant.tsx";
+import {BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {message, Spin} from "antd";
 import {useAppDispatch} from "@/store";
 import {accountApi} from "@/apis/account.tsx";
@@ -50,6 +50,7 @@ export const PostThirdPartyRedirect = () => {
      */
     const bindAccount = useCallback(async (accountType: string, code: string) => {
         await accountApi.bindThirdPartyAccount(accountType, code);
+        router.navigate(BASE_USER_PROFILE_URL).then();
     }, []);
 
 

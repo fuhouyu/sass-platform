@@ -107,7 +107,8 @@ export const DictItem = () => {
     const initForm: DictItemModel = {
         displayOrder: 1,
         isEnabled: true,
-        ...dictItemQuery
+        ...dictItemQuery,
+        ...params
     }
     const [formInitValues, setFormInitValues] = useState<DictItemModel>(initForm);
 

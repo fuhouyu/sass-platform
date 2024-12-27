@@ -20,6 +20,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -79,4 +80,13 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param parentIdList 父级id集合
      */
     void setLeafByIdList(@Param("parentIdList") Collection<Long> parentIdList);
+
+    /**
+     * 查询租户下当前用户的权限编码
+     *
+     * @param tenantId 租户id
+     * @param userId   用户id
+     * @return 权限编码集合
+     */
+    Set<String> queryUserPermissionCodeList(@Param("tenantId") Long tenantId, @Param("userId") Long userId);
 }

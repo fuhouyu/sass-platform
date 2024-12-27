@@ -191,6 +191,9 @@ const ZhCN = {
         code: '字典项编码',
         codePlaceholder: '请输入字典项编码',
         codeTips: '字典项编码，当前字典类型下唯一'
+    },
+    Profile: {
+        thirtyPartyAccount: '第三方账号绑定',
     }
 }
 

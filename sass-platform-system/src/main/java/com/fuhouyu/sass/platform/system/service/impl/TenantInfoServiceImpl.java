@@ -28,6 +28,7 @@ import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
+import com.fuhouyu.sass.platform.system.service.PermissionService;
 import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     private final TokenStore tokenStore;
+
+    private final PermissionService permissionService;
 
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
@@ -147,9 +150,15 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                 .getRequest()
                 .getAuthorization()
                 .replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
+//        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
+
         Authentication authentication = tokenStore.readAuthentication(userToken);
         UserDTO userDetailsDTO = (UserDTO) authentication.getDetails();
         userDetailsDTO.setTenantId(id);
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//                new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
+//                        authentication.getCredentials(), simpleGrantedAuthorities);
+//        authenticationToken.setDetails(userDetailsDTO);
         this.tokenStore.storeAuth2Token(tokenStore.readAuth2Token(userToken), authentication);
     }
 

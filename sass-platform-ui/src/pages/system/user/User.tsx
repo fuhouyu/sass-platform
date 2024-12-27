@@ -190,7 +190,7 @@ export const User: React.FC = () => {
         <>
             <PageList
                 tableProps={{
-                    tableName: t('User.title'),
+                    tableName: t('User.list'),
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,

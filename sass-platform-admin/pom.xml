@@ -42,6 +42,10 @@
             <groupId>com.fuhouyu</groupId>
             <artifactId>sass-platform-system</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
