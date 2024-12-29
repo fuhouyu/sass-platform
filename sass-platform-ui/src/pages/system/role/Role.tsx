@@ -198,7 +198,7 @@ export const Role: React.FC = () => {
                                 id={'roleCode'}
                                 onChange={(e) => {
                                     setRoleQuery({roleCode: e.target.value})
-                            }}/>
+                                }}/>
                         </>,
                         <>
                             <span>{t('Common.status')}</span>

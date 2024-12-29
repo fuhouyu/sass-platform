@@ -126,8 +126,6 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
     }, [handleLoginCode, openWeLinkQr]);
 
 
-
-
     return (
         <div className={'qrcode-container'}>
             <div className={'qrcode-title'}>

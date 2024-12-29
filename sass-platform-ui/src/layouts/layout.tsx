@@ -28,12 +28,12 @@ export const Layout = () => {
     return (
         initialize ?
             <AntdLayout className="layout-container">
-            <Menu/>
+                <Menu/>
                 <AntdLayout>
-                <Header/>
-                <Content className="layout-content">
-                    <Outlet/>
-                </Content>
+                    <Header/>
+                    <Content className="layout-content">
+                        <Outlet/>
+                    </Content>
                 </AntdLayout>
             </AntdLayout>
             : <PageLoading/>
