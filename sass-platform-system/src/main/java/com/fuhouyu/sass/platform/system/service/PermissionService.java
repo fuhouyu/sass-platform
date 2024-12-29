@@ -18,11 +18,10 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -88,6 +87,6 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @param userId   用户id
      * @return 权限集合
      */
-    Set<SimpleGrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId);
+    Collection<? extends GrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId);
 
 }

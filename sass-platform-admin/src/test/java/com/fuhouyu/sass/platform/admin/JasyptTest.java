@@ -40,10 +40,10 @@ class JasyptTest {
 
     @Test
     void testEncrypt() {
-        String originData = System.getenv("encrypt.string");
-        Assertions.assertNotNull(originData);
-        System.out.println(stringEncryptor.encrypt(originData));
-        ;
-
+        String originDataStrings = System.getenv("encrypt.strings");
+        Assertions.assertNotNull(originDataStrings);
+        for (String originData : originDataStrings.split(",")) {
+            System.out.printf("origin data: %s, encrypt data: %s%n", originData, stringEncryptor.encrypt(originData));
+        }
     }
 }

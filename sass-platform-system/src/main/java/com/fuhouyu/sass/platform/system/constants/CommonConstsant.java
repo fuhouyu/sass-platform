@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.assembler;
+package com.fuhouyu.sass.platform.system.constants;
 
-import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
- * security 转换类
+ * 公共常量
  * </p>
  *
  * @author fuhouyu
- * @since 2024/11/2 21:39
+ * @since 2024/12/28 16:32
  */
-@Mapper(uses = AccountsAssembler.class)
-public interface SecurityUserDetailAssembler {
-
-    SecurityUserDetailAssembler INSTANCE = Mappers.getMapper(SecurityUserDetailAssembler.class);
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class CommonConstsant {
 
     /**
-     * security 用户详情
-     *
-     * @param accountDTO 账号dto对象
-     * @return security 用户详情对象
+     * 用户附加信息权限
      */
-    UserAccountDetails toSecurityUserDetail(AccountDTO accountDTO);
+    public static final String USER_ADDITIONAL_INFORMATION_PERMISIONS = "permissions";
 }

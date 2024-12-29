@@ -15,10 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.dto.account;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,8 +33,9 @@ import java.util.List;
 @Setter
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode
 @RequiredArgsConstructor
-public class UserDetailsDTO implements UserDetails {
+public class UserAccountDetails implements UserDetails {
 
     /**
      * 账号
@@ -47,7 +45,7 @@ public class UserDetailsDTO implements UserDetails {
     /**
      * 凭证
      */
-    private final String credentials;
+    private transient String credentials;
 
     /**
      * 是否启用
@@ -66,16 +64,23 @@ public class UserDetailsDTO implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.getCredentials();
+        return this.credentials;
     }
 
     @Override
     public String getUsername() {
-        return this.getAccount();
+        return this.account;
     }
 
     @Override
     public boolean isEnabled() {
         return this.isEnabled;
+    }
+
+    /**
+     * 擦除密码信息
+     */
+    public void eraseCredentials() {
+        this.credentials = null;
     }
 }

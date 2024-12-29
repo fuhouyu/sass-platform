@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.security.token.OAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
@@ -34,7 +35,9 @@ import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
@@ -150,16 +153,17 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                 .getRequest()
                 .getAuthorization()
                 .replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
-//        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
+        Collection<? extends GrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
 
         Authentication authentication = tokenStore.readAuthentication(userToken);
         UserDTO userDetailsDTO = (UserDTO) authentication.getDetails();
         userDetailsDTO.setTenantId(id);
-//        UsernamePasswordAuthenticationToken authenticationToken =
-//                new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
-//                        authentication.getCredentials(), simpleGrantedAuthorities);
-//        authenticationToken.setDetails(userDetailsDTO);
-        this.tokenStore.storeAuth2Token(tokenStore.readAuth2Token(userToken), authentication);
+
+        OAuth2Token auth2Token = tokenStore.readAuth2Token(userToken);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), simpleGrantedAuthorities);
+        usernamePasswordAuthenticationToken.setDetails(userDetailsDTO);
+        this.tokenStore.storeAuth2Token(auth2Token, usernamePasswordAuthenticationToken);
     }
 
     /**

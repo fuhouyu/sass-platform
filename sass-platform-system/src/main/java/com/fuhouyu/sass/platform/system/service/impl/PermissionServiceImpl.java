@@ -31,6 +31,7 @@ import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -176,7 +177,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Set<SimpleGrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId) {
+    public Collection<? extends GrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId) {
         Set<String> permissionCodeList = this.permissionMapper.queryUserPermissionCodeList(tenantId, userId);
         if (CollectionUtils.isEmpty(permissionCodeList)) {
             return Collections.emptySet();

@@ -28,6 +28,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +61,7 @@ public class DictItemController {
      */
     @PostMapping
     @Operation(summary = "保存字典项")
+    @PreAuthorize("@auth.hasPermission('system:dict:item:save')")
     public BaseResponse<Long> save(@Validated @RequestBody DictItemDTO dictItemDTO) {
         return ResponseHelper.success(this.dictItemService.save(dictItemDTO));
     }
@@ -112,6 +114,7 @@ public class DictItemController {
      */
     @GetMapping("/page")
     @Operation(summary = "字典项分页查询列表")
+    @PreAuthorize("@auth.hasPermission('system:dict:item:list')")
     public BaseResponse<PageResultDTO<DictItemDTO>> pageList(@ParameterObject DictItemPageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.dictItemService.pageList(pageQueryDTO));
     }
