@@ -6,11 +6,9 @@ spring:
       - postgresql
   data:
     redis:
-      password: ENC(xZ2Wj+sKHpJsl2AnKm2klATW28QaI12vG3Tv5uxJSeBY4g1mlkg9t5dTRjKfDw0c)
-      database: 1
-      host: ENC(UUHNPvtHpEfFl+zqZBXI1HXZ26zpQ6c0ZHaYTq+n+BZrQ42diN7FGUDTYksIS8NN)
-      port: 6379
-      connect-timeout: 6s
+      password: ENC(ptfFQ+R/E+A+0cBOV4Yo4V0gna5DP3a/cb1uFdMnV3s7YS71YgJQOcJkJs9QOKQb+qryB460wlpsb5+RtonFZ/yuS6tPE+LgDb5x5b2SxA4=)
+      host: ENC(+B2T5HTJsU1PmufEKq6Ms3IC579/zCKfErGzBotUfLYBeEqx3eU4fQGsPFT0uMeq+MEqLgyBirPo7Sk4Y01SYflKQHYjCylKAJ5rVEMUWHpPZP54iZEiT1HPaO84YDE8)
+      port: 18421
 base:
   framework:
     cache:
