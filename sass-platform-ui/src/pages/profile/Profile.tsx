@@ -37,6 +37,7 @@ interface UserinfoFormInterface {
     value: string;
     disabled: boolean;
 }
+
 /**
  * 个人中心用户详情
  * @constructor 构造函数

@@ -4,12 +4,14 @@
     {
       "path": "./tsconfig.app.json"
     },
-    {
-      "path": "./tsconfig.node.json"
-    }
   ],
   "compilerOptions": {
     "baseUrl": "./",
+    "removeComments": true,
+    // 删除注释
+    "preserveConstEnums": true,
+    // 保留 const 和 enum 声明
+    "sourceMap": true,
     "paths": {
       "@/*": [
         "src/*"

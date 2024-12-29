@@ -76,51 +76,51 @@ export const Login: React.FC = () => {
                         <WeLinkLogin redirectType={'login'}/>
                         :
 
-                    <Form className="login-form"
-                          name="login"
-                          initialValues={{remember: true}}
-                          onFinish={onFinish}
-                    >
-                        <Form.Item
-                            name="identify"
-                            initialValue={'admin'}
-                            rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
+                        <Form className="login-form"
+                              name="login"
+                              initialValues={{remember: true}}
+                              onFinish={onFinish}
                         >
-                            <Input prefix={<IconFont type={'i-zhanghao'}/>}
-                                   placeholder={t('Login.usernamePlaceholder')}/>
-                        </Form.Item>
-                        <Form.Item
-                            name="credentials"
-                            initialValue={'admin'}
-                            rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
-                        >
-                            <Input.Password prefix={<IconFont type={'i-mima'}/>}
+                            <Form.Item
+                                name="identify"
+                                initialValue={'admin'}
+                                rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
+                            >
+                                <Input prefix={<IconFont type={'i-zhanghao'}/>}
+                                       placeholder={t('Login.usernamePlaceholder')}/>
+                            </Form.Item>
+                            <Form.Item
+                                name="credentials"
+                                initialValue={'admin'}
+                                rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
+                            >
+                                <Input.Password prefix={<IconFont type={'i-mima'}/>}
 
-                                   placeholder={t('Login.passwordPlaceholder')}/>
-                        </Form.Item>
+                                                placeholder={t('Login.passwordPlaceholder')}/>
+                            </Form.Item>
 
-                        {/*<Form.Item name="remember" valuePropName="checked">*/}
-                        {/*    <Checkbox>同意用户协议</Checkbox>*/}
-                        {/*</Form.Item>*/}
-                        <Form.Item className={'login-button-container'}>
-                            <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
-                                {t('Login.loginButton')}
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                            {/*<Form.Item name="remember" valuePropName="checked">*/}
+                            {/*    <Checkbox>同意用户协议</Checkbox>*/}
+                            {/*</Form.Item>*/}
+                            <Form.Item className={'login-button-container'}>
+                                <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
+                                    {t('Login.loginButton')}
+                                </Button>
+                            </Form.Item>
+                        </Form>
                 }
                 <Divider className='other-login-divider'>
                     <p>{t('Login.otherLogin')}</p>
                 </Divider>
                 <div className='other-login-methods'>
                     {weLinkQr ? <Button icon={<IconFont type="i-zhanghao"/>}
-                                         color="default"
-                                         variant="link"
-                                         className='other-login-method'
-                                         onClick={() => {
-                                             setWeLinkQr(false);
-                                             setLoginTitle('usernamePasswordLoginTitle');
-                                         }}>
+                                        color="default"
+                                        variant="link"
+                                        className='other-login-method'
+                                        onClick={() => {
+                                            setWeLinkQr(false);
+                                            setLoginTitle('usernamePasswordLoginTitle');
+                                        }}>
                             <p>{t('Login.usernamePasswordLogin')}</p>
                         </Button> :
                         <Button icon={<IconFont type="i-WeLink"/>}
