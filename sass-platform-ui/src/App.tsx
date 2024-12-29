@@ -15,46 +15,17 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {RouterProvider} from "react-router-dom";
-import {parseRouters, router} from "@/routes/routers";
-import {getAccessToken} from "@/utils";
-import {useAppDispatch} from "@/store";
-import {fetchUserMenus} from "@/store/modules/user";
-import {Menu} from "@/model/menu";
+import {router} from "@/routes/routers";
 import {PageLoading} from "@components/PageLoading/pageLoading";
 import '@/i18n/index'
-import NotFound from "@/pages/error/notfound";
-import {BASE_LOGIN_URL, BASE_REDIRECT_URL} from "@/constants/commonConstant";
+import {useRoutes} from "@/hooks/useRoutes.tsx";
 
 export const App: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(true);
-    const pathname = location.pathname;
-    useEffect(() => {
-        if (pathname.includes(BASE_LOGIN_URL) || pathname.includes(BASE_REDIRECT_URL)) {
-            setLoading(false);
-            return;
-        }
-        const accessToken = getAccessToken();
-        if (!accessToken) {
-            router.navigate(BASE_LOGIN_URL, {state: {from: router.state.location.pathname}}).then()
-            setLoading(false);
-            return;
-        }
-        dispatch(fetchUserMenus())
-            .then((userMenus: Menu[]) => {
-                setLoading(false);
-                router.routes[0]?.children!.push(...parseRouters(userMenus))
-            });
-    }, [dispatch])
-    if (loading) {
-        return <PageLoading/>
+    const initialize = useRoutes();
+    if (!initialize) {
+        return <PageLoading/>;
     }
-    return (
-        <RouterProvider
-            fallbackElement={<NotFound/>}
-            router={router}/>
-
-    );
-}
+    return <RouterProvider router={router} fallbackElement={<PageLoading/>}/>;
+};

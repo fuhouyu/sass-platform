@@ -17,28 +17,28 @@
 
 import {ReactNode, useCallback} from "react";
 import {IconFont} from "@/components";
-import {MenuProps, TreeDataNode} from "antd";
-import {Menu} from "@/model/menu";
+import {MenuProps as AntdMenuProps, TreeDataNode} from "antd";
+import {Menu, MenuType} from "@/model/menu";
 import {useTranslation} from "react-i18next";
 
-export type MenuType = Required<MenuProps>['items'][number];
+export type MenuProps = Required<AntdMenuProps>['items'][number];
 
 export type MenuTreeType = {
     id?: string | undefined;
     key: string;
     children?: MenuTreeType[] | undefined | null;
     icon?: ReactNode
-} & (MenuType | TreeDataNode);
+} & (MenuProps | TreeDataNode);
 
-export function useMenuTree(menus: Menu[]): MenuTreeType[] {
+export function useMenuTree(menus: Menu[], excludeType?: MenuType[]): MenuTreeType[] {
     const {t} = useTranslation();
     const convertMenuItem = useCallback((permissionInterfaces: Menu[]): (MenuTreeType[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
         }
-        return permissionInterfaces?.map((item: Menu) => {
-            if (!item.isVisible) {
-                return
+        const menus = permissionInterfaces?.map((item: Menu) => {
+            if (!item.isVisible || excludeType?.includes(item.permissionType!)) {
+                return undefined;
             }
             return {
                 id: item.id,
@@ -49,8 +49,9 @@ export function useMenuTree(menus: Menu[]): MenuTreeType[] {
                     <IconFont type={item.icon} style={{fontSize: '1rem'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined
             };
-        }).filter(Boolean) as MenuTreeType[]
-    }, [t])
+        }).filter(Boolean) as MenuTreeType[];
+        return menus.length > 0 ? menus : null;
+    }, [excludeType, t])
 
 
     return convertMenuItem(menus) ?? [];
