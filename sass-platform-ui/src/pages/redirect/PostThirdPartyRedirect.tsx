@@ -58,6 +58,11 @@ export const PostThirdPartyRedirect = () => {
         const redirectType = searchParams.get('redirectType');
         const code = searchParams.get('code')!;
         const accountType = searchParams.get('accountType')!;
+        if (!code || !accountType) {
+            message.error('参数错误').then();
+            router.navigate(BASE_LOGIN_URL).then();
+            return;
+        }
         if (redirectType == 'bind') {
             bindAccount(accountType, code).then(() => {
                 message.success('绑定成功').then();

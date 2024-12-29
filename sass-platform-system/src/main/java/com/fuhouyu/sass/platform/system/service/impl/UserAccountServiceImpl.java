@@ -23,7 +23,7 @@ import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.account.UserDetailsDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
@@ -91,13 +91,14 @@ public class UserAccountServiceImpl implements UserAccountService {
                     ResponseStatusEnum.INVALID_PARAM,
                     "用户名或密码错误");
         }
-        UserDetailsDTO userDetailsDTO = (UserDetailsDTO) authentication.getPrincipal();
+        UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
+        userAccountDetails.eraseCredentials();
         if (Objects.isNull(authentication.getDetails())) {
             ((UsernamePasswordAuthenticationToken) authentication)
-                    .setDetails(this.userService.findById(userDetailsDTO.getUserId()));
+                    .setDetails(this.userService.findById(userAccountDetails.getUserId()));
         }
         UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
-        this.userService.recordLoginSuccess(userDetailsDTO.getUserId());
+        this.userService.recordLoginSuccess(userAccountDetails.getUserId());
         return userTokenDTO;
     }
 

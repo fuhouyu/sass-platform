@@ -53,8 +53,28 @@ const generateRandomChars = () => {
 
 export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
     const state: string = generateRandomChars();
-
     const {t} = useTranslation();
+
+    /**
+     * 重定向到指定链接
+     * @param code code
+     */
+    const redirectWithCode = useCallback((code: string) => {
+        const serverUrl = "https://login.welink.huaweicloud.com/sso/oauth2/sns_authorize"
+        const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
+        const response_type = "code";
+        const scope = "snsapi_login";
+        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + `?redirectType=${redirectType}` + "&accountType=WELINK");
+
+        window.location.href = serverUrl + "?"
+            + "client_id" + "=" + client_id + "&"
+            + "response_type" + "=" + response_type + "&"
+            + "scope" + "=" + scope + "&"
+            + "state" + "=" + "234kki55o4k4i4i" + "&"
+            + "redirect_uri" + "=" + redirect_uri + "&"
+            + "code" + "=" + code;
+    }, [redirectType]);
+
     /**
      * 处理扫码事件
      * @param event 事件
@@ -67,7 +87,7 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
             console.log("loginCode", loginCode);
             redirectWithCode(loginCode);
         }
-    }, []);
+    }, [redirectWithCode]);
 
     const openWeLinkQr = useCallback(() => {
         const script = document.createElement("script");
@@ -106,25 +126,6 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
     }, [handleLoginCode, openWeLinkQr]);
 
 
-    /**
-     * 重定向到指定链接
-     * @param code code
-     */
-    const redirectWithCode = (code: string) => {
-        const serverUrl = "https://login.welink.huaweicloud.com/sso/oauth2/sns_authorize"
-        const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
-        const response_type = "code";
-        const scope = "snsapi_login";
-        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + `?redirectType=${redirectType}` + "&accountType=WELINK");
-
-        window.location.href = serverUrl + "?"
-            + "client_id" + "=" + client_id + "&"
-            + "response_type" + "=" + response_type + "&"
-            + "scope" + "=" + scope + "&"
-            + "state" + "=" + "234kki55o4k4i4i" + "&"
-            + "redirect_uri" + "=" + redirect_uri + "&"
-            + "code" + "=" + code;
-    }
 
 
     return (

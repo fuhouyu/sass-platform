@@ -18,11 +18,11 @@
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu as _Menu} from 'antd';
 import {useState} from "react";
-import {MenuType, useMenuTree} from "@/hooks/useMenuTree";
+import {MenuProps, useMenuTree} from "@/hooks/useMenuTree";
 import {useNavigate} from "react-router-dom";
 import './index.scss'
 import {useAppSelector} from "@/store";
-import {Menu as UserMenus} from "@/model/menu";
+import {Menu as UserMenus, MenuType} from "@/model/menu";
 import {IconFont} from "@/components";
 import {useTranslation} from "react-i18next";
 
@@ -36,7 +36,7 @@ export const Menu = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const {t} = useTranslation();
 
-    const commonMenus: MenuType[] = [
+    const commonMenus: MenuProps[] = [
         {
             key: 'home',
             title: t('Menu.home'),
@@ -48,7 +48,7 @@ export const Menu = () => {
 
     const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
 
-    const menuItems: MenuType[] = useMenuTree(userMenus) as MenuType[]
+    const menuItems: MenuProps[] = useMenuTree(userMenus, [MenuType.BUTTON]) as MenuProps[]
     menuItems.unshift(...commonMenus);
 
     // 点击菜单时进行跳转

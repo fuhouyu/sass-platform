@@ -20,9 +20,7 @@ import {useTranslation} from "react-i18next";
 import {useState} from "react";
 import {tenantApi} from "@/apis/tenant";
 import {useLocation} from "react-router-dom";
-import {parseRouters, router} from "@/routes/routers";
-import {fetchUserMenus} from "@/store/modules/user";
-import {useAppDispatch} from "@/store";
+import {router} from "@/routes/routers";
 
 /**
  * 门户页
@@ -33,7 +31,6 @@ export const MainPortal = () => {
     const {t} = useTranslation();
     const [chooseTenant, setChooseTenant] = useState<string>();
     const location = useLocation();
-    const dispatch = useAppDispatch();
     const confirm = async () => {
         if (!chooseTenant) {
             return
@@ -41,7 +38,6 @@ export const MainPortal = () => {
         await tenantApi.switchTenant(chooseTenant);
         const fromRouter = location.state?.from;
         const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
-        router.routes[0]?.children!.push(...parseRouters(await dispatch(fetchUserMenus())))
         router.navigate(from).then()
     }
 

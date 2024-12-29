@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.assembler;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.account.UserDetailsDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -39,5 +39,5 @@ public interface SecurityUserDetailAssembler {
      * @param accountDTO 账号dto对象
      * @return security 用户详情对象
      */
-    UserDetailsDTO toSecurityUserDetail(AccountDTO accountDTO);
+    UserAccountDetails toSecurityUserDetail(AccountDTO accountDTO);
 }

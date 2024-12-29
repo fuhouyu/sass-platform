@@ -17,6 +17,11 @@
 
 import {BaseModel} from "@/model/base";
 
+export enum MenuType {
+    DIR = 'DIR',
+    MENU = "MENU",
+    BUTTON = "BUTTON",
+}
 
 export interface Menu extends BaseModel {
     /**
@@ -62,7 +67,7 @@ export interface Menu extends BaseModel {
     /**
      * 权限类型
      */
-    permissionType?: string;
+    permissionType?: MenuType;
     /**
      * 权限名称
      */

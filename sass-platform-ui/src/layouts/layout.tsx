@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-import {Layout as CustomLayout} from "antd";
+import {Layout as AntdLayout} from "antd";
 import {Content} from "antd/es/layout/layout";
 import {Outlet} from "react-router-dom";
 import {Menu} from "@/layouts/menu/menu";
 import {Header} from "@/layouts/header/header";
 import './index.scss'
-import withAuth from "@components/Auth/withAuth";
+import {useRoutes} from "@/hooks/useRoutes.tsx";
+import {PageLoading} from "@/components";
 
-export const Layout = withAuth(() => {
+export const Layout = () => {
+    const initialize = useRoutes();
     return (
-        <CustomLayout className="layout-container">
+        initialize ?
+            <AntdLayout className="layout-container">
             <Menu/>
-            <CustomLayout>
+                <AntdLayout>
                 <Header/>
                 <Content className="layout-content">
                     <Outlet/>
                 </Content>
-            </CustomLayout>
-        </CustomLayout>
+                </AntdLayout>
+            </AntdLayout>
+            : <PageLoading/>
     )
-})
+}

@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.constants;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-import React from 'react';
-import useAuth from "@/hooks/useAuth";
-import Login from "@/pages/login";
+/**
+ * <p>
+ * 公共常量
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/28 16:32
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class CommonConstsant {
 
-// 使用具名函数组件来创建高阶组件
-const withAuth = (WrappedComponent: React.FC): React.FC => {
-    // 具名函数组件
-    const AuthenticatedComponent: React.FC = () => {
-        const isAuth = useAuth();
-        if (isAuth) {
-            return <WrappedComponent/>;
-        } else {
-            return <Login/>;
-        }
-    };
-
-// 使用 React.memo 包裹以优化性能
-    return React.memo(AuthenticatedComponent);
-};
-
-export default withAuth;
+    /**
+     * 用户附加信息权限
+     */
+    public static final String USER_ADDITIONAL_INFORMATION_PERMISIONS = "permissions";
+}

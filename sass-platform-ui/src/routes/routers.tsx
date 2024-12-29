@@ -16,11 +16,9 @@
 
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
-import React, {lazy, Suspense} from "react";
+import React from "react";
 import {Layout} from "@/layouts/layout";
 import {NotFound} from "@/pages/error/notfound/NotFound";
-import {Menu} from "@/model/menu";
-import {PageLoading} from "@components/PageLoading/pageLoading";
 import {Home} from "@/pages/home/Home";
 import {Profile} from "@/pages/profile/Profile.tsx";
 import Login from "@/pages/login";
@@ -33,14 +31,17 @@ import {
 } from "@/constants/commonConstant";
 import MainPortal from "@/pages/portal";
 import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
+import {LoaderFunction} from "@remix-run/router/utils.ts";
+import {getAccessToken} from "@/utils";
 
 export type RouterType = {
     id: string;
     title: string,
     path: string,
-    element?: React.ReactNode | null | undefined,
+    element: React.ReactNode | null | undefined,
     component?: React.ReactNode,
     children?: RouterType[];
+    loader?: LoaderFunction | boolean;
 }
 
 
@@ -51,9 +52,16 @@ export const commonRouter: RouterType[] = [
 
     {
         id: 'layout',
-        title: 'home',
+        title: 'dashboard',
         path: '/',
         element: <Layout/>,
+        loader: async () => {
+            const accessToken = getAccessToken();
+            if (!accessToken) {
+                throw new Response(null, {status: 302, headers: {Location: "/login"}});
+            }
+            return true;
+        },
         children: [
             {
                 id: 'home',
@@ -92,42 +100,9 @@ export const commonRouter: RouterType[] = [
         id: '404',
         title: '404',
         path: '/*',
-        component: <NotFound/>,
+        element: <NotFound/>,
     }
 
 ]
 export const router: Router = createBrowserRouter(commonRouter);
 
-
-const modules = import.meta.glob('../pages/**/index.tsx');
-
-
-const lazyElement = (path: string) => {
-    const module = modules[`../pages/${path}/index.tsx`];
-    if (!module) {
-        return (<NotFound/>);
-    }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const Component = lazy(module);
-    return (
-        <Suspense fallback={<PageLoading/>}>
-            <Component/>
-        </Suspense>
-    );
-};
-export const parseRouters = (menuProps: Menu[]): RouterType[] => {
-
-    if (menuProps === undefined || menuProps.length === 0) {
-        return [];
-    }
-    return menuProps.map((item) => {
-        return {
-            id: item.id!,
-            title: item.permissionName ?? '',
-            path: item.routePath ?? '',
-            children: item.children ? parseRouters(item.children) : [],
-            element: item.componentPath && lazyElement(item.componentPath),
-        }
-    })
-}

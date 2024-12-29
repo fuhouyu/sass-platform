@@ -36,6 +36,8 @@ import org.springframework.web.method.HandlerMethod;
 
 import java.util.Objects;
 
+import static com.fuhouyu.sass.platform.system.constants.CommonConstsant.USER_ADDITIONAL_INFORMATION_PERMISIONS;
+
 /**
  * <p>
  * 认证过滤器
@@ -71,8 +73,10 @@ public class AuthFilter implements ParseHttpRequest {
         if (Objects.isNull(authentication)) {
             throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
         }
-        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
+        UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
+        userEntity.putAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISIONS, authentication.getAuthorities());
+        return userEntity;
     }
 
 
