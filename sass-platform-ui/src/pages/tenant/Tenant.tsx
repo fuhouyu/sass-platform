@@ -30,6 +30,7 @@ import {Userinfo} from "@/model/user";
 import {useTranslation} from "react-i18next";
 import {Role as RoleModel} from "@/model/role";
 import {permissionApi} from "@/apis/permission";
+import {useButton} from "@/hooks/useButton.tsx";
 
 /**
  * 租户组件
@@ -111,7 +112,7 @@ export const Tenant: React.FC = () => {
     const [formInitValues, setFormInitValues] = useState<TenantInfo>(initForm);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-
+    const buttonPermissions = useButton('tenant:list');
 
     /**
      * 分页查询
