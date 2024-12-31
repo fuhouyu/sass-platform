@@ -17,7 +17,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, TableColumnsType} from "antd";
-import {IconFont, PageList} from "@/components";
+import {IconFont, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
@@ -26,9 +26,11 @@ import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
+import {useButton} from "@/hooks/useButton.tsx";
+import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
 
 export const User: React.FC = () => {
-
+    const buttonPermissions = useButton(UserPermissionConstant.List);
     const {t} = useTranslation();
     const columns: TableColumnsType = [
         {
@@ -82,7 +84,11 @@ export const User: React.FC = () => {
             title: '操作',
             dataIndex: 'action',
             render: (_, record: Userinfo) => {
-                return (<EditButton onClick={() => openModal(record.id)}/>)
+                return (
+                    <PermissionButton permissionStr={UserPermissionConstant.EDIT} buttonPermissions={buttonPermissions}>
+                        <EditButton onClick={() => openModal(record.id)}/>
+                    </PermissionButton>
+                )
             }
         }
     ];
@@ -197,11 +203,18 @@ export const User: React.FC = () => {
                     rowSelection: rowSelection,
                     components: [
                         <>
-                            <AddButton onClick={() => openModal()}/>
-                            <DeleteButton onClick={async () => {
-                                userApi.deleteInfoApi(rowKeys as string[]).then();
-                                await pageRequest()
-                            }}/>
+                            <PermissionButton permissionStr={UserPermissionConstant.ADD}
+                                              buttonPermissions={buttonPermissions}>
+                                <AddButton onClick={() => openModal()}/>
+                            </PermissionButton>
+                            <PermissionButton permissionStr={UserPermissionConstant.DELETE}
+                                              buttonPermissions={buttonPermissions}>
+                                <DeleteButton onClick={async () => {
+                                    userApi.deleteInfoApi(rowKeys as string[]).then();
+                                    await pageRequest()
+                                }}/>
+                            </PermissionButton>
+
                         </>
                     ]
                 }}

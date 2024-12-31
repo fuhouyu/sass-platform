@@ -23,12 +23,14 @@ import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
-import {IconFont, PageList} from "@/components";
+import {IconFont, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
 import {DictType} from "@/model/dictType";
 import {dictTypeApi} from "@/apis/dictType";
 import {useParams} from "react-router-dom";
+import {useButton} from '@/hooks/useButton';
+import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
 
 /**
  * 字典项
@@ -37,6 +39,7 @@ import {useParams} from "react-router-dom";
 export const DictItem = () => {
 
     const {t} = useTranslation();
+    const buttonPermissions = useButton(DictItemPermissionConstant.List);
     const columns: TableColumnsType = [
         {
             title: t('DictItem.name'),
@@ -90,7 +93,11 @@ export const DictItem = () => {
             dataIndex: 'action',
             align: "center",
             render: (_, record: DictItemModel) => {
-                return <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                return <PermissionButton permissionStr={DictItemPermissionConstant.EDIT}
+                                         buttonPermissions={buttonPermissions}>
+                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                </PermissionButton>
+
             }
         }
     ];
@@ -199,11 +206,19 @@ export const DictItem = () => {
                     rowSelection: rowSelection,
                     components: [
                         <>
-                            <AddButton onClick={() => openModal()}/>
-                            <DeleteButton onClick={async () => {
-                                await dictItemApi.deleteInfoApi(rowKeys as string[]);
-                                await pageRequest();
-                            }}/>
+                            <PermissionButton permissionStr={DictItemPermissionConstant.ADD}
+                                              buttonPermissions={buttonPermissions}>
+                                <AddButton onClick={() => openModal()}/>
+                            </PermissionButton>
+
+                            <PermissionButton permissionStr={DictItemPermissionConstant.DELETE}
+                                              buttonPermissions={buttonPermissions}>
+                                <DeleteButton onClick={async () => {
+                                    await dictItemApi.deleteInfoApi(rowKeys as string[]);
+                                    await pageRequest();
+                                }}/>
+                            </PermissionButton>
+
                         </>
                     ]
                 }}

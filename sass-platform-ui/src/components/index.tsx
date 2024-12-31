@@ -15,6 +15,7 @@
  */
 
 import {Bread} from "./Bread/bread";
+import {PermissionButton} from "./Button/permissionButton";
 import {FormTree} from "./FormTree/formTree";
 import {IconFont} from "./Iconfont/iconfont";
 import {PageList, SearchHeader, Table} from "./List";
@@ -29,5 +30,6 @@ export {
     Bread,
     PageLoading,
     FormTree,
-    WeLinkLogin
+    WeLinkLogin,
+    PermissionButton
 }

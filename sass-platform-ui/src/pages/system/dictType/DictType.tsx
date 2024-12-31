@@ -22,11 +22,13 @@ import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButt
 import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {IconFont, PageList} from "@/components";
+import {IconFont, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
 import TextArea from "antd/es/input/TextArea";
 import {Menu} from "@/model/menu";
 import {Link} from "react-router-dom";
+import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useButton} from "@/hooks/useButton.tsx";
 
 /**
  * 字典类型
@@ -35,6 +37,7 @@ import {Link} from "react-router-dom";
 export const DictType = () => {
 
     const {t} = useTranslation();
+    const buttonPermissions = useButton(DictTypePermissionConstant.List);
     const initForm: DictTypeModel = {
         displayOrder: 1,
         isEnabled: true,
@@ -96,7 +99,10 @@ export const DictType = () => {
             align: "center",
             render: (_, record: DictTypeModel) => {
                 return (<>
-                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                    <PermissionButton permissionStr={DictTypePermissionConstant.EDIT}
+                                      buttonPermissions={buttonPermissions}>
+                        <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                    </PermissionButton>
                 </>)
             }
         }
@@ -187,11 +193,17 @@ export const DictType = () => {
                     rowSelection: rowSelection,
                     components: [
                         <>
-                            <AddButton onClick={() => openModal()}/>
-                            <DeleteButton onClick={async () => {
-                                await dictTypeApi.deleteInfoApi(rowKeys as string[]);
-                                await pageRequest();
-                            }}/>
+                            <PermissionButton permissionStr={DictTypePermissionConstant.ADD}
+                                              buttonPermissions={buttonPermissions}>
+                                <AddButton onClick={() => openModal()}/>
+                            </PermissionButton>
+                            <PermissionButton permissionStr={DictTypePermissionConstant.DELETE}
+                                              buttonPermissions={buttonPermissions}>
+                                <DeleteButton onClick={async () => {
+                                    await dictTypeApi.deleteInfoApi(rowKeys as string[]);
+                                    await pageRequest();
+                                }}/>
+                            </PermissionButton>
                         </>
                     ]
                 }}

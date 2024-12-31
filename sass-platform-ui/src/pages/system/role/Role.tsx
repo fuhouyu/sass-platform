@@ -21,14 +21,17 @@ import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {FormTree, IconFont, PageList} from "@/components";
+import {FormTree, IconFont, PageList, PermissionButton} from "@/components";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import {useTranslation} from "react-i18next";
 import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
+import {useButton} from "@/hooks/useButton.tsx";
+import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
+    const buttonPermissions = useButton(RolePermissionConstant.List);
     const initForm: RoleModel = {
         displayOrder: 1,
         isEnabled: true,
@@ -87,7 +90,11 @@ export const Role: React.FC = () => {
             dataIndex: 'action',
             align: "center",
             render: (_, record: RoleModel) => {
-                return (<EditButton onClick={() => openModal(record.id)}/>)
+                return (
+                    <PermissionButton permissionStr={RolePermissionConstant.EDIT} buttonPermissions={buttonPermissions}>
+                        <EditButton onClick={() => openModal(record.id)}/>
+                    </PermissionButton>
+                )
             }
         }
     ];
@@ -181,11 +188,17 @@ export const Role: React.FC = () => {
                     rowSelection: rowSelection,
                     components: [
                         <>
-                            <AddButton onClick={() => openModal()}/>
-                            <DeleteButton onClick={async () => {
-                                await roleApi.deleteInfoApi(rowKeys as string[]);
-                                await pageRequest();
-                            }}/>
+                            <PermissionButton permissionStr={RolePermissionConstant.ADD}
+                                              buttonPermissions={buttonPermissions}>
+                                <AddButton onClick={() => openModal()}/>
+                            </PermissionButton>
+                            <PermissionButton permissionStr={RolePermissionConstant.DELETE}
+                                              buttonPermissions={buttonPermissions}>
+                                <DeleteButton onClick={async () => {
+                                    await roleApi.deleteInfoApi(rowKeys as string[]);
+                                    await pageRequest();
+                                }}/>
+                            </PermissionButton>
                         </>
                     ]
                 }}
@@ -363,11 +376,23 @@ export const Role: React.FC = () => {
                             formTreeProps={{
                                 fieldNames: {key: 'id'},
                                 checkedKeys: permissionIds,
-                                onCheck: (key) => setPermissionIds(key as React.Key[]),
+                                onCheck: (checked: {
+                                    checked: Key[];
+                                    halfChecked: Key[];
+                                } | Key[]) => {
+                                    if (checked instanceof Array) {
+                                        setPermissionIds(checked as React.Key[]);
+                                        return
+                                    }
+                                    setPermissionIds(checked.checked);
+                                },
                                 titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
                                 treeData: treeSelectData,
                             }}
-                            onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
+                            onSelectedAll={(ids: string[]) => {
+                                console.log(ids);
+                                setPermissionIds(ids);
+                            }}
                         />
                     </Form.Item>
 
