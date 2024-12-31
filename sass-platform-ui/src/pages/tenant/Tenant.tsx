@@ -15,10 +15,10 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React, {Key, useEffect, useState} from "react";
 import {Button, Form, Input, message, Modal, Radio, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {FormTree, IconFont, PageList} from "@/components";
+import {FormTree, IconFont, PageList, PermissionButton} from "@/components";
 import {Menu} from "@/model/menu";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'
@@ -31,12 +31,14 @@ import {useTranslation} from "react-i18next";
 import {Role as RoleModel} from "@/model/role";
 import {permissionApi} from "@/apis/permission";
 import {useButton} from "@/hooks/useButton.tsx";
+import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 
 /**
  * 租户组件
  * @constructor
  */
 export const Tenant: React.FC = () => {
+    const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
     const columns: TableColumnsType = [
         {
@@ -93,7 +95,11 @@ export const Tenant: React.FC = () => {
             align: "center",
             render: (_, record: RoleModel) => {
                 return (<>
-                    <EditButton onClick={() => openModal(record.id)}/>
+                    <PermissionButton buttonPermissions={buttonPermissions}
+                                      permissionStr={TenantPermissionConstant.EDIT}>
+                        <EditButton onClick={() => openModal(record.id)}/>
+                    </PermissionButton>
+
                 </>)
             }
         }
@@ -112,7 +118,7 @@ export const Tenant: React.FC = () => {
     const [formInitValues, setFormInitValues] = useState<TenantInfo>(initForm);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-    const buttonPermissions = useButton('tenant:list');
+
 
     /**
      * 分页查询
@@ -206,11 +212,17 @@ export const Tenant: React.FC = () => {
                 rowSelection: rowSelection,
                 components: [
                     <>
-                        <AddButton onClick={() => openModal()}/>
-                        <DeleteButton onClick={async () => {
-                            tenantApi.deleteInfoApi(rowKeys as string[]).then();
-                            await pageRequest();
-                        }}/>
+                        <PermissionButton buttonPermissions={buttonPermissions}
+                                          permissionStr={TenantPermissionConstant.ADD}>
+                            <AddButton onClick={() => openModal()}/>
+                        </PermissionButton>
+                        <PermissionButton buttonPermissions={buttonPermissions}
+                                          permissionStr={TenantPermissionConstant.DELETE}>
+                            <DeleteButton onClick={async () => {
+                                tenantApi.deleteInfoApi(rowKeys as string[]).then();
+                                await pageRequest();
+                            }}/>
+                        </PermissionButton>
                     </>
                 ]
             }}
@@ -301,7 +313,16 @@ export const Tenant: React.FC = () => {
                         formTreeProps={{
                             fieldNames: {key: 'id'},
                             checkedKeys: permissionIds,
-                            onCheck: (key) => setPermissionIds(key as React.Key[]),
+                            onCheck: (checked: {
+                                checked: Key[];
+                                halfChecked: Key[];
+                            } | Key[]) => {
+                                if (checked instanceof Array) {
+                                    setPermissionIds(checked as React.Key[]);
+                                    return
+                                }
+                                setPermissionIds(checked.checked);
+                            },
                             titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
                             treeData: treeSelectData,
                         }}

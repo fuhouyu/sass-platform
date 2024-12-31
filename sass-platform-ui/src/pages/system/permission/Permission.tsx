@@ -36,11 +36,13 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {IconFont, SearchHeader, Table} from "@/components";
+import {IconFont, PermissionButton, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {AnyObject} from "antd/es/_util/type";
+import {PermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useButton} from "@/hooks/useButton";
 
 /**
  * 设置树数据
@@ -83,6 +85,7 @@ export const Permission: React.FC = () => {
     });
 
     const {t} = useTranslation();
+    const buttonPermissions = useButton(PermissionConstant.List);
     const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
     const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
@@ -126,7 +129,9 @@ export const Permission: React.FC = () => {
             dataIndex: 'action',
             render: (_: AnyObject, record: Menu) => {
                 return (<>
-                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                    <PermissionButton buttonPermissions={buttonPermissions} permissionStr={PermissionConstant.EDIT}>
+                        <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                    </PermissionButton>
                 </>)
             }
         }
@@ -317,12 +322,18 @@ export const Permission: React.FC = () => {
                         pageData={pageData}
                         components={[
                             <>
-                                <AddButton onClick={() => openModal()}/>
-                                <DeleteButton onClick={async () => {
-                                    permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                    setPageQuery({...pageQuery});
-                                    await permissionTreeSelect();
-                                }}/>
+                                <PermissionButton buttonPermissions={buttonPermissions}
+                                                  permissionStr={PermissionConstant.ADD}>
+                                    <AddButton onClick={() => openModal()}/>
+                                </PermissionButton>
+                                <PermissionButton buttonPermissions={buttonPermissions}
+                                                  permissionStr={PermissionConstant.DELETE}>
+                                    <DeleteButton onClick={async () => {
+                                        permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                        setPageQuery({...pageQuery});
+                                        await permissionTreeSelect();
+                                    }}/>
+                                </PermissionButton>
                             </>
                         ]}
                     />

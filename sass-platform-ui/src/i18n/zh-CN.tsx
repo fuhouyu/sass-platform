@@ -88,6 +88,10 @@ const ZhCN = {
     Menu: {
         main: '权限列表',
         home: '主页',
+        detail: '详情',
+        add: '新增',
+        edit: '修改',
+        delete: '删除',
         systemManage: '系统管理',
         tenantManage: '租户管理',
         userManage: '用户管理',

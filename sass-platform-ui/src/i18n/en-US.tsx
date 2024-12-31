@@ -54,7 +54,6 @@ const EnUS = {
     Login: {
         loginTitlePrefix: '',
         loginTitleSuffix: 'Login',
-
         usernamePlaceholder: 'Please enter your username',
         usernameEmptyMessage: 'Please enter your username!',
         passwordPlaceholder: 'Please enter your password',
@@ -72,6 +71,10 @@ const EnUS = {
     Menu: {
         main: 'Permission List',
         home: 'Home',
+        detail: 'Detail',
+        add: 'Add',
+        edit: 'Edit',
+        delete: 'Delete',
         systemManage: 'System Manage',
         tenantManage: 'Tenant Manage',
         userManage: 'User Manage',

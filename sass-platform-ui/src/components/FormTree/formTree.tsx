@@ -101,6 +101,7 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
             <Tree<T>
                 className="menu-tree"
                 checkable
+                checkStrictly
                 blockNode={true}
                 expandedKeys={expandedKeys}
                 onExpand={(expandedKeysValue: Key[]) => {
