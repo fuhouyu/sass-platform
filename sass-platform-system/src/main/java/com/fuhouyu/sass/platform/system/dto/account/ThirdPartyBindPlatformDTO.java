@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.user;
+package com.fuhouyu.sass.platform.system.dto.account;
 
-import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,26 +25,23 @@ import java.io.Serial;
 
 /**
  * <p>
- * 用户登录操作
+ * 第三方账号绑定的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/4 22:00
+ * @since 2025/1/1 19:57
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Schema(name = "UserLoginDTO", description = "用户登录的dto对象")
-public class UserLoginDTO extends AccountIdDTO {
+@Schema(name = "ThirdPartyBindPlatformDTO", description = "第三方平台绑定的dto对象")
+public class ThirdPartyBindPlatformDTO extends UserLoginDTO {
 
     @Serial
-    private static final long serialVersionUID = 23908102938012983L;
+    private static final long serialVersionUID = 4123545123215612351L;
 
-    /**
-     * 凭证
-     */
-    @Schema(name = "credentials", description = """
-            登录凭证
-            """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String credentials;
+
+    @Schema(name = "temporaryToken", description = "临时token")
+    @NotEmpty(message = "临时token未填写")
+    private String temporaryToken;
 
 }

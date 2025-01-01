@@ -42,10 +42,10 @@ public class UserTokenDTO implements Serializable {
     private static final long serialVersionUID = 1864123128912356412L;
 
     @Schema(name = "accessTokenExpireSeconds", description = "认证令牌签发时长，单位：秒", requiredMode = Schema.RequiredMode.REQUIRED)
-    private long accessTokenExpireSeconds;
+    private Long accessTokenExpireSeconds;
 
     @Schema(name = "refreshTokenExpireSeconds", description = "刷新令牌签发时长，单位：秒", requiredMode = Schema.RequiredMode.REQUIRED)
-    private long refreshTokenExpireSeconds;
+    private Long refreshTokenExpireSeconds;
 
     @Schema(name = "tokenType", description = "token类型，一般为bearer", requiredMode = Schema.RequiredMode.REQUIRED)
     private String tokenType;

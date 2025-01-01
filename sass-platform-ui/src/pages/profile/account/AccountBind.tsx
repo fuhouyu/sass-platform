@@ -15,3 +15,14 @@
  */
 
 
+import {WeLinkLogin} from "@/components";
+
+/**
+ * 账号绑定
+ * @constructor
+ */
+export const AccountBind = () => {
+    return (
+        <WeLinkLogin redirectType={'bind'}/>
+    )
+}

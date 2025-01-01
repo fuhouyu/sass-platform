@@ -22,6 +22,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * <p>
  * 账号id实体
@@ -32,7 +35,11 @@ import lombok.Data;
  */
 @Schema(name = "AccountIdDTO", description = "账号id cto对象")
 @Data
-public class AccountIdDTO {
+public class AccountIdDTO implements Serializable {
+
+
+    @Serial
+    private static final long serialVersionUID = 5142354211238415241L;
 
     /**
      * 用户名

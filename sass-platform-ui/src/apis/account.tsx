@@ -48,6 +48,30 @@ class AccountApi {
      */
     unbindThirdPartyAccount: (accountType: string, account: string) => Promise<void> = (accountType: string, account: string): Promise<void> =>
         request.delete(`${this.baseUrl}/unbind`, {data: {accountType: accountType, account: account}});
+
+    /**
+     * 修改当前用户的密码
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param confirmPassword 确认密码
+     */
+    updatePasswordMe: ({oldPassword, newPassword, confirmPassword}: {
+        oldPassword: string,
+        newPassword: string,
+        confirmPassword: string
+    }) => Promise<void>
+        = ({oldPassword, newPassword, confirmPassword}: {
+        oldPassword: string,
+        newPassword: string,
+        confirmPassword: string
+    }): Promise<void> =>
+        request.put(`${this.baseUrl}/password`, {
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword
+        });
+
+
 }
 
 

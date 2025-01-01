@@ -33,12 +33,15 @@ const ZhCN = {
         no: '否',
         enabled: '启用',
         disabled: '禁用',
+        paramsError: '参数错误',
+        pending: '处理中，请稍候...'
     },
     // button
     Button: {
         add: '新增',
         edit: '修改',
         delete: '删除',
+        deleteConfirm: '确定删除？',
         search: '搜索',
         confirm: '确定',
         submit: '提交',
@@ -46,7 +49,7 @@ const ZhCN = {
     },
     // header
     Header: {
-        title: '多租户后台管理系统',
+        title: '后台管理',
         logout: '退出',
     },
     // 登录
@@ -63,6 +66,7 @@ const ZhCN = {
         weLinkLoginTitle: '请使用<span>WeLink 扫码</span>登录',
         weLinkQRTips: "打开<span>WeLink APP</span> - 点击右上角“<span>+</span>”图标 - 点击<span>扫一扫</span>",
         loginButton: '登录',
+        loginAndBindButton: '登录并绑定',
     },
     // 租户
     Tenant: {
@@ -101,6 +105,29 @@ const ZhCN = {
         dictItem: '字典项',
         profile: '个人资料',
         accountSettings: '账号设置',
+    },
+    Account: {
+        personal: '个人账号',
+        thirdPartyAccount: '第三方账号',
+        loginPassword: '登录密码：',
+        updatePassword: '修改密码',
+        welink: 'WeLink 账号',
+        bind: '绑定账号',
+        alreadyBind: '已绑定',
+        unbind: '取消绑定',
+        unbindAccountConfirm: '确定取消绑定？',
+        bindSuccess: '绑定成功',
+        oldPassword: '旧密码',
+        oldPasswordPlaceholder: '请输入旧密码',
+        newPassword: '新密码',
+        newPasswordPlaceholder: '请输入新密码',
+        confirmPassword: '确认密码',
+        confirmPasswordPlaceholder: '请再次输入新密码',
+        thirdPartyAccountBind: '第三方账号绑定',
+        loginAndBindTips: '登录平台账号以关联第三方账号',
+        bindAccountTips: '没有账号? 请联系管理员',
+
+
     },
     User: {
         list: '用户列表',
@@ -196,9 +223,6 @@ const ZhCN = {
         codePlaceholder: '请输入字典项编码',
         codeTips: '字典项编码，当前字典类型下唯一'
     },
-    Profile: {
-        thirtyPartyAccount: '第三方账号绑定',
-    }
 }
 
 export {

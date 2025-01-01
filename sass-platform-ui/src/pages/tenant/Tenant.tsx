@@ -16,9 +16,9 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {Button, Form, Input, message, Modal, Radio, TableColumnsType, Tag} from "antd";
+import {Button, Form, Input, message, Popconfirm, Radio, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {FormTree, IconFont, PageList, PermissionButton} from "@/components";
+import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {Menu} from "@/model/menu";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'
@@ -218,10 +218,18 @@ export const Tenant: React.FC = () => {
                         </PermissionButton>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
-                            <DeleteButton onClick={async () => {
-                                tenantApi.deleteInfoApi(rowKeys as string[]).then();
-                                await pageRequest();
-                            }}/>
+                            <Popconfirm
+                                title={t('Button.delete')}
+                                description={t('Button.deleteConfirm')}
+                                okText={t('Common.yes')}
+                                cancelText={t('Common.no')}
+                                onConfirm={async () => {
+                                    tenantApi.deleteInfoApi(rowKeys as string[]).then();
+                                    await pageRequest();
+                                }}
+                            >
+                                <DeleteButton/>
+                            </Popconfirm>
                         </PermissionButton>
                     </>
                 ]

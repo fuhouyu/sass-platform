@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UpdatePasswordDTO;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +54,7 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      * @param userId 用户id
      * @return 第三方账号信息
      */
-    List<AccountDTO> getAccountListForMe(Long userId);
+    List<AccountDTO> findAccountListForMe(Long userId);
 
     /**
      * 绑定第三方账号
@@ -61,5 +63,21 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      */
     void saveThirdPartyAccount(AccountIdDTO accountIdDTO);
 
+
+    /**
+     * 修改当前用户的密码
+     *
+     * @param updatePasswordDTO 密码dto对象
+     */
+    void updatePassword(UpdatePasswordDTO updatePasswordDTO);
+
+    /**
+     * 通过用户id和账号类型查询账号
+     *
+     * @param userId          用户id
+     * @param accountTypeEnum 账号类型
+     * @return 账号dto对象
+     */
+    AccountDTO findAccountByUserIdAndType(Long userId, AccountTypeEnum accountTypeEnum);
 
 }

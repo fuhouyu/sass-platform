@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class PermissionController {
      */
     @PostMapping
     @Operation(summary = "保存权限dto对象")
+    @PreAuthorize("@auth.hasPermission('system:permission:add')")
     public BaseResponse<Long> savePermission(@RequestBody PermissionDTO permissionDTO) {
         return ResponseHelper.success(this.permissionService.save(permissionDTO));
     }
@@ -71,6 +73,7 @@ public class PermissionController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改权限")
+    @PreAuthorize("@auth.hasPermission('system:permission:edit')")
     public BaseResponse<Void> updatePermission(@PathVariable("id") Long id,
                                                @RequestBody PermissionDTO permissionDTO) {
         permissionDTO.setId(id);
@@ -99,6 +102,7 @@ public class PermissionController {
      */
     @Operation(summary = "通过父级id查询子级菜单，")
     @GetMapping({"/list/{parentId}", "/list"})
+    @PreAuthorize("@auth.hasPermission('system:permission:list')")
     public BaseResponse<List<PermissionDTO>> getPermissionList(@PathVariable(value = "parentId", required = false) Long parentId) {
         return ResponseHelper.success(this.permissionService.getPermissionList(parentId));
     }
@@ -111,6 +115,7 @@ public class PermissionController {
      */
     @Operation(summary = "权限分页查询dto对象")
     @GetMapping("/page")
+    @PreAuthorize("@auth.hasPermission('system:permission:list')")
     public BaseResponse<PageResultDTO<PermissionDTO>> pageList(@ParameterObject PermissionPageQueryDTO pageQuery) {
         return ResponseHelper.success(this.permissionService.pageList(pageQuery));
     }
@@ -124,6 +129,7 @@ public class PermissionController {
      */
     @DeleteMapping
     @Operation(summary = "根据权限id删除权限")
+    @PreAuthorize("@auth.hasPermission('system:permission:delete')")
     public BaseResponse<Void> deletePermission(@RequestBody @NotEmpty(message = "未选择要删除的权限") List<Long> idList) {
         this.permissionService.removeByIds(idList);
         return ResponseHelper.success();
@@ -136,6 +142,7 @@ public class PermissionController {
      */
     @GetMapping("/tree")
     @Operation(summary = "权限树集合,需要有菜单权限")
+    @PreAuthorize("@auth.hasPermission('system:permission:list')")
     public BaseResponse<List<PermissionTreeDTO>> treeList() {
         return ResponseHelper.success(this.permissionService.getTreeList());
     }
@@ -148,6 +155,7 @@ public class PermissionController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "权限详情")
+    @PreAuthorize("@auth.hasPermission('system:permission:query')")
     public BaseResponse<PermissionDTO> permissionInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.permissionService.findById(id));
     }

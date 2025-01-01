@@ -27,10 +27,12 @@ import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +80,7 @@ public class UserController {
      */
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
+    @PreAuthorize("@auth.hasPermission('system:user:query')")
     public BaseResponse<UserDTO> userinfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.userService.findById(id));
     }
@@ -90,7 +93,7 @@ public class UserController {
      */
     @PutMapping
     @Operation(summary = "修改当前的用户详情")
-    public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserDTO userDTO) {
+    public BaseResponse<Void> editUserinfo(@Valid @RequestBody UserDTO userDTO) {
         userDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
         this.userService.edit(userDTO);
         return ResponseHelper.success();
@@ -104,10 +107,11 @@ public class UserController {
      * @return restResult
      */
     @PutMapping("/{id}")
-    @Operation(summary = "修改当前的用户详情")
+    @Operation(summary = "修改用户详情")
+    @PreAuthorize("@auth.hasPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Validated @RequestBody UserDTO userDTO) {
+            @Valid @RequestBody UserDTO userDTO) {
         userDTO.setId(id);
         this.userService.edit(userDTO);
         return ResponseHelper.success();
@@ -121,6 +125,7 @@ public class UserController {
      */
     @GetMapping("/page")
     @Operation(summary = "获取用户列表")
+    @PreAuthorize("@auth.hasPermission('system:user:list')")
     public BaseResponse<PageResultDTO<UserDTO>> pageList(UserPageQueryDTO userPageQueryDTO) {
         return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
     }
@@ -133,6 +138,7 @@ public class UserController {
      */
     @Operation(summary = "通过用户id删除用户")
     @DeleteMapping
+    @PreAuthorize("@auth.hasPermission('system:user:delete')")
     public BaseResponse<Void> removeUserList(
             @RequestBody
             @Size(min = 1, message = "需要删除的用户不能为空")
@@ -163,6 +169,7 @@ public class UserController {
      */
     @Operation(summary = "保存用户信息")
     @PostMapping
+    @PreAuthorize("@auth.hasPermission('system:user:add')")
     public BaseResponse<Void> saveUser(@RequestBody SaveUserDTO userDTO) {
         this.userAccountService.register(userDTO);
         return ResponseHelper.success();

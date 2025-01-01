@@ -24,7 +24,7 @@ import {
     Input,
     InputNumber,
     message,
-    Modal,
+    Popconfirm,
     Radio,
     Row,
     TableColumnsType,
@@ -36,7 +36,7 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {IconFont, PermissionButton, SearchHeader, Table} from "@/components";
+import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -328,11 +328,19 @@ export const Permission: React.FC = () => {
                                 </PermissionButton>
                                 <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={PermissionConstant.DELETE}>
-                                    <DeleteButton onClick={async () => {
-                                        permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                        setPageQuery({...pageQuery});
-                                        await permissionTreeSelect();
-                                    }}/>
+                                    <Popconfirm
+                                        title={t('Button.delete')}
+                                        description={t('Button.deleteConfirm')}
+                                        okText={t('Common.yes')}
+                                        cancelText={t('Common.no')}
+                                        onConfirm={async () => {
+                                            permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                            setPageQuery({...pageQuery});
+                                            await permissionTreeSelect();
+                                        }}
+                                    >
+                                        <DeleteButton/>
+                                    </Popconfirm>
                                 </PermissionButton>
                             </>
                         ]}

@@ -16,32 +16,64 @@
 
 
 import {useLocation, useSearchParams} from "react-router-dom";
-import {useCallback, useEffect} from "react";
-import {fetchLogin} from "@/store/modules/user.tsx";
+import React, {useCallback, useEffect, useState} from "react";
+import {fetchLogin, fetchLoginBind} from "@/store/modules/user.tsx";
 import {AccountType} from "@/model/account.tsx";
 import {router} from "@/routes/routers.tsx";
 import {BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
-import {message, Spin} from "antd";
+import {Button, Form, Input, message, Modal, Spin} from "antd";
 import {useAppDispatch} from "@/store";
 import {accountApi} from "@/apis/account.tsx";
+import {useTranslation} from "react-i18next";
+import {IconFont} from "@/components";
+import './index.scss';
+import {ThirdPartyBindAuthentication, UserAuthentication} from "@/model/authentication.tsx";
 
 export const PostThirdPartyRedirect = () => {
 
     const [searchParams] = useSearchParams();
     const location = useLocation();
+    const {t} = useTranslation();
     const dispatch = useAppDispatch();
+    const [bindModal, setBindModal] = useState<boolean>(false);
+    const [userForm] = Form.useForm<ThirdPartyBindAuthentication>();
+    const [temporaryToken, setTemporaryToken] = useState<string>('');
 
     /**
      * 用户登录
      */
     const login = useCallback((accountType: string, code: string) => {
-        dispatch(fetchLogin({accountType: accountType as AccountType, identify: code})).then(async () => {
-            router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
-        }).catch((err: Error) => {
+        dispatch(fetchLogin({accountType: accountType as AccountType, identify: code})).then(async (res) => {
+            // 如果登录成功直接跳转
+            if (!res) {
+                router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
+                return
+            }
+            setTemporaryToken(res.userBindToken);
+            // 绑定账号
+            setBindModal(true);
+
+        }).catch((err) => {
             message.error(err.message).then()
             router.navigate(BASE_LOGIN_URL, {state: location.state}).then();
         })
     }, [dispatch, location.state]);
+
+    /**
+     * 登录表单
+     */
+    const loginForm = async () => {
+        await userForm.validateFields();
+        const userBindAuthentication: ThirdPartyBindAuthentication = userForm.getFieldsValue();
+        userBindAuthentication.temporaryToken = temporaryToken;
+        userBindAuthentication.accountType = AccountType.PASSWORD;
+        try {
+            await dispatch(fetchLoginBind(userBindAuthentication));
+        } catch {
+            router.navigate(BASE_LOGIN_URL, {state: location.state}).then();
+        }
+        router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
+    }
 
     /**
      * 账号绑定
@@ -59,22 +91,78 @@ export const PostThirdPartyRedirect = () => {
         const code = searchParams.get('code')!;
         const accountType = searchParams.get('accountType')!;
         if (!code || !accountType) {
-            message.error('参数错误').then();
+            message.error(t('Common.paramsError')).then();
             router.navigate(BASE_LOGIN_URL).then();
             return;
         }
         if (redirectType == 'bind') {
             bindAccount(accountType, code).then(() => {
-                message.success('绑定成功').then();
+                message.success(t('Common.success')).then();
+                window.close();
             });
         } else {
             login(accountType, code);
         }
 
-    }, [bindAccount, login, searchParams]);
+    }, [bindAccount, login, searchParams, t]);
 
 
     return (
-        <Spin delay={500} tip="处理中，请稍候..." fullscreen={true} size="large" className="page-loading"/>
+        <>
+        <Spin delay={500} tip={t('Common.pending')} fullscreen={true} size="large" className="page-loading"/>
+            <Modal
+                title={t('Account.thirdPartyAccountBind')}
+                open={bindModal}
+                destroyOnClose
+                footer={[]}
+                width={600}
+                closable
+                onCancel={() => {
+                    setBindModal(false);
+                    router.navigate(BASE_LOGIN_URL).then();
+                }}
+                onClose={() => setBindModal(false)}
+                className={'account-bind-modal'}
+            >
+                <div className={'account-icon'}>
+                    <IconFont type={'i-WeLink'}/>
+                </div>
+                <p>{t('Account.loginAndBindTips')}</p>
+                <Form
+                    className={'account-bind-form'}
+                    name="login"
+                    style={{maxWidth: 600}}
+                    clearOnDestroy={true}
+                    form={userForm}
+                    onFinish={loginForm}
+                >
+                    <Form.Item<UserAuthentication>
+                        name="identify"
+                        rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
+                    >
+                        <Input prefix={<IconFont type={'i-zhanghao'}/>}
+                               placeholder={t('Login.usernamePlaceholder')}/>
+                    </Form.Item>
+                    <Form.Item<UserAuthentication>
+                        name="credentials"
+                        rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
+                    >
+                        <Input.Password prefix={<IconFont type={'i-mima'}/>}
+
+                                        placeholder={t('Login.passwordPlaceholder')}/>
+                    </Form.Item>
+                    <Form.Item className={'login-button-container'}>
+                        <Button block type="primary" htmlType="submit">
+                            {t('Login.loginAndBindButton')}
+                        </Button>
+                    </Form.Item>
+                    <Form.Item className={'tips'}>
+                        <p>
+                            {t('Account.bindAccountTips')}
+                        </p>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     )
 };

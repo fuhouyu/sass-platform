@@ -17,13 +17,25 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictItem as DictItemModel} from "@/model/dictItem";
-import {Button, Form, Input, InputNumber, message, Modal, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Select,
+    TableColumnsType,
+    Tag,
+    Tooltip
+} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
-import {IconFont, PageList, PermissionButton} from "@/components";
+import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
 import {DictType} from "@/model/dictType";
@@ -213,10 +225,18 @@ export const DictItem = () => {
 
                             <PermissionButton permissionStr={DictItemPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <DeleteButton onClick={async () => {
-                                    await dictItemApi.deleteInfoApi(rowKeys as string[]);
-                                    await pageRequest();
-                                }}/>
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        dictItemApi.deleteInfoApi(rowKeys as string[]).then();
+                                        await pageRequest()
+                                    }}
+                                >
+                                    <DeleteButton/>
+                                </Popconfirm>
                             </PermissionButton>
 
                         </>

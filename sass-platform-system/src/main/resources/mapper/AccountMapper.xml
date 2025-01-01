@@ -165,11 +165,20 @@
         </foreach>
     </delete>
 
-    <select id="getAccountListForMe" resultMap="BaseResultMap">
+    <select id="queryAccountListForMe" resultMap="BaseResultMap">
         SELECT
         <include refid="AllColumns"/>
         FROM
         <include refid="TableName"/>
         WHERE user_id = #{userId}
+    </select>
+
+    <select id="queryAccountByUserIdAndType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM
+        <include refid="TableName"/>
+        WHERE user_id = #{userId}
+        AND account_type = #{accountType}
     </select>
 </mapper>

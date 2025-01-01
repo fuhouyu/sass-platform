@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 import './index.scss'
-import {Button, Card, Flex, Modal} from "antd";
-import {IconFont, WeLinkLogin} from "@/components";
-import {useEffect, useState} from "react";
+import {Button, Card, Flex, Form, Input, Modal as AntdModal, Space} from "antd";
+import {IconFont, Modal} from "@/components";
+import React, {useEffect, useState} from "react";
 import {accountApi} from "@/apis/account.tsx";
 import {Account, AccountType} from "@/model/account.tsx";
+import {useTranslation} from "react-i18next";
+import {ExclamationCircleFilled} from "@ant-design/icons";
+
+interface UpdatePasswordForm {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
 
 /**
  * 账号设置
@@ -28,38 +36,116 @@ export const AccountSettings = () => {
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const weLinkBind = accounts.find(account => account.accountType === AccountType.WELINK);
-    const [open, setOpen] = useState<boolean>(false);
-
+    const [openModal, setOpenModal] = useState(false);
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState(false);
+    const [passwordForm] = Form.useForm<UpdatePasswordForm>();
+    const {t} = useTranslation()
+    const {confirm} = AntdModal;
+    const getAccounts = async () => {
+        setAccounts(await accountApi.getAccountForMe());
+    }
     useEffect(() => {
-        const getAccounts = async () => {
-            setAccounts(await accountApi.getAccountForMe());
-        }
         getAccounts().then();
     }, []);
 
+    /**
+     * 显示取消绑定的表单
+     */
+    const showUnbindConfirm = () => {
+        confirm({
+            title: t('Account.unbind'),
+            icon: <ExclamationCircleFilled/>,
+            content: t('Account.unbindAccountConfirm'),
+            onOk() {
+                unbind().then();
+            },
+            closable: true,
+            destroyOnClose: true
+        });
+    };
+
+    /**
+     * 取消绑定账号
+     */
     const unbind = async () => {
         await accountApi.unbindThirdPartyAccount(AccountType.WELINK, weLinkBind!.account);
+        await getAccounts();
     }
+
+    /**
+     * 绑定账号
+     */
+    const bindAccount = () => {
+        const width = 400; // 弹窗宽度
+        const height = 500; // 弹窗高度
+        const left = (window.screen.width - width) / 2; // 居中定位
+        const top = (window.screen.height - height) / 2; // 居中定位
+        const specs = `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=no`;
+
+        const newWindow = window.open('/account-bind', '_blank', specs);
+
+        // 定时检查窗口是否关闭
+        const timer = setInterval(() => {
+            if (newWindow && newWindow.closed) {
+                clearInterval(timer);
+                // 在这里处理窗口关闭后的逻辑，比如刷新页面或更新状态
+                getAccounts().then();
+            }
+        }, 500);
+    }
+
+
+    /**
+     * 修改密码
+     */
+    const updatePassword = async () => {
+        await passwordForm.validateFields();
+        setIsModalButtonLoading(true);
+        const values = passwordForm.getFieldsValue();
+        try {
+            await accountApi.updatePasswordMe(values);
+            setOpenModal(false);
+        } finally {
+            setIsModalButtonLoading(false);
+        }
+    }
+
 
     return (
         <div className={'account-container'}>
-            <Card title="第三方账号绑定" bordered={false}>
+            <Card title={t('Account.personal')} bordered={false}>
+                <ul className={'account-settings'}>
+                    <li>
+                        <Space>
+                            <p>{t('Account.loginPassword')}</p>
+
+
+                            <Input.Password
+                                prefix={<IconFont type={'i-mima'}/>}
+                                value={'******'} disabled/>
+                            <Button onClick={() => setOpenModal(true)}>{t('Account.updatePassword')}</Button>
+                        </Space>
+                    </li>
+                </ul>
+            </Card>
+            <Card title={t('Account.thirdPartyAccount')} bordered={false}>
                 <ul>
                     <li>
                         <Flex justify={'space-between'} align={'center'}>
                             <div className={'account-left'}>
                                 <IconFont type={'i-WeLink'} className={'account-icon'}/>
                                 <div className={'text-block'}>
-                                    <span className={'account-title'}>WeLink 账号</span>
-                                    {weLinkBind && <span className={'sub-title'}>已绑定：{weLinkBind.account}</span>}
+                                    <span className={'account-title'}>{t('Account.welink')}</span>
+                                    {weLinkBind && <span
+                                        className={'sub-title'}>{t('Account.alreadyBind')}：{weLinkBind.account}</span>}
                                 </div>
                             </div>
                             <Button onClick={() =>
-                                weLinkBind ? unbind() :
-                                    setOpen(true)
+                                weLinkBind ? showUnbindConfirm() :
+                                    bindAccount()
                             }
                                     icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
-                                {weLinkBind ? '取消绑定' : '绑定'}
+                                {weLinkBind ? t('Account.unbind') : t('Account.bind')}
                             </Button>
                         </Flex>
                     </li>
@@ -67,13 +153,52 @@ export const AccountSettings = () => {
             </Card>
 
             <Modal
-                title={'绑定第三方账号'}
-                footer={[]}
-                open={open}
-                closable={false}
-                onCancel={() => setOpen(false)}
+                title={t('Account.updatePassword')}
+                open={openModal}
+                onCancel={() => setOpenModal(false)}
+                footer={[
+                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                            onClick={updatePassword}>{t('Button.submit')}</Button>,
+                    <Button key='onCancel' onClick={() => setOpenModal(false)}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '1.5rem',
+                }}/>}
+                destroyOnClose={true}
             >
-                <WeLinkLogin redirectType={'bind'}/>
+                <Form
+                    form={passwordForm}
+                    style={{maxWidth: 400}}
+                    name="updatePassword"
+                    labelAlign={'right'}
+                    labelCol={{span: 8}}
+                    clearOnDestroy={true}
+
+                >
+
+                    <Form.Item<UpdatePasswordForm>
+                        label={t('Account.oldPassword')}
+                        name="oldPassword"
+                        rules={[{required: true, message: t('Account.oldPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.oldPasswordPlaceholder')}/>
+                    </Form.Item>
+                    <Form.Item<UpdatePasswordForm>
+                        label={t('Account.newPassword')}
+                        name="newPassword"
+                        rules={[{required: true, message: t('Account.newPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.newPasswordPlaceholder')}/>
+                    </Form.Item>
+
+                    <Form.Item<UpdatePasswordForm>
+                        label={t('Account.confirmPassword')}
+                        name="confirmPassword"
+                        rules={[{required: true, message: t('Account.confirmPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.confirmPasswordPlaceholder')}/>
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     );

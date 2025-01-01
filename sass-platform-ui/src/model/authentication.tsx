@@ -34,6 +34,19 @@ export interface UserAuthentication {
 
 
 /**
+ * 三方平台账号绑定
+ */
+export interface ThirdPartyBindAuthentication extends UserAuthentication {
+
+    /**
+     * 临时token
+     */
+    temporaryToken: string;
+
+}
+
+
+/**
  * 用户token对象
  */
 export interface UserToken {
@@ -73,4 +86,19 @@ export interface UserToken {
      * token类型，一般为bearer
      */
     tokenType?: string;
+}
+
+
+/**
+ * 用户绑定
+ */
+export interface UserBind {
+    /**
+     * 用户绑定
+     */
+    isUserBind: boolean;
+    /**
+     * 用户绑定的临时token
+     */
+    userBindToken: string;
 }

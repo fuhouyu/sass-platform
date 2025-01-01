@@ -33,6 +33,7 @@ import MainPortal from "@/pages/portal";
 import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
 import {LoaderFunction} from "@remix-run/router/utils.ts";
 import {getAccessToken} from "@/utils";
+import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 
 export type RouterType = {
     id: string;
@@ -95,6 +96,12 @@ export const commonRouter: RouterType[] = [
         path: BASE_REDIRECT_URL,
         element: <PostThirdPartyRedirect/>,
 
+    },
+    {
+        id: 'account-bind',
+        title: '账号绑定',
+        path: '/account-bind',
+        element: <AccountBind/>
     },
     {
         id: '404',

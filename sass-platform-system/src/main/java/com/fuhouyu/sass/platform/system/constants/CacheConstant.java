@@ -13,5 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.constants;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
+/**
+ * <p>
+ * 缓存常量
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/1/1 18:23
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class CacheConstant {
+
+    /**
+     * 用户token缓存
+     */
+    public static final String USER_BIND_TOKEN = "open:platform:bind:token:";
+}

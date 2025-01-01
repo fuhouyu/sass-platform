@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
+import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -65,6 +66,19 @@ public class AuthenticationController {
         return ResponseHelper.success(userTokenDTO);
     }
 
+    /**
+     * 用户登录时绑定第三方平台账号
+     *
+     * @param thirdPartyBindPlatformDTO 账号绑定的vo对象
+     * @return token
+     */
+    @PostMapping("/login-bind")
+    @Operation(summary = "用户登录时绑定第三方平台账号")
+    @NoAuth
+    public BaseResponse<UserTokenDTO> bindThirdParty(@RequestBody @Valid ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO) {
+        UserTokenDTO userTokenDTO = this.userAccountService.loginBindThirdParty(thirdPartyBindPlatformDTO);
+        return ResponseHelper.success(userTokenDTO);
+    }
 
     /**
      * 退出登录

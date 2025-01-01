@@ -55,5 +55,14 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param userId 用户id
      * @return 第三方账号信息
      */
-    List<Accounts> getAccountListForMe(@Param("userId") Long userId);
+    List<Accounts> queryAccountListForMe(@Param("userId") Long userId);
+
+    /**
+     * 通过用户id和账号类型查询账号
+     *
+     * @param userId      用户id
+     * @param accountType 账号类型
+     * @return 账号
+     */
+    Accounts queryAccountByUserIdAndType(@Param("userId") Long userId, @Param("accountType") String accountType);
 }

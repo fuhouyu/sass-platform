@@ -1,0 +1,52 @@
+/*
+ * Copyright 2024-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.modal-container {
+  .ant-modal-content {
+    padding: 0;
+  }
+
+  .ant-modal-title {
+    padding: 1.25rem 2rem;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    color: white;
+    background: linear-gradient(to right, #2475FB, #2472FB)
+  }
+
+  .ant-modal-title:before {
+    content: '';
+    display: inline-block;
+    width: 0.15625rem;
+    height: 1.25rem;
+    background-color: white;
+    position: relative;
+    top: 3px;
+    margin-right: 0.5rem;
+  }
+
+  .ant-modal-footer {
+    padding: 1.25rem 1.5rem !important;
+  }
+
+  .ant-modal-body {
+    padding: 1.25rem 1.5rem !important;
+  }
+
+  .ant-modal-close {
+    top: 1rem;
+  }
+}

@@ -40,7 +40,7 @@ const lazyElement = (path: string) => {
     );
 };
 
-const parseRoutes = (menuProps: Menu[]): RouterType[] => {
+export const parseRoutes = (menuProps: Menu[]): RouterType[] => {
 
     if (menuProps === undefined || menuProps.length === 0) {
         return [];

@@ -15,16 +15,24 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
+import com.fuhouyu.sass.platform.system.constants.CacheConstant;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
@@ -68,6 +76,8 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final CacheService<String, Object> cacheService;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -94,8 +104,14 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
         userAccountDetails.eraseCredentials();
         if (Objects.isNull(authentication.getDetails())) {
+            UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
             ((UsernamePasswordAuthenticationToken) authentication)
-                    .setDetails(this.userService.findById(userAccountDetails.getUserId()));
+                    .setDetails(userDTO);
+            // 设置上下文信息
+            UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
+                    UserEntity.class));
+            DefaultListableContextFactory context = (DefaultListableContextFactory) ContextHolderStrategy.getContext();
+            context.setUser(userEntity);
         }
         UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
         this.userService.recordLoginSuccess(userAccountDetails.getUserId());
@@ -108,6 +124,37 @@ public class UserAccountServiceImpl implements UserAccountService {
         String authorization = request.getAuthorization();
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
         this.tokenStore.removeAuth2Token(token);
+    }
+
+    @Override
+    public UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO) {
+        String thirdPartyUserId = (String) this.cacheService.get(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
+        if (Objects.isNull(thirdPartyUserId)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "用户绑定信息已过期");
+        }
+        AccountDTO account = this.accountService.findById(new AccountIdDTO(thirdPartyUserId, AccountTypeEnum.WELINK));
+        if (Objects.nonNull(account)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前第三方账号已绑定");
+        }
+
+        UserTokenDTO userTokenDTO = this.login(thirdPartyBindPlatformDTO);
+        Long userId = ContextHolderStrategy.getContext().getUser().getId();
+        // 保存第三方账号信息
+        AccountDTO accountDTO = new AccountDTO();
+        AccountDTO weLinkAccount = this.accountService.findAccountByUserIdAndType(userId, AccountTypeEnum.WELINK);
+        if (Objects.nonNull(weLinkAccount)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前账号已绑定WeLink账号，请解绑后重试");
+        }
+        accountDTO.setAccount(thirdPartyUserId);
+        // 目前只有weLink
+        accountDTO.setAccountType(AccountTypeEnum.WELINK.name());
+        accountDTO.setUserId(userId);
+        accountDTO.setRefAccountId(thirdPartyUserId);
+        accountDTO.setIsEnabled(true);
+        this.accountService.save(accountDTO);
+        cacheService.delete(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
+        return userTokenDTO;
+
     }
 
     /**

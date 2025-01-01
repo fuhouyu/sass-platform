@@ -15,3 +15,22 @@
  */
 
 
+import {Modal as AntdModal, ModalProps} from "antd";
+import React from "react";
+import './index.scss'
+import {IconFont} from "@/components";
+
+export const Modal: React.FC<ModalProps> = (modalProps: ModalProps) => {
+    return (
+        <AntdModal
+            {...modalProps}
+            closeIcon={<IconFont type="i-close1" style={{
+                fontSize: '1.5rem',
+                color: 'white'
+            }}/>}
+            destroyOnClose
+            className={'modal-container'}
+        >
+        </AntdModal>
+    )
+}

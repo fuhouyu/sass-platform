@@ -24,10 +24,12 @@ import com.fuhouyu.sass.platform.system.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +62,8 @@ public class RoleController {
      */
     @PostMapping
     @Operation(summary = "保存角色")
-    public BaseResponse<Long> save(@Validated @RequestBody RoleDTO roleDTO) {
+    @PreAuthorize("@auth.hasPermission('system:role:add')")
+    public BaseResponse<Long> save(@Valid @RequestBody RoleDTO roleDTO) {
         return ResponseHelper.success(this.roleService.save(roleDTO));
     }
 
@@ -72,8 +75,9 @@ public class RoleController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改角色")
+    @PreAuthorize("@auth.hasPermission('system:role:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
-                                     @Validated @RequestBody RoleDTO roleDTO) {
+                                     @Valid @RequestBody RoleDTO roleDTO) {
         roleDTO.setId(id);
         this.roleService.edit(roleDTO);
         return ResponseHelper.success();
@@ -87,6 +91,7 @@ public class RoleController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过主键id获取详情")
+    @PreAuthorize("@auth.hasPermission('system:role:query')")
     public BaseResponse<RoleDTO> getById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.roleService.findById(id));
     }
@@ -99,6 +104,7 @@ public class RoleController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
+    @PreAuthorize("@auth.hasPermission('system:role:delete')")
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.roleService.removeByIds(ids));
     }
@@ -112,6 +118,7 @@ public class RoleController {
      */
     @GetMapping("/page")
     @Operation(summary = "角色分页查询列表")
+    @PreAuthorize("@auth.hasPermission('system:role:list')")
     public BaseResponse<PageResultDTO<RoleDTO>> pageList(@ParameterObject RolePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.roleService.pageList(pageQueryDTO));
     }
@@ -125,6 +132,7 @@ public class RoleController {
      */
     @GetMapping("/exists")
     @Operation(summary = "检查角色编码是否存在")
+    @PreAuthorize("@auth.hasPermission('system:role:add')")
     @Parameter(name = "roleCode", description = "角色编码")
     public BaseResponse<Boolean> checkCodeExists(@RequestParam("roleCode") String roleCode) {
         return ResponseHelper.success(Objects.nonNull(this.roleService.findByRoleCode(roleCode)));

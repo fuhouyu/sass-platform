@@ -20,13 +20,9 @@ import {Outlet} from "react-router-dom";
 import {Menu} from "@/layouts/menu/menu";
 import {Header} from "@/layouts/header/header";
 import './index.scss'
-import {useRoutes} from "@/hooks/useRoutes.tsx";
-import {PageLoading} from "@/components";
 
 export const Layout = () => {
-    const initialize = useRoutes();
     return (
-        initialize ?
             <AntdLayout className="layout-container">
                 <Menu/>
                 <AntdLayout>
@@ -36,6 +32,5 @@ export const Layout = () => {
                     </Content>
                 </AntdLayout>
             </AntdLayout>
-            : <PageLoading/>
     )
 }
