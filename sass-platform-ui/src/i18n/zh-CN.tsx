@@ -41,6 +41,7 @@ const ZhCN = {
         add: '新增',
         edit: '修改',
         delete: '删除',
+        deleteConfirm: '确定删除？',
         search: '搜索',
         confirm: '确定',
         submit: '提交',

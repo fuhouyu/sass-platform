@@ -24,6 +24,7 @@ import {
     Input,
     InputNumber,
     message,
+    Popconfirm,
     Radio,
     Row,
     TableColumnsType,
@@ -327,11 +328,19 @@ export const Permission: React.FC = () => {
                                 </PermissionButton>
                                 <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={PermissionConstant.DELETE}>
-                                    <DeleteButton onClick={async () => {
-                                        permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                        setPageQuery({...pageQuery});
-                                        await permissionTreeSelect();
-                                    }}/>
+                                    <Popconfirm
+                                        title={t('Button.delete')}
+                                        description={t('Button.deleteConfirm')}
+                                        okText={t('Common.yes')}
+                                        cancelText={t('Common.no')}
+                                        onConfirm={async () => {
+                                            permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                            setPageQuery({...pageQuery});
+                                            await permissionTreeSelect();
+                                        }}
+                                    >
+                                        <DeleteButton/>
+                                    </Popconfirm>
                                 </PermissionButton>
                             </>
                         ]}

@@ -16,7 +16,19 @@
 
 import React, {Key, useEffect, useState} from "react";
 import './index.scss'
-import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Select,
+    TableColumnsType,
+    Tag,
+    Tooltip
+} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
@@ -194,10 +206,18 @@ export const Role: React.FC = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={RolePermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <DeleteButton onClick={async () => {
-                                    await roleApi.deleteInfoApi(rowKeys as string[]);
-                                    await pageRequest();
-                                }}/>
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        await roleApi.deleteInfoApi(rowKeys as string[]);
+                                        await pageRequest();
+                                    }}
+                                >
+                                    <DeleteButton/>
+                                </Popconfirm>
                             </PermissionButton>
                         </>
                     ]

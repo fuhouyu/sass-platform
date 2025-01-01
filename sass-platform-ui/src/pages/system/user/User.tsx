@@ -16,7 +16,7 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Radio, Row, Select, TableColumnsType} from "antd";
+import {Button, Col, Form, Input, message, Popconfirm, Radio, Row, Select, TableColumnsType} from "antd";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
@@ -209,10 +209,18 @@ export const User: React.FC = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={UserPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <DeleteButton onClick={async () => {
-                                    userApi.deleteInfoApi(rowKeys as string[]).then();
-                                    await pageRequest()
-                                }}/>
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        userApi.deleteInfoApi(rowKeys as string[]).then();
+                                        await pageRequest()
+                                    }}
+                                >
+                                    <DeleteButton/>
+                                </Popconfirm>
                             </PermissionButton>
 
                         </>

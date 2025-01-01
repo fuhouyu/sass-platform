@@ -17,7 +17,19 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictType as DictTypeModel} from "@/model/dictType";
-import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Select,
+    TableColumnsType,
+    Tag,
+    Tooltip
+} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
@@ -199,10 +211,18 @@ export const DictType = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={DictTypePermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <DeleteButton onClick={async () => {
-                                    await dictTypeApi.deleteInfoApi(rowKeys as string[]);
-                                    await pageRequest();
-                                }}/>
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        dictTypeApi.deleteInfoApi(rowKeys as string[]).then();
+                                        await pageRequest()
+                                    }}
+                                >
+                                    <DeleteButton/>
+                                </Popconfirm>
                             </PermissionButton>
                         </>
                     ]

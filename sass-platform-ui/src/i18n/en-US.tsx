@@ -41,6 +41,7 @@ const EnUS = {
         add: 'Add',
         edit: 'Edit',
         delete: 'Delete',
+        deleteConfirm: 'Are you sure to delete?',
         search: 'Search',
         confirm: 'Confirm',
         submit: 'Submit',
