@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +61,7 @@ public class TenantInfoController {
      */
     @PostMapping
     @Operation(summary = "保存租户")
+    @PreAuthorize("@auth.hasPermission('tenant:add')")
     public BaseResponse<Long> saveTenant(@RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.save(tenantInfoDTO));
     }
@@ -72,6 +74,7 @@ public class TenantInfoController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改租户")
+    @PreAuthorize("@auth.hasPermission('tenant:edit')")
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
             @RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
@@ -88,6 +91,7 @@ public class TenantInfoController {
      */
     @GetMapping("/page")
     @Operation(summary = "租户列表")
+    @PreAuthorize("@auth.hasPermission('tenant:list')")
     public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(TenantPageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantInfoService.pageList(pageQueryDTO));
     }
@@ -100,6 +104,7 @@ public class TenantInfoController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过租户id获取租户详情")
+    @PreAuthorize("@auth.hasPermission('tenant:query')")
     public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(tenantInfoService.findById(id));
     }
@@ -112,6 +117,7 @@ public class TenantInfoController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除租户")
+    @PreAuthorize("@auth.hasPermission('tenant:delete')")
     public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的租户")
                                                   List<Long> ids) {
         int count = this.tenantInfoService.removeByIds(ids);

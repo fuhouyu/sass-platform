@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class DictTypeController {
      */
     @PostMapping
     @Operation(summary = "保存字典类型")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:add')")
     public BaseResponse<Long> save(@Validated @RequestBody DictTypeDTO dictTypeDTO) {
         return ResponseHelper.success(this.dictTypeService.save(dictTypeDTO));
     }
@@ -70,6 +72,7 @@ public class DictTypeController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改字典类型")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Validated @RequestBody DictTypeDTO dictTypeDTO) {
         dictTypeDTO.setId(id);
@@ -85,6 +88,7 @@ public class DictTypeController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过主键id获取详情")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:query')")
     public BaseResponse<DictTypeDTO> getById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.dictTypeService.findById(id));
     }
@@ -97,6 +101,7 @@ public class DictTypeController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:delete')")
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.dictTypeService.removeByIds(ids));
     }
@@ -110,6 +115,7 @@ public class DictTypeController {
      */
     @GetMapping("/page")
     @Operation(summary = "字典类型分页查询列表")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:list')")
     public BaseResponse<PageResultDTO<DictTypeDTO>> pageList(@ParameterObject DictTypePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.dictTypeService.pageList(pageQueryDTO));
     }
@@ -124,6 +130,7 @@ public class DictTypeController {
     @GetMapping("/exists")
     @Operation(summary = "检查字典类型编码是否存在")
     @Parameter(name = "dictCode", description = "字典类型编码")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:add')")
     public BaseResponse<Boolean> checkCodeExists(@RequestParam("dictCode") String dictCode) {
         return ResponseHelper.success(this.dictTypeService.checkDictCodeExists(dictCode));
     }
@@ -135,6 +142,7 @@ public class DictTypeController {
      */
     @GetMapping("/list")
     @Operation(summary = "查询出所有的字典类型列表")
+    @PreAuthorize("@auth.hasPermission('system:dict-type:list')")
     public BaseResponse<List<DictTypeDTO>> findList() {
         return ResponseHelper.success(this.dictTypeService.findList());
     }
