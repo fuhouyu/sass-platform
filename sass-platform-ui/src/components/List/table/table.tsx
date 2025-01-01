@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Table as CustomTable, TableProps as CustomTableProps} from "antd";
+import {Space, Table as CustomTable, TableProps as CustomTableProps} from "antd";
 import {TableProps} from "@components/List/table/interface";
-import {IconFont} from "@/components";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
+import {InfoCircleFilled} from "@ant-design/icons";
+import {useTranslation} from "react-i18next";
 
 /**
  * 处理_转换为驼峰
@@ -30,6 +31,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 
 const Table = <T extends object>(tableProps: TableProps<T>) => {
     const {setPageQuery, rowKey, rowSelection, tableName, pageData, columns, components} = tableProps;
+    const {t} = useTranslation();
 
     /**
      * change 事件
@@ -71,8 +73,10 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     </div>
                 </div>
                 <div className="tips-container">
-                    <IconFont className='tips' type="i-tips"/>
-                    <span>选择列表数据后可进行批量操作</span>
+                    <Space>
+                        <InfoCircleFilled style={{color: 'blue'}} className="pointer"/>
+                        <span>{t('Common.listTips')}</span>
+                    </Space>
                 </div>
             </div>
             <div className="list">

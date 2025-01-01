@@ -156,7 +156,7 @@ export const PostThirdPartyRedirect = () => {
                             {t('Login.loginAndBindButton')}
                         </Button>
                     </Form.Item>
-                    <Form.Item className={'tips'}>
+                    <Form.Item className={'account-tips'}>
                         <p>
                             {t('Account.bindAccountTips')}
                         </p>

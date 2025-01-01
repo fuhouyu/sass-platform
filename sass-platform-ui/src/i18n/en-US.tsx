@@ -34,7 +34,9 @@ const EnUS = {
         enabled: 'Enabled',
         disabled: 'Disabled',
         paramsError: 'Params Error',
-        pending: 'Processing, please wait...'
+        pending: 'Processing, please wait...',
+        listTips: 'Select list data for batch operations',
+
     },
     // button
     Button: {
