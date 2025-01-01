@@ -15,27 +15,38 @@
  */
 
 import {request} from "@/utils";
-import {UserAuthentication, UserToken} from "@/model/authentication";
+import {ThirdPartyBindAuthentication, UserAuthentication, UserBind, UserToken} from "@/model/authentication";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant";
 
 const baseAuthUrl = BaseUrlConstant.AUTHENTICATION_API_PREFIX
 
 
-/**
- * 用户登录
- * @param loginData 登录的表单信息
- */
-const loginApi = (loginData: UserAuthentication): Promise<UserToken> =>
-    request.post(`${baseAuthUrl}/login`, loginData)
+class AuthenticationApi {
+    baseUrl: string;
 
+    constructor() {
+        this.baseUrl = BaseUrlConstant.AUTHENTICATION_API_PREFIX;
+    }
 
-/**
- * 退出登录
- */
-const logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
+    /**
+     * 用户登录
+     * @param loginData 登录的表单信息
+     */
+    loginApi = (loginData: UserAuthentication): Promise<UserToken | UserBind> =>
+        request.post(`${baseAuthUrl}/login`, loginData);
 
+    /**
+     * 登录的
+     * @param loginData
+     */
+    loginBindApi = (loginData: ThirdPartyBindAuthentication): Promise<UserToken> =>
+        request.post(`${baseAuthUrl}/login-bind`, loginData);
 
-export {
-    loginApi,
-    logoutApi
+    /**
+     * 退出登录
+     */
+    logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
 }
+
+
+export const authenticationApi = new AuthenticationApi();

@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.service.DictItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class DictItemController {
     @PostMapping
     @Operation(summary = "保存字典项")
     @PreAuthorize("@auth.hasPermission('system:dict-item:add')")
-    public BaseResponse<Long> save(@Validated @RequestBody DictItemDTO dictItemDTO) {
+    public BaseResponse<Long> save(@Valid @RequestBody DictItemDTO dictItemDTO) {
         return ResponseHelper.success(this.dictItemService.save(dictItemDTO));
     }
 
@@ -76,7 +77,7 @@ public class DictItemController {
     @Operation(summary = "修改字典项")
     @PreAuthorize("@auth.hasPermission('system:dict-item:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
-                                     @Validated @RequestBody DictItemDTO dictItemDTO) {
+                                     @Valid @RequestBody DictItemDTO dictItemDTO) {
         dictItemDTO.setId(id);
         this.dictItemService.edit(dictItemDTO);
         return ResponseHelper.success();

@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.service.DictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -60,7 +61,7 @@ public class DictTypeController {
     @PostMapping
     @Operation(summary = "保存字典类型")
     @PreAuthorize("@auth.hasPermission('system:dict-type:add')")
-    public BaseResponse<Long> save(@Validated @RequestBody DictTypeDTO dictTypeDTO) {
+    public BaseResponse<Long> save(@Valid @RequestBody DictTypeDTO dictTypeDTO) {
         return ResponseHelper.success(this.dictTypeService.save(dictTypeDTO));
     }
 
@@ -74,7 +75,7 @@ public class DictTypeController {
     @Operation(summary = "修改字典类型")
     @PreAuthorize("@auth.hasPermission('system:dict-type:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
-                                     @Validated @RequestBody DictTypeDTO dictTypeDTO) {
+                                     @Valid @RequestBody DictTypeDTO dictTypeDTO) {
         dictTypeDTO.setId(id);
         this.dictTypeService.edit(dictTypeDTO);
         return ResponseHelper.success();

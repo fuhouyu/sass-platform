@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class RoleController {
     @PostMapping
     @Operation(summary = "保存角色")
     @PreAuthorize("@auth.hasPermission('system:role:add')")
-    public BaseResponse<Long> save(@Validated @RequestBody RoleDTO roleDTO) {
+    public BaseResponse<Long> save(@Valid @RequestBody RoleDTO roleDTO) {
         return ResponseHelper.success(this.roleService.save(roleDTO));
     }
 
@@ -76,7 +77,7 @@ public class RoleController {
     @Operation(summary = "修改角色")
     @PreAuthorize("@auth.hasPermission('system:role:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
-                                     @Validated @RequestBody RoleDTO roleDTO) {
+                                     @Valid @RequestBody RoleDTO roleDTO) {
         roleDTO.setId(id);
         this.roleService.edit(roleDTO);
         return ResponseHelper.success();

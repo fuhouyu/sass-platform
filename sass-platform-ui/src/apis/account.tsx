@@ -70,6 +70,8 @@ class AccountApi {
             newPassword: newPassword,
             confirmPassword: confirmPassword
         });
+
+
 }
 
 

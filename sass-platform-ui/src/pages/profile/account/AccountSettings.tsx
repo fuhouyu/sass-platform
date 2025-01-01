@@ -173,18 +173,18 @@ export const AccountSettings = () => {
                     labelAlign={'right'}
                     labelCol={{span: 8}}
                     clearOnDestroy={true}
-                    initialValues={{remember: true}}
+
                 >
 
                     <Form.Item<UpdatePasswordForm>
-                        label="旧密码"
+                        label={t('Account.oldPassword')}
                         name="oldPassword"
                         rules={[{required: true, message: t('Account.oldPasswordPlaceholder')}]}
                     >
                         <Input.Password placeholder={t('Account.oldPasswordPlaceholder')}/>
                     </Form.Item>
                     <Form.Item<UpdatePasswordForm>
-                        label="新密码"
+                        label={t('Account.newPassword')}
                         name="newPassword"
                         rules={[{required: true, message: t('Account.newPasswordPlaceholder')}]}
                     >
@@ -192,7 +192,7 @@ export const AccountSettings = () => {
                     </Form.Item>
 
                     <Form.Item<UpdatePasswordForm>
-                        label="确认密码"
+                        label={t('Account.confirmPassword')}
                         name="confirmPassword"
                         rules={[{required: true, message: t('Account.confirmPasswordPlaceholder')}]}
                     >

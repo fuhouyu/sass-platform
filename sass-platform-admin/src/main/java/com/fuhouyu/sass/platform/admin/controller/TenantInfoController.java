@@ -25,6 +25,7 @@ import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class TenantInfoController {
     @PostMapping
     @Operation(summary = "保存租户")
     @PreAuthorize("@auth.hasPermission('tenant:add')")
-    public BaseResponse<Long> saveTenant(@RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
+    public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.save(tenantInfoDTO));
     }
 
@@ -77,7 +78,7 @@ public class TenantInfoController {
     @PreAuthorize("@auth.hasPermission('tenant:edit')")
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
-            @RequestBody @Validated TenantInfoDTO tenantInfoDTO) {
+            @RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
         tenantInfoDTO.setId(id);
         this.tenantInfoService.edit(tenantInfoDTO);
         return ResponseHelper.success();

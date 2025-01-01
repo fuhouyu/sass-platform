@@ -13,5 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.constants;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
+/**
+ * <p>
+ * http 请求头常量
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/1/1 18:20
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class HttpRequestHeaderConstant {
+
+    /**
+     * 用户bind token
+     */
+    public static final String USER_BIND = "X-User-Bind";
+
+    /**
+     * 用户第三方账号登录时的临时token
+     */
+    public static final String USER_BIND_TOKEN = "X-User-Bind-Temporary-Token";
+}

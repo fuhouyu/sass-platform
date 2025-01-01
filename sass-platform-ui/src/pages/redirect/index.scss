@@ -1,0 +1,78 @@
+/*
+ * Copyright 2024-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// 账号绑定modal
+.account-bind-modal {
+  .ant-modal-content {
+    padding: 0;
+  }
+
+  .ant-modal-title {
+    text-align: center;
+    background-color: #F7F7F7;
+    padding: 1rem 0;
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+
+  .ant-modal-close {
+    top: .5rem;
+    padding: 0;
+  }
+
+  .ant-modal-body {
+    margin: 0 auto;
+    padding: 1.25rem 4rem !important;
+  }
+
+  .account-icon {
+    text-align: center;
+
+    span {
+      font-size: 3.5rem;
+      text-align: center;
+    }
+  }
+
+
+  .account-bind-form {
+
+    .ant-input {
+      height: 2.5rem;
+      line-height: 2.5rem;
+      padding: 0 0.75rem;
+    }
+
+    button {
+      height: 3.25rem;
+      line-height: 3.25rem;
+      font-size: 1rem;
+    }
+  }
+}
+
+.tips {
+  display: flex;
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-content: end;
+
+  p {
+    font-weight: lighter;
+    font-size: 1rem;
+  }
+}
+

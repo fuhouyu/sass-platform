@@ -68,6 +68,7 @@ const EnUS = {
         weLinkLoginTitle: 'Please use<span> WeLink QR </span>Login',
         weLinkQRTips: 'Open the <span>WeLink app</span> - Tap the "<span>+</span>" icon in the top right corner - Tap "<span>Scan QR Code</span>"',
         loginButton: 'Login',
+        loginAndBindButton: 'Login And Bind',
     },
     // 菜单
     Menu: {
@@ -148,9 +149,15 @@ const EnUS = {
         bind: 'Bind Account',
         unbind: 'Unbind Account',
         bindSuccess: 'Bind Success',
+        oldPassword: 'Old Password',
         oldPasswordPlaceholder: 'Please input old password',
+        newPassword: 'New Password',
         newPasswordPlaceholder: 'Please input new password',
+        confirmPassword: 'Confirm Password',
         confirmPasswordPlaceholder: 'Please input confirm password',
+        thirdPartyAccountBind: 'Third Party Account Bind',
+        loginAndBindTips: 'Login platform account to associate third-party account',
+        bindAccountTips: 'No account? Please contact the administrator',
     },
     User: {
         list: 'User List',

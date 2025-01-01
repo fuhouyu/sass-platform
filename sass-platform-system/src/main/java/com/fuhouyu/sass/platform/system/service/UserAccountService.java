@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
@@ -48,4 +49,12 @@ public interface UserAccountService {
      * 退出登录
      */
     void logout();
+
+    /**
+     * 登录并绑定第三方账号
+     *
+     * @param thirdPartyBindPlatformDTO 第三方账号dto对象
+     * @return 用户token
+     */
+    UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO);
 }

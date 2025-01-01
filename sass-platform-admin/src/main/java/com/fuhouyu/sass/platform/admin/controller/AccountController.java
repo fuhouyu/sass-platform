@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.dto.account.UpdatePasswordDTO;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -57,7 +58,7 @@ public class AccountController {
     @GetMapping("/me")
     @Operation(summary = "获取当前登录用户关联的账号信息")
     public BaseResponse<List<AccountDTO>> getAccountListForMe() {
-        return ResponseHelper.success(this.accountService.getAccountListForMe(ContextHolderStrategy.getContext().getUser().getId()));
+        return ResponseHelper.success(this.accountService.findAccountListForMe(ContextHolderStrategy.getContext().getUser().getId()));
     }
 
     /**
@@ -68,7 +69,7 @@ public class AccountController {
      */
     @PutMapping("/password")
     @Operation(summary = "修改当前用户密码")
-    public BaseResponse<Void> updatePassword(@RequestBody @Validated UpdatePasswordDTO updatePasswordDTO) {
+    public BaseResponse<Void> updatePassword(@RequestBody @Valid UpdatePasswordDTO updatePasswordDTO) {
         this.accountService.updatePassword(updatePasswordDTO);
         return ResponseHelper.success();
     }

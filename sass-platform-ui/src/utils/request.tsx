@@ -19,6 +19,7 @@ import {getAccessToken, removeToken} from "@/utils";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {router} from "@/routes/routers";
 import {message} from "antd";
+import {UserBind} from "@/model/authentication.tsx";
 
 
 const request: AxiosInstance = axios.create({
@@ -49,18 +50,32 @@ request.interceptors.response.use(async function (response) {
     if (response.data.isSuccess) {
         // 如果 isSuccess 为 true，返回 data 数据
         return response.data.data;
-    } else {
-        // 如果 isSuccess 为 false，抛出异常
-        if (response.data.code === 402) {
-            removeToken()
-            const pathname = router.state.location.pathname;
-            router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
-            return
-        }
-        const error = new Error(response.data.message || '请求失败');
-        await message.error(error.message);
-        return Promise.reject(error);
     }
+    // 如果 isSuccess 为 false，抛出异常
+    if (response.data.code === 402) {
+        removeToken()
+        const pathname = router.state.location.pathname;
+        router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+        return
+    }
+    // 如果是1001，表示用户需要绑定
+    if (response.data.code === 1001) {
+        const isUserBind = response.headers['x-user-bind']; // 是否绑定账号
+        const userBindToken = response.headers['x-user-bind-temporary-token']; // 绑定账号临时token
+        console.log(response)
+        console.log(isUserBind)
+        if (isUserBind) {
+            return {
+                isUserBind,
+                userBindToken
+            } as UserBind;
+        }
+    }
+
+    const error = new Error(response.data.message || '请求失败');
+    await message.error(error.message);
+    return Promise.reject(error);
+
 }, function (error: Error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     return Promise.reject(error);

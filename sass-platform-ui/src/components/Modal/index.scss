@@ -14,34 +14,39 @@
  * limitations under the License.
  */
 
-.ant-modal-content {
-  padding: 0 !important;
-}
+.modal-container {
+  .ant-modal-content {
+    padding: 0;
+  }
 
-.ant-modal-title {
-  padding: 1.25rem 2rem !important;
-  font-size: 1.25rem !important;
-  line-height: 1.25rem !important;
-  color: white !important;
-  background: linear-gradient(to right, #2475FB, #2472FB)
-}
+  .ant-modal-title {
+    padding: 1.25rem 2rem;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    color: white;
+    background: linear-gradient(to right, #2475FB, #2472FB)
+  }
 
-.ant-modal-title:before {
-  content: '';
-  display: inline-block;
-  width: 0.15625rem;
-  height: 1.25rem;
-  background-color: white;
-  position: relative;
-  top: 3px;
-  margin-right: 0.5rem;
-}
+  .ant-modal-title:before {
+    content: '';
+    display: inline-block;
+    width: 0.15625rem;
+    height: 1.25rem;
+    background-color: white;
+    position: relative;
+    top: 3px;
+    margin-right: 0.5rem;
+  }
 
-.ant-modal-footer {
-  padding: 1.25rem 1.5rem !important;
-}
+  .ant-modal-footer {
+    padding: 1.25rem 1.5rem !important;
+  }
 
-.ant-modal-body {
-  padding: 1.25rem 1.5rem !important;
-  justify-content: center !important;
+  .ant-modal-body {
+    padding: 1.25rem 1.5rem !important;
+  }
+
+  .ant-modal-close {
+    top: 1rem;
+  }
 }

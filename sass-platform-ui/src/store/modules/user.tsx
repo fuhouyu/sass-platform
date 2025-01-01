@@ -16,12 +16,12 @@
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Userinfo,} from "@/model/user";
-import {UserAuthentication, UserToken} from "@/model/authentication";
-import {loginApi, logoutApi} from "@/apis/authentication";
+import {ThirdPartyBindAuthentication, UserAuthentication, UserToken} from "@/model/authentication";
 import {Menu} from "@/model/menu";
 import {userApi} from "@/apis/user";
 import {permissionApi} from "@/apis/permission";
 import {removeToken, storeToken} from "@/utils";
+import {authenticationApi} from "@/apis/authentication.tsx";
 
 
 const userStore = createSlice({
@@ -67,11 +67,26 @@ const userStore = createSlice({
  */
 const fetchLogin = (loginForm: UserAuthentication) => {
     return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
-        const token = await loginApi(loginForm);
-        if (token) {
-            dispatch(userStore.actions.storeToken(token));
+        const authenticationRes = await authenticationApi.loginApi(loginForm);
+        if ('isUserBind' in authenticationRes) {
+            return authenticationRes;
         }
+        if (authenticationRes) {
+            dispatch(userStore.actions.storeToken(authenticationRes));
+        }
+    }
+}
 
+
+/**
+ * 用户登录且绑定
+ */
+const fetchLoginBind = (loginForm: ThirdPartyBindAuthentication) => {
+    return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
+        const authenticationRes = await authenticationApi.loginBindApi(loginForm);
+        if (authenticationRes) {
+            dispatch(userStore.actions.storeToken(authenticationRes));
+        }
     }
 }
 
@@ -104,7 +119,7 @@ const fetchUserMenus = () => {
  */
 const fetchLogout = () => {
     return async (dispatch: (arg0: { payload: undefined; type: `user/${string}` }) => void) => {
-        await logoutApi();
+        await authenticationApi.logoutApi();
         dispatch(userStore.actions.logout())
         removeToken()
     }
@@ -127,7 +142,8 @@ export {
     fetchLogout,
     fetchUserinfo,
     fetchEditUserinfo,
-    fetchUserMenus
+    fetchUserMenus,
+    fetchLoginBind
 };
 
 export default userStore.reducer;

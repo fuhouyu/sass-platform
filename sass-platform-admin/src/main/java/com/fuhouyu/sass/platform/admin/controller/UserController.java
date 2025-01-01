@@ -27,6 +27,7 @@ import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,7 @@ public class UserController {
      */
     @PutMapping
     @Operation(summary = "修改当前的用户详情")
-    public BaseResponse<Void> editUserinfo(@Validated @RequestBody UserDTO userDTO) {
+    public BaseResponse<Void> editUserinfo(@Valid @RequestBody UserDTO userDTO) {
         userDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
         this.userService.edit(userDTO);
         return ResponseHelper.success();
@@ -110,7 +111,7 @@ public class UserController {
     @PreAuthorize("@auth.hasPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Validated @RequestBody UserDTO userDTO) {
+            @Valid @RequestBody UserDTO userDTO) {
         userDTO.setId(id);
         this.userService.edit(userDTO);
         return ResponseHelper.success();

@@ -64,7 +64,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountIdDTO save(AccountDTO accountDTO) {
-        accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
+        if (Objects.nonNull(accountDTO.getCredentials())) {
+            accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
+        }
         accountDTO.setIsEnabled(true);
         this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
         return new AccountIdDTO(accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
@@ -117,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountDTO> getAccountListForMe(Long userId) {
+    public List<AccountDTO> findAccountListForMe(Long userId) {
         List<Accounts> results = this.accountMapper.queryAccountListForMe(userId);
         return ACCOUNT_ASSEMBLER.toDTO(results);
     }
@@ -139,6 +141,11 @@ public class AccountServiceImpl implements AccountService {
         }
         account.setCredentials(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
         this.accountMapper.update(account);
+    }
+
+    @Override
+    public AccountDTO findAccountByUserIdAndType(Long userId, AccountTypeEnum accountTypeEnum) {
+        return ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryAccountByUserIdAndType(userId, accountTypeEnum.name()));
     }
 
     @Override

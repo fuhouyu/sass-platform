@@ -66,6 +66,7 @@ const ZhCN = {
         weLinkLoginTitle: '请使用<span>WeLink 扫码</span>登录',
         weLinkQRTips: "打开<span>WeLink APP</span> - 点击右上角“<span>+</span>”图标 - 点击<span>扫一扫</span>",
         loginButton: '登录',
+        loginAndBindButton: '登录并绑定',
     },
     // 租户
     Tenant: {
@@ -116,9 +117,17 @@ const ZhCN = {
         unbind: '取消绑定',
         unbindAccountConfirm: '确定取消绑定？',
         bindSuccess: '绑定成功',
+        oldPassword: '旧密码',
         oldPasswordPlaceholder: '请输入旧密码',
+        newPassword: '新密码',
         newPasswordPlaceholder: '请输入新密码',
+        confirmPassword: '确认密码',
         confirmPasswordPlaceholder: '请再次输入新密码',
+        thirdPartyAccountBind: '第三方账号绑定',
+        loginAndBindTips: '登录平台账号以关联第三方账号',
+        bindAccountTips: '没有账号? 请联系管理员',
+
+
     },
     User: {
         list: '用户列表',
