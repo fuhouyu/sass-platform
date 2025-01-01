@@ -33,7 +33,8 @@ const EnUS = {
         no: 'No',
         enabled: 'Enabled',
         disabled: 'Disabled',
-
+        paramsError: 'Params Error',
+        pending: 'Processing, please wait...'
     },
     // button
     Button: {
@@ -135,6 +136,14 @@ const EnUS = {
         routeParams: 'Route Params',
         routeParamsPlaceholder: 'Please enter Route Params',
         displayStatus: 'Display Status',
+    },
+    Account: {
+        thirdPartyAccount: 'Third Party Account',
+        welink: 'WeLink Account',
+        alreadyBind: 'Already Bind',
+        bind: 'Bind Account',
+        unbind: 'Unbind Account',
+        bindSuccess: 'Bind Success',
     },
     User: {
         list: 'User List',

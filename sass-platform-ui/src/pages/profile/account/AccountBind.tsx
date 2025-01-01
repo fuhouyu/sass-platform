@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-import {Layout as AntdLayout} from "antd";
-import {Content} from "antd/es/layout/layout";
-import {Outlet} from "react-router-dom";
-import {Menu} from "@/layouts/menu/menu";
-import {Header} from "@/layouts/header/header";
-import './index.scss'
 
-export const Layout = () => {
+import {WeLinkLogin} from "@/components";
+
+/**
+ * 账号绑定
+ * @constructor
+ */
+export const AccountBind = () => {
     return (
-            <AntdLayout className="layout-container">
-                <Menu/>
-                <AntdLayout>
-                    <Header/>
-                    <Content className="layout-content">
-                        <Outlet/>
-                    </Content>
-                </AntdLayout>
-            </AntdLayout>
+        <WeLinkLogin redirectType={'bind'}/>
     )
 }

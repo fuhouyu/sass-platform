@@ -24,11 +24,13 @@ import {BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constant
 import {message, Spin} from "antd";
 import {useAppDispatch} from "@/store";
 import {accountApi} from "@/apis/account.tsx";
+import {useTranslation} from "react-i18next";
 
 export const PostThirdPartyRedirect = () => {
 
     const [searchParams] = useSearchParams();
     const location = useLocation();
+    const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
     /**
@@ -59,13 +61,14 @@ export const PostThirdPartyRedirect = () => {
         const code = searchParams.get('code')!;
         const accountType = searchParams.get('accountType')!;
         if (!code || !accountType) {
-            message.error('参数错误').then();
+            message.error(t('Common.paramsError')).then();
             router.navigate(BASE_LOGIN_URL).then();
             return;
         }
         if (redirectType == 'bind') {
             bindAccount(accountType, code).then(() => {
-                message.success('绑定成功').then();
+                message.success(t('Common.success')).then();
+                window.close();
             });
         } else {
             login(accountType, code);
@@ -75,6 +78,6 @@ export const PostThirdPartyRedirect = () => {
 
 
     return (
-        <Spin delay={500} tip="处理中，请稍候..." fullscreen={true} size="large" className="page-loading"/>
+        <Spin delay={500} tip={t('Common.pending')} fullscreen={true} size="large" className="page-loading"/>
     )
 };

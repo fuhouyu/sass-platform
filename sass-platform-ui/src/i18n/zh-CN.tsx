@@ -33,6 +33,8 @@ const ZhCN = {
         no: '否',
         enabled: '启用',
         disabled: '禁用',
+        paramsError: '参数错误',
+        pending: '处理中，请稍候...'
     },
     // button
     Button: {
@@ -101,6 +103,14 @@ const ZhCN = {
         dictItem: '字典项',
         profile: '个人资料',
         accountSettings: '账号设置',
+    },
+    Account: {
+        thirdPartyAccount: '第三方账号',
+        welink: 'WeLink 账号',
+        bind: '绑定账号',
+        alreadyBind: '已绑定',
+        unbind: '取消绑定',
+        bindSuccess: '绑定成功',
     },
     User: {
         list: '用户列表',
@@ -196,9 +206,6 @@ const ZhCN = {
         codePlaceholder: '请输入字典项编码',
         codeTips: '字典项编码，当前字典类型下唯一'
     },
-    Profile: {
-        thirtyPartyAccount: '第三方账号绑定',
-    }
 }
 
 export {
