@@ -61,7 +61,7 @@ export const Login: React.FC = () => {
         }).finally(() => {
             setTimeout(() => {
                 setLoginButtonLoading(false);
-            }, 1000)
+            }, 500)
         })
     };
 

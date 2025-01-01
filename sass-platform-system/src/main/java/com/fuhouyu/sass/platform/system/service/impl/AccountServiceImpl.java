@@ -15,10 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.assembler.AccountsAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UpdatePasswordDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.entity.AccountId;
@@ -115,13 +118,27 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDTO> getAccountListForMe(Long userId) {
-        List<Accounts> results = this.accountMapper.getAccountListForMe(userId);
+        List<Accounts> results = this.accountMapper.queryAccountListForMe(userId);
         return ACCOUNT_ASSEMBLER.toDTO(results);
     }
 
     @Override
     public Function<PageQueryDTO, List<AccountDTO>> getPageResult() {
         return p -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
+    }
+
+    @Override
+    public void updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+        if (!Objects.equals(updatePasswordDTO.getNewPassword(), updatePasswordDTO.getConfirmPassword())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "两次输入的密码不一致");
+        }
+        Accounts account = this.accountMapper.queryAccountByUserIdAndType(ContextHolderStrategy.getContext().getUser().getId(),
+                AccountTypeEnum.PASSWORD.name());
+        if (!passwordEncoder.matches(updatePasswordDTO.getOldPassword(), account.getCredentials())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "原始密码不正确");
+        }
+        account.setCredentials(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
+        this.accountMapper.update(account);
     }
 
     @Override

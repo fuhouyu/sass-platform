@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {PermissionButton} from "./Button/permissionButton";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {Modal} from "./Modal/Modal";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin,
-    PermissionButton,
-    Modal
+import {Modal as AntdModal, ModalProps} from "antd";
+import React from "react";
+import './index.scss'
+import {IconFont} from "@/components";
+
+export const Modal: React.FC<ModalProps> = (modalProps: ModalProps) => {
+    return (
+        <AntdModal
+            {...modalProps}
+            closeIcon={<IconFont type="i-close1" style={{
+                fontSize: '1.5rem',
+                color: 'white'
+            }}/>}
+            destroyOnClose
+            className={'modal-container'}
+        >
+        </AntdModal>
+    )
 }

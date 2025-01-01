@@ -17,13 +17,13 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictItem as DictItemModel} from "@/model/dictItem";
-import {Button, Form, Input, InputNumber, message, Modal, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
-import {IconFont, PageList, PermissionButton} from "@/components";
+import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
 import {DictType} from "@/model/dictType";

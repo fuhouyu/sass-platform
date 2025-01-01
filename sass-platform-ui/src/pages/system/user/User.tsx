@@ -16,8 +16,8 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Modal, Radio, Row, Select, TableColumnsType} from "antd";
-import {IconFont, PageList, PermissionButton} from "@/components";
+import {Button, Col, Form, Input, message, Radio, Row, Select, TableColumnsType} from "antd";
+import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";

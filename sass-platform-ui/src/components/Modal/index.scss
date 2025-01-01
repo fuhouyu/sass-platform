@@ -14,24 +14,34 @@
  * limitations under the License.
  */
 
-import {Bread} from "./Bread/bread";
-import {PermissionButton} from "./Button/permissionButton";
-import {FormTree} from "./FormTree/formTree";
-import {IconFont} from "./Iconfont/iconfont";
-import {PageList, SearchHeader, Table} from "./List";
-import {Modal} from "./Modal/Modal";
-import {PageLoading} from "./PageLoading/pageLoading";
-import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+.ant-modal-content {
+  padding: 0 !important;
+}
 
-export {
-    IconFont,
-    Table,
-    PageList,
-    SearchHeader,
-    Bread,
-    PageLoading,
-    FormTree,
-    WeLinkLogin,
-    PermissionButton,
-    Modal
+.ant-modal-title {
+  padding: 1.25rem 2rem !important;
+  font-size: 1.25rem !important;
+  line-height: 1.25rem !important;
+  color: white !important;
+  background: linear-gradient(to right, #2475FB, #2472FB)
+}
+
+.ant-modal-title:before {
+  content: '';
+  display: inline-block;
+  width: 0.15625rem;
+  height: 1.25rem;
+  background-color: white;
+  position: relative;
+  top: 3px;
+  margin-right: 0.5rem;
+}
+
+.ant-modal-footer {
+  padding: 1.25rem 1.5rem !important;
+}
+
+.ant-modal-body {
+  padding: 1.25rem 1.5rem !important;
+  justify-content: center !important;
 }

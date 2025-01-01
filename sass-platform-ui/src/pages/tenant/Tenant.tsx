@@ -16,9 +16,9 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {Button, Form, Input, message, Modal, Radio, TableColumnsType, Tag} from "antd";
+import {Button, Form, Input, message, Radio, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {FormTree, IconFont, PageList, PermissionButton} from "@/components";
+import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {Menu} from "@/model/menu";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'

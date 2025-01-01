@@ -24,7 +24,6 @@ import {
     Input,
     InputNumber,
     message,
-    Modal,
     Radio,
     Row,
     TableColumnsType,
@@ -36,7 +35,7 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {IconFont, PermissionButton, SearchHeader, Table} from "@/components";
+import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";

@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.dto.account.UpdatePasswordDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,5 +62,12 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      */
     void saveThirdPartyAccount(AccountIdDTO accountIdDTO);
 
+
+    /**
+     * 修改当前用户的密码
+     *
+     * @param updatePasswordDTO 密码dto对象
+     */
+    void updatePassword(UpdatePasswordDTO updatePasswordDTO);
 
 }

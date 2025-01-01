@@ -16,12 +16,12 @@
 
 import React, {Key, useEffect, useState} from "react";
 import './index.scss'
-import {Button, Form, Input, InputNumber, message, Modal, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {FormTree, IconFont, PageList, PermissionButton} from "@/components";
+import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import {useTranslation} from "react-i18next";
 import {permissionApi} from "@/apis/permission";

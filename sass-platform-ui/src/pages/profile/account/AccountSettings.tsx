@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 import './index.scss'
-import {Button, Card, Flex} from "antd";
-import {IconFont} from "@/components";
-import {useEffect, useState} from "react";
+import {Button, Card, Flex, Form, Input, Modal as AntdModal, Space} from "antd";
+import {IconFont, Modal} from "@/components";
+import React, {useEffect, useState} from "react";
 import {accountApi} from "@/apis/account.tsx";
 import {Account, AccountType} from "@/model/account.tsx";
 import {useTranslation} from "react-i18next";
+import {ExclamationCircleFilled} from "@ant-design/icons";
+
+interface UpdatePasswordForm {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
 
 /**
  * 账号设置
@@ -29,8 +36,11 @@ export const AccountSettings = () => {
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const weLinkBind = accounts.find(account => account.accountType === AccountType.WELINK);
+    const [openModal, setOpenModal] = useState(false);
+    const [isModalButtonLoading, setIsModalButtonLoading] = useState(false);
+    const [passwordForm] = Form.useForm<UpdatePasswordForm>();
     const {t} = useTranslation()
-
+    const {confirm} = AntdModal;
     const getAccounts = async () => {
         setAccounts(await accountApi.getAccountForMe());
     }
@@ -38,11 +48,33 @@ export const AccountSettings = () => {
         getAccounts().then();
     }, []);
 
+    /**
+     * 显示取消绑定的表单
+     */
+    const showUnbindConfirm = () => {
+        confirm({
+            title: t('Account.unbind'),
+            icon: <ExclamationCircleFilled/>,
+            content: t('Account.unbindAccountConfirm'),
+            onOk() {
+                unbind().then();
+            },
+            closable: true,
+            destroyOnClose: true
+        });
+    };
+
+    /**
+     * 取消绑定账号
+     */
     const unbind = async () => {
         await accountApi.unbindThirdPartyAccount(AccountType.WELINK, weLinkBind!.account);
         await getAccounts();
     }
 
+    /**
+     * 绑定账号
+     */
     const bindAccount = () => {
         const width = 400; // 弹窗宽度
         const height = 500; // 弹窗高度
@@ -62,8 +94,40 @@ export const AccountSettings = () => {
         }, 500);
     }
 
+
+    /**
+     * 修改密码
+     */
+    const updatePassword = async () => {
+        await passwordForm.validateFields();
+        setIsModalButtonLoading(true);
+        const values = passwordForm.getFieldsValue();
+        try {
+            await accountApi.updatePasswordMe(values);
+            setOpenModal(false);
+        } finally {
+            setIsModalButtonLoading(false);
+        }
+    }
+
+
     return (
         <div className={'account-container'}>
+            <Card title={t('Account.personal')} bordered={false}>
+                <ul className={'account-settings'}>
+                    <li>
+                        <Space>
+                            <p>{t('Account.loginPassword')}</p>
+
+
+                            <Input.Password
+                                prefix={<IconFont type={'i-mima'}/>}
+                                value={'******'} disabled/>
+                            <Button onClick={() => setOpenModal(true)}>{t('Account.updatePassword')}</Button>
+                        </Space>
+                    </li>
+                </ul>
+            </Card>
             <Card title={t('Account.thirdPartyAccount')} bordered={false}>
                 <ul>
                     <li>
@@ -77,7 +141,7 @@ export const AccountSettings = () => {
                                 </div>
                             </div>
                             <Button onClick={() =>
-                                weLinkBind ? unbind() :
+                                weLinkBind ? showUnbindConfirm() :
                                     bindAccount()
                             }
                                     icon={<IconFont type={weLinkBind ? 'i-jiechubangding' : 'i-bangdingpingtai'}/>}>
@@ -87,6 +151,55 @@ export const AccountSettings = () => {
                     </li>
                 </ul>
             </Card>
+
+            <Modal
+                title={t('Account.updatePassword')}
+                open={openModal}
+                onCancel={() => setOpenModal(false)}
+                footer={[
+                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                            onClick={updatePassword}>{t('Button.submit')}</Button>,
+                    <Button key='onCancel' onClick={() => setOpenModal(false)}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '1.5rem',
+                }}/>}
+                destroyOnClose={true}
+            >
+                <Form
+                    form={passwordForm}
+                    style={{maxWidth: 400}}
+                    name="updatePassword"
+                    labelAlign={'right'}
+                    labelCol={{span: 8}}
+                    clearOnDestroy={true}
+                    initialValues={{remember: true}}
+                >
+
+                    <Form.Item<UpdatePasswordForm>
+                        label="旧密码"
+                        name="oldPassword"
+                        rules={[{required: true, message: t('Account.oldPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.oldPasswordPlaceholder')}/>
+                    </Form.Item>
+                    <Form.Item<UpdatePasswordForm>
+                        label="新密码"
+                        name="newPassword"
+                        rules={[{required: true, message: t('Account.newPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.newPasswordPlaceholder')}/>
+                    </Form.Item>
+
+                    <Form.Item<UpdatePasswordForm>
+                        label="确认密码"
+                        name="confirmPassword"
+                        rules={[{required: true, message: t('Account.confirmPasswordPlaceholder')}]}
+                    >
+                        <Input.Password placeholder={t('Account.confirmPasswordPlaceholder')}/>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
