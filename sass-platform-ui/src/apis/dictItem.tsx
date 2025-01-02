@@ -33,6 +33,13 @@ class DictItemApi extends DefaultApiImpl<DictItem> {
      */
     checkItemCodeExists: (dictCode: string, itemCode: string) => Promise<boolean> = (dictCode: string, itemCode: string): Promise<boolean> =>
         request.get(`${this.baseUrl}/exists?dictCode=${dictCode}&itemCode=${itemCode}`)
+
+    /**
+     * 通过字典编码获取字典项
+     * @param dictCode 字典编码
+     */
+    getDictItemListByDictCode: (dictCode: string) => Promise<DictItem[]> = (dictCode: string): Promise<DictItem[]> =>
+        request.get(`${this.baseUrl}/list`, {params: {dictCode}})
 }
 
 export const dictItemApi: DictItemApi = new DictItemApi();

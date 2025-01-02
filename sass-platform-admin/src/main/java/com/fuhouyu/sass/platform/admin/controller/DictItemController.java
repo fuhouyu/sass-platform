@@ -140,4 +140,18 @@ public class DictItemController {
                                                  @RequestParam("itemCode") String itemCode) {
         return ResponseHelper.success(this.dictItemService.checkItemCodeExists(dictCode, itemCode));
     }
+
+
+    /**
+     * 通过字典编码获取字典项列表
+     *
+     * @param dictCode 字典编码
+     * @return 字典项列表
+     */
+    @GetMapping("/list")
+    @Operation(summary = "通过字典编码获取字典项列表")
+    @Parameter(name = "dictCode", description = "字典编码")
+    public BaseResponse<List<DictItemDTO>> findDictItemList(@RequestParam("dictCode") String dictCode) {
+        return ResponseHelper.success(this.dictItemService.findDictItemList(dictCode));
+    }
 }

@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 字典项接口
@@ -37,4 +39,12 @@ public interface DictItemService extends BaseService<Long, DictItemDTO> {
      */
     Boolean checkItemCodeExists(String dictCode,
                                 String itemCode);
+
+    /**
+     * 通过字典编码查询字典项列表
+     *
+     * @param dictCode 字典编码
+     * @return 字典项列表
+     */
+    List<DictItemDTO> findDictItemList(String dictCode);
 }

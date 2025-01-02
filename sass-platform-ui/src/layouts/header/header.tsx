@@ -126,9 +126,8 @@ export const Header = () => {
                                     你好, {realName}
                                     <Image
                                         className="avatar"
-                                        src="error"
                                         preview={false}
-                                        fallback="https://img.fuhouyu.com/2.jpeg"
+                                        fallback="https://oss.fuhouyu.com/2.jpeg"
                                     />
                                     <DownOutlined/>
                                 </Space>

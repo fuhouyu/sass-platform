@@ -21,6 +21,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.DictItemAssembler;
 import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.dto.dict.DictItemPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.DictItem;
 import com.fuhouyu.sass.platform.system.mapper.DictItemMapper;
@@ -59,6 +60,13 @@ public class DictItemServiceImpl implements DictItemService {
     @Override
     public Boolean checkItemCodeExists(String dictCode, String itemCode) {
         return Objects.nonNull(dictItemMapper.queryByDictCodeAndItemCode(dictCode, itemCode));
+    }
+
+    @Override
+    public List<DictItemDTO> findDictItemList(String dictCode) {
+        DictItemPageQueryDTO pageQueryDTO = new DictItemPageQueryDTO();
+        pageQueryDTO.setDictCode(dictCode);
+        return DICT_ITEM_ASSEMBLER.toDTO(this.dictItemMapper.queryList(pageQueryDTO));
     }
 
     @Override
