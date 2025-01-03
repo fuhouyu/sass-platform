@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ENC(h68wJyu6X3ZHLJqUYalNHbQqeGFlOz5vBeVWH1suZdhQxl7LDd4HJFhN2AOIwMyEtbxoZM9+Nsn7WhZhWA4Yk+OvYgmlOVvX2z9knRdn88d0hPA2XS/TS6t6FXuXbSsyz5J4VZ3w/zKHazVWQvzreP3NDigV1z1cNKgAjs5kQMU=)
-    username: ENC(vvYG+yd7uhdG+nHjmony1jXyq5iBwSCKteYmXSc0KbKm8JNMQ04DsqHougMTnlyy)
-    password: ENC(xZ2Wj+sKHpJsl2AnKm2klATW28QaI12vG3Tv5uxJSeBY4g1mlkg9t5dTRjKfDw0c)
+    url: ENC(aG+vcXvSuJp2t3utf9bOJFPkQGTwu6odQEArFJ2rCFU9woDE34onQHrgrZxf32VU3Hm5e8ztA38eN+DP9iYDIG57cjTVKp5VM9O+LfTeJoL22Eaia4eGHKL/9fK6R1U1)
+    username: ENC(2Uo9eOpR9V28U24F/9XfDHnCaG+t2lPaPUk04XFBUmi9/55WPDg2PJaBUrDMNnKU)
+    password: ENC(nwT7w8xRFdJku4Q0ikY0xTEeeIFresONmyhjZ0qFVw0jBRNuda+U92Zd5bw/bvT6)
     type: com.alibaba.druid.pool.DruidDataSource

@@ -6,9 +6,9 @@ spring:
       - postgresql
   data:
     redis:
-      password: ENC(ptfFQ+R/E+A+0cBOV4Yo4V0gna5DP3a/cb1uFdMnV3s7YS71YgJQOcJkJs9QOKQb+qryB460wlpsb5+RtonFZ/yuS6tPE+LgDb5x5b2SxA4=)
-      host: ENC(+B2T5HTJsU1PmufEKq6Ms3IC579/zCKfErGzBotUfLYBeEqx3eU4fQGsPFT0uMeq+MEqLgyBirPo7Sk4Y01SYflKQHYjCylKAJ5rVEMUWHpPZP54iZEiT1HPaO84YDE8)
-      port: 18421
+      password: ENC(e6iMIrKwnRc8PSiAY9jaCDuGf5CGiMcpC35GBtvKVrGjSjkgQFfKJxiu3rEeAE1s)
+      host: ENC(J35ERjUJ4z8f5dWg/dK4Li4mhBpoVwxu4jZLLcpi4nEkPoOD0g4iCKar5KLZIRGQ)
+      port: 16379
 base:
   framework:
     cache:
