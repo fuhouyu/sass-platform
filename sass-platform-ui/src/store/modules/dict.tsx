@@ -17,6 +17,7 @@
 
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {DictItem} from "@/model/dictItem.tsx";
+import {dictItemApi} from "@/apis/dictItem.tsx";
 
 
 /**
@@ -24,13 +25,34 @@ import {DictItem} from "@/model/dictItem.tsx";
  */
 export const dictStore = createSlice({
     name: 'dict',
-    initialState: {
-        dictTypeItemMapping: {} as Record<string, DictItem[]>,
-    },
     reducers: {
         storeDictItem: (state, action: PayloadAction<Record<string, DictItem[]>>) => {
-            state.dictTypeItemMapping = action.payload;
+            state.dictTypeItemMapping = {
+                ...state.dictTypeItemMapping,
+                ...action.payload
+            };
             return state;
         },
+
+    },
+    initialState: {
+        dictTypeItemMapping: {} as Record<string, DictItem[]>,
     }
 });
+
+/**
+ * 获取字典项映射
+ * @param dictCodes 字典编码，以,分隔
+ */
+const fetchDictItemTypeMapping = (dictCodes: string) => {
+    return async (dispatch: (arg0: { payload: Record<string, DictItem[]>; type: `dict/${string}` }) => void) => {
+        const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(dictCodes);
+        dispatch(dictStore.actions.storeDictItem(dictItemMapping));
+    }
+}
+
+export {
+    fetchDictItemTypeMapping
+}
+
+export default dictStore.reducer;

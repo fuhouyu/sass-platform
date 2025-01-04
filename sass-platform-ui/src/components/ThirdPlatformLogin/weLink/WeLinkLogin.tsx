@@ -84,7 +84,6 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
         if (origin == "https://login.welink.huaweicloud.com") { //判断是否来自WeLink wlLogin扫码事件。 测试环境先注释，上线后需放开
             const loginCode = event.data;
             //拿到loginCode后就可以在这里构造跳转链接进行跳转了
-            console.log("loginCode", loginCode);
             redirectWithCode(loginCode);
         }
     }, [redirectWithCode]);

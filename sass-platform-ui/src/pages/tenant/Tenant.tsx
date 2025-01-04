@@ -32,6 +32,7 @@ import {Role as RoleModel} from "@/model/role";
 import {permissionApi} from "@/apis/permission";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useDictItem} from "@/hooks/useDictItem.tsx";
 
 /**
  * 租户组件
@@ -40,6 +41,7 @@ import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
+    const {getDictItemByDictCode} = useDictItem('TENANT_TYPE');
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -132,6 +134,7 @@ export const Tenant: React.FC = () => {
      * 分页查询结果
      */
     useEffect(() => {
+        console.log(getDictItemByDictCode('TENANT_TYPE'));
         tenantApi.pageInfoListApi(pageQuery)
             .then((res: PageResult<TenantInfo>) => {
                 setPageResult({...res});

@@ -30,11 +30,14 @@ import com.fuhouyu.sass.platform.system.service.DictTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -67,6 +70,13 @@ public class DictItemServiceImpl implements DictItemService {
         DictItemPageQueryDTO pageQueryDTO = new DictItemPageQueryDTO();
         pageQueryDTO.setDictCode(dictCode);
         return DICT_ITEM_ASSEMBLER.toDTO(this.dictItemMapper.queryList(pageQueryDTO));
+    }
+
+    @Override
+    public Map<String, List<DictItemDTO>> findDictCodeItemMap(String dictCodes) {
+        Collection<String> dictCodeList = StringUtils.commaDelimitedListToSet(dictCodes);
+        List<DictItemDTO> list = DICT_ITEM_ASSEMBLER.toDTO(this.dictItemMapper.queryListByDictCodes(dictCodeList));
+        return list.stream().collect(Collectors.groupingBy(DictItemDTO::getDictCode));
     }
 
     @Override

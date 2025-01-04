@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.service;
 import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -47,4 +48,12 @@ public interface DictItemService extends BaseService<Long, DictItemDTO> {
      * @return 字典项列表
      */
     List<DictItemDTO> findDictItemList(String dictCode);
+
+    /**
+     * 通过字典编码查询字典项map
+     *
+     * @param dictCodes 字典编码字符串
+     * @return 字典项map，键为字典编码，值为字典项列表
+     */
+    Map<String, List<DictItemDTO>> findDictCodeItemMap(String dictCodes);
 }
