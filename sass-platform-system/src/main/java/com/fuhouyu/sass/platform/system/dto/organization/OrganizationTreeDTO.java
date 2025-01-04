@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.permission;
+package com.fuhouyu.sass.platform.system.dto.organization;
 
 import com.fuhouyu.sass.platform.common.BaseTree;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,18 +24,17 @@ import java.util.List;
 
 /**
  * <p>
- * 权限详情树dto对象
+ * 组织树dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:05
+ * @since 2025/1/4 22:46
  */
 @Schema(name = "PermissionTreeDTO", description = "权限树详情dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PermissionTreeDTO extends PermissionDTO implements BaseTree<PermissionTreeDTO> {
+public class OrganizationTreeDTO extends OrganizationDTO implements BaseTree<OrganizationTreeDTO> {
 
-    @Schema(name = "children", description = "权限树子集", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<PermissionTreeDTO> children;
-
+    @Schema(name = "children", description = "组织树子集")
+    private List<OrganizationTreeDTO> children;
 }

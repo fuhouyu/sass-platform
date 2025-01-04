@@ -273,22 +273,22 @@ VALUES (23, 2, 'permissionManage', 'system:permission:list', 3, 'i-icon-quanxian
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (231, 23, 'permissionQuery', 'system:permission:query', 1, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (231, 23, 'detail', 'system:permission:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (232, 23, 'permissionAdd', 'system:permission:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (232, 23, 'add', 'system:permission:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (233, 23, 'permissionEdit', 'system:permission:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (233, 23, 'edit', 'system:permission:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (234, 23, 'permissionDelete', 'system:permission:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (234, 23, 'delete', 'system:permission:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 
 -- 用户管理
@@ -300,22 +300,22 @@ VALUES (21, 2, 'userManage', 'system:user:list', 1, 'i-yonghu1', 'user', 'system
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (211, 21, 'userQuery', 'system:user:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (211, 21, 'detail', 'system:user:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (212, 21, 'userAdd', 'system:user:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (212, 21, 'add', 'system:user:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (213, 21, 'userEdit', 'system:user:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (213, 21, 'edit', 'system:user:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (214, 21, 'userDelete', 'system:user:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (214, 21, 'delete', 'system:user:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 字典管理
@@ -327,22 +327,22 @@ VALUES (24, 2, 'dictManage', 'system:dict-type:list', 4, 'i-zidian1', 'dict-type
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (241, 24, 'dictQuery', 'system:dict:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (241, 24, 'detail', 'system:dict:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (242, 24, 'dictAdd', 'system:dict:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (242, 24, 'add', 'system:dict:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (243, 24, 'dictEdit', 'system:dict:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (243, 24, 'edit', 'system:dict:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (244, 24, 'dictDelete', 'system:dict:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (244, 24, 'delete', 'system:dict:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 字典项管理
@@ -354,22 +354,22 @@ VALUES (25, 2, 'dictItem', 'system:dict-item:list', 4, 'i-zidian1', 'dict-item/:
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (251, 25, 'dictItemQuery', 'system:dict-item:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (251, 25, 'detail', 'system:dict-item:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (252, 25, 'dictItemAdd', 'system:dict-item:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (252, 25, 'add', 'system:dict-item:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (253, 25, 'dictItemEdit', 'system:dict-item:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (253, 25, 'edit', 'system:dict-item:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (254, 25, 'dictItemDelete', 'system:dict-item:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (254, 25, 'delete', 'system:dict-item:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 
 -- 角色管理
@@ -381,22 +381,22 @@ VALUES (22, 2, 'roleManage', 'system:role:list', 2, 'i-jiaoseguanli2', 'role', '
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (221, 22, 'roleQuery', 'system:role:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (221, 22, 'detail', 'system:role:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (222, 22, 'roleAdd', 'system:role:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (222, 22, 'add', 'system:role:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (223, 22, 'roleEdit', 'system:role:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (223, 22, 'edit', 'system:role:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (224, 22, 'roleDelete', 'system:role:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (224, 22, 'delete', 'system:role:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 租户管理
@@ -408,25 +408,53 @@ VALUES (1, -1, 'tenantManage', 'tenant:list', 2, 'i-zuhuguanli', 'tenant', 'tena
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (11, 1, 'tenantQuery', 'system:tenant:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (11, 1, 'detail', 'tenant:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (12, 1, 'tenantAdd', 'system:tenant:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (12, 1, 'add', 'tenant:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (13, 1, 'tenantEdit', 'system:tenant:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (13, 1, 'edit', 'tenant:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (14, 1, 'tenantDelete', 'system:tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (14, 1, 'delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 
+-- 组织管理
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (26, 2, 'organizationManage', 'system:organization:list', 2, 'i-drxx95', 'organization', 'system/organization',
+        '', false, 'MENU', false, true,
+        true, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (261, 26, 'detail', 'system:organization:detail', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (262, 26, 'add', 'system:organization:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
+        now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (263, 26, 'edit', 'system:organization:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (264, 26, 'delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
 
 
 -- 角色关联的权限
@@ -447,14 +475,78 @@ COMMENT ON COLUMN role_has_permission.create_at IS '创建时间';
 COMMENT ON COLUMN role_has_permission.create_by IS '创建人';
 
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 1, now(), 'admin'),
-       (1, 2, now(), 'admin'),
-       (1, 21, now(), 'admin'),
-       (1, 12, now(), 'admin'),
-       (1, 22, now(), 'admin'),
-       (1, 23, now(), 'admin'),
-       (1, 24, now(), 'admin'),
-       (1, 25, now(), 'admin');
+VALUES (1, 2, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 23, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 21, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 24, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 25, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 22, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 1, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 26, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 234, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 251, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 223, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 222, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 243, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 254, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 253, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 212, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 242, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 241, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 214, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 232, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 221, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 233, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 252, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 12, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 213, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 211, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 244, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 11, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 14, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 231, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 13, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 224, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 261, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 262, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 263, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 264, now(), 'admin');
+
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
@@ -594,3 +686,101 @@ VALUES (4, 'TENANT_TYPE', '公司', 'COMPANY', 1, true, false, false, 1, '公司
 INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, create_at, create_by, update_at, update_by)
 VALUES (5, 'TENANT_TYPE', '学校', 'SCHOOL', 2, true, false, false, 1, '学校', now(), 'admin', now(), 'admin');
+
+
+DROP TABLE IF EXISTS organizations;
+CREATE TABLE organizations
+(
+    id                BIGINT PRIMARY KEY NOT NULL,
+    parent_id         BIGINT             NOT NULL,
+    organization_name VARCHAR(255)       NOT NULL,
+    organization_code VARCHAR(255)       NOT NULL,
+    organization_type VARCHAR(32)        NOT NULL,
+    is_enabled        bool               NOT NULL DEFAULT true,
+    is_leaf           bool               NOT NULL DEFAULT true,
+    remark            VARCHAR(255),
+    display_order     INTEGER            NOT NULL DEFAULT 1,
+    owner_tenant_id   BIGINT             NOT NULL,
+    is_deleted        bool               NOT NULL DEFAULT false,
+    create_at         TIMESTAMP          NOT NULL,
+    update_at         TIMESTAMP          NOT NULL,
+    create_by         VARCHAR(64)        NOT NULL,
+    update_by         VARCHAR(64)        NOT NULL
+);
+
+CREATE UNIQUE INDEX uni_tenant_organization_code ON organizations (owner_tenant_id, organization_code);
+COMMENT ON INDEX uni_tenant_organization_code IS '租户组织编码';
+
+CREATE INDEX idx_organization_parent_id ON organizations (parent_id);
+COMMENT ON INDEX idx_organization_parent_id IS '组织的父级id索引';
+
+COMMENT ON TABLE organizations IS '组织机构表';
+COMMENT ON COLUMN organizations.id IS '主键id';
+COMMENT ON COLUMN organizations.parent_id IS '上级id';
+COMMENT ON COLUMN organizations.organization_name IS '组织机构名称';
+COMMENT ON COLUMN organizations.organization_code IS '组织编码';
+COMMENT ON COLUMN organizations.organization_type IS '组织类型，从数据字典中获取';
+COMMENT ON COLUMN organizations.is_enabled IS 'true启用，false禁用';
+COMMENT ON COLUMN organizations.is_leaf IS '是否是叶子节点：true 是';
+COMMENT ON COLUMN organizations.remark IS '备注';
+COMMENT ON COLUMN organizations.owner_tenant_id IS '所属租户的id';
+COMMENT ON COLUMN organizations.display_order IS '排序字段';
+COMMENT ON COLUMN organizations.is_deleted IS '是否删除： false 未删除';
+COMMENT ON COLUMN organizations.create_at IS '创建时间';
+COMMENT ON COLUMN organizations.update_at IS '更新时间';
+COMMENT ON COLUMN organizations.create_by IS '创建人';
+COMMENT ON COLUMN organizations.update_by IS '更新人';
+
+DROP TABLE IF EXISTS positions;
+
+CREATE TABLE positions
+(
+    id              BIGINT       NOT NULL PRIMARY KEY,
+    position_name   VARCHAR(255) NOT NULL,
+    position_code   VARCHAR(64)  NOT NULL,
+    remark          VARCHAR(255),
+    display_order   INTEGER      NOT NULL DEFAULT 1,
+    owner_tenant_id BIGINT       NOT NULL,
+    is_deleted      bool         NOT NULL DEFAULT false,
+    create_at       TIMESTAMP    NOT NULL,
+    update_at       TIMESTAMP    NOT NULL,
+    create_by       VARCHAR(64)  NOT NULL,
+    update_by       VARCHAR(64)  NOT NULL
+);
+CREATE UNIQUE INDEX uni_tenant_position_code ON positions (owner_tenant_id, position_code);
+COMMENT ON INDEX uni_tenant_position_code IS '租户岗位编码';
+
+COMMENT ON TABLE positions IS '职位表';
+COMMENT ON COLUMN positions.id IS '主键id';
+COMMENT ON COLUMN positions.position_name IS '职位名称';
+COMMENT ON COLUMN positions.position_code IS '职位编码';
+COMMENT ON COLUMN positions.remark IS '备注';
+COMMENT ON COLUMN positions.display_order IS '排序字段';
+COMMENT ON COLUMN positions.owner_tenant_id IS '所属租户的id';
+COMMENT ON COLUMN positions.is_deleted IS '是否删除： false 未删除';
+COMMENT ON COLUMN positions.create_at IS '创建时间';
+COMMENT ON COLUMN positions.update_at IS '更新时间';
+COMMENT ON COLUMN positions.create_by IS '创建人';
+COMMENT ON COLUMN positions.update_by IS '更新人';
+
+
+DROP TABLE IF EXISTS organization_has_user;
+
+CREATE TABLE organization_has_user
+(
+    organization_id BIGINT      NOT NULL,
+    position_id     BIGINT      NOT NULL,
+    user_id         BIGINT      NOT NULL,
+    create_at       TIMESTAMP   NOT NULL,
+    create_by       VARCHAR(64) NOT NULL,
+    PRIMARY KEY (organization_id, user_id, position_id)
+);
+
+
+COMMENT ON TABLE organization_has_user IS '组织用户关联关系表';
+COMMENT ON COLUMN organization_has_user.organization_id IS '组织id';
+COMMENT ON COLUMN organization_has_user.position_id IS '职位id';
+COMMENT ON COLUMN organization_has_user.user_id IS '用户id';
+COMMENT ON COLUMN organization_has_user.create_at IS '创建时间';
+COMMENT ON COLUMN organization_has_user.create_by IS '创建人';
+

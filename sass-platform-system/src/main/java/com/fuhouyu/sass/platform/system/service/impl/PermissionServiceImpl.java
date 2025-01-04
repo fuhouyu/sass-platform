@@ -113,7 +113,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public int removeById(Long id) {
-        return this.permissionMapper.deleteById(id);
+        return this.removeByIds(List.of(id));
     }
 
     @Override

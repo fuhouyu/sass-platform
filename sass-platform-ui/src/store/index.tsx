@@ -18,6 +18,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import userReducer from "@/store/modules/user";
 import localeReducer from "@/store/modules/locale";
+import dictReducer from "@/store/modules/dict";
 import {useDispatch, useSelector, useStore} from "react-redux";
 
 
@@ -25,7 +26,7 @@ export const store = configureStore({
     reducer: {
         user: userReducer,
         locale: localeReducer,
-
+        dict: dictReducer
     }
 })
 

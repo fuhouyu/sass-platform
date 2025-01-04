@@ -66,4 +66,9 @@ export class BaseUrlConstant {
      */
     static readonly ACCOUNT_API_PREFIX = `${BaseUrlConstant.VERSION}/account`
 
+    /**
+     * 组织api接口
+     */
+    static readonly ORGANIZATION_API_PREFIX = `${BaseUrlConstant.VERSION}/organization`
+
 }

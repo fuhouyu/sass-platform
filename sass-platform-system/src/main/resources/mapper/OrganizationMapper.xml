@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.OrganizationMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Organizations" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+        <result column="organization_code" property="organizationCode" jdbcType="VARCHAR"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="organization_type" property="organizationType" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="is_leaf" property="isLeaf" jdbcType="BOOLEAN"/>
+        <result column="display_order" property="displayOrder" jdbcType="VARCHAR"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="TableName">
+        organization
+    </sql>
+
+    <sql id="QueryColumns">
+        o.id,
+        o.parent_id,
+        o.organization_name,
+        o.organization_code,
+        o.organization_type,
+        o.is_enabled,
+        o.is_leaf,
+        o.remark,
+        o.display_order,
+        o.owner_tenant_id,
+        o.is_deleted,
+        o.create_at,
+        o.update_at,
+        o.create_by,
+        o.update_by
+    </sql>
+
+    <sql id="AllColumns">
+        id,
+        parent_id,
+        organization_name,
+        organization_code,
+        organization_type,
+        is_enabled,
+        is_leaf,
+        remark,
+        display_order,
+        owner_tenant_id,
+        is_deleted,
+        create_at,
+        update_at,
+        create_by,
+        update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{id},
+            #{parentId},
+            #{organizationName},
+            #{organizationCode},
+            #{organizationType},
+            #{isEnabled},
+            #{isLeaf},
+            #{remark},
+            #{displayOrder},
+            #{ownerTenantId},
+            #{isDeleted},
+            #{createAt},
+            #{updateAt},
+            #{createBy},
+            #{updateBy}
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="AllColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.id},
+                #{entity.parentId},
+                #{entity.organizationName},
+                #{entity.organizationCode},
+                #{entity.organizationType},
+                #{entity.isEnabled},
+                #{entity.isLeaf},
+                #{entity.remark},
+                #{entity.displayOrder},
+                #{entity.ownerTenantId},
+                #{entity.isDeleted},
+                #{entity.createAt},
+                #{entity.updateAt},
+                #{entity.createBy},
+                #{entity.updateBy}
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+        <if test="organizationName != null and organizationName != ''">
+            organization_name = #{organizationName},
+        </if>
+        <if test="isLeaf != null">
+            is_leaf = #{isLeaf},
+        </if>
+        <if test="isEnabled != null">
+            is_enabled = #{isEnabled},
+        </if>
+        <if test="displayOrder != null">
+            display_order = #{displayOrder},
+        </if>
+        remark = #{remark},
+        update_at = #{updateAt},
+        update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE o.id = #{id}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE o.id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="queryByOrganizationCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE o.organization_code = #{organizationCode}
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="QueryColumns"/>
+                FROM
+        <include refid="TableName"/> ti
+        <where>
+            <if test="pageQuery.organizationName != null and pageQuery.organizationName != ''">
+                ti.organization_name LIKE CONCAT('%', #{pageQuery.organizationName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="existsOrganizationCode" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM
+        <include refid="TableName"/>
+        WHERE organization_code = #{organizationCode}
+    </select>
+
+    <update id="updateLeafById">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+        is_leaf = #{isLeaf}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="setLeafByIdList">
+        UPDATE <include refid="TableName"/> AS parent
+        SET is_leaf = CASE
+        WHEN NOT EXISTS (
+        SELECT 1
+        FROM <include refid="TableName"/> AS child
+        WHERE child.parent_id = parent.id
+        ) THEN TRUE
+        ELSE FALSE
+        END
+        WHERE parent.id IN
+        <foreach collection="parentIdList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryListByParentId" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> o
+        WHERE o.parent_id = #{parentId}
+    </select>
+</mapper>

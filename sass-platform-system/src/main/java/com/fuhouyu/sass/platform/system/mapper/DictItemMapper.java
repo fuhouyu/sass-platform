@@ -19,6 +19,9 @@ package com.fuhouyu.sass.platform.system.mapper;
 import com.fuhouyu.sass.platform.system.entity.DictItem;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * <p>
  * 字典项mapper对象
@@ -38,4 +41,12 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      */
     DictItem queryByDictCodeAndItemCode(@Param("dictCode") String dictCode,
                                         @Param("itemCode") String itemCode);
+
+    /**
+     * 通过字典编码查询出字典项列表
+     *
+     * @param dictCodeList 字典编码列表
+     * @return 字典项列表
+     */
+    List<DictItem> queryListByDictCodes(@Param("dictCodeList") Collection<String> dictCodeList);
 }

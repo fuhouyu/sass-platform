@@ -39,7 +39,15 @@ class DictItemApi extends DefaultApiImpl<DictItem> {
      * @param dictCode 字典编码
      */
     getDictItemListByDictCode: (dictCode: string) => Promise<DictItem[]> = (dictCode: string): Promise<DictItem[]> =>
-        request.get(`${this.baseUrl}/list`, {params: {dictCode}})
+        request.get(`${this.baseUrl}/list`, {params: {dictCode}});
+
+
+    /**
+     * 通过字典编码获取字典项映射
+     * @param dictCodes 字典编码，以,分隔
+     */
+    getDictItemTypeMappingList: (dictCodes: string) => Promise<Record<string, DictItem[]>> = (dictCodes: string): Promise<Record<string, DictItem[]>> =>
+        request.get(`${this.baseUrl}/type-mapping`, {params: {dictCodes}});
 }
 
 export const dictItemApi: DictItemApi = new DictItemApi();

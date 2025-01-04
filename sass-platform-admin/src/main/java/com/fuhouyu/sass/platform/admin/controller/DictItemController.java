@@ -34,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -153,5 +154,18 @@ public class DictItemController {
     @Parameter(name = "dictCode", description = "字典编码")
     public BaseResponse<List<DictItemDTO>> findDictItemList(@RequestParam("dictCode") String dictCode) {
         return ResponseHelper.success(this.dictItemService.findDictItemList(dictCode));
+    }
+
+
+    /**
+     * 获取字典编码和字典项列表的map
+     *
+     * @return 字典编码和字典项列表的map，键为字典类型编码，值为字典项列表
+     */
+    @Parameter(name = "dictCodes", description = "字典编码集合,多个用逗号分隔")
+    @Operation(summary = "获取字典编码和字典项列表的map")
+    @GetMapping("/type-mapping")
+    public BaseResponse<Map<String, List<DictItemDTO>>> dictCodeItemMap(@RequestParam("dictCodes") String dictCodes) {
+        return ResponseHelper.success(this.dictItemService.findDictCodeItemMap(dictCodes));
     }
 }

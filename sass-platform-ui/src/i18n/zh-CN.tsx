@@ -103,6 +103,7 @@ const ZhCN = {
         userManage: '用户管理',
         roleManage: '角色管理',
         permissionManage: '权限管理',
+        organizationManage: '组织管理',
         dictManage: '字典管理',
         dictItem: '字典项',
         profile: '个人资料',

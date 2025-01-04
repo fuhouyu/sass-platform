@@ -195,4 +195,15 @@
         </where>
     </select>
 
+    <select id="queryListByDictCodes" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> di
+        WHERE di.dict_code IN
+        <foreach collection="dictCodeList" open="(" close=")" separator="," item="dictCode">
+            #{dictCode}
+        </foreach>
+        AND di.is_deleted = false
+    </select>
 </mapper>
