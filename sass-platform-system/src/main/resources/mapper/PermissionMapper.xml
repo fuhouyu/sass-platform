@@ -293,11 +293,12 @@
     </update>
 
     <update id="setLeafByIdList">
-        UPDATE permissions AS parent
+        UPDATE <include refid="TableName"/>
+     AS parent
         SET is_leaf = CASE
                           WHEN NOT EXISTS (
                               SELECT 1
-                              FROM permissions AS child
+                              FROM <include refid="TableName"/> AS child
                               WHERE child.parent_id = parent.id
                           ) THEN TRUE
                           ELSE FALSE

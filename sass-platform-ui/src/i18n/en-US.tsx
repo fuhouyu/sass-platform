@@ -85,6 +85,7 @@ const EnUS = {
         userManage: 'User Manage',
         roleManage: 'Role Manage',
         permissionManage: 'Permission Manage',
+        organizationManage: 'Organization Manage',
         dictManage: 'Dictionary Manage',
         dictItem: 'Dictionary Item',
         profile: 'User Profile',

@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.permission;
+package com.fuhouyu.sass.platform.system.dto.organization;
 
-import com.fuhouyu.sass.platform.common.BaseTree;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 /**
  * <p>
- * 权限详情树dto对象
+ * 组织分页查询的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:05
+ * @since 2025/1/4 22:44
  */
-@Schema(name = "PermissionTreeDTO", description = "权限树详情dto对象")
+@Schema(name = "OrganizationPageQueryDTO", description = "组织分页查询的dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PermissionTreeDTO extends PermissionDTO implements BaseTree<PermissionTreeDTO> {
+public class OrganizationPageQueryDTO extends PageQueryDTO {
 
-    @Schema(name = "children", description = "权限树子集", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<PermissionTreeDTO> children;
-
+    @Schema(name = "organizationName", description = "组织名称模糊查询")
+    private String organizationName;
 }

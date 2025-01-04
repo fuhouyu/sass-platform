@@ -13,29 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.permission;
+package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.common.BaseTree;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
 
 import java.util.List;
 
 /**
  * <p>
- * 权限详情树dto对象
+ * 组织接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 17:05
+ * @since 2025/1/4 22:27
  */
-@Schema(name = "PermissionTreeDTO", description = "权限树详情dto对象")
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class PermissionTreeDTO extends PermissionDTO implements BaseTree<PermissionTreeDTO> {
+public interface OrganizationService extends BaseService<Long, OrganizationDTO> {
 
-    @Schema(name = "children", description = "权限树子集", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<PermissionTreeDTO> children;
+    /**
+     * 检查组织编码是否存在
+     *
+     * @param organizationCode 组织编码
+     * @return 是否存在 true 存在 false 不存在
+     */
+    Boolean checkOrganizationCodeExists(String organizationCode);
+
+    /**
+     * 通过组织的父级id获取组织列表
+     *
+     * @param parentId 父级id
+     * @return 组织列表
+     */
+    List<OrganizationDTO> getOrganizationList(Long parentId);
 
 }
