@@ -134,7 +134,6 @@ export const Tenant: React.FC = () => {
      * 分页查询结果
      */
     useEffect(() => {
-        console.log(getDictItemByDictCode('TENANT_TYPE'));
         tenantApi.pageInfoListApi(pageQuery)
             .then((res: PageResult<TenantInfo>) => {
                 setPageResult({...res});
