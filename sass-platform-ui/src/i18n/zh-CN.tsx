@@ -170,7 +170,7 @@ const ZhCN = {
         BUTTON: '按钮',
         icon: ' 权限图标',
         iconPlaceholder: '请输入图标名称',
-        listName: '权限列表',
+        list: '权限列表',
         name: '权限名称',
         namePlaceholder: '请输入权限名称',
         nameCheckMessage: '请输入权限名称',
@@ -226,6 +226,16 @@ const ZhCN = {
         codePlaceholder: '请输入字典项编码',
         codeTips: '字典项编码，当前字典类型下唯一'
     },
+    Organization: {
+        list: '组织列表',
+        parentOrganization: '上级组织',
+        add: '新增组织',
+        edit: '修改组织',
+        name: '组织名称',
+        namePlaceholder: '请输入组织名称',
+        code: '组织编码',
+        type: '组织类型',
+    }
 }
 
 export {

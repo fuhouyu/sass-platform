@@ -18,12 +18,26 @@
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {request} from "@/utils";
 
 class OrganizationApi extends DefaultApiImpl<Organization> {
 
     constructor() {
         super(BaseUrlConstant.ORGANIZATION_API_PREFIX);
     }
+
+    /**
+     * 通过父级id获取子集
+     * @param parentId 父级id
+     */
+    getOrganizationListApi: (parentId?: string) => Promise<Organization[]> = (parentId?: string): Promise<Organization[]> =>
+        parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
+
+    /**
+     * 获取组织树
+     */
+    getOrganizationTreeSelect: () => Promise<Organization[]> = (): Promise<Organization[]> =>
+        request.get(`${this.baseUrl}/tree`)
 }
 
 export const organizationApi = new OrganizationApi();

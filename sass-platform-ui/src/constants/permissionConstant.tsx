@@ -170,8 +170,33 @@ class DictItemPermissionConstant {
      * 删除权限
      */
     static readonly DELETE: string = 'system:dict-item:delete';
-
 }
+
+/**
+ * 组织常量
+ */
+class OrganizationPermissionConstant {
+    /**
+     * 列表权限
+     */
+    static readonly List: string = 'system:organization:list';
+
+    /**
+     * 添加权限
+     */
+    static readonly ADD: string = 'system:organization:add';
+
+    /**
+     * 修改权限
+     */
+    static readonly EDIT: string = 'system:organization:edit';
+
+    /**
+     * 删除权限
+     */
+    static readonly DELETE: string = 'system:organization:delete';
+}
+
 
 export {
     TenantPermissionConstant,
@@ -179,5 +204,6 @@ export {
     RolePermissionConstant,
     PermissionConstant,
     DictTypePermissionConstant,
-    DictItemPermissionConstant
+    DictItemPermissionConstant,
+    OrganizationPermissionConstant
 }

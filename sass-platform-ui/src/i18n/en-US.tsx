@@ -122,7 +122,7 @@ const EnUS = {
         BUTTON: 'Button',
         icon: 'Permission Icon',
         iconPlaceholder: 'Please input Icon Name',
-        listName: 'Permission List',
+        list: 'Permission List',
         name: 'Permission Name',
         namePlaceholder: 'Please input Permission Name',
         nameCheckMessage: 'Please input Permission Name',
@@ -222,6 +222,15 @@ const EnUS = {
         namePlaceholder: 'Please input Dictionary Item Name',
         code: 'Dictionary Item Code',
         codePlaceholder: 'Please input Dictionary Item Code',
+    },
+    Organization: {
+        list: 'Organization List',
+        add: 'Add Organization',
+        edit: 'Edit Organization',
+        name: 'Organization Name',
+        namePlaceholder: 'Please input Organization Name',
+        code: 'Organization Code',
+        type: 'Organization Type',
     }
 }
 
