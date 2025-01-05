@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 
 import java.util.List;
 
@@ -45,4 +46,10 @@ public interface OrganizationService extends BaseService<Long, OrganizationDTO> 
      */
     List<OrganizationDTO> getOrganizationList(Long parentId);
 
+    /**
+     * 获取组织树集合
+     *
+     * @return 组织树dto列表
+     */
+    List<OrganizationTreeDTO> getTreeList();
 }

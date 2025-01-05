@@ -63,4 +63,9 @@ export interface Organization extends BaseModel {
      * 显示顺序
      */
     displayOrder: number;
+
+    /**
+     * 子集
+     */
+    children?: Organization[]
 }

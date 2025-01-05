@@ -16,9 +16,12 @@
 package com.fuhouyu.sass.platform.system.assembler;
 
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.entity.Organizations;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +35,13 @@ import org.mapstruct.factory.Mappers;
 public interface OrganizationsAssembler extends BaseAssembler<Organizations, OrganizationDTO> {
 
     OrganizationsAssembler INSTANCE = Mappers.getMapper(OrganizationsAssembler.class);
+
+    /**
+     * 组织实体转换为组织树dto对象
+     *
+     * @param organizationList 组织实体
+     * @return 组织树dtp集合
+     */
+    List<OrganizationTreeDTO> toTreeDTOList(List<Organizations> organizationList);
+
 }

@@ -29,7 +29,7 @@
     </resultMap>
 
     <sql id="TableName">
-        organization
+        organizations
     </sql>
 
     <sql id="QueryColumns">
@@ -159,14 +159,14 @@
 
     <select id="queryById" resultMap="BaseResultMap">
         SELECT <include refid="QueryColumns"/>
-        FROM <include refid="TableName"/> ti
+        FROM <include refid="TableName"/> o
         WHERE o.id = #{id}
     </select>
 
 
     <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
         SELECT <include refid="QueryColumns"/>
-        FROM <include refid="TableName"/> ti
+        FROM <include refid="TableName"/> o
         WHERE o.id IN
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
@@ -176,7 +176,7 @@
 
     <select id="queryByOrganizationCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT <include refid="QueryColumns"/>
-        FROM <include refid="TableName"/> ti
+        FROM <include refid="TableName"/> o
         WHERE o.organization_code = #{organizationCode}
     </select>
 
@@ -184,10 +184,13 @@
         SELECT
         <include refid="QueryColumns"/>
                 FROM
-        <include refid="TableName"/> ti
+        <include refid="TableName"/> o
         <where>
             <if test="pageQuery.organizationName != null and pageQuery.organizationName != ''">
-                ti.organization_name LIKE CONCAT('%', #{pageQuery.organizationName}, '%')
+                o.organization_name LIKE CONCAT('%', #{pageQuery.organizationName}, '%')
+            </if>
+            <if test="pageQuery.parentId != null">
+                AND o.parent_id = #{pageQuery.parentId}
             </if>
         </where>
     </select>
@@ -204,7 +207,7 @@
         <include refid="TableName"/>
         SET
         is_leaf = #{isLeaf}
-        WHERE id = #{id}
+        WHERE id = #{parentId}
     </update>
 
     <delete id="setLeafByIdList">

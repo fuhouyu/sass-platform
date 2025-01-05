@@ -33,6 +33,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class OrganizationPageQueryDTO extends PageQueryDTO {
 
+    @Schema(name = "parentId", description = "父级id")
+    private Long parentId;
+
     @Schema(name = "organizationName", description = "组织名称模糊查询")
     private String organizationName;
 }

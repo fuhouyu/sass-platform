@@ -117,7 +117,6 @@ export const Permission: React.FC = () => {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             sorter: true,
-            defaultSortOrder: "descend",
             showSorterTooltip: false
         },
         {
@@ -315,7 +314,7 @@ export const Permission: React.FC = () => {
                         }}
                     />
                     <Table<Menu>
-                        tableName={t('Permission.listName')}
+                        tableName={t('Permission.list')}
                         columns={columns}
                         rowSelection={rowSelection}
                         setPageQuery={tableSearch}

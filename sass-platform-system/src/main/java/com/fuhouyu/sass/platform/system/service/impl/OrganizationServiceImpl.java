@@ -19,8 +19,11 @@ import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.assembler.OrganizationsAssembler;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationPageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Organizations;
 import com.fuhouyu.sass.platform.system.mapper.OrganizationMapper;
@@ -30,9 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -64,6 +65,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organizations entity = ORGANIZATIONS_ASSEMBLER.toEntity(dto);
         entity.setId(id);
         entity.setIsLeaf(true);
+        // TODO 这里的组织类型先做固定
+        entity.setOrganizationType("UNIT");
+        entity.setOrganizationCode(String.format("GO_%s", UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT)));
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.checkParentExists(dto.getParentId());
         this.organizationMapper.insert(entity);
@@ -127,6 +131,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<OrganizationDTO> getOrganizationList(Long parentId) {
         return ORGANIZATIONS_ASSEMBLER.toDTO(this.organizationMapper.queryListByParentId(parentId));
+    }
+
+    @Override
+    public List<OrganizationTreeDTO> getTreeList() {
+        List<Organizations> organizationList = this.organizationMapper.queryList(new OrganizationPageQueryDTO());
+        return TreeConvertUtil.buildTree(ORGANIZATIONS_ASSEMBLER.toTreeDTOList(organizationList));
     }
 
     /**

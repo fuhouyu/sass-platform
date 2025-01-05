@@ -19,6 +19,7 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationPageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -93,7 +95,9 @@ public class OrganizationController {
     @GetMapping({"/list/{parentId}", "/list"})
     @PreAuthorize("@auth.hasPermission('system:organization:list')")
     public BaseResponse<List<OrganizationDTO>> getOrganizationList(@PathVariable(value = "parentId", required = false) Long parentId) {
-        return ResponseHelper.success(this.organizationService.getOrganizationList(parentId));
+        return ResponseHelper.success(this.organizationService.getOrganizationList(
+                Optional.ofNullable(parentId).orElse(-1L)
+        ));
     }
 
     /**
@@ -135,6 +139,18 @@ public class OrganizationController {
     @PreAuthorize("@auth.hasPermission('system:organization:query')")
     public BaseResponse<OrganizationDTO> organizationInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.organizationService.findById(id));
+    }
+
+    /**
+     * 查询组织树
+     *
+     * @return 组织树
+     */
+    @GetMapping("/tree")
+    @Operation(summary = "组织树列表")
+    @PreAuthorize("@auth.hasPermission('system:organization:list')")
+    public BaseResponse<List<OrganizationTreeDTO>> organizationTree() {
+        return ResponseHelper.success(this.organizationService.getTreeList());
     }
 
     /**
