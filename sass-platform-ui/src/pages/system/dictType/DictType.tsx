@@ -262,8 +262,8 @@ export const DictType = () => {
                 title={updateId ? t('DictType.edit') : t('DictType.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
+                width={375}
                 onCancel={() => setIsModalOpen(false)}
-                width={400}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
@@ -276,8 +276,8 @@ export const DictType = () => {
                 <Form<DictTypeModel>
                     name="basic"
                     form={form}
-                    labelCol={{span: 5}}
-                    wrapperCol={{offset: .5}}
+                    labelCol={{span: 9}}
+                    wrapperCol={{span: 15}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
@@ -379,7 +379,11 @@ export const DictType = () => {
                         colon={false}
                         validateFirst={true}
                     >
-                        <TextArea className="remark" placeholder={t('Common.remark')} showCount maxLength={500}/>
+                        <TextArea
+                            className="remark"
+                            placeholder={t('Common.remark')}
+                            style={{height: 100}}
+                            showCount maxLength={500}/>
                     </Form.Item>
                 </Form>
             </Modal>

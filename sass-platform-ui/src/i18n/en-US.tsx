@@ -76,7 +76,7 @@ const EnUS = {
     Menu: {
         main: 'Permission List',
         home: 'Home',
-        detail: 'Detail',
+        query: 'Detail',
         add: 'Add',
         edit: 'Edit',
         delete: 'Delete',
@@ -218,9 +218,9 @@ const EnUS = {
         add: 'Add Dictionary Item',
         edit: 'Edit Dictionary Item',
         list: 'Dictionary Item List',
-        name: 'Dictionary Item Name',
+        name: 'Item Name',
         namePlaceholder: 'Please input Dictionary Item Name',
-        code: 'Dictionary Item Code',
+        code: 'Item Code',
         codePlaceholder: 'Please input Dictionary Item Code',
     },
     Organization: {

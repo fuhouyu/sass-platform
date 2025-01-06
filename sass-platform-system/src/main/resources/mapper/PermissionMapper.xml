@@ -273,6 +273,7 @@
         p.owner_tenant_id = #{tenantId}
         AND
         uhr.user_id = #{userId}
+        ORDER BY p.display_order
     </select>
 
     <select id="queryListByParentId" resultMap="BaseResultMap">
