@@ -255,8 +255,8 @@ export const User: React.FC = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 destroyOnClose={true}
+                width={750}
                 onCancel={() => closeModal()}
-                width={600}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
@@ -270,9 +270,7 @@ export const User: React.FC = () => {
                     clearOnDestroy={true}
                     name="basic"
                     form={form}
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 16}}
-                    style={{maxWidth: 600}}
+                    labelCol={{span: 7}}
                     initialValues={formInitValues}
                     autoComplete="off"
                 >

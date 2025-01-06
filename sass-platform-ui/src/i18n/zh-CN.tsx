@@ -94,7 +94,7 @@ const ZhCN = {
     Menu: {
         main: '权限列表',
         home: '主页',
-        detail: '详情',
+        query: '详情',
         add: '新增',
         edit: '修改',
         delete: '删除',

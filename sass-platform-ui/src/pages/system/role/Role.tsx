@@ -257,7 +257,6 @@ export const Role: React.FC = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
-                width={450}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
@@ -270,8 +269,8 @@ export const Role: React.FC = () => {
                 <Form<RoleModel>
                     name="basic"
                     form={form}
-                    labelCol={{span: 5}}
-                    wrapperCol={{offset: .5}}
+                    labelCol={{span: 7}}
+                    wrapperCol={{span: 16}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}

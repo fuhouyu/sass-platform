@@ -267,9 +267,9 @@ export const Tenant: React.FC = () => {
                 name="basic"
                 form={form}
                 autoComplete="off"
-                labelCol={{span: 5}}
-                wrapperCol={{offset: .5}}
                 onFinish={handleTenant}
+                labelCol={{span: 8}}
+                wrapperCol={{span: 13}}
                 initialValues={formInitValues}
             >
                 <Form.Item

@@ -326,6 +326,7 @@ export const Organization = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
+                width={400}
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}
@@ -342,6 +343,7 @@ export const Organization = () => {
                     name="modal-form"
                     form={form}
                     autoComplete="off"
+                    labelCol={{span: 10}}
                     initialValues={{
                         parentId: formParentOrganization.id,
                         isVisible: true,
@@ -369,83 +371,66 @@ export const Organization = () => {
                         />
                     </Form.Item>
 
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <Form.Item
-                                label={t('Organization.name')}
-                                name="organizationName"
-                                key="organizationName"
-                                colon={false}
-                                required={true}
-                                rules={[
-                                    {
-                                        required: true,
-                                        type: "string",
-                                        message: t('Organization.nameCheckMessage')
-                                    }
-                                ]}
-                            >
-                                <Input placeholder={t('Organization.namePlaceholder')} maxLength={20}/>
-                            </Form.Item>
-                        </Col>
+                    <Form.Item
+                        label={t('Organization.name')}
+                        name="organizationName"
+                        key="organizationName"
+                        colon={false}
+                        required={true}
+                        rules={[
+                            {
+                                required: true,
+                                type: "string",
+                                message: t('Organization.nameCheckMessage')
+                            }
+                        ]}
+                    >
+                        <Input placeholder={t('Organization.namePlaceholder')} maxLength={20}/>
+                    </Form.Item>
+                    <Form.Item
+                        label={t('Common.displayOrder')}
+                        name="displayOrder"
+                        key="displayOrder"
+                        colon={false}
+                        required={true}
+                        validateTrigger="onBlur"
+                        rules={[
+                            {
+                                required: true,
+                                type: "number",
+                                message: t('Common.displayOrderPlaceholder')
+                            }
+                        ]}
+                    >
+                        <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '100%'}}
+                                     min={1}/>
+                    </Form.Item>
 
-                    </Row>
-
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('Common.displayOrder')}
-                                name="displayOrder"
-                                key="displayOrder"
-                                colon={false}
-                                required={true}
-                                validateTrigger="onBlur"
-                                rules={[
-                                    {
-                                        required: true,
-                                        type: "number",
-                                        message: t('Common.displayOrderPlaceholder')
-                                    }
-                                ]}
-                            >
-                                <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '100%'}}
-                                             min={1}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('Common.status')}
-                                name="isEnabled"
-                                key="isEnabled"
-                                colon={false}
-                                required={true}
-                            >
-                                <Radio.Group>
-                                    <Radio value={true}>{t('Common.enabled')}</Radio>
-                                    <Radio value={false}>{t('Common.disabled')}</Radio>
-                                </Radio.Group>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
-                    <Row gutter={24}>
-                        <Col offset={2} span={22}>
-                            <Form.Item
-                                label={t('Common.remark')}
-                                name="remark"
-                                key="remark"
-                                colon={false}
-                                validateFirst={true}
-                            >
-                                <TextArea className="remark"
-                                          placeholder={t('Common.remark')}
-                                          style={{height: 100}}
-                                          showCount maxLength={500}/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                    <Form.Item
+                        label={t('Common.status')}
+                        name="isEnabled"
+                        key="isEnabled"
+                        colon={false}
+                        required={true}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>{t('Common.enabled')}</Radio>
+                            <Radio value={false}>{t('Common.disabled')}</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Form.Item
+                        label={t('Common.remark')}
+                        name="remark"
+                        key="remark"
+                        colon={false}
+                        validateFirst={true}
+                    >
+                        <TextArea className="remark"
+                                  placeholder={t('Common.remark')}
+                                  style={{height: 100}}
+                                  showCount maxLength={500}/>
+                    </Form.Item>
                 </Form>
-
 
             </Modal>
         </>

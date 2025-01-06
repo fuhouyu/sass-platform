@@ -291,7 +291,7 @@ export const DictItem = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
-                width={500}
+                width={450}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
@@ -304,8 +304,8 @@ export const DictItem = () => {
                 <Form<DictItemModel>
                     name="basic"
                     form={form}
-                    labelCol={{span: 6}}
-                    wrapperCol={{offset: .5}}
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
