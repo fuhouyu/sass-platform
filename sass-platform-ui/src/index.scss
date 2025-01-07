@@ -51,3 +51,31 @@ ul {
 .remark {
   height: 6.25rem;
 }
+
+.main-container {
+  height: 100%;
+}
+
+// 树样式
+.tree-container {
+  height: 100%;
+  background-color: #fff;
+
+  .ant-tree-list-holder-inner {
+    gap: .5rem;
+  }
+
+  .ant-tree-node-content-wrapper {
+    font-size: 1.1rem;
+    padding-inline: 0;
+  }
+
+  .search-input {
+    margin: .5rem 0;
+  }
+
+  .tree-info {
+    padding: 1rem 0;
+  }
+
+}

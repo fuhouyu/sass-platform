@@ -16,7 +16,7 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Popconfirm, Radio, Row, Select, TableColumnsType} from "antd";
+import {Button, Col, Form, Input, message, Popconfirm, Radio, Row, Select, TableColumnsType, Tree} from "antd";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
@@ -28,6 +28,9 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {DownOutlined} from "@ant-design/icons";
+import {Organization as OrganizationModal} from "@/model/organization.tsx";
+import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -102,6 +105,8 @@ export const User: React.FC = () => {
     const [form] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
+    const [lazyTreeData, setLazyTreeData] = useState<OrganizationModal[]>([]);
+    const {onLoadData} = useOrganizationLazyData(setLazyTreeData);
 
     /**
      * 打开模态组
@@ -192,63 +197,83 @@ export const User: React.FC = () => {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
+
     return (
         <>
-            <PageList
-                tableProps={{
-                    tableName: t('User.list'),
-                    columns: columns,
-                    pageData: pageResult,
-                    setPageQuery: setPageQuery,
-                    rowSelection: rowSelection,
-                    components: [
-                        <>
-                            <PermissionButton permissionStr={UserPermissionConstant.ADD}
-                                              buttonPermissions={buttonPermissions}>
-                                <AddButton onClick={() => openModal()}/>
-                            </PermissionButton>
-                            <PermissionButton permissionStr={UserPermissionConstant.DELETE}
-                                              buttonPermissions={buttonPermissions}>
-                                <Popconfirm
-                                    title={t('Button.delete')}
-                                    description={t('Button.deleteConfirm')}
-                                    okText={t('Common.yes')}
-                                    cancelText={t('Common.no')}
-                                    onConfirm={async () => {
-                                        userApi.deleteInfoApi(rowKeys as string[]).then();
-                                        await pageRequest()
-                                    }}
-                                >
-                                    <DeleteButton/>
-                                </Popconfirm>
-                            </PermissionButton>
+            <Row gutter={24} className={'main-container'}>
+                <Col span={3} className={'tree-container'}>
+                    <div className='tree-info'>
+                        <Tree
+                            defaultExpandParent={true}
+                            showLine
+                            fieldNames={{key: 'id', title: 'organizationName'}}
+                            switcherIcon={<DownOutlined/>}
+                            loadData={onLoadData}
+                            treeData={lazyTreeData}
+                            // onSelect={onSelectTree}
+                        />
+                    </div>
+                </Col>
+                <Col span={21}>
+                    <PageList
+                        tableProps={{
+                            tableName: t('User.list'),
+                            columns: columns,
+                            pageData: pageResult,
+                            setPageQuery: setPageQuery,
+                            rowSelection: rowSelection,
+                            components: [
+                                <>
+                                    <PermissionButton permissionStr={UserPermissionConstant.ADD}
+                                                      buttonPermissions={buttonPermissions}>
+                                        <AddButton onClick={() => openModal()}/>
+                                    </PermissionButton>
+                                    <PermissionButton permissionStr={UserPermissionConstant.DELETE}
+                                                      buttonPermissions={buttonPermissions}>
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
+                                                userApi.deleteInfoApi(rowKeys as string[]).then();
+                                                await pageRequest()
+                                            }}
+                                        >
+                                            <DeleteButton/>
+                                        </Popconfirm>
+                                    </PermissionButton>
 
-                        </>
-                    ]
-                }}
-                headerSearchProps={{
-                    components: [
-                        <><label htmlFor="username">{t('User.username')}</label>
-                            <Input placeholder={t('User.usernamePlaceholder')} id={'username'} onChange={(e) => {
-                                setUserQuery({username: e.target.value})
-                            }}/>
-                        </>,
-                        <>
-                            <span>{t('User.gender')}</span>
-                            <Select
-                                key={'gender'}
-                                placeholder={t('User.genderPlaceholder')}
-                                onChange={(value) => userQuery['gender'] = value}
-                                options={[
-                                    {value: 'male', label: <span>{t('User.male')}</span>},
-                                    {value: 'female', label: <span>{t('User.female')}</span>}
-                                ]}
-                            />
-                        </>
-                    ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
-                }}
-            />
+                                </>
+                            ]
+                        }}
+                        headerSearchProps={{
+                            components: [
+                                <><label htmlFor="username">{t('User.username')}</label>
+                                    <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
+                                           onChange={(e) => {
+                                               setUserQuery({username: e.target.value})
+                                           }}/>
+                                </>,
+                                <>
+                                    <span>{t('User.gender')}</span>
+                                    <Select
+                                        key={'gender'}
+                                        placeholder={t('User.genderPlaceholder')}
+                                        onChange={(value) => userQuery['gender'] = value}
+                                        options={[
+                                            {value: 'male', label: <span>{t('User.male')}</span>},
+                                            {value: 'female', label: <span>{t('User.female')}</span>}
+                                        ]}
+                                    />
+                                </>
+                            ],
+                            onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                        }}
+                    />
+                </Col>
+            </Row>
+
 
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}

@@ -274,6 +274,8 @@ export const Permission: React.FC = () => {
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
             const res = await permissionApi.pageInfoListApi(pageQuery);
+            const parentId = values.parentId;
+            await onLoadData({key: parentId ?? '-1'});
             res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
             setPageData(res);
             setIsModalOpen(false);
