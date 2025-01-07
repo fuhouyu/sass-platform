@@ -227,6 +227,7 @@ const EnUS = {
         list: 'Organization List',
         add: 'Add Organization',
         edit: 'Edit Organization',
+        parentOrganization: 'Parent Organization',
         name: 'Organization Name',
         namePlaceholder: 'Please input Organization Name',
         code: 'Organization Code',

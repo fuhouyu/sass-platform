@@ -291,7 +291,6 @@ export const DictItem = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
-                width={450}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
@@ -302,10 +301,10 @@ export const DictItem = () => {
                 }}/>}
             >
                 <Form<DictItemModel>
-                    name="basic"
+                    name="modal-form"
                     form={form}
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 16}}
+                    style={{width: '100%'}}
+                    labelCol={{span: 6}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
@@ -420,7 +419,11 @@ export const DictItem = () => {
                         colon={false}
                         validateFirst={true}
                     >
-                        <TextArea className="remark" placeholder={t('Common.remark')} showCount maxLength={500}/>
+                        <TextArea
+                            className="remark"
+                            placeholder={t('Common.remark')}
+                            showCount
+                            maxLength={500}/>
                     </Form.Item>
                 </Form>
             </Modal>

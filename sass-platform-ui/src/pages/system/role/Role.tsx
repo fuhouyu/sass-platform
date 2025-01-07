@@ -40,6 +40,7 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useAppSelector} from "@/store";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -121,6 +122,7 @@ export const Role: React.FC = () => {
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
+    const language = useAppSelector(state => state.locale.language);
     /**
      * 打开模态组
      * @param roleId 角色id
@@ -267,10 +269,9 @@ export const Role: React.FC = () => {
                 }}/>}
             >
                 <Form<RoleModel>
-                    name="basic"
+                    name="modal-form"
                     form={form}
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 16}}
+                    labelCol={{span: language == 'zh' ? 4 : 6}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}

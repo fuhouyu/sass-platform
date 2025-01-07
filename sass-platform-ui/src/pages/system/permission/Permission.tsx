@@ -43,6 +43,7 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {AnyObject} from "antd/es/_util/type";
 import {PermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton";
+import {useAppSelector} from "@/store";
 
 /**
  * 设置树数据
@@ -95,6 +96,7 @@ export const Permission: React.FC = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentPermission, setFormParentPermission] = useState<Menu>({});
     const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
+    const language = useAppSelector(state => state.locale.language);
 
     const columns: TableColumnsType<Menu> = [
         {
@@ -272,6 +274,8 @@ export const Permission: React.FC = () => {
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
             const res = await permissionApi.pageInfoListApi(pageQuery);
+            const parentId = values.parentId;
+            await onLoadData({key: parentId ?? '-1'});
             res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
             setPageData(res);
             setIsModalOpen(false);
@@ -369,7 +373,6 @@ export const Permission: React.FC = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
-                    labelCol={{span: 10}}
                     autoComplete="off"
                     initialValues={{
                         parentId: formParentPermission.id,
@@ -379,76 +382,67 @@ export const Permission: React.FC = () => {
                         isEnabled: true,
                     }}
                 >
-                    <Row gutter={24}>
-                        <Col span={23}>
-                            <Form.Item
-                                label={t('Permission.parentPermission')}
-                                name="parentId"
-                                labelCol={{span: 5}}
-                                validateTrigger="onBlur"
-                                colon={false}
-                                required={true}
-                            >
-                                <TreeSelect
-                                    style={{width: '100%'}}
-                                    treeTitleRender={(menu: Menu) => {
-                                        if (menu) {
-                                            return t(`Menu.${menu.permissionName}`);
-                                        }
-                                        return t('Menu.main')
-                                    }}
-                                    fieldNames={{
-                                        label: 'permissionName',
-                                        value: 'id',
-                                    }}
-                                    onSelect={(_: string, node: Menu) => {
-                                        // console.log('=====')
-                                        // console.log(node)
-                                        // console.log(formParentPermission)
-                                        setFormParentPermission(node);
-                                        // setFormParentPermission(node)
-                                    }}
-                                    allowClear
-                                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                    treeData={treeSelectData}
-                                    treeDefaultExpandAll
-                                />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={23}>
-                            <Form.Item
-                                label={t('Permission.type')}
-                                name="permissionType"
-                                validateTrigger="onBlur"
-                                key="permissionType"
-                                colon={false}
-                                required={true}
-                                labelCol={{span: 5}}
-                                rules={[
-                                    {
-                                        required: true,
-                                        type: "string",
-                                        message: t('Permission.typeCheckMessage')
-                                    }
-                                ]}
-                            >
-                                <Radio.Group onChange={(e) => {
-                                    form.setFieldValue('permissionType', e.target.value)
-                                }}>
-                                    <Radio value={'DIR'}>{t('Permission.DIR')}</Radio>
-                                    <Radio value={'MENU'}>{t('Permission.MENU')}</Radio>
-                                    <Radio value={'BUTTON'}>{t('Permission.BUTTON')}</Radio>
-                                </Radio.Group>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                    <Form.Item
+                        label={t('Permission.parentPermission')}
+                        name="parentId"
+                        validateTrigger="onBlur"
+                        colon={false}
+                        required={true}
+                    >
+                        <TreeSelect
+                            style={{width: '100%'}}
+                            treeTitleRender={(menu: Menu) => {
+                                if (menu) {
+                                    return t(`Menu.${menu.permissionName}`);
+                                }
+                                return t('Menu.main')
+                            }}
+                            fieldNames={{
+                                label: 'permissionName',
+                                value: 'id',
+                            }}
+                            onSelect={(_: string, node: Menu) => {
+                                // console.log('=====')
+                                // console.log(node)
+                                // console.log(formParentPermission)
+                                setFormParentPermission(node);
+                                // setFormParentPermission(node)
+                            }}
+                            allowClear
+                            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                            treeData={treeSelectData}
+                            treeDefaultExpandAll
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label={t('Permission.type')}
+                        name="permissionType"
+                        validateTrigger="onBlur"
+                        key="permissionType"
+                        colon={false}
+                        required={true}
+                        rules={[
+                            {
+                                required: true,
+                                type: "string",
+                                message: t('Permission.typeCheckMessage')
+                            }
+                        ]}
+                    >
+                        <Radio.Group onChange={(e) => {
+                            form.setFieldValue('permissionType', e.target.value)
+                        }}>
+                            <Radio value={'DIR'}>{t('Permission.DIR')}</Radio>
+                            <Radio value={'MENU'}>{t('Permission.MENU')}</Radio>
+                            <Radio value={'BUTTON'}>{t('Permission.BUTTON')}</Radio>
+                        </Radio.Group>
+                    </Form.Item>
 
                     <Row gutter={24}>
                         <Col span={12}>
                             <Form.Item
                                 label={t('Permission.name')}
+                                labelCol={{span: language == 'zh' ? 6 : 10}}
                                 name="permissionName"
                                 key="permissionName"
                                 colon={false}
@@ -508,6 +502,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 label={t('Common.displayOrder')}
+                                labelCol={{span: language == 'zh' ? 6 : 10}}
                                 name="displayOrder"
                                 key="displayOrder"
                                 colon={false}
@@ -527,6 +522,7 @@ export const Permission: React.FC = () => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
+                                labelCol={{span: language == 'zh' ? 6 : 9}}
                                 label={t('Common.status')}
                                 name="isEnabled"
                                 key="isEnabled"
@@ -546,6 +542,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
+                                        labelCol={{span: language == 'zh' ? 6 : 10}}
                                         label={t('Permission.isFrame')}
                                         name="isFrame"
                                         key="isFrame"
@@ -560,6 +557,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
+                                        labelCol={{span: language == 'zh' ? 6 : 9}}
                                         label={t('Permission.routePath')}
                                         name="routePath"
                                         key="routePath"
@@ -594,7 +592,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-
+                                        labelCol={{span: language == 'zh' ? 6 : 10}}
                                         label={t('Permission.componentPath')}
                                         name="componentPath"
                                         key="componentPath"
@@ -614,6 +612,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
+                                        labelCol={{span: language == 'zh' ? 6 : 9}}
                                         label={t('Permission.routeParams')}
                                         name="urlParams"
                                         key="urlParams"
@@ -633,6 +632,7 @@ export const Permission: React.FC = () => {
                                 <Row gutter={24}>
                                     <Col span={12}>
                                         <Form.Item
+                                            labelCol={{span: language == 'zh' ? 6 : 10}}
                                             label={t('Permission.icon')}
                                             name="icon"
                                             key="icon"
@@ -643,6 +643,7 @@ export const Permission: React.FC = () => {
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
+                                            labelCol={{span: language == 'zh' ? 6 : 9}}
                                             label={t('Permission.displayStatus')}
                                             name="isVisible"
                                             key="isVisible"

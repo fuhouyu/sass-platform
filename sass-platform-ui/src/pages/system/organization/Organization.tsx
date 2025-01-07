@@ -42,31 +42,9 @@ import {OrganizationPermissionConstant} from "@/constants/permissionConstant.tsx
 import {organizationApi} from "@/apis/organization.tsx";
 import './index.scss'
 import TextArea from "antd/es/input/TextArea";
+import {useAppSelector} from "@/store";
+import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 
-/**
- * 设置树数据
- * @param list 菜单集合
- * @param key key
- * @param children 子集
- */
-const updateTreeData = (list: OrganizationModal[], key: React.Key, children: OrganizationModal[]): OrganizationModal[] => {
-    return list.map((node: OrganizationModal) => {
-        if (node.id === key) {
-            return {
-                ...node,
-                children,
-            };
-        }
-        if (node.children) {
-            return {
-                ...node,
-                children: updateTreeData(node.children, key, children),
-            };
-        }
-        return node;
-    });
-
-}
 
 export const Organization = () => {
     const [treeSelectData, setTreeSelectData] = useState<OrganizationModal[]>([]);
@@ -87,6 +65,8 @@ export const Organization = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
     const [lazyTreeData, setLazyTreeData] = useState<OrganizationModal[]>([]);
+    const {onLoadData} = useOrganizationLazyData(setLazyTreeData);
+    const language = useAppSelector(state => state.locale.language);
 
     const columns: TableColumnsType<OrganizationModal> = [
         {
@@ -148,19 +128,6 @@ export const Organization = () => {
     }
 
     /**
-     * 左侧菜单树
-     */
-    useEffect(() => {
-        // 先查询出一级菜单
-        const initOrganization = async () => {
-            const organizations = await organizationApi.getOrganizationListApi();
-            console.log(organizations);
-            setLazyTreeData(organizations);
-        }
-        initOrganization().then();
-    }, []);
-
-    /**
      * 右侧列表
      */
     useEffect(() => {
@@ -186,20 +153,6 @@ export const Organization = () => {
         setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
-    /**
-     * 懒加载菜单
-     * @param key key，这里是主键id
-     * @param children 子菜单
-     */
-    const onLoadData = async ({key, children}: { key: React.Key, children?: OrganizationModal[] | undefined }) => {
-        if (children) {
-            return new Promise<void>((resolve) => {
-                resolve()
-            })
-        }
-        const res = await organizationApi.getOrganizationListApi(key.toString());
-        setLazyTreeData((origin) => updateTreeData(origin, key, res));
-    }
 
     /**
      * 权限树
@@ -248,6 +201,8 @@ export const Organization = () => {
             await (updateId ? organizationApi.editInfoApi(updateId, values) : organizationApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
             const res = await organizationApi.pageInfoListApi(pageQuery);
+            const parentId = values.parentId;
+            await onLoadData({key: parentId});
             setPageData(res);
             setIsModalOpen(false);
         } finally {
@@ -326,7 +281,6 @@ export const Organization = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
-                width={400}
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}
@@ -342,8 +296,8 @@ export const Organization = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
+                    labelCol={{span: language == 'zh' ? 4 : 8}}
                     autoComplete="off"
-                    labelCol={{span: 10}}
                     initialValues={{
                         parentId: formParentOrganization.id,
                         isVisible: true,
@@ -427,7 +381,6 @@ export const Organization = () => {
                     >
                         <TextArea className="remark"
                                   placeholder={t('Common.remark')}
-                                  style={{height: 100}}
                                   showCount maxLength={500}/>
                     </Form.Item>
                 </Form>
