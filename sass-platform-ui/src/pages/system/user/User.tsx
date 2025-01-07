@@ -268,7 +268,7 @@ export const User: React.FC = () => {
             >
                 <Form
                     clearOnDestroy={true}
-                    name="basic"
+                    name="modal-form"
                     form={form}
                     labelCol={{span: 7}}
                     initialValues={formInitValues}

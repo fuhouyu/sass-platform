@@ -42,6 +42,7 @@ import {OrganizationPermissionConstant} from "@/constants/permissionConstant.tsx
 import {organizationApi} from "@/apis/organization.tsx";
 import './index.scss'
 import TextArea from "antd/es/input/TextArea";
+import {useAppSelector} from "@/store";
 
 /**
  * 设置树数据
@@ -87,6 +88,7 @@ export const Organization = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
     const [lazyTreeData, setLazyTreeData] = useState<OrganizationModal[]>([]);
+    const language = useAppSelector(state => state.locale.language);
 
     const columns: TableColumnsType<OrganizationModal> = [
         {
@@ -326,7 +328,6 @@ export const Organization = () => {
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
-                width={400}
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}
@@ -342,8 +343,8 @@ export const Organization = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
+                    labelCol={{span: language == 'zh' ? 4 : 8}}
                     autoComplete="off"
-                    labelCol={{span: 10}}
                     initialValues={{
                         parentId: formParentOrganization.id,
                         isVisible: true,
@@ -427,7 +428,6 @@ export const Organization = () => {
                     >
                         <TextArea className="remark"
                                   placeholder={t('Common.remark')}
-                                  style={{height: 100}}
                                   showCount maxLength={500}/>
                     </Form.Item>
                 </Form>

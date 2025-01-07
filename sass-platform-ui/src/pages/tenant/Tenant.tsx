@@ -33,6 +33,7 @@ import {permissionApi} from "@/apis/permission";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
+import {useAppSelector} from "@/store";
 
 /**
  * 租户组件
@@ -120,7 +121,7 @@ export const Tenant: React.FC = () => {
     const [formInitValues, setFormInitValues] = useState<TenantInfo>(initForm);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-
+    const language = useAppSelector(state => state.locale.language);
 
     /**
      * 分页查询
@@ -264,12 +265,11 @@ export const Tenant: React.FC = () => {
         >
             <Form
                 clearOnDestroy={true}
-                name="basic"
+                name="modal-form"
                 form={form}
+                labelCol={{span: language == 'zh' ? 4 : 7}}
                 autoComplete="off"
                 onFinish={handleTenant}
-                labelCol={{span: 8}}
-                wrapperCol={{span: 13}}
                 initialValues={formInitValues}
             >
                 <Form.Item

@@ -44,11 +44,10 @@ ul {
   padding: 0;
 }
 
-.form-button {
-  padding-top: 2rem;
-  justify-items: flex-end;
+#modal-form {
+  width: 100%;
 }
 
-.ant-modal-body {
-  padding: 1rem 0 !important;
+.remark {
+  height: 6.25rem;
 }
