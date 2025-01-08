@@ -232,6 +232,16 @@ const EnUS = {
         namePlaceholder: 'Please input Organization Name',
         code: 'Organization Code',
         type: 'Organization Type',
+    },
+    Position: {
+        list: 'Position List',
+        add: 'Add Position',
+        edit: 'Edit Position',
+        name: 'Position Name',
+        namePlaceholder: 'Please input Position Name',
+        code: 'Position Code',
+        codePlaceholder: 'Please input Position Code',
+        codeTips: 'Position code, unique under tenant'
     }
 }
 

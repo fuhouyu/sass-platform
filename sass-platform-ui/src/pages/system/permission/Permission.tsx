@@ -390,7 +390,6 @@ export const Permission: React.FC = () => {
                         required={true}
                     >
                         <TreeSelect
-                            style={{width: '100%'}}
                             treeTitleRender={(menu: Menu) => {
                                 if (menu) {
                                     return t(`Menu.${menu.permissionName}`);

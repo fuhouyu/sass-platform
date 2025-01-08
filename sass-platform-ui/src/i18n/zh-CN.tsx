@@ -104,6 +104,7 @@ const ZhCN = {
         roleManage: '角色管理',
         permissionManage: '权限管理',
         organizationManage: '组织管理',
+        positionManage: '岗位管理',
         dictManage: '字典管理',
         dictItem: '字典项',
         profile: '个人资料',
@@ -235,6 +236,16 @@ const ZhCN = {
         namePlaceholder: '请输入组织名称',
         code: '组织编码',
         type: '组织类型',
+    },
+    Position: {
+        list: '岗位列表',
+        add: '新增岗位',
+        edit: '修改岗位',
+        name: '岗位名称',
+        namePlaceholder: '请输入岗位名称',
+        code: '岗位编码',
+        codePlaceholder: '请输入岗位编码',
+        codeTips: '岗位编码，租户下唯一'
     }
 }
 

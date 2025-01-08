@@ -16,75 +16,40 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {DictItem as DictItemModel} from "@/model/dictItem";
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    TableColumnsType,
-    Tag,
-    Tooltip
-} from "antd";
+import {Position as PositionModel} from "@/model/position";
+import {Button, Form, Input, message, Popconfirm, TableColumnsType, Tooltip} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useState} from "react";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Menu} from "@/model/menu";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
-import {dictItemApi} from "@/apis/dictItem";
-import {DictType} from "@/model/dictType";
-import {dictTypeApi} from "@/apis/dictType";
+import {positionApi} from "@/apis/position";
 import {useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
-import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {PositionPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useAppSelector} from "@/store";
 
 /**
- * 字典项
+ * 岗位
  * @constructor 构造函数
  */
-export const DictItem = () => {
+export const Position = () => {
 
     const {t} = useTranslation();
-    const buttonPermissions = useButton(DictItemPermissionConstant.List);
+    const buttonPermissions = useButton(PositionPermissionConstant.List);
     const columns: TableColumnsType = [
         {
-            title: t('DictItem.name'),
-            dataIndex: 'itemName',
+            title: t('Position.name'),
+            dataIndex: 'positionName',
             showSorterTooltip: {target: 'full-header'},
             align: "center",
         },
         {
-            title: t('DictItem.code'),
-            dataIndex: 'dictCode',
+            title: t('Position.code'),
+            dataIndex: 'positionCode',
             defaultSortOrder: 'descend',
             align: "center",
-        },
-        {
-            title: t('Common.displayOrder'),
-            dataIndex: 'displayOrder',
-            align: "center",
-            sorter: true,
-            defaultSortOrder: "descend",
-            showSorterTooltip: false
-        },
-        {
-            title: t('Common.status'),
-            dataIndex: 'isEnabled',
-            align: 'center',
-            render: (isEnabled: boolean) => (
-                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
-                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
-                    </Tag> :
-                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
-                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
-                    </Tag>
-            )
         },
 
         {
@@ -104,10 +69,10 @@ export const DictItem = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: "center",
-            render: (_, record: DictItemModel) => {
-                return <PermissionButton permissionStr={DictItemPermissionConstant.EDIT}
+            render: (_, record: PositionModel) => {
+                return <PermissionButton permissionStr={PositionPermissionConstant.EDIT}
                                          buttonPermissions={buttonPermissions}>
-                    <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                    <EditButton onClick={() => openModal(record.id)}/>
                 </PermissionButton>
 
             }
@@ -119,27 +84,25 @@ export const DictItem = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [pageResult, setPageResult] = useState<PageResult<DictItemModel>>();
-    const [dictTypeList, setDictTypeList] = useState<DictType[]>([]);
+    const [pageResult, setPageResult] = useState<PageResult<PositionModel>>();
     const params = useParams();
-    const [dictItemQuery, setDictItemQuery] = useState<{ [key: string]: unknown }>({});
-    const initForm: DictItemModel = {
-        displayOrder: 1,
-        isEnabled: true,
-        ...dictItemQuery,
+    const [positionQuery, setPositionQuery] = useState<{ [key: string]: unknown }>({});
+    const initForm: PositionModel = {
+        ...positionQuery,
         ...params
     }
-    const [formInitValues, setFormInitValues] = useState<DictItemModel>(initForm);
+    const [formInitValues, setFormInitValues] = useState<PositionModel>(initForm);
+    const language = useAppSelector(state => state.locale.language);
 
     /**
      * 打开模态组
-     * @param dictItemId 角色id
+     * @param positionId 角色id
      */
-    const openModal = async (dictItemId?: string) => {
-        setUpdateId(dictItemId);
-        if (dictItemId) {
-            const dictItemInfo: DictItemModel = await dictItemApi.getInfoByIdApi(dictItemId);
-            setFormInitValues(dictItemInfo);
+    const openModal = async (positionId?: string) => {
+        setUpdateId(positionId);
+        if (positionId) {
+            const positionInfo: PositionModel = await positionApi.getInfoByIdApi(positionId);
+            setFormInitValues(positionInfo);
         } else {
             setFormInitValues(initForm);
         }
@@ -151,10 +114,10 @@ export const DictItem = () => {
      */
     const handlerForm = async () => {
         await form.validateFields();
-        const dictItem: DictItemModel = form.getFieldsValue();
+        const position: PositionModel = form.getFieldsValue();
         setIsModalButtonLoading(true);
         try {
-            await (updateId ? dictItemApi.editInfoApi(updateId, dictItem) : dictItemApi.saveInfoApi(dictItem));
+            await (updateId ? positionApi.editInfoApi(updateId, position) : positionApi.saveInfoApi(position));
             message.success(t('Common.success')).then()
             await pageRequest();
             setIsModalOpen(false);
@@ -174,17 +137,9 @@ export const DictItem = () => {
 
 
     useEffect(() => {
-        // 分页字典类型列表
-        dictTypeApi.getList()
-            .then((res: DictType[]) => {
-                setDictTypeList(res);
-            });
-    }, []);
-
-    useEffect(() => {
         //  分页查询
-        dictItemApi.pageInfoListApi({...pageQuery})
-            .then((res: PageResult<DictItemModel>) => {
+        positionApi.pageInfoListApi({...pageQuery})
+            .then((res: PageResult<PositionModel>) => {
                 setPageResult({...res});
             });
     }, [pageQuery]);
@@ -193,37 +148,34 @@ export const DictItem = () => {
      * 分页查询请求
      */
     const pageRequest = async () => {
-        const res = await dictItemApi.pageInfoListApi(pageQuery);
+        const res = await positionApi.pageInfoListApi(pageQuery);
         setPageResult({...res});
     }
 
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<DictItemModel> = {
+    const rowSelection: TableRowSelection<PositionModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: Menu) => ({
-            disabled: !record.isAllowModified
-        }),
     };
 
     return (
         <>
             <PageList
                 tableProps={{
-                    tableName: t('DictItem.list'),
+                    tableName: t('Position.list'),
                     columns: columns,
                     pageData: pageResult,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
                     components: [
                         <>
-                            <PermissionButton permissionStr={DictItemPermissionConstant.ADD}
+                            <PermissionButton permissionStr={PositionPermissionConstant.ADD}
                                               buttonPermissions={buttonPermissions}>
                                 <AddButton onClick={() => openModal()}/>
                             </PermissionButton>
 
-                            <PermissionButton permissionStr={DictItemPermissionConstant.DELETE}
+                            <PermissionButton permissionStr={PositionPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
                                 <Popconfirm
                                     title={t('Button.delete')}
@@ -231,7 +183,7 @@ export const DictItem = () => {
                                     okText={t('Common.yes')}
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
-                                        dictItemApi.deleteInfoApi(rowKeys as string[]).then();
+                                        positionApi.deleteInfoApi(rowKeys as string[]).then();
                                         await pageRequest()
                                     }}
                                 >
@@ -244,50 +196,33 @@ export const DictItem = () => {
                 }}
                 headerSearchProps={{
                     components: [
-                        <>
-                            <span>{t('DictType.name')}</span>
-                            <Select
-                                allowClear={true}
-                                key={'dictCode'}
-                                defaultValue={params.dictCode}
-                                placeholder={t('DictType.namePlaceholder')}
-                                onChange={(value) => dictItemQuery['dictCode'] = value}
-                                options={dictTypeList.map(dictItem => {
-                                    return {value: dictItem.dictCode, label: <span>{dictItem.dictName}</span>}
-                                })}
-                            />
-                        </>,
-                        <><label htmlFor="dictItemCode">{t('DictItem.code')}</label>
+                        <><label htmlFor="positionName">{t('Position.name')}</label>
                             <Input
                                 allowClear={true}
-                                placeholder={t('DictItem.codePlaceholder')}
-                                id={'dictItemCode'}
+                                placeholder={t('Position.namePlaceholder')}
+                                id={'positionName'}
                                 onChange={(e) => {
-                                    setDictItemQuery({dictItemCode: e.target.value})
+                                    setPositionQuery({positionName: e.target.value})
                                 }}/>
                         </>,
-                        <>
-                            <span>{t('Common.status')}</span>
-                            <Select
+                        <><label htmlFor="positionCode">{t('Position.code')}</label>
+                            <Input
                                 allowClear={true}
-                                key={'isEnabled'}
-                                placeholder={t('Common.statusPlaceholder')}
-                                onChange={(value) => dictItemQuery['isEnabled'] = value}
-                                options={[
-                                    {value: true, label: <span>{t('Common.enabled')}</span>},
-                                    {value: false, label: <span>{t('Common.disabled')}</span>}
-                                ]}
-                            />
+                                placeholder={t('Position.codePlaceholder')}
+                                id={'positionCode'}
+                                onChange={(e) => {
+                                    setPositionQuery({positionCode: e.target.value})
+                                }}/>
                         </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...dictItemQuery})
+                    onSearchClick: () => setPageQuery({...pageQuery, ...positionQuery})
                 }}
             />
 
             <Modal
                 centered
                 destroyOnClose={true}
-                title={updateId ? t('DictItem.edit') : t('DictItem.add')}
+                title={updateId ? t('Position.edit') : t('Position.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
@@ -300,32 +235,20 @@ export const DictItem = () => {
                     fontSize: '24px',
                 }}/>}
             >
-                <Form<DictItemModel>
+                <Form<PositionModel>
                     name="modal-form"
                     form={form}
-                    labelCol={{span: 6}}
+                    labelCol={{span: language === 'zh' ? 4 : 6}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
                 >
 
                     <Form.Item
-                        label={t('DictType.code')}
-                        name="dictCode"
+                        label={t('Position.name')}
+                        name="positionName"
                         validateTrigger="onBlur"
-                        key="dictCode"
-                        colon={false}
-                        required={true}
-                        validateFirst={true}
-                    >
-                        <Input disabled/>
-                    </Form.Item>
-
-                    <Form.Item
-                        label={t('DictItem.name')}
-                        name="itemName"
-                        validateTrigger="onBlur"
-                        key="itemName"
+                        key="positionName"
                         colon={false}
                         required={true}
                         hasFeedback
@@ -333,19 +256,19 @@ export const DictItem = () => {
                         rules={[{
                             required: true,
                             type: "string",
-                            message: t('DictItem.namePlaceholder'),
+                            message: t('Position.namePlaceholder'),
                             max: 50,
                         }
                         ]}
                     >
-                        <Input placeholder={t('DictItem.namePlaceholder')} maxLength={50}/>
+                        <Input placeholder={t('Position.namePlaceholder')} maxLength={50}/>
                     </Form.Item>
 
                     <Form.Item
-                        label={t('DictItem.code')}
-                        name="itemCode"
+                        label={t('Position.code')}
+                        name="positionCode"
                         validateTrigger="onBlur"
-                        key="itemCode"
+                        key="positionCode"
                         colon={false}
                         required={true}
                         validateFirst={true}
@@ -353,7 +276,7 @@ export const DictItem = () => {
                         rules={updateId ? [] : [{
                             required: true,
                             type: "string",
-                            message: t('DictItem.codePlaceholder'),
+                            message: t('Position.codePlaceholder'),
                             max: 50,
                         },
                             {
@@ -362,55 +285,22 @@ export const DictItem = () => {
                                     if (value == null || value == '') {
                                         return;
                                     }
-                                    const exists = await dictItemApi.checkItemCodeExists(dictItemQuery['dictCode'] as string, value);
+                                    const exists = await positionApi.checkPositionCode(value);
                                     if (exists) {
-                                        return Promise.reject(new Error(t('DictItem.codeExistsErrorMessage')));
+                                        return Promise.reject(new Error(t('Position.codeExistsErrorMessage')));
                                     }
                                 }
                             }
                         ]}
                     >
                         <Input
-                            suffix={<Tooltip title={t('DictItem.codeTips')}>
+                            suffix={<Tooltip title={t('Position.codeTips')}>
                                 <IconFont type={'i-tips-hint'}/>
                             </Tooltip>}
                             disabled={updateId != null}
-                            placeholder={t('DictItem.codePlaceholder')}
+                            placeholder={t('Position.codePlaceholder')}
                             maxLength={50}/>
                     </Form.Item>
-
-                    <Form.Item
-                        label={t('Common.displayOrder')}
-                        name="displayOrder"
-                        validateTrigger="onBlur"
-                        key="displayOrder"
-                        colon={false}
-                        required={true}
-                        hasFeedback
-                        validateFirst={true}
-                        rules={[{
-                            required: true,
-                            type: "number",
-                            message: t('Common.displayOrderPlaceholder'),
-                        }]}
-                    >
-                        <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '30%'}}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        label={t('Common.status')}
-                        name="isEnabled"
-                        key="isEnabled"
-                        colon={false}
-                        required={true}
-                    >
-                        <Radio.Group>
-                            <Radio value={true}>{t('Common.enabled')}</Radio>
-                            <Radio value={false}>{t('Common.disabled')}</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-
                     <Form.Item
                         label={t('Common.remark')}
                         name="remark"

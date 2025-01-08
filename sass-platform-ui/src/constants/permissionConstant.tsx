@@ -197,6 +197,31 @@ class OrganizationPermissionConstant {
     static readonly DELETE: string = 'system:organization:delete';
 }
 
+/**
+ * 职位常量
+ */
+class PositionPermissionConstant {
+    /**
+     * 列表权限
+     */
+    static readonly List: string = 'system:position:list';
+
+    /**
+     * 添加权限
+     */
+    static readonly ADD: string = 'system:position:add';
+
+    /**
+     * 修改权限
+     */
+    static readonly EDIT: string = 'system:position:edit';
+
+    /**
+     * 删除权限
+     */
+    static readonly DELETE: string = 'system:position:delete';
+}
+
 
 export {
     TenantPermissionConstant,
@@ -205,5 +230,6 @@ export {
     PermissionConstant,
     DictTypePermissionConstant,
     DictItemPermissionConstant,
-    OrganizationPermissionConstant
+    OrganizationPermissionConstant,
+    PositionPermissionConstant
 }

@@ -456,6 +456,34 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
 VALUES (264, 26, 'delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
+-- 岗位管理
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (27, 2, 'positionManage', 'system:position:list', 2, 'i-drxx95', 'position', 'system/position',
+        '', false, 'MENU', false, true,
+        false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (271, 27, 'query', 'system:position:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (272, 27, 'add', 'system:position:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
+        now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (273, 27, 'edit', 'system:position:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (274, 27, 'delete', 'system:position:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
@@ -490,6 +518,8 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 1, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 26, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 27, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 234, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
@@ -546,6 +576,14 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 263, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 264, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 271, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 272, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 273, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 274, now(), 'admin');
 
 DROP TABLE IF EXISTS accounts;
 -- 账号表
