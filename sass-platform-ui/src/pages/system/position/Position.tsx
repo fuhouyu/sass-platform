@@ -187,7 +187,7 @@ export const Position = () => {
                                         await pageRequest()
                                     }}
                                 >
-                                    <DeleteButton/>
+                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                 </Popconfirm>
                             </PermissionButton>
 

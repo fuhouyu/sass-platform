@@ -64,8 +64,7 @@ export const Organization = () => {
     const [form] = Form.useForm();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
-    const [lazyTreeData, setLazyTreeData] = useState<OrganizationModal[]>([]);
-    const {onLoadData} = useOrganizationLazyData(setLazyTreeData);
+    const {onLoadData, organizationLazyData} = useOrganizationLazyData();
     const language = useAppSelector(state => state.locale.language);
 
     const columns: TableColumnsType<OrganizationModal> = [
@@ -98,12 +97,11 @@ export const Organization = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             render: (_: AnyObject, record: OrganizationModal) => {
-                return (<>
+                return (
                     <PermissionButton buttonPermissions={buttonPermissions}
                                       permissionStr={OrganizationPermissionConstant.EDIT}>
                         <EditButton onClick={() => openModal(record.id)}/>
-                    </PermissionButton>
-                </>)
+                    </PermissionButton>)
             }
         }
     ];
@@ -199,12 +197,12 @@ export const Organization = () => {
         try {
             setIsModalButtonLoading(true);
             await (updateId ? organizationApi.editInfoApi(updateId, values) : organizationApi.saveInfoApi(values));
-            message.success(t('Common.success')).then()
             const res = await organizationApi.pageInfoListApi(pageQuery);
             const parentId = values.parentId;
             await onLoadData({key: parentId});
             setPageData(res);
             setIsModalOpen(false);
+            message.success(t('Common.success')).then()
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -225,7 +223,7 @@ export const Organization = () => {
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
-                            treeData={lazyTreeData}
+                            treeData={organizationLazyData}
                             onSelect={onSelectTree}
                         />
                     </div>
@@ -262,11 +260,12 @@ export const Organization = () => {
                                         okText={t('Common.yes')}
                                         cancelText={t('Common.no')}
                                         onConfirm={async () => {
-                                            organizationApi.deleteInfoApi(rowKeys as string[]).then();
+                                            await organizationApi.deleteInfoApi(rowKeys as string[]).then();
                                             setPageQuery({...pageQuery});
+                                            await onLoadData({key: formParentOrganization.id});
                                         }}
                                     >
-                                        <DeleteButton/>
+                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                     </Popconfirm>
                                 </PermissionButton>
                             </>

@@ -218,7 +218,7 @@ export const Role: React.FC = () => {
                                         await pageRequest();
                                     }}
                                 >
-                                    <DeleteButton/>
+                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                 </Popconfirm>
                             </PermissionButton>
                         </>

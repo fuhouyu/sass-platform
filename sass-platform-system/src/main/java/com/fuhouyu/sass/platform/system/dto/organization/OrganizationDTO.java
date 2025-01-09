@@ -38,7 +38,7 @@ public class OrganizationDTO extends BaseDTO {
     @Schema(name = "id", description = "组织ID，仅返回")
     private Long id;
 
-    @Schema(name = "parentId", description = "父组织ID")
+    @Schema(name = "parentId", description = "父组织ID", defaultValue = "-1")
     private Long parentId;
 
     @Schema(name = "organizationName", description = "组织名称", requiredMode = Schema.RequiredMode.REQUIRED)

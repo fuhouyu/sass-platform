@@ -234,6 +234,7 @@ const ZhCN = {
         edit: '修改组织',
         name: '组织名称',
         namePlaceholder: '请输入组织名称',
+        nameCheckMessage: '请输入组织名称',
         code: '组织编码',
         type: '组织类型',
     },

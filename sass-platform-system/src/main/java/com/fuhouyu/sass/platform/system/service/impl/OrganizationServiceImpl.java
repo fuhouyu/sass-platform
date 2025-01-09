@@ -69,7 +69,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         entity.setOrganizationType("UNIT");
         entity.setOrganizationCode(String.format("GO_%s", UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT)));
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
-        this.checkParentExists(dto.getParentId());
+        Long parentId = Optional.ofNullable(dto.getParentId()).orElse(-1L);
+        this.checkParentExists(parentId);
+        entity.setParentId(parentId);
         this.organizationMapper.insert(entity);
         return id;
     }
