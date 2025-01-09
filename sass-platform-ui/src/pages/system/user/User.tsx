@@ -29,8 +29,8 @@ import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {DownOutlined} from "@ant-design/icons";
-import {Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
+import {Organization} from "@/model/organization.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -105,8 +105,7 @@ export const User: React.FC = () => {
     const [form] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
-    const [lazyTreeData, setLazyTreeData] = useState<OrganizationModal[]>([]);
-    const {onLoadData} = useOrganizationLazyData(setLazyTreeData);
+    const {organizationLazyData, onLoadData} = useOrganizationLazyData();
 
     /**
      * 打开模态组
@@ -203,13 +202,13 @@ export const User: React.FC = () => {
             <Row gutter={24} className={'main-container'}>
                 <Col span={3} className={'tree-container'}>
                     <div className='tree-info'>
-                        <Tree
+                        <Tree<Organization>
                             defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
-                            treeData={lazyTreeData}
+                            treeData={organizationLazyData}
                             // onSelect={onSelectTree}
                         />
                     </div>
@@ -240,7 +239,7 @@ export const User: React.FC = () => {
                                                 await pageRequest()
                                             }}
                                         >
-                                            <DeleteButton/>
+                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                         </Popconfirm>
                                     </PermissionButton>
 

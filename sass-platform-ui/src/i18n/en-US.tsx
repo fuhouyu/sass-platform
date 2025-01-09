@@ -230,6 +230,7 @@ const EnUS = {
         parentOrganization: 'Parent Organization',
         name: 'Organization Name',
         namePlaceholder: 'Please input Organization Name',
+        nameCheckMessage: 'Please input Organization Name',
         code: 'Organization Code',
         type: 'Organization Type',
     },

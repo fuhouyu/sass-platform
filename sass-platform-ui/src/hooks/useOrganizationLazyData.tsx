@@ -14,64 +14,65 @@
  * limitations under the License.
  */
 
-import {Organization as OrganizationModal} from "@/model/organization.tsx";
-import React, {useEffect} from "react";
+import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
+import React, {useEffect, useState} from "react";
 import {organizationApi} from "@/apis/organization.tsx";
 
 /**
  * 设置树数据
- * @param list 菜单集合
+ * @param treeData
  * @param key key
  * @param children 子集
  */
-const updateTreeData = (list: OrganizationModal[], key: React.Key, children: OrganizationModal[]): OrganizationModal[] => {
-    return list.map((node: OrganizationModal) => {
+function updateTreeData(
+    treeData: OrganizationModal[],
+    key: React.Key,
+    children: OrganizationModal[]
+): OrganizationModal[] {
+    return treeData.map(node => {
         if (node.id === key) {
-            return {
-                ...node,
-                children,
-            };
+            return {...node, children: [...children]}; // 返回新引用
         }
         if (node.children) {
-            return {
-                ...node,
-                children: updateTreeData(node.children, key, children),
-            };
+            return {...node, children: updateTreeData(node.children, key, children)}; // 深度更新
         }
-        return node;
+        return {...node}; // 确保返回新引用
     });
-
 }
+
 
 
 /**
  * 懒加载组织树
  */
-export function useOrganizationLazyData(setLazyData: (value: (((prevState: OrganizationModal[]) => OrganizationModal[]) | OrganizationModal[])) => void) {
+export function useOrganizationLazyData(): {
+    organizationLazyData: Organization[];
+    onLoadData: ({key, children}: { key: React.Key; children?: Organization[] }) => Promise<void>
+} {
+    // 维护 lazyData 状态
+    const [organizationLazyData, setOrganizationLazyData] = useState<OrganizationModal[]>([]);
 
     useEffect(() => {
         // 先查询出一级菜单
         const initOrganization = async () => {
             const organizations = await organizationApi.getOrganizationListApi();
-            setLazyData(organizations);
+            setOrganizationLazyData(organizations);
         }
         initOrganization().then();
-    }, [setLazyData]);
+    }, [setOrganizationLazyData]);
 
     /**
      * 懒加载树
-     * @param key key，这里是主键id
+     * @param key 主键 ID
      * @param children 子菜单
      */
-    const onLoadData = async ({key, children}: { key: React.Key, children?: OrganizationModal[] | undefined }) => {
+    const onLoadData = async ({key, children}: { key: React.Key; children?: OrganizationModal[] }) => {
         if (children) {
-            return new Promise<void>((resolve) => {
-                resolve()
-            })
+            return Promise.resolve();
         }
-        const res = await organizationApi.getOrganizationListApi(key.toString());
-        const lazyData = (origin: OrganizationModal[]) => updateTreeData(origin, key, res);
-        setLazyData(lazyData);
-    }
-    return {onLoadData}
+        const res = await organizationApi.getOrganizationListApi(key as string);
+        setOrganizationLazyData(prevState => updateTreeData(prevState, key, res));
+    };
+
+    return {organizationLazyData, onLoadData};
 }

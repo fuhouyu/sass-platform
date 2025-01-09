@@ -342,7 +342,7 @@ export const Permission: React.FC = () => {
                                             await permissionTreeSelect();
                                         }}
                                     >
-                                        <DeleteButton/>
+                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                     </Popconfirm>
                                 </PermissionButton>
                             </>
