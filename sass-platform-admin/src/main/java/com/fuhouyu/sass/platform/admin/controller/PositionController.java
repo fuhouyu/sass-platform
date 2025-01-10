@@ -141,4 +141,17 @@ public class PositionController {
     public BaseResponse<Long> savePosition(@RequestBody PositionDTO positionDTO) {
         return ResponseHelper.success(this.positionService.save(positionDTO));
     }
+
+
+    /**
+     * 获取所有的岗位列表
+     *
+     * @return 岗位列表
+     */
+    @GetMapping("/list-all")
+    @Operation(summary = "获取所有的岗位列表")
+    @PreAuthorize("@auth.hasPermission('system:position:list')")
+    public BaseResponse<List<PositionDTO>> findPositionAllList() {
+        return ResponseHelper.success(this.positionService.findPositionAllList());
+    }
 }

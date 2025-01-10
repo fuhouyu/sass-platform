@@ -32,6 +32,13 @@ class PositionApi extends DefaultApiImpl<Position> {
      */
     checkPositionCode: (positionCode: string) => Promise<boolean> = (positionCode: string): Promise<boolean> =>
         request.get(`${this.baseUrl}/exists?positionCode=${positionCode}`)
+
+
+    /**
+     * 获取所有的职位列表
+     */
+    getPositionAllList: () => Promise<Position[]> = (): Promise<Position[]> =>
+        request.get(`${this.baseUrl}/list-all`)
 }
 
 export const positionApi = new PositionApi();

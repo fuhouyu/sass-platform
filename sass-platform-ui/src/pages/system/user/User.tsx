@@ -15,8 +15,21 @@
  */
 
 
-import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Popconfirm, Radio, Row, Select, TableColumnsType, Tree} from "antd";
+import React, {useCallback, useEffect, useState} from "react";
+import {
+    Button,
+    Col,
+    Form,
+    Input,
+    message,
+    Popconfirm,
+    Radio,
+    Row,
+    Select,
+    TableColumnsType,
+    Tree,
+    TreeSelect
+} from "antd";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
@@ -31,6 +44,9 @@ import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {DownOutlined} from "@ant-design/icons";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
+import {organizationApi} from "@/apis/organization.tsx";
+import {Position} from "@/model/position";
+import {positionApi} from "@/apis/position.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -106,6 +122,9 @@ export const User: React.FC = () => {
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
+    const [organizationTree, setOrganizationTree] = useState<Organization[]>();
+    const [positionList, setPositionList] = useState<Position[]>()
+    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
 
     /**
      * 打开模态组
@@ -113,6 +132,8 @@ export const User: React.FC = () => {
      */
     const openModal = async (userId?: string) => {
         setUpdateUserId(userId);
+        setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
+        setPositionList(await positionApi.getPositionAllList());
         if (!userId) {
             setIsModalOpen(true);
             return;
@@ -140,8 +161,8 @@ export const User: React.FC = () => {
         try {
             await (updateUserId ? updateUserDetail() : saveUserDetail());
             message.success(t('Common.success')).then();
+            await pageQueryCallback();
             setIsModalOpen(false);
-            form.resetFields();
         } finally {
             setIsModalButtonLoading(false);
         }
@@ -163,31 +184,19 @@ export const User: React.FC = () => {
         return userApi.editInfoApi(userinfo.id!, userinfo);
     }
 
-    /**
-     * 分页查询
-     */
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
     });
 
-    /**
-     * 分页查询结果
-     */
-    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
-    useEffect(() => {
-        userApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<Userinfo>) => {
-                setPageResult({...res});
-            })
-    }, [pageQuery])
+    const pageQueryCallback = useCallback(async () => {
+        setPageResult(await userApi.pageInfoListApi(pageQuery));
+    }, [pageQuery]);
 
-    /**
-     * 分页查询请求
-     */
-    const pageRequest = async () => {
-        setPageResult(await userApi.pageInfoListApi(pageQuery))
-    }
+    useEffect(() => {
+        pageQueryCallback().then();
+    }, [pageQueryCallback])
+
 
     /**
      * table列选择
@@ -235,8 +244,8 @@ export const User: React.FC = () => {
                                             okText={t('Common.yes')}
                                             cancelText={t('Common.no')}
                                             onConfirm={async () => {
-                                                userApi.deleteInfoApi(rowKeys as string[]).then();
-                                                await pageRequest()
+                                                await userApi.deleteInfoApi(rowKeys as string[]);
+                                                await pageQueryCallback();
                                             }}
                                         >
                                             <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -294,19 +303,58 @@ export const User: React.FC = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
+                    validateTrigger={'onBlur'}
                     labelCol={{span: 7}}
                     initialValues={formInitValues}
                     autoComplete="off"
                 >
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('User.ownerOrganization')}
+                                name="ownerOrganization"
+                                key="ownerOrganization"
+                                colon={false}
+                                rules={[{required: true, message: t('User.ownerOrganizationCheckMessage')}]}
+                            >
+                                <TreeSelect<Organization>
+                                    showSearch
+                                    fieldNames={{label: 'organizationName', value: 'id'}}
+                                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                    allowClear
+                                    treeDefaultExpandAll
+                                    treeData={organizationTree}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('User.ownerPosition')}
+                                name="ownerPosition"
+                                key="ownerOrganization"
+                                colon={false}
+                                rules={[{required: true, message: t('User.ownerPositionCheckMessage')}]}
+                            >
+                                <Select<Position>
+                                    showSearch
+                                    placeholder="Select a person"
+                                    filterOption={(input, option: Position) =>
+                                        (option?.positionName ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    fieldNames={{label: 'positionName', value: 'id'}}
+                                    options={positionList}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     {!updateUserId &&
                         <Row gutter={24}>
                             <Col span={12}>
                                 <Form.Item
                                     label={t('User.username')}
                                     name="username"
-                                    validateTrigger="onBlur"
+                                    validateTrigger="onChange"
                                     key="username"
-                                    wrapperCol={{offset: 1}}
                                     colon={false}
                                     required={true}
                                     hasFeedback
@@ -339,7 +387,7 @@ export const User: React.FC = () => {
                                     name="password"
                                     key="password"
                                     hasFeedback
-                                    wrapperCol={{offset: 1}}
+
                                     colon={false}
 
                                     rules={[{
@@ -353,16 +401,12 @@ export const User: React.FC = () => {
                             </Col>
                         </Row>}
                     <Row gutter={24}>
-                        <Form.Item name="id" hidden>
-                            <Input/>
-                        </Form.Item>
-
                         <Col span={12}>
                             <Form.Item
                                 label={t('User.realName')}
                                 name="realName"
                                 key="realName"
-                                wrapperCol={{offset: 1}}
+
                                 colon={false}
                                 rules={[{required: true, message: t('User.realNamePlaceholder')}]}
                             >
@@ -374,7 +418,7 @@ export const User: React.FC = () => {
                                 label={t('User.nickname')}
                                 name="nickname"
                                 key="nickname"
-                                wrapperCol={{offset: 1}}
+
                                 colon={false}
                             >
                                 <Input placeholder={t('User.realNamePlaceholder')}/>
@@ -387,7 +431,7 @@ export const User: React.FC = () => {
                                 label={t('User.email')}
                                 name="email"
                                 key="email"
-                                wrapperCol={{offset: 1}}
+
                                 colon={false}
                                 rules={[{
                                     type: 'email',
@@ -402,7 +446,7 @@ export const User: React.FC = () => {
                                 label={t('User.gender')}
                                 name="gender"
                                 key="gender"
-                                wrapperCol={{offset: 1}}
+
                                 colon={false}
                                 rules={[{required: true}]}
                             >
@@ -417,5 +461,5 @@ export const User: React.FC = () => {
                 </Form>
             </Modal>
         </>
-    )
+    );
 }

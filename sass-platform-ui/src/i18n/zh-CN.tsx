@@ -155,6 +155,10 @@ const ZhCN = {
         password: '密码',
         passwordPlaceholder: '请输入密码',
         passwordCheckMessage: '请输入密码',
+        ownerOrganization: '所属组织',
+        ownerOrganizationCheckMessage: '所属组织未选择',
+        ownerPosition: '所属职位',
+        ownerPositionCheckMessage: '所属职位未选择',
         male: '男',
         female: '女',
 

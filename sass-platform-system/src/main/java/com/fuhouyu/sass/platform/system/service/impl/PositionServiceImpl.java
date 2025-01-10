@@ -22,6 +22,7 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.PositionAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.position.PositionDTO;
+import com.fuhouyu.sass.platform.system.dto.position.PositionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Positions;
 import com.fuhouyu.sass.platform.system.mapper.PositionMapper;
 import com.fuhouyu.sass.platform.system.service.PositionService;
@@ -98,5 +99,10 @@ public class PositionServiceImpl implements PositionService {
     public Boolean checkPositionExists(String positionCode) {
         Positions positions = this.positionMapper.queryPositionByPositionCode(positionCode);
         return Objects.nonNull(positions);
+    }
+
+    @Override
+    public List<PositionDTO> findPositionAllList() {
+        return POSITION_ASSEMBLER.toDTO(this.positionMapper.queryList(new PositionPageQueryDTO()));
     }
 }
