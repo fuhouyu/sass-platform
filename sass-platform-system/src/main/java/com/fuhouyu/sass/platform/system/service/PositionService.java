@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.position.PositionDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 职位接口
@@ -34,4 +36,12 @@ public interface PositionService extends BaseService<Long, PositionDTO> {
      * @return 职位信息
      */
     Boolean checkPositionExists(String positionCode);
+
+    /**
+     * 查询岗位列表集合
+     *
+     * @return 岗位列表集合
+     */
+    List<PositionDTO> findPositionAllList();
+
 }
