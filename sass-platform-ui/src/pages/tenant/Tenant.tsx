@@ -42,7 +42,7 @@ import {useAppSelector} from "@/store";
 export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
-    const {getDictItemByDictCode} = useDictItem('TENANT_TYPE');
+    const {findDictItems} = useDictItem(['TENANT_TYPE']);
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),

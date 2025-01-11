@@ -33,7 +33,7 @@
         users
     </sql>
 
-    <sql id="AllColumns">
+    <sql id="InsertColumns">
         id,
         username,
         real_name,
@@ -50,11 +50,28 @@
         update_by
     </sql>
 
+    <sql id="QueryAllColumns">
+        u.id,
+        u.username,
+        u.real_name,
+        u.nickname,
+        u.email,
+        u.gender,
+        u.avatar,
+        u.login_date,
+        u.login_ip,
+        u.is_deleted,
+        u.create_at,
+        u.update_at,
+        u.create_by,
+        u.update_by
+    </sql>
+
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="AllColumns"/>
+            <include refid="InsertColumns"/>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -79,7 +96,7 @@
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="AllColumns"/>
+            <include refid="InsertColumns"/>
         </trim>
         VALUES
         <foreach collection="list" separator="," item="entity">
@@ -146,16 +163,16 @@
     </delete>
 
     <select id="queryById" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE id = #{id}
+        SELECT <include refid="QueryAllColumns"/>
+        FROM <include refid="TableName"/> u
+        WHERE u.id = #{id}
     </select>
 
 
     <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE id IN
+        SELECT <include refid="QueryAllColumns"/>
+        FROM <include refid="TableName"/> u
+        WHERE u.id IN
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
@@ -163,23 +180,25 @@
 
 
     <select id="queryByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE username = #{username}
+        SELECT <include refid="QueryAllColumns"/>
+        FROM <include refid="TableName"/> u
+        WHERE u.username = #{username}
     </select>
 
     <select id="queryList" resultMap="BaseResultMap" >
         SELECT
-        <include refid="AllColumns"/>
+        <include refid="QueryAllColumns"/>
         FROM
-        <include refid="TableName"/>
+        <include refid="TableName"/>  u LEFT JOIN
+        user_positions up ON u.id = up.user_id
         <where>
+            up.organization_id = #{pageQuery.organizationId}
             <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
-                username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                AND (username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
                 OR
                 real_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
                 OR
-                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%'))
             </if>
             <if test="pageQuery.gender != null and pageQuery.gender != ''">
                 AND gender = #{pageQuery.gender}

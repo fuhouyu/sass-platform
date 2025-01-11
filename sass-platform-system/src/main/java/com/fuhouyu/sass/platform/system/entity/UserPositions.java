@@ -13,35 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.entity;
 
-import com.fuhouyu.sass.platform.system.dto.position.PositionDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.io.Serial;
 
 /**
  * <p>
- * 职位接口
+ * 用户职位实体
  * </p>
  *
  * @author fuhouyu
- * @since 2025/1/8 21:29
+ * @since 2025/1/11 12:27
  */
-public interface PositionService extends BaseService<Long, PositionDTO> {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class UserPositions extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 51263412312390123L;
 
     /**
-     * 检查职位是否存在
-     *
-     * @param positionCode 职位编码
-     * @return 职位信息
+     * 组织id
      */
-    Boolean checkPositionExists(String positionCode);
+    private Long organizationId;
 
     /**
-     * 查询岗位列表集合
-     *
-     * @return 岗位列表集合
+     * 用户id
      */
-    List<PositionDTO> findPositionAllList();
+    private Long userId;
 
+    /**
+     * 职位名称
+     */
+    private String positionName;
+
+    /**
+     * 组织内排序
+     */
+    private Long orderInOrganization;
+
+    /**
+     * 是否主职
+     */
+    private Boolean isMain;
 }

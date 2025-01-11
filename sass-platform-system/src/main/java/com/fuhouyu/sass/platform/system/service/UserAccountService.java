@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
-import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 
@@ -29,13 +28,6 @@ import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
  * @since 2024/9/27 18:10
  */
 public interface UserAccountService {
-
-    /**
-     * 注册用户
-     *
-     * @param userDTO 用户账号dto对象
-     */
-    void register(SaveUserDTO userDTO);
 
     /**
      * 通过账号id进行登录

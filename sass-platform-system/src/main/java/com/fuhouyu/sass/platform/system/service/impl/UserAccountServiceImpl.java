@@ -31,7 +31,6 @@ import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
-import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
@@ -44,10 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -74,18 +71,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final AuthenticationManager authenticationManager;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final CacheService<String, Object> cacheService;
-
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void register(SaveUserDTO userDTO) {
-        Long id = this.userService.save(userDTO);
-        userDTO.setId(id);
-        this.saveAccounts(userDTO);
-    }
 
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
@@ -155,26 +141,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         cacheService.delete(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
         return userTokenDTO;
 
-    }
-
-    /**
-     * 保存账号列表
-     *
-     * @param saveUserDTO 用户详情dto
-     */
-    private void saveAccounts(SaveUserDTO saveUserDTO) {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setAccount(saveUserDTO.getUsername());
-        accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
-        accountDTO.setUserId(saveUserDTO.getId());
-        accountDTO.setCredentials(passwordEncoder.encode(saveUserDTO.getPassword()));
-        accountDTO.setIsEnabled(true);
-        try {
-            this.accountService.save(accountDTO);
-        } catch (Exception e) {
-            LoggerUtil.error(log, "用户账号注册失败: {}", accountDTO, e);
-            throw new IllegalArgumentException("用户注册失败");
-        }
     }
 
 }

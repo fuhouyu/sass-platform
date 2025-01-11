@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.position.PositionDTO;
-import com.fuhouyu.sass.platform.system.entity.Positions;
+import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.entity.UserPositions;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -29,7 +29,7 @@ import org.mapstruct.factory.Mappers;
  * @since 2025/1/8 21:31
  */
 @Mapper
-public interface PositionAssembler extends BaseAssembler<Positions, PositionDTO> {
+public interface UserPositionAssembler extends BaseAssembler<UserPositions, UserPositionDTO> {
 
-    PositionAssembler INSTANCE = Mappers.getMapper(PositionAssembler.class);
+    UserPositionAssembler INSTANCE = Mappers.getMapper(UserPositionAssembler.class);
 }

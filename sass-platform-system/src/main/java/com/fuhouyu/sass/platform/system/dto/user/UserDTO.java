@@ -17,7 +17,7 @@ package com.fuhouyu.sass.platform.system.dto.user;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,8 +48,7 @@ public class UserDTO extends BaseDTO {
     private Long id;
 
     @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[A-Za-z\\d!@#$%^&*()_+]{8,20}$",
-            message = "用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。")
+    @NotEmpty(message = "用户名未填写")
     private String username;
 
     @Schema(name = "realName", description = "真实姓名")

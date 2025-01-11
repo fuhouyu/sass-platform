@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 
 /**
  * <p>
@@ -26,6 +27,14 @@ import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
  * @since 2024/10/5 19:17
  */
 public interface UserService extends BaseService<Long, UserDTO> {
+
+    /**
+     * 保存用户详情
+     *
+     * @param userDTO 用户dto对象
+     * @return 主键id
+     */
+    Long saveUser(UserDetailDTO userDTO);
 
     /**
      * 通过用户名称查询

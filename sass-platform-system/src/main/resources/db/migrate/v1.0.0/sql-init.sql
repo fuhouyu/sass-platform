@@ -122,7 +122,7 @@ COMMENT ON COLUMN users.update_by IS '更新人';
 
 INSERT INTO users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, create_at, create_by,
                   update_at, update_by)
-VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'male',
+VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'MALE',
         null, now(), '127.0.0.1', now(), 'admin', now(), 'admin');
 
 DROP TABLE IF EXISTS tenant_has_user;
@@ -734,12 +734,12 @@ CREATE TABLE organizations
     organization_name VARCHAR(255)       NOT NULL,
     organization_code VARCHAR(255)       NOT NULL,
     organization_type VARCHAR(32)        NOT NULL,
-    is_enabled        bool               NOT NULL DEFAULT true,
-    is_leaf           bool               NOT NULL DEFAULT true,
+    is_enabled BOOLEAN NOT NULL DEFAULT true,
+    is_leaf    BOOLEAN NOT NULL DEFAULT true,
     remark            VARCHAR(255),
     display_order     INTEGER            NOT NULL DEFAULT 1,
     owner_tenant_id   BIGINT             NOT NULL,
-    is_deleted        bool               NOT NULL DEFAULT false,
+    is_deleted BOOLEAN NOT NULL DEFAULT false,
     create_at         TIMESTAMP          NOT NULL,
     update_at         TIMESTAMP          NOT NULL,
     create_by         VARCHAR(64)        NOT NULL,
@@ -769,56 +769,33 @@ COMMENT ON COLUMN organizations.update_at IS '更新时间';
 COMMENT ON COLUMN organizations.create_by IS '创建人';
 COMMENT ON COLUMN organizations.update_by IS '更新人';
 
-DROP TABLE IF EXISTS positions;
-
-CREATE TABLE positions
+DROP TABLE IF EXISTS user_positions;
+CREATE TABLE user_positions
 (
-    id              BIGINT       NOT NULL PRIMARY KEY,
-    position_name   VARCHAR(255) NOT NULL,
-    position_code   VARCHAR(64)  NOT NULL,
-    remark          VARCHAR(255),
-    display_order   INTEGER      NOT NULL DEFAULT 1,
-    owner_tenant_id BIGINT       NOT NULL,
-    is_deleted      bool         NOT NULL DEFAULT false,
-    create_at       TIMESTAMP    NOT NULL,
-    update_at       TIMESTAMP    NOT NULL,
-    create_by       VARCHAR(64)  NOT NULL,
-    update_by       VARCHAR(64)  NOT NULL
-);
-CREATE UNIQUE INDEX uni_tenant_position_code ON positions (owner_tenant_id, position_code);
-COMMENT ON INDEX uni_tenant_position_code IS '租户岗位编码';
-
-COMMENT ON TABLE positions IS '职位表';
-COMMENT ON COLUMN positions.id IS '主键id';
-COMMENT ON COLUMN positions.position_name IS '职位名称';
-COMMENT ON COLUMN positions.position_code IS '职位编码';
-COMMENT ON COLUMN positions.remark IS '备注';
-COMMENT ON COLUMN positions.display_order IS '排序字段';
-COMMENT ON COLUMN positions.owner_tenant_id IS '所属租户的id';
-COMMENT ON COLUMN positions.is_deleted IS '是否删除： false 未删除';
-COMMENT ON COLUMN positions.create_at IS '创建时间';
-COMMENT ON COLUMN positions.update_at IS '更新时间';
-COMMENT ON COLUMN positions.create_by IS '创建人';
-COMMENT ON COLUMN positions.update_by IS '更新人';
-
-
-DROP TABLE IF EXISTS organization_has_user;
-
-CREATE TABLE organization_has_user
-(
-    organization_id BIGINT      NOT NULL,
-    position_id     BIGINT      NOT NULL,
-    user_id         BIGINT      NOT NULL,
-    create_at       TIMESTAMP   NOT NULL,
-    create_by       VARCHAR(64) NOT NULL,
-    PRIMARY KEY (organization_id, user_id, position_id)
+    organization_id       BIGINT       NOT NULL,
+    user_id               BIGINT       NOT NULL,
+    position_name         VARCHAR(128) NOT NULL,
+    is_main               BOOLEAN      NOT NULL DEFAULT false,
+    order_in_organization BIGINT       NOT NULL,
+    create_at             TIMESTAMP    NOT NULL,
+    update_at             TIMESTAMP    NOT NULL,
+    create_by             VARCHAR(64)  NOT NULL,
+    update_by             VARCHAR(64)  NOT NULL,
+    PRIMARY KEY (organization_id, user_id)
 );
 
+COMMENT ON table user_positions IS '用户岗位信息表';
+COMMENT ON column user_positions.organization_id IS '组织id';
+COMMENT ON column user_positions.user_id IS '用户id';
+COMMENT ON column user_positions.position_name IS '职位信息';
+COMMENT ON column user_positions.is_main IS '是否是主职部门 true 是 false 否';
+COMMENT ON column user_positions.order_in_organization IS '组织内的排序';
+COMMENT ON COLUMN organizations.create_at IS '创建时间';
+COMMENT ON COLUMN organizations.update_at IS '更新时间';
+COMMENT ON COLUMN organizations.create_by IS '创建人';
+COMMENT ON COLUMN organizations.update_by IS '更新人';
 
-COMMENT ON TABLE organization_has_user IS '组织用户关联关系表';
-COMMENT ON COLUMN organization_has_user.organization_id IS '组织id';
-COMMENT ON COLUMN organization_has_user.position_id IS '职位id';
-COMMENT ON COLUMN organization_has_user.user_id IS '用户id';
-COMMENT ON COLUMN organization_has_user.create_at IS '创建时间';
-COMMENT ON COLUMN organization_has_user.create_by IS '创建人';
+INSERT INTO user_positions (organization_id, user_id, position_name, is_main, order_in_organization, create_at,
+                            update_at, create_by, update_by)
+VALUES (1, 1, '管理者', true, 1, '2024-11-10 21:35:00', '2024-11-10 21:35:00', 'admin', 'admin'),
 

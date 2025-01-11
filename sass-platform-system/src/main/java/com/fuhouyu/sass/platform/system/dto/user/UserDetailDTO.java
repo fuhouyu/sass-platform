@@ -15,14 +15,16 @@
  */
 package com.fuhouyu.sass.platform.system.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
  * <p>
- * 保存用户时的dto对象
+ * 用户详情dto对象
  * </p>
  *
  * @author fuhouyu
@@ -31,8 +33,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class SaveUserDTO extends UserDTO {
+@Schema(name = "UserDetailDTO", description = "用户详情dto对象")
+public class UserDetailDTO extends UserDTO {
 
     @Schema(name = "password", description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonIgnore
     private String password;
+
+    @Valid
+    @Schema(name = "userPosition", description = "用户职位信息")
+    private UserPositionDTO userPosition;
+
+
 }

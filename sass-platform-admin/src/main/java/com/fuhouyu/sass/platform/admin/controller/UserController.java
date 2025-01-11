@@ -19,8 +19,8 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.user.SaveUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
@@ -100,6 +100,20 @@ public class UserController {
     }
 
     /**
+     * 保存用户信息
+     *
+     * @param userDTO 用户dto对象
+     * @return 响应
+     */
+    @Operation(summary = "保存用户信息")
+    @PostMapping
+    @PreAuthorize("@auth.hasPermission('system:user:add')")
+    public BaseResponse<Void> saveUser(@RequestBody @Valid UserDetailDTO userDTO) {
+        this.userService.saveUser(userDTO);
+        return ResponseHelper.success();
+    }
+
+    /**
      * 修改当前用户的详情
      *
      * @param userDTO 用户dto对象
@@ -161,17 +175,5 @@ public class UserController {
         return ResponseHelper.success(Objects.nonNull(this.userService.findByUsername(username)));
     }
 
-    /**
-     * 保存用户信息
-     *
-     * @param userDTO 用户dto对象
-     * @return 响应
-     */
-    @Operation(summary = "保存用户信息")
-    @PostMapping
-    @PreAuthorize("@auth.hasPermission('system:user:add')")
-    public BaseResponse<Void> saveUser(@RequestBody SaveUserDTO userDTO) {
-        this.userAccountService.register(userDTO);
-        return ResponseHelper.success();
-    }
+
 }

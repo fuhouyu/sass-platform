@@ -40,4 +40,7 @@ public class UserPageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "gender", description = "性别筛选项")
     private String gender;
+
+    @Schema(name = "organizationId", description = "所属组织id")
+    private Long organizationId;
 }

@@ -13,8 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.sass.platform.system.entity.UserPositions;
+import org.apache.ibatis.annotations.Param;
 
-import {Position} from "@/pages/system/position/Position.tsx";
+import java.util.List;
 
-export default Position;
+/**
+ * <p>
+ * 用户职位mapper
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/1/11 18:21
+ */
+public interface UserPositionMapper {
+
+    /**
+     * 插入用户职位
+     *
+     * @param userPositions 用户职位对象
+     */
+    void insert(UserPositions userPositions);
+
+    /**
+     * 批量插入用户职位
+     *
+     * @param list 用户职位列表
+     */
+    void insertBatch(@Param("list") List<UserPositions> list);
+
+}

@@ -15,17 +15,20 @@
  */
 
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {Key, useCallback, useEffect, useState} from "react";
 import {
     Button,
+    Card,
     Col,
     Form,
     Input,
+    InputNumber,
     message,
     Popconfirm,
     Radio,
     Row,
     Select,
+    Space,
     TableColumnsType,
     Tree,
     TreeSelect
@@ -33,7 +36,6 @@ import {
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
-import {PASSWORD_REGEX, USERNAME_REGEX} from "@/constants/regexConstant";
 import {userApi} from "@/apis/user";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
@@ -45,12 +47,12 @@ import {DownOutlined} from "@ant-design/icons";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
-import {Position} from "@/model/position";
-import {positionApi} from "@/apis/position.tsx";
+import {useDictItem} from "@/hooks/useDictItem.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
     const {t} = useTranslation();
+    const {findDictItemName} = useDictItem(['GENDER']);
     const columns: TableColumnsType = [
         {
             title: t('User.username'),
@@ -69,6 +71,9 @@ export const User: React.FC = () => {
         {
             title: t('User.gender'),
             dataIndex: 'gender',
+            render: (_, record: Userinfo) => {
+                return findDictItemName('GENDER', record.gender);
+            }
         },
         {
             title: t('User.loginDate'),
@@ -113,6 +118,9 @@ export const User: React.FC = () => {
     ];
     const initForm: Userinfo = {
         gender: 'male',
+        userPosition: {
+            isMain: true
+        }
     }
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
@@ -123,8 +131,8 @@ export const User: React.FC = () => {
     const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
-    const [positionList, setPositionList] = useState<Position[]>()
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
+
 
     /**
      * 打开模态组
@@ -133,7 +141,6 @@ export const User: React.FC = () => {
     const openModal = async (userId?: string) => {
         setUpdateUserId(userId);
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
-        setPositionList(await positionApi.getPositionAllList());
         if (!userId) {
             setIsModalOpen(true);
             return;
@@ -218,7 +225,9 @@ export const User: React.FC = () => {
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={organizationLazyData}
-                            // onSelect={onSelectTree}
+                            onSelect={(selectedKeys: Key[]) => {
+                                setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
+                            }}
                         />
                     </div>
                 </Col>
@@ -270,8 +279,8 @@ export const User: React.FC = () => {
                                         placeholder={t('User.genderPlaceholder')}
                                         onChange={(value) => userQuery['gender'] = value}
                                         options={[
-                                            {value: 'male', label: <span>{t('User.male')}</span>},
-                                            {value: 'female', label: <span>{t('User.female')}</span>}
+                                            {value: 'MALE', label: <span>{t('User.male')}</span>},
+                                            {value: 'FEMALE', label: <span>{t('User.female')}</span>}
                                         ]}
                                     />
                                 </>
@@ -308,156 +317,190 @@ export const User: React.FC = () => {
                     initialValues={formInitValues}
                     autoComplete="off"
                 >
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.ownerOrganization')}
-                                name="ownerOrganization"
-                                key="ownerOrganization"
-                                colon={false}
-                                rules={[{required: true, message: t('User.ownerOrganizationCheckMessage')}]}
-                            >
-                                <TreeSelect<Organization>
-                                    showSearch
-                                    fieldNames={{label: 'organizationName', value: 'id'}}
-                                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                    allowClear
-                                    treeDefaultExpandAll
-                                    treeData={organizationTree}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.ownerPosition')}
-                                name="ownerPosition"
-                                key="ownerOrganization"
-                                colon={false}
-                                rules={[{required: true, message: t('User.ownerPositionCheckMessage')}]}
-                            >
-                                <Select<Position>
-                                    showSearch
-                                    placeholder="Select a person"
-                                    filterOption={(input, option: Position) =>
-                                        (option?.positionName ?? '').toLowerCase().includes(input.toLowerCase())
-                                    }
-                                    fieldNames={{label: 'positionName', value: 'id'}}
-                                    options={positionList}
-                                />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    {!updateUserId &&
-                        <Row gutter={24}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label={t('User.username')}
-                                    name="username"
-                                    validateTrigger="onChange"
-                                    key="username"
-                                    colon={false}
-                                    required={true}
-                                    hasFeedback
-                                    rules={[{
-                                        required: true,
-                                        type: "string",
-                                        message: USERNAME_REGEX.message,
-                                        max: 20,
-                                    },
-                                        () => ({
-                                            validator: async (_, value: string) => {
-                                                if (!USERNAME_REGEX.regex.test(value)) {
-                                                    return Promise.reject(new Error("用户名格式不正确，必须以字母开头，并使用3到20个字符，仅包含字母、数字和下划线。"));
-                                                }
-                                                const exists: boolean = await userApi.checkUsernameExistsApi(value);
-                                                if (exists) {
-                                                    return Promise.reject(new Error(t('User.usernameExistsErrorMessage')));
-                                                }
+                    <Space style={{width: '100%'}} wrap direction={'vertical'}>
+                        {!updateUserId &&
+                            <Card title={'账号信息'} size={'small'}>
+                                <Row gutter={24}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label={t('User.username')}
+                                            name="username"
+                                            validateTrigger="onBlur"
+                                            key="username"
+                                            colon={false}
+                                            required={true}
+                                            hasFeedback
+                                            rules={[{
+                                                required: true,
+                                                type: "string",
+                                                message: t('User.usernamePlaceholder'),
+                                                max: 20,
+                                            },
+                                                () => ({
+                                                    validator: async (_, value: string) => {
+                                                        const exists: boolean = await userApi.checkUsernameExistsApi(value);
+                                                        if (exists) {
+                                                            return Promise.reject(new Error(t('User.usernameExistsErrorMessage')));
+                                                        }
 
-                                            }
-                                        })
-                                    ]}
-                                >
-                                    <Input placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label={t('User.password')}
-                                    name="password"
-                                    key="password"
-                                    hasFeedback
+                                                    }
+                                                })
+                                            ]}
+                                        >
+                                            <Input placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            label={t('User.password')}
+                                            name="password"
+                                            key="password"
+                                            hasFeedback
+                                            colon={false}
+                                            rules={[{
+                                                required: true,
+                                                message: t('User.passwordPlaceholder'),
+                                            }]}
+                                        >
+                                            <Input placeholder={t('User.passwordPlaceholder')} type='password'/>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        }
+                        <Card title={'基本信息'} size={'small'}>
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.realName')}
+                                        name="realName"
+                                        key="realName"
+                                        hasFeedback
+                                        colon={false}
+                                        rules={[{required: true, message: t('User.realNamePlaceholder')}]}
+                                    >
+                                        <Input placeholder={t('User.realNamePlaceholder')}/>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.nickname')}
+                                        name="nickname"
+                                        key="nickname"
+                                        hasFeedback
+                                        colon={false}
+                                    >
+                                        <Input placeholder={t('User.realNamePlaceholder')}/>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.email')}
+                                        name="email"
+                                        key="email"
+                                        hasFeedback
+                                        colon={false}
+                                        rules={[{
+                                            type: 'email',
+                                            message: t('User.emailCheckMessage')
+                                        }]}
+                                    >
+                                        <Input placeholder={t('User.emailPlaceholder')}/>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.gender')}
+                                        name="gender"
+                                        key="gender"
+                                        hasFeedback
+                                        colon={false}
+                                        rules={[{required: true}]}
+                                    >
+                                        <Radio.Group>
+                                            <Radio value="male">{t('User.male')}</Radio>
+                                            <Radio value="female">{t('User.female')}</Radio>
+                                        </Radio.Group>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
 
-                                    colon={false}
+                        <Card title={'职位信息'} size={'small'}>
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('Position.ownerOrganization')}
+                                        name={['userPosition', 'organizationId']}
+                                        key="organizationId"
+                                        colon={false}
+                                        hasFeedback
+                                        rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
+                                    >
+                                        <TreeSelect<Organization>
+                                            showSearch
+                                            placeholder={t('Position.ownerOrganizationPlaceholder')}
+                                            fieldNames={{label: 'organizationName', value: 'id'}}
+                                            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                            allowClear
+                                            treeDefaultExpandAll
+                                            treeData={organizationTree}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('Position.name')}
+                                        name={['userPosition', 'positionName']}
+                                        key="positionName"
+                                        colon={false}
+                                        hasFeedback
+                                        rules={[{required: true, message: t('Position.namePlaceholder')}]}
+                                    >
+                                        <Input max={50} placeholder={t('Position.namePlaceholder')}/>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
 
-                                    rules={[{
-                                        required: true,
-                                        pattern: PASSWORD_REGEX.regex,
-                                        message: PASSWORD_REGEX.message,
-                                    }]}
-                                >
-                                    <Input placeholder={t('User.passwordPlaceholder')} type='password'/>
-                                </Form.Item>
-                            </Col>
-                        </Row>}
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.realName')}
-                                name="realName"
-                                key="realName"
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('Position.orderInOrganization')}
+                                        name={['userPosition', 'orderInOrganization']}
+                                        key="orderInOrganization"
+                                        colon={false}
+                                        hasFeedback
+                                        rules={[{
+                                            required: true,
+                                            message: t('Position.orderInOrganizationPlaceholder')
+                                        }]}
+                                    >
+                                        <InputNumber changeOnWheel
+                                                     controls
+                                                     style={{width: 230}}
+                                                     placeholder={t('Position.orderInOrganizationPlaceholder')}/>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('Position.isMain')}
+                                        name={['userPosition', 'isMain']}
+                                        key={'isMain'}
+                                        colon={false}
+                                        hasFeedback
+                                    >
+                                        <Radio.Group>
+                                            <Radio value={true}>{t('Common.yes')}</Radio>
+                                            <Radio value={false}>{t('Common.no')}</Radio>
+                                        </Radio.Group>
+                                    </Form.Item>
 
-                                colon={false}
-                                rules={[{required: true, message: t('User.realNamePlaceholder')}]}
-                            >
-                                <Input placeholder={t('User.realNamePlaceholder')}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.nickname')}
-                                name="nickname"
-                                key="nickname"
-
-                                colon={false}
-                            >
-                                <Input placeholder={t('User.realNamePlaceholder')}/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.email')}
-                                name="email"
-                                key="email"
-
-                                colon={false}
-                                rules={[{
-                                    type: 'email',
-                                    message: t('User.emailCheckMessage')
-                                }]}
-                            >
-                                <Input placeholder={t('User.emailPlaceholder')}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                label={t('User.gender')}
-                                name="gender"
-                                key="gender"
-
-                                colon={false}
-                                rules={[{required: true}]}
-                            >
-                                <Radio.Group>
-                                    <Radio value="male">{t('User.male')}</Radio>
-                                    <Radio value="female">{t('User.female')}</Radio>
-                                </Radio.Group>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Space>
                 </Form>
             </Modal>
         </>
