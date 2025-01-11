@@ -17,17 +17,23 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UsersAssembler;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -46,6 +52,7 @@ import java.util.function.Function;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private static final UsersAssembler USERS_ASSEMBLER = UsersAssembler.INSTANCE;
@@ -56,6 +63,8 @@ public class UserServiceImpl implements UserService {
 
     private final SnowflakeIdWorker snowflakeIdWorker;
 
+    private final UserPositionService userPositionService;
+
     @Override
     public Long save(UserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
@@ -63,6 +72,17 @@ public class UserServiceImpl implements UserService {
         Users entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
         entity.setId(id);
         this.userMapper.insert(entity);
+        return id;
+    }
+
+    @Override
+    public Long saveUser(UserDetailDTO userDTO) {
+        Long id = this.save(userDTO);
+        // 保存账号信息
+        userDTO.setId(id);
+        this.saveAccounts(userDTO);
+        // 保存职位信息
+        this.userPositionService.saveUserPosition(id, userDTO.getUserPosition());
         return id;
     }
 
@@ -136,6 +156,26 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(users)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "%s 用户名已存在", username);
+        }
+    }
+
+    /**
+     * 保存账号列表
+     *
+     * @param userDetailDTO 用户详情dto
+     */
+    private void saveAccounts(UserDetailDTO userDetailDTO) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setAccount(userDetailDTO.getUsername());
+        accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
+        accountDTO.setUserId(userDetailDTO.getId());
+        accountDTO.setCredentials(userDetailDTO.getPassword());
+        accountDTO.setIsEnabled(true);
+        try {
+            this.accountService.save(accountDTO);
+        } catch (Exception e) {
+            LoggerUtil.error(log, "用户账号注册失败: {}", accountDTO, e);
+            throw new IllegalArgumentException("用户注册失败");
         }
     }
 }

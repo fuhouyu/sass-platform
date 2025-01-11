@@ -16,6 +16,28 @@
 
 import {BaseModel} from "@/model/base";
 
+export interface UserPosition extends BaseModel {
+    /**
+     * 用户id
+     */
+    userId?: string;
+
+    /**
+     * 组织id
+     */
+    organizationId?: string;
+
+    /**
+     * 职位名称
+     */
+    positionName?: string;
+
+    /**
+     * 是否主职
+     */
+    isMain?: boolean;
+
+}
 /**
  * 用户详情
  */
@@ -56,4 +78,9 @@ export interface Userinfo extends BaseModel {
      * 用户名
      */
     username?: string;
+
+    /**
+     * 用户职位
+     */
+    userPosition?: UserPosition;
 }

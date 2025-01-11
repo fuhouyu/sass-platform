@@ -13,3 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
+
+import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+
+/**
+ * <p>
+ * 用户职位接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/1/11 12:24
+ */
+public interface UserPositionService {
+
+
+    /**
+     * 保存用户职位信息
+     * @param userId 用户id
+     * @param userPositionDTO 用户职位dto对象
+     */
+    void saveUserPosition(Long userId, UserPositionDTO userPositionDTO);
+
+
+}

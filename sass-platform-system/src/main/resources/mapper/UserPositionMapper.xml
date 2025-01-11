@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserPositionMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.UserPositions" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="organization_id" property="organizationId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="positionName" property="positionName" jdbcType="VARCHAR"/>
+        <result column="order_in_organization" property="orderInOrganization" jdbcType="BIGINT"/>
+        <result column="is_main" property="isMain" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="TableName">
+        user_positions
+    </sql>
+
+    <sql id="InsertColumn">
+        organization_id,
+        user_id,
+        position_name,
+        order_in_organization,
+        is_main,
+        create_at,
+        update_at,
+        create_by,
+        update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumn"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{organizationId},
+            #{userId},
+            #{positionName},
+            #{orderInOrganization},
+            #{isMain},
+            #{createAt},
+            #{updateAt},
+            #{createBy},
+            #{updateBy},
+        </trim>
+        ON CONFLICT(organization_id, user_id) DO UPDATE
+            SET position_name         = excluded.position_name,
+                order_in_organization = excluded.order_in_organization,
+                is_main               = excluded.is_main,
+                update_at             = excluded.update_at,
+                update_by             = excluded.update_by
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumn"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.organizationId},
+                #{entity.userId},
+                #{entity.positionName},
+                #{entity.orderInOrganization},
+                #{entity.isMain},
+                #{entity.createAt},
+                #{entity.updateAt},
+                #{entity.createBy},
+                #{entity.updateBy},
+            </trim>
+        </foreach>
+        ON CONFLICT(organization_id, user_id) DO UPDATE
+        SET position_name         = excluded.position_name,
+        order_in_organization = excluded.order_in_organization,
+        is_main               = excluded.is_main,
+        update_at             = excluded.update_at,
+        update_by             = excluded.update_by
+    </insert>
+
+</mapper>

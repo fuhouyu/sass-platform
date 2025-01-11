@@ -23,28 +23,39 @@ import {useCallback, useEffect} from "react";
  * 获取字典项
  * @param dictCodes 字典编码，以,分隔
  */
-export function useDictItem(dictCodes: string) {
+export function useDictItem(dictCodes: string[]) {
 
     const dispatch = useAppDispatch();
+    const queryDictCodes = dictCodes.join(',');
     const dictTypeItemMapping = useAppSelector(state => state.dict.dictTypeItemMapping);
-
-    const initDictItemType = useCallback(async (dictCodes: string) => {
-        const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(dictCodes);
-        dispatch(dictStore.actions.storeDictItem(dictItemMapping));
-    }, [dispatch]);
 
     /**
      * 通过字典编码获取字典项
      */
-    const getDictItemByDictCode = useCallback((dictCode: string) => {
+    const findDictItems = useCallback((dictCode: string) => {
         return dictTypeItemMapping[dictCode] ?? [];
     }, [dictTypeItemMapping])
 
+    /**
+     * 通过编码查找字典项名称
+     */
+    const findDictItemName = useCallback((dictCode?: string, itemCode?: string) => {
+        if (dictCode && itemCode) {
+            const dictItems = dictTypeItemMapping[dictCode] ?? [];
+            return dictItems.find(item => item.itemCode === itemCode)?.itemName;
+        }
+    }, [dictTypeItemMapping]);
+
     useEffect(() => {
-        initDictItemType(dictCodes).then();
-    }, [dictCodes, initDictItemType]);
+        const initDictType = async () => {
+            const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(queryDictCodes);
+            dispatch(dictStore.actions.storeDictItem(dictItemMapping));
+        };
+        initDictType().then();
+    }, [queryDictCodes, dispatch]);
 
     return {
-        getDictItemByDictCode
+        findDictItems,
+        findDictItemName
     };
 }

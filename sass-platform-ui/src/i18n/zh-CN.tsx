@@ -155,10 +155,6 @@ const ZhCN = {
         password: '密码',
         passwordPlaceholder: '请输入密码',
         passwordCheckMessage: '请输入密码',
-        ownerOrganization: '所属组织',
-        ownerOrganizationCheckMessage: '所属组织未选择',
-        ownerPosition: '所属职位',
-        ownerPositionCheckMessage: '所属职位未选择',
         male: '男',
         female: '女',
 
@@ -243,14 +239,13 @@ const ZhCN = {
         type: '组织类型',
     },
     Position: {
-        list: '岗位列表',
-        add: '新增岗位',
-        edit: '修改岗位',
-        name: '岗位名称',
-        namePlaceholder: '请输入岗位名称',
-        code: '岗位编码',
-        codePlaceholder: '请输入岗位编码',
-        codeTips: '岗位编码，租户下唯一'
+        ownerOrganization: '所属组织',
+        ownerOrganizationPlaceholder: '请选择组织',
+        name: '职位名称',
+        namePlaceholder: '请输入职位名称',
+        isMain: '是否主职',
+        orderInOrganization: '组织内排序',
+        orderInOrganizationPlaceholder: '请输入组织内排序',
     }
 }
 
