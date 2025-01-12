@@ -410,7 +410,6 @@ export const Role: React.FC = () => {
                                 treeData: treeSelectData,
                             }}
                             onSelectedAll={(ids: string[]) => {
-                                console.log(ids);
                                 setPermissionIds(ids);
                             }}
                         />
