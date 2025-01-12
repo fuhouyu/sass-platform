@@ -16,10 +16,15 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -49,4 +54,22 @@ public interface UserMapper extends BaseMapper<Long, Users> {
     void recordLoginSuccess(@Param("userId") Long userId,
                             @Param("loginIp") String loginIp,
                             @Param("loginTime") LocalDateTime loginTime);
+
+    /**
+     * 查询用户详情列表
+     *
+     * @param pageQuery 分页查询对象
+     * @return 用户详情列表
+     */
+    @TenantQuery(column = "tu.tenant_id")
+    <P extends PageQueryDTO> List<UserDTO> queryDetailList(@Param("pageQuery") P pageQuery);
+
+    /**
+     * 查询用户详情
+     *
+     * @param id 用户id
+     * @return 用户详情
+     */
+    @TenantQuery(column = "tu.tenant_id")
+    UserDetailDTO queryDetailById(Long id);
 }

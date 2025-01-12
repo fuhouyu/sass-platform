@@ -30,6 +30,7 @@ import {
     Select,
     Space,
     TableColumnsType,
+    Tag,
     Tree,
     TreeSelect
 } from "antd";
@@ -48,6 +49,8 @@ import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
+import {AccountType} from "@/model/account.tsx";
+import {useAppSelector} from "@/store";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -56,20 +59,24 @@ export const User: React.FC = () => {
     const columns: TableColumnsType = [
         {
             title: t('User.username'),
+            align: 'center',
             dataIndex: 'username',
             showSorterTooltip: {target: 'full-header'},
         },
         {
             title: t('User.realName'),
+            align: 'center',
             dataIndex: 'realName',
             defaultSortOrder: 'descend',
         },
         {
             title: t('User.nickname'),
+            align: 'center',
             dataIndex: 'nickname',
         },
         {
             title: t('User.gender'),
+            align: 'center',
             dataIndex: 'gender',
             render: (_, record: Userinfo) => {
                 return findDictItemName('GENDER', record.gender);
@@ -77,24 +84,37 @@ export const User: React.FC = () => {
         },
         {
             title: t('User.loginDate'),
+            align: 'center',
             dataIndex: 'loginDate',
         },
         {
             title: t('User.loginIp'),
+            align: 'center',
             dataIndex: 'loginIp',
         },
         {
-            title: t('Common.createAt'),
-            dataIndex: 'createAt',
-            sorter: true,
-            showSorterTooltip: false
+            title: t('Position.name'),
+            align: 'center',
+            dataIndex: ['userPosition', 'positionName'],
         },
         {
-            title: t('Common.createBy'),
-            dataIndex: 'createBy'
+            title: t('Position.isMain'),
+            align: 'center',
+            dataIndex: ['userPosition', 'isMain'],
+            render: (isMain: boolean) => (
+                isMain ?
+                    <Tag bordered={false} color="success">
+                        {t('Common.yes')}
+                    </Tag>
+                    :
+                    <Tag bordered={false} color="error">
+                        {t('Common.no')}
+                    </Tag>
+            )
         },
         {
             title: t('Common.updateAt'),
+            align: 'center',
             dataIndex: 'updateAt',
             sorter: true,
             defaultSortOrder: "descend",
@@ -102,10 +122,12 @@ export const User: React.FC = () => {
         },
         {
             title: t('Common.updateBy'),
+            align: 'center',
             dataIndex: 'updateBy',
         },
         {
             title: '操作',
+            align: 'center',
             dataIndex: 'action',
             render: (_, record: Userinfo) => {
                 return (
@@ -116,11 +138,15 @@ export const User: React.FC = () => {
             }
         }
     ];
+    const [pageQuery, setPageQuery] = useState<PageQuery>({
+        pageNum: 1,
+        pageSize: 10,
+    });
     const initForm: Userinfo = {
-        gender: 'male',
+        gender: 'MALE',
         userPosition: {
-            isMain: true
-        }
+            isMain: true,
+        },
     }
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
@@ -132,6 +158,7 @@ export const User: React.FC = () => {
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
+    const language = useAppSelector(state => state.locale.language);
 
 
     /**
@@ -145,7 +172,7 @@ export const User: React.FC = () => {
             setIsModalOpen(true);
             return;
         }
-        const userinfo = await userApi.getInfoByIdApi(userId)
+        const userinfo = await userApi.getInfoByIdApi(userId);
         setFormInitValues(userinfo);
         setIsModalOpen(true);
     }
@@ -155,7 +182,8 @@ export const User: React.FC = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        setFormInitValues(initForm);
+        const organizationId = formInitValues.userPosition?.organizationId;
+        setFormInitValues({...initForm, userPosition: {organizationId}});
         form.resetFields();
     }
 
@@ -165,8 +193,10 @@ export const User: React.FC = () => {
     const handlerUserForm = async () => {
         await form.validateFields();
         setIsModalButtonLoading(true);
+        const userDetail: Userinfo = form.getFieldsValue();
+        userDetail.account!.accountType = AccountType.PASSWORD;
         try {
-            await (updateUserId ? updateUserDetail() : saveUserDetail());
+            await (updateUserId ? userApi.editInfoApi(updateUserId, userDetail) : userApi.saveInfoApi(userDetail));
             message.success(t('Common.success')).then();
             await pageQueryCallback();
             setIsModalOpen(false);
@@ -174,27 +204,6 @@ export const User: React.FC = () => {
             setIsModalButtonLoading(false);
         }
     }
-
-    /**
-     * 保存用户详情
-     */
-    const saveUserDetail: () => Promise<string> = () => {
-        const userDetail = form.getFieldsValue();
-        return userApi.saveInfoApi(userDetail)
-    }
-
-    /**
-     * 修改用户详情
-     */
-    const updateUserDetail: () => Promise<void> = () => {
-        const userinfo: Userinfo = form.getFieldsValue();
-        return userApi.editInfoApi(userinfo.id!, userinfo);
-    }
-
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-    });
 
     const pageQueryCallback = useCallback(async () => {
         setPageResult(await userApi.pageInfoListApi(pageQuery));
@@ -226,6 +235,13 @@ export const User: React.FC = () => {
                             loadData={onLoadData}
                             treeData={organizationLazyData}
                             onSelect={(selectedKeys: Key[]) => {
+                                if (!selectedKeys) {
+                                    return
+                                }
+                                setFormInitValues({
+                                    ...initForm,
+                                    userPosition: {organizationId: selectedKeys[0] as string}
+                                });
                                 setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
                             }}
                         />
@@ -291,7 +307,6 @@ export const User: React.FC = () => {
                 </Col>
             </Row>
 
-
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"
@@ -315,11 +330,9 @@ export const User: React.FC = () => {
                     validateTrigger={'onBlur'}
                     labelCol={{span: 7}}
                     initialValues={formInitValues}
-                    autoComplete="off"
                 >
                     <Space style={{width: '100%'}} wrap direction={'vertical'}>
-                        {!updateUserId &&
-                            <Card title={'账号信息'} size={'small'}>
+                        <Card title={t('User.accountInfo')} size={'small'}>
                                 <Row gutter={24}>
                                     <Col span={12}>
                                         <Form.Item
@@ -330,7 +343,7 @@ export const User: React.FC = () => {
                                             colon={false}
                                             required={true}
                                             hasFeedback
-                                            rules={[{
+                                            rules={updateUserId ? [] : [{
                                                 required: true,
                                                 type: "string",
                                                 message: t('User.usernamePlaceholder'),
@@ -347,28 +360,31 @@ export const User: React.FC = () => {
                                                 })
                                             ]}
                                         >
-                                            <Input placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
+                                            <Input disabled={updateUserId != undefined}
+                                                   placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
                                         </Form.Item>
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
-                                            label={t('User.password')}
-                                            name="password"
+                                            label={updateUserId ? t('User.editPassword') : t('User.password')}
+                                            name={['account', 'password']}
                                             key="password"
                                             hasFeedback
                                             colon={false}
-                                            rules={[{
+                                            rules={updateUserId ? [] : [{
                                                 required: true,
                                                 message: t('User.passwordPlaceholder'),
                                             }]}
                                         >
-                                            <Input placeholder={t('User.passwordPlaceholder')} type='password'/>
+                                            <Input.Password
+                                                placeholder={t('User.passwordPlaceholder')}
+                                            />
                                         </Form.Item>
                                     </Col>
                                 </Row>
                             </Card>
-                        }
-                        <Card title={'基本信息'} size={'small'}>
+
+                        <Card title={t('User.info')} size={'small'}>
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
@@ -400,7 +416,6 @@ export const User: React.FC = () => {
                                         label={t('User.email')}
                                         name="email"
                                         key="email"
-                                        hasFeedback
                                         colon={false}
                                         rules={[{
                                             type: 'email',
@@ -420,15 +435,15 @@ export const User: React.FC = () => {
                                         rules={[{required: true}]}
                                     >
                                         <Radio.Group>
-                                            <Radio value="male">{t('User.male')}</Radio>
-                                            <Radio value="female">{t('User.female')}</Radio>
+                                            <Radio value="MALE">{t('User.male')}</Radio>
+                                            <Radio value="FEMALE">{t('User.female')}</Radio>
                                         </Radio.Group>
                                     </Form.Item>
                                 </Col>
                             </Row>
                         </Card>
 
-                        <Card title={'职位信息'} size={'small'}>
+                        <Card title={t('User.positionInfo')} size={'small'}>
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
@@ -437,9 +452,11 @@ export const User: React.FC = () => {
                                         key="organizationId"
                                         colon={false}
                                         hasFeedback
+                                        labelCol={{span: language == 'zh' ? 7 : 12}}
                                         rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                                     >
                                         <TreeSelect<Organization>
+                                            disabled={formInitValues.userPosition?.organizationId != null}
                                             showSearch
                                             placeholder={t('Position.ownerOrganizationPlaceholder')}
                                             fieldNames={{label: 'organizationName', value: 'id'}}
@@ -455,6 +472,7 @@ export const User: React.FC = () => {
                                         label={t('Position.name')}
                                         name={['userPosition', 'positionName']}
                                         key="positionName"
+                                        labelCol={{span: language == 'zh' ? 7 : 8}}
                                         colon={false}
                                         hasFeedback
                                         rules={[{required: true, message: t('Position.namePlaceholder')}]}
@@ -472,6 +490,7 @@ export const User: React.FC = () => {
                                         key="orderInOrganization"
                                         colon={false}
                                         hasFeedback
+                                        labelCol={{span: language == 'zh' ? 7 : 12}}
                                         rules={[{
                                             required: true,
                                             message: t('Position.orderInOrganizationPlaceholder')
@@ -479,7 +498,7 @@ export const User: React.FC = () => {
                                     >
                                         <InputNumber changeOnWheel
                                                      controls
-                                                     style={{width: 230}}
+                                                     style={{width: language == 'zh' ? 230 : 164}}
                                                      placeholder={t('Position.orderInOrganizationPlaceholder')}/>
                                     </Form.Item>
                                 </Col>
@@ -490,6 +509,8 @@ export const User: React.FC = () => {
                                         key={'isMain'}
                                         colon={false}
                                         hasFeedback
+                                        labelCol={{span: language == 'zh' ? 7 : 8}}
+                                        required
                                     >
                                         <Radio.Group>
                                             <Radio value={true}>{t('Common.yes')}</Radio>

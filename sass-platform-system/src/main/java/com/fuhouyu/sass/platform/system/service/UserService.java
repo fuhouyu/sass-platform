@@ -50,4 +50,19 @@ public interface UserService extends BaseService<Long, UserDTO> {
      * @param userId 用户id
      */
     void recordLoginSuccess(Long userId);
+
+    /**
+     * 通过id查询用户详情
+     *
+     * @param id 主键id
+     * @return 用户详情dto对象
+     */
+    UserDetailDTO findDetailById(Long id);
+
+    /**
+     * 修改用户
+     *
+     * @param userDTO 用户dto对象
+     */
+    void editUser(UserDetailDTO userDTO);
 }

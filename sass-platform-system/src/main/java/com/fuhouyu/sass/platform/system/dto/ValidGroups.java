@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
-
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
-
-import java.util.Collection;
+package com.fuhouyu.sass.platform.system.dto;
 
 /**
  * <p>
- * 用户职位接口
+ * groups
  * </p>
  *
  * @author fuhouyu
- * @since 2025/1/11 12:24
+ * @since 2025/1/12 18:09
  */
-public interface UserPositionService {
+public interface ValidGroups {
 
 
-    /**
-     * 保存用户职位信息
-     * @param userId 用户id
-     * @param userPositionDTO 用户职位dto对象
-     */
-    void saveUserPosition(Long userId, UserPositionDTO userPositionDTO);
+    interface SaveGroup {
+    }
 
-    /**
-     * 通过用户id批量删除
-     *
-     * @param userIds 用户id
-     */
-    void removeByUserIds(Collection<Long> userIds);
+    interface UpdateGroup {
+    }
 }

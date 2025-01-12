@@ -13,42 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.mapper;
-
-import com.fuhouyu.sass.platform.system.entity.UserPositions;
-import org.apache.ibatis.annotations.Param;
+package com.fuhouyu.sass.platform.system.service;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * <p>
- * 用户职位mapper
+ * 租户与用户的接口
  * </p>
  *
  * @author fuhouyu
- * @since 2025/1/11 18:21
+ * @since 2025/1/12 17:46
  */
-public interface UserPositionMapper {
+public interface TenantHasUserService {
 
     /**
-     * 插入用户职位
+     * 保存租户和用户的关系
      *
-     * @param userPositions 用户职位对象
+     * @param tenantId 租户id
+     * @param userId   用户id
      */
-    void insert(UserPositions userPositions);
+    void save(Long tenantId, Long userId);
 
     /**
-     * 批量插入用户职位
+     * 通过租户id和用户id删除
      *
-     * @param list 用户职位列表
+     * @param tenantId 租户id
+     * @param userIds  用户id集合
      */
-    void insertBatch(@Param("list") List<UserPositions> list);
-
-    /**
-     * 通过用户id删除
-     *
-     * @param userIds 用户id删除
-     */
-    void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
+    void removeByTenantIdAndUserIds(Long tenantId, Collection<Long> userIds);
 }

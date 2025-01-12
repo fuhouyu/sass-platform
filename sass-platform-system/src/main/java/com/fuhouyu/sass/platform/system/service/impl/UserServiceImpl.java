@@ -27,9 +27,9 @@ import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
-import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.TenantHasUserService;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +65,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserPositionService userPositionService;
 
+    private final TenantHasUserService tenantHasUserService;
+
     @Override
     public Long save(UserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
@@ -72,6 +74,9 @@ public class UserServiceImpl implements UserService {
         Users entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
         entity.setId(id);
         this.userMapper.insert(entity);
+        this.tenantHasUserService.save(
+                ContextHolderStrategy.getContext().getUser().getTenantId(),
+                id);
         return id;
     }
 
@@ -96,6 +101,21 @@ public class UserServiceImpl implements UserService {
         this.userMapper.recordLoginSuccess(userId,
                 ContextHolderStrategy.getContext().getRequest().getRequestIp(),
                 LocalDateTime.now());
+    }
+
+    @Override
+    public UserDetailDTO findDetailById(Long id) {
+        return this.userMapper.queryDetailById(id);
+    }
+
+    @Override
+    public void editUser(UserDetailDTO userDTO) {
+        this.userMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
+        this.userPositionService.saveUserPosition(userDTO.getId(), userDTO.getUserPosition());
+        AccountDTO account = userDTO.getAccount();
+        if (Objects.nonNull(account) && Objects.nonNull(account.getCredentials())) {
+            this.accountService.edit(account);
+        }
     }
 
     @Override
@@ -137,12 +157,14 @@ public class UserServiceImpl implements UserService {
         }
         int deleteUserCount = this.userMapper.deleteByIds(ids);
         this.accountService.removeByUserIds(ids);
+        this.tenantHasUserService.removeByTenantIdAndUserIds(ContextHolderStrategy.getContext().getUser().getTenantId(), ids);
+        this.userPositionService.removeByUserIds(ids);
         return deleteUserCount;
     }
 
     @Override
     public Function<PageQueryDTO, List<UserDTO>> getPageResult() {
-        return (pageQuery) -> USERS_ASSEMBLER.toDTO(this.userMapper.queryList(pageQuery));
+        return this.userMapper::queryDetailList;
     }
 
     /**
@@ -165,11 +187,9 @@ public class UserServiceImpl implements UserService {
      * @param userDetailDTO 用户详情dto
      */
     private void saveAccounts(UserDetailDTO userDetailDTO) {
-        AccountDTO accountDTO = new AccountDTO();
+        AccountDTO accountDTO = userDetailDTO.getAccount();
         accountDTO.setAccount(userDetailDTO.getUsername());
-        accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
         accountDTO.setUserId(userDetailDTO.getId());
-        accountDTO.setCredentials(userDetailDTO.getPassword());
         accountDTO.setIsEnabled(true);
         try {
             this.accountService.save(accountDTO);

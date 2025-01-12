@@ -18,11 +18,11 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserPageQueryDTO;
-import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,14 +57,12 @@ public class UserController {
 
     private final UserService userService;
 
-    private final UserAccountService userAccountService;
-
     /**
      * 登录用户的用户详情
      *
      * @return 用户详情
      */
-    @Operation(summary = "用户详情")
+    @Operation(summary = "当前用户详情")
     @GetMapping("/me")
     public BaseResponse<UserDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
@@ -81,8 +79,8 @@ public class UserController {
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
     @PreAuthorize("@auth.hasPermission('system:user:query')")
-    public BaseResponse<UserDTO> userinfo(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.userService.findById(id));
+    public BaseResponse<UserDetailDTO> userDetailById(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.userService.findDetailById(id));
     }
 
     /**
@@ -103,14 +101,13 @@ public class UserController {
      * 保存用户信息
      *
      * @param userDTO 用户dto对象
-     * @return 响应
+     * @return 主键id
      */
     @Operation(summary = "保存用户信息")
     @PostMapping
     @PreAuthorize("@auth.hasPermission('system:user:add')")
-    public BaseResponse<Void> saveUser(@RequestBody @Valid UserDetailDTO userDTO) {
-        this.userService.saveUser(userDTO);
-        return ResponseHelper.success();
+    public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) UserDetailDTO userDTO) {
+        return ResponseHelper.success(this.userService.saveUser(userDTO));
     }
 
     /**
@@ -125,9 +122,9 @@ public class UserController {
     @PreAuthorize("@auth.hasPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Valid @RequestBody UserDTO userDTO) {
+            @Valid @RequestBody UserDetailDTO userDTO) {
         userDTO.setId(id);
-        this.userService.edit(userDTO);
+        this.userService.editUser(userDTO);
         return ResponseHelper.success();
     }
 

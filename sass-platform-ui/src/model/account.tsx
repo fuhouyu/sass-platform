@@ -41,7 +41,7 @@ export interface Account {
     /**
      * 账号
      */
-    account: string;
+    account?: string;
 
     /**
      * 账号类型
@@ -51,7 +51,7 @@ export interface Account {
     /**
      * 用户id
      */
-    userId: string;
+    userId?: string;
 
     /**
      * 所属的第三方账号id
