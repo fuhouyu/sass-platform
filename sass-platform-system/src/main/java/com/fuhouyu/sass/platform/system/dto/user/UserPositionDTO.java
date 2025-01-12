@@ -34,6 +34,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Schema(name = "UserPositionDTO", description = "用户职位dto对象")
 public class UserPositionDTO extends BaseDTO {
 
     @Serial

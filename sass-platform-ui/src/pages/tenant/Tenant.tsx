@@ -34,6 +34,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {useAppSelector} from "@/store";
+import {CheckCircleOutlined} from "@ant-design/icons";
 
 /**
  * 租户组件
@@ -71,11 +72,13 @@ export const Tenant: React.FC = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (isEnabled: boolean) => (
-                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
-                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
-                    </Tag> :
-                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
-                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
+                isEnabled ?
+                    <Tag icon={<CheckCircleOutlined/>} color="success">
+                        {t('Common.enabled')}
+                    </Tag>
+                    :
+                    <Tag icon={<CheckCircleOutlined/>} color="error">
+                        {t('Common.disabled')}
                     </Tag>
             )
         },
@@ -97,13 +100,10 @@ export const Tenant: React.FC = () => {
             dataIndex: 'action',
             align: "center",
             render: (_, record: RoleModel) => {
-                return (<>
-                    <PermissionButton buttonPermissions={buttonPermissions}
-                                      permissionStr={TenantPermissionConstant.EDIT}>
-                        <EditButton onClick={() => openModal(record.id)}/>
-                    </PermissionButton>
-
-                </>)
+                return (<PermissionButton buttonPermissions={buttonPermissions}
+                                          permissionStr={TenantPermissionConstant.EDIT}>
+                    <EditButton onClick={() => openModal(record.id)}/>
+                </PermissionButton>)
             }
         }
     ];
@@ -163,7 +163,7 @@ export const Tenant: React.FC = () => {
             return
         }
         // 修改获取租户数据，先获取详情
-        const res = await tenantApi.getInfoByIdApi(tenantId!);
+        const res = await tenantApi.getInfoByIdApi(tenantId);
         setFormInitValues(res);
         setPermissionIds(res.permissionIds ?? [])
         setIsModalOpen(true);
@@ -211,6 +211,7 @@ export const Tenant: React.FC = () => {
                 tableName: t('Tenant.list'),
                 columns: columns,
                 pageData: pageResult,
+                pageQuery: pageQuery,
                 setPageQuery: setPageQuery,
                 rowSelection: rowSelection,
                 components: [
@@ -328,7 +329,7 @@ export const Tenant: React.FC = () => {
                                 halfChecked: Key[];
                             } | Key[]) => {
                                 if (checked instanceof Array) {
-                                    setPermissionIds(checked as React.Key[]);
+                                    setPermissionIds(checked);
                                     return
                                 }
                                 setPermissionIds(checked.checked);
@@ -372,7 +373,7 @@ export const Tenant: React.FC = () => {
                 >
                     <Radio.Group>
                         <Radio value={true}>{t('Common.enabled')}</Radio>
-                        <Radio value={false}>{t('Common.enabled')}</Radio>
+                        <Radio value={false}>{t('Common.disabled')}</Radio>
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item

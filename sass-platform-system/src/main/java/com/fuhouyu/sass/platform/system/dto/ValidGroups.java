@@ -13,53 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package com.fuhouyu.sass.platform.system.dto;
 
 /**
- * 账号类型
+ * <p>
+ * groups
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/1/12 18:09
  */
-export enum AccountType {
-    /**
-     * 密码
-     */
-    PASSWORD = "PASSWORD",
-
-    /**
-     * 刷新令牌
-     */
-    REFRESH_TOKEN = "REFRESH_TOKEN",
-
-    /**
-     * weLink
-     */
-    WELINK = "WELINK",
-}
+public interface ValidGroups {
 
 
-export interface Account {
+    interface SaveGroup {
+    }
 
-    /**
-     * 账号
-     */
-    account: string;
-
-    /**
-     * 账号类型
-     */
-    accountType: AccountType;
-
-    /**
-     * 用户id
-     */
-    userId?: string;
-
-    /**
-     * 所属的第三方账号id
-     */
-    refAccountId?: string;
-
-    /**
-     * 是否启用
-     */
-    isEnabled: boolean;
+    interface UpdateGroup {
+    }
 }

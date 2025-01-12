@@ -15,9 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.dto.account;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -48,7 +52,9 @@ public class AccountDTO extends BaseDTO {
     @Schema(name = "userId", description = "用户id")
     private Long userId;
 
-    @JsonIgnore
+    @JsonProperty("credentials")
+    @JsonAlias({"password", "credentials"})
+    @NotEmpty(message = "用户密码未填写", groups = ValidGroups.SaveGroup.class)
     private String credentials;
 
     @JsonIgnore

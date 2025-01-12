@@ -15,10 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.assembler.UserPositionAssembler;
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
-import com.fuhouyu.sass.platform.system.mapper.UserPositionMapper;
-import com.fuhouyu.sass.platform.system.service.UserPositionService;
+import com.fuhouyu.sass.platform.system.entity.TenantHasUser;
+import com.fuhouyu.sass.platform.system.mapper.TenantHasUserMapper;
+import com.fuhouyu.sass.platform.system.service.TenantHasUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,29 +26,29 @@ import java.util.Collection;
 
 /**
  * <p>
- * 用户职位接口实现
+ * 租户与用户的接口实现
  * </p>
  *
  * @author fuhouyu
- * @since 2025/1/11 12:25
+ * @since 2025/1/12 17:46
  */
-@Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserPositionServiceImpl implements UserPositionService {
+@Service
+public class TenantHasUserServiceImpl implements TenantHasUserService {
 
-    private static final UserPositionAssembler USER_POSITION_ASSEMBLER = UserPositionAssembler.INSTANCE;
-
-    private final UserPositionMapper userPositionMapper;
+    private final TenantHasUserMapper tenantHasUserMapper;
 
     @Override
-    public void saveUserPosition(Long userId, UserPositionDTO userPositionDTO) {
-        userPositionDTO.setUserId(userId);
-        this.userPositionMapper.insert(USER_POSITION_ASSEMBLER.toEntity(userPositionDTO));
+    public void save(Long tenantId, Long userId) {
+        TenantHasUser tenantHasUser = new TenantHasUser();
+        tenantHasUser.setTenantId(tenantId);
+        tenantHasUser.setUserId(userId);
+        tenantHasUserMapper.insert(tenantHasUser);
     }
 
     @Override
-    public void removeByUserIds(Collection<Long> userIds) {
-        this.userPositionMapper.deleteByUserIds(userIds);
+    public void removeByTenantIdAndUserIds(Long tenantId, Collection<Long> userIds) {
+        this.tenantHasUserMapper.deleteByTenantIdAndUserIds(tenantId, userIds);
     }
 }

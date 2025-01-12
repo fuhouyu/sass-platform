@@ -19,10 +19,12 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.UserPositions" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="organization_id" property="organizationId" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
-        <result column="positionName" property="positionName" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
         <result column="order_in_organization" property="orderInOrganization" jdbcType="BIGINT"/>
         <result column="is_main" property="isMain" jdbcType="BOOLEAN"/>
     </resultMap>
+
+    <resultMap id="UserPositionDetailResultMap" type="com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO" extends="BaseResultMap"/>
 
     <sql id="TableName">
         user_positions
@@ -94,4 +96,12 @@
         update_by             = excluded.update_by
     </insert>
 
+    <delete id="deleteByUserIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
 </mapper>

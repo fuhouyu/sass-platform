@@ -182,10 +182,15 @@ const EnUS = {
         usernameCheckMessage: 'Please input a username',
         usernameExistsErrorMessage: 'Username already exists',
         password: 'Password',
+        editPassword: 'Edit Password',
         passwordPlaceholder: 'Please input your password',
         passwordCheckMessage: 'Please input a password',
         male: 'Male',
         female: 'Female',
+        accountInfo: 'Account Info',
+        info: 'User Info',
+        positionInfo: 'Position Info',
+
     },
 
     // 角色
@@ -235,14 +240,13 @@ const EnUS = {
         type: 'Organization Type',
     },
     Position: {
-        list: 'Position List',
-        add: 'Add Position',
-        edit: 'Edit Position',
+        ownerOrganization: 'Owner Organization',
+        ownerOrganizationPlaceholder: 'Please choose Organization',
         name: 'Position Name',
         namePlaceholder: 'Please input Position Name',
-        code: 'Position Code',
-        codePlaceholder: 'Please input Position Code',
-        codeTips: 'Position code, unique under tenant'
+        isMain: 'Is Main',
+        orderInOrganization: 'Order In Organization',
+        orderInOrganizationPlaceholder: 'Please Input Order In Organization',
     }
 }
 

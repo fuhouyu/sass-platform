@@ -401,11 +401,7 @@ export const Permission: React.FC = () => {
                                 value: 'id',
                             }}
                             onSelect={(_: string, node: Menu) => {
-                                // console.log('=====')
-                                // console.log(node)
-                                // console.log(formParentPermission)
                                 setFormParentPermission(node);
-                                // setFormParentPermission(node)
                             }}
                             allowClear
                             dropdownStyle={{maxHeight: 400, overflow: 'auto'}}

@@ -9,6 +9,12 @@ spring:
       password: ENC(e6iMIrKwnRc8PSiAY9jaCDuGf5CGiMcpC35GBtvKVrGjSjkgQFfKJxiu3rEeAE1s)
       host: ENC(J35ERjUJ4z8f5dWg/dK4Li4mhBpoVwxu4jZLLcpi4nEkPoOD0g4iCKar5KLZIRGQ)
       port: 16379
+      lettuce:
+        pool:
+          max-idle: 30
+          max-active: 8
+          max-wait: 10000
+          min-idle: 10
 base:
   framework:
     cache:

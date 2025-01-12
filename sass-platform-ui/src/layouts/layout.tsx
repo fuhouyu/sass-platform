@@ -16,12 +16,23 @@
 
 import {Layout as AntdLayout} from "antd";
 import {Content} from "antd/es/layout/layout";
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import {Menu} from "@/layouts/menu/menu";
 import {Header} from "@/layouts/header/header";
 import './index.scss'
+import {useEffect} from "react";
+import {router} from "@/routes/routers.tsx";
+import {BASE_LOGIN_URL} from "@/constants/commonConstant.tsx";
+import useAuth from "@/hooks/useAuth.tsx";
 
 export const Layout = () => {
+    const accessToken = useAuth();
+    const pathname = useLocation().pathname;
+    useEffect(() => {
+        if (!accessToken) {
+            router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+        }
+    }, [accessToken]);
     return (
             <AntdLayout className="layout-container">
                 <Menu/>

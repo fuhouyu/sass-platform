@@ -15,40 +15,40 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.entity.UserPositions;
+import com.fuhouyu.sass.platform.system.entity.TenantHasUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * <p>
- * 用户职位mapper
+ * 租户和用户的mapper
  * </p>
  *
  * @author fuhouyu
- * @since 2025/1/11 18:21
+ * @since 2025/1/12 17:48
  */
-public interface UserPositionMapper {
+public interface TenantHasUserMapper {
 
     /**
-     * 插入用户职位
+     * 批量保存租户和用户的关系
      *
-     * @param userPositions 用户职位对象
+     * @param tenantHasUser 租户和用户的关系
      */
-    void insert(UserPositions userPositions);
+    void insertBatch(@Param("list") Collection<TenantHasUser> tenantHasUser);
 
     /**
-     * 批量插入用户职位
+     * 保存租户和用户的关系
      *
-     * @param list 用户职位列表
+     * @param tenantHasUser 租户和用户的关系
      */
-    void insertBatch(@Param("list") List<UserPositions> list);
+    void insert(TenantHasUser tenantHasUser);
 
     /**
-     * 通过用户id删除
+     * 删除租户和用户的关系
      *
-     * @param userIds 用户id删除
+     * @param tenantId 租户id
+     * @param userIds  用户id集合
      */
-    void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
+    void deleteByTenantIdAndUserIds(@Param("tenantId") Long tenantId, @Param("userIds") Collection<Long> userIds);
 }

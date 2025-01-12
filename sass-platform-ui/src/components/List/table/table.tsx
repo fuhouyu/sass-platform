@@ -30,7 +30,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 };
 
 const Table = <T extends object>(tableProps: TableProps<T>) => {
-    const {setPageQuery, rowKey, rowSelection, tableName, pageData, columns, components} = tableProps;
+    const {pageQuery, setPageQuery, rowKey, rowSelection, tableName, pageData, columns, components} = tableProps;
     const {t} = useTranslation();
 
     /**
@@ -49,10 +49,11 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
             isAsc = sorter.order.toLowerCase() === 'ascend';
         }
         setPageQuery({
+            ...pageQuery,
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
             sortColumn: camelToSnake(sorter?.field?.toLocaleString()),
-            isAsc: isAsc
+            isAsc: isAsc,
         });
     };
 

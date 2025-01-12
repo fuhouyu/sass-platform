@@ -15,11 +15,13 @@
  */
 
 import axios, {AxiosInstance} from "axios";
-import {getAccessToken, removeToken} from "@/utils";
+import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {router} from "@/routes/routers";
 import {message} from "antd";
-import {UserBind} from "@/model/authentication.tsx";
+import {UserBind, UserToken} from "@/model/authentication.tsx";
+import {authenticationApi} from "@/apis/authentication.tsx";
+import {AccountType} from "@/model/account.tsx";
 
 
 const request: AxiosInstance = axios.create({
@@ -53,7 +55,27 @@ request.interceptors.response.use(async function (response) {
     }
     // 如果 isSuccess 为 false，抛出异常
     if (response.data.code === 402) {
-        removeToken()
+        const pathname = router.state.location.pathname;
+        const refreshToken = getRefreshToken();
+        if (refreshToken) {
+            // 刷新token
+            const res = await authenticationApi.loginApi({
+                accountType: AccountType.REFRESH_TOKEN,
+                identify: refreshToken
+            }) as UserToken;
+            if (!res) {
+                router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+                return;
+            }
+            storeToken(res);
+            window.location.reload();
+            return;
+        }
+        removeToken();
+        return
+    }
+    if (response.data.code === 403) {
+        removeToken();
         const pathname = router.state.location.pathname;
         router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
         return
@@ -62,8 +84,6 @@ request.interceptors.response.use(async function (response) {
     if (response.data.code === 1001) {
         const isUserBind = response.headers['x-user-bind']; // 是否绑定账号
         const userBindToken = response.headers['x-user-bind-temporary-token']; // 绑定账号临时token
-        console.log(response)
-        console.log(isUserBind)
         if (isUserBind) {
             return {
                 isUserBind,

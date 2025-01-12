@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -36,9 +36,9 @@ import lombok.ToString;
 @Schema(name = "UserDetailDTO", description = "用户详情dto对象")
 public class UserDetailDTO extends UserDTO {
 
-    @Schema(name = "password", description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
-    @JsonIgnore
-    private String password;
+    @Valid
+    @Schema(name = "account", description = "用户账号信息")
+    private AccountDTO account;
 
     @Valid
     @Schema(name = "userPosition", description = "用户职位信息")

@@ -15,6 +15,7 @@
  */
 
 import {BaseModel} from "@/model/base";
+import {Account} from "@/model/account.tsx";
 
 export interface UserPosition extends BaseModel {
     /**
@@ -83,4 +84,9 @@ export interface Userinfo extends BaseModel {
      * 用户职位
      */
     userPosition?: UserPosition;
+
+    /**
+     * 用户账号
+     */
+    account?: Account;
 }

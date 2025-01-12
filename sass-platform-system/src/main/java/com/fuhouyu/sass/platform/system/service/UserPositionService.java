@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
 
+import java.util.Collection;
+
 /**
  * <p>
  * 用户职位接口
@@ -35,5 +37,10 @@ public interface UserPositionService {
      */
     void saveUserPosition(Long userId, UserPositionDTO userPositionDTO);
 
-
+    /**
+     * 通过用户id批量删除
+     *
+     * @param userIds 用户id
+     */
+    void removeByUserIds(Collection<Long> userIds);
 }

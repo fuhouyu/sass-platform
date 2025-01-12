@@ -153,10 +153,15 @@ const ZhCN = {
         usernameCheckMessage: '请输入用户名',
         usernameExistsErrorMessage: '用户名已存在',
         password: '密码',
+        editPassword: '修改密码',
         passwordPlaceholder: '请输入密码',
         passwordCheckMessage: '请输入密码',
         male: '男',
         female: '女',
+        accountInfo: '账号信息',
+        info: '用户信息',
+        positionInfo: '职位信息',
+
 
     },
     // 权限

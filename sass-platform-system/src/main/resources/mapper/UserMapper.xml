@@ -26,7 +26,10 @@
         <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
-        <result column="is_deleted" property="isDeleted" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <resultMap id="UserDetailResultMap" type="com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO" extends="BaseResultMap">
+        <association property="userPosition" resultMap="com.fuhouyu.sass.platform.system.mapper.UserPositionMapper.UserPositionDetailResultMap"/>
     </resultMap>
 
     <sql id="TableName">
@@ -60,7 +63,6 @@
         u.avatar,
         u.login_date,
         u.login_ip,
-        u.is_deleted,
         u.create_at,
         u.update_at,
         u.create_by,
@@ -214,4 +216,42 @@
         WHERE id = #{userId}
 
     </update>
+
+    <select id="queryDetailList" resultMap="UserDetailResultMap">
+        SELECT
+        <include refid="QueryAllColumns"/>,
+        up.organization_id,
+        up.order_in_organization,
+        up.position_name,
+        up.is_main
+        FROM tenant_has_user tu
+        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
+        LEFT JOIN user_positions up ON u.id = up.user_id
+        <where>
+            up.organization_id = #{pageQuery.organizationId}
+            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
+                AND (username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                OR
+                real_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
+                OR
+                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%'))
+            </if>
+            <if test="pageQuery.gender != null and pageQuery.gender != ''">
+                AND gender = #{pageQuery.gender}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryDetailById" resultMap="UserDetailResultMap">
+        SELECT
+        <include refid="QueryAllColumns"/>,
+        up.organization_id,
+        up.order_in_organization,
+        up.position_name,
+        up.is_main
+        FROM tenant_has_user tu
+        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
+        LEFT JOIN user_positions up ON u.id = up.user_id
+        WHERE u.id = #{id}
+    </select>
 </mapper>
