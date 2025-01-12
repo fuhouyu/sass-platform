@@ -253,6 +253,7 @@ export const User: React.FC = () => {
                             tableName: t('User.list'),
                             columns: columns,
                             pageData: pageResult,
+                            pageQuery: pageQuery,
                             setPageQuery: setPageQuery,
                             rowSelection: rowSelection,
                             components: [

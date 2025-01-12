@@ -41,7 +41,7 @@ export interface Account {
     /**
      * 账号
      */
-    account?: string;
+    account: string;
 
     /**
      * 账号类型

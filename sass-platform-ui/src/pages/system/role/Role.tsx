@@ -41,6 +41,7 @@ import {Menu} from "@/model/menu";
 import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useAppSelector} from "@/store";
+import {CheckCircleOutlined} from "@ant-design/icons";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -76,11 +77,13 @@ export const Role: React.FC = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (isEnabled: boolean) => (
-                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
-                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
-                    </Tag> :
-                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
-                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
+                isEnabled ?
+                    <Tag icon={<CheckCircleOutlined/>} color="success">
+                        {t('Common.enabled')}
+                    </Tag>
+                    :
+                    <Tag icon={<CheckCircleOutlined/>} color="error">
+                        {t('Common.disabled')}
                     </Tag>
             )
         },
@@ -198,6 +201,7 @@ export const Role: React.FC = () => {
                     tableName: t('Role.list'),
                     columns: columns,
                     pageData: pageResult,
+                    pageQuery: pageQuery,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
                     components: [

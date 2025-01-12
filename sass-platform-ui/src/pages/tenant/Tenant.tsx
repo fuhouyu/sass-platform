@@ -211,6 +211,7 @@ export const Tenant: React.FC = () => {
                 tableName: t('Tenant.list'),
                 columns: columns,
                 pageData: pageResult,
+                pageQuery: pageQuery,
                 setPageQuery: setPageQuery,
                 rowSelection: rowSelection,
                 components: [

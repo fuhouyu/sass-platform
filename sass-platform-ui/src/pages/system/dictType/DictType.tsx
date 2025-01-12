@@ -42,6 +42,7 @@ import {Link} from "react-router-dom";
 import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
 import {useAppSelector} from "@/store";
+import {CheckCircleOutlined} from "@ant-design/icons";
 
 /**
  * 字典类型
@@ -84,11 +85,13 @@ export const DictType = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (isEnabled: boolean) => (
-                isEnabled ? <Tag color={"#E8F4FF"} style={{border: "1px solid blue"}}>
-                        <span style={{color: '#2090FF'}}>{t('Common.enabled')}</span>
-                    </Tag> :
-                    <Tag color={"#FFEDED"} style={{border: "1px solid #FFB6B6"}}>
-                        <span style={{color: '#FF9696'}}>{t('Common.disabled')}</span>
+                isEnabled ?
+                    <Tag icon={<CheckCircleOutlined/>} color="success">
+                        {t('Common.enabled')}
+                    </Tag>
+                    :
+                    <Tag icon={<CheckCircleOutlined/>} color="error">
+                        {t('Common.disabled')}
                     </Tag>
             )
         },
@@ -203,6 +206,7 @@ export const DictType = () => {
                     tableName: t('DictType.list'),
                     columns: columns,
                     pageData: pageResult,
+                    pageQuery: pageQuery,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
                     components: [

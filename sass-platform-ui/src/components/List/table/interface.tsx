@@ -35,6 +35,12 @@ export interface TableProps<RecordType = AnyObject> {
      * 分页数据
      */
     pageData?: PageResult<AnyObject>;
+
+    /**
+     * 查询参数
+     */
+    pageQuery?: PageQuery
+
     /**
      * 设置分页查询
      */
