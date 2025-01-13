@@ -15,40 +15,31 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
-
-import java.util.List;
+import java.util.Collection;
 
 /**
  * <p>
- * 角色接口
+ * 用户和角色的接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 20:47
+ * @since 2025/1/13 22:03
  */
-public interface RoleService extends BaseService<Long, RoleDTO> {
+public interface UserHasRoleService {
+
 
     /**
-     * 通过角色编码获取角色
+     * 保存用户和角色的关系
      *
-     * @param roleCode 角色编码
-     * @return 角色dto对象
+     * @param userId  用户id
+     * @param roleIds 角色id集合
      */
-    RoleDTO findByRoleCode(String roleCode);
+    void saveOrUpdateUserRole(Long userId, Collection<Long> roleIds);
 
     /**
-     * 创建默认的租户角色
+     * 通过用户id删除用户角色关系
      *
-     * @param tenantId      租户id
-     * @param permissionIds 权限id集合
+     * @param userIds 用户id集合
      */
-    void createTenantDefaultRole(Long tenantId, List<Long> permissionIds);
-
-    /**
-     * 角色列表
-     *
-     * @return 角色列表
-     */
-    List<RoleDTO> list();
+    void removeByUserIds(Collection<Long> userIds);
 }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2024 the original author or authors.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserHasRoleMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.UserHasRole" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+    </resultMap>
+
+
+    <sql id="TableName">
+        user_has_role
+    </sql>
+
+    <sql id="InsertColumn">
+        role_id,
+        user_id,
+        create_at,
+        create_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumn"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{roleId},
+            #{userId},
+            #{createAt},
+            #{createBy},
+        </trim>
+        ON CONFLICT(user_id, role_id) DO NOTHING
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumn"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.roleId},
+                #{entity.userId},
+                #{entity.createAt},
+                #{entity.createBy},
+            </trim>
+        </foreach>
+        ON CONFLICT(user_id, role_id) DO NOTHING
+    </insert>
+
+    <delete id="deleteByUserIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

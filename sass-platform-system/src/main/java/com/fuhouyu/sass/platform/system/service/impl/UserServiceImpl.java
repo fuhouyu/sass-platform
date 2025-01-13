@@ -28,10 +28,7 @@ import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.Users;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
-import com.fuhouyu.sass.platform.system.service.AccountService;
-import com.fuhouyu.sass.platform.system.service.TenantHasUserService;
-import com.fuhouyu.sass.platform.system.service.UserPositionService;
-import com.fuhouyu.sass.platform.system.service.UserService;
+import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,6 +64,8 @@ public class UserServiceImpl implements UserService {
 
     private final TenantHasUserService tenantHasUserService;
 
+    private final UserHasRoleService userHasRoleService;
+
     @Override
     public Long save(UserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
@@ -88,6 +87,8 @@ public class UserServiceImpl implements UserService {
         this.saveAccounts(userDTO);
         // 保存职位信息
         this.userPositionService.saveUserPosition(id, userDTO.getUserPosition());
+        // 保存角色信息
+        this.userHasRoleService.saveOrUpdateUserRole(id, userDTO.getRoleIds());
         return id;
     }
 
@@ -113,6 +114,7 @@ public class UserServiceImpl implements UserService {
         this.userMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
         this.userPositionService.saveUserPosition(userDTO.getId(), userDTO.getUserPosition());
         AccountDTO account = userDTO.getAccount();
+        this.userHasRoleService.saveOrUpdateUserRole(userDTO.getId(), userDTO.getRoleIds());
         if (Objects.nonNull(account) && Objects.nonNull(account.getCredentials())) {
             this.accountService.edit(account);
         }
@@ -159,6 +161,7 @@ public class UserServiceImpl implements UserService {
         this.accountService.removeByUserIds(ids);
         this.tenantHasUserService.removeByTenantIdAndUserIds(ContextHolderStrategy.getContext().getUser().getTenantId(), ids);
         this.userPositionService.removeByUserIds(ids);
+        this.userHasRoleService.removeByUserIds(ids);
         return deleteUserCount;
     }
 

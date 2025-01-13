@@ -137,4 +137,16 @@ public class RoleController {
     public BaseResponse<Boolean> checkCodeExists(@RequestParam("roleCode") String roleCode) {
         return ResponseHelper.success(Objects.nonNull(this.roleService.findByRoleCode(roleCode)));
     }
+
+    /**
+     * 角色列表
+     *
+     * @return 角色列表
+     */
+    @GetMapping("/list")
+    @Operation(summary = "角色列表 不分页")
+    @PreAuthorize("@auth.hasPermission('system:role:list')")
+    public BaseResponse<List<RoleDTO>> list() {
+        return ResponseHelper.success(this.roleService.list());
+    }
 }

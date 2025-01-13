@@ -22,6 +22,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户详情dto对象
@@ -44,5 +46,6 @@ public class UserDetailDTO extends UserDTO {
     @Schema(name = "userPosition", description = "用户职位信息")
     private UserPositionDTO userPosition;
 
-
+    @Schema(name = "roleIds", description = "用户角色")
+    private List<Long> roleIds;
 }

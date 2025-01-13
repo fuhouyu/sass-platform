@@ -23,6 +23,7 @@ import com.fuhouyu.sass.platform.system.assembler.RolesAssembler;
 import com.fuhouyu.sass.platform.system.constants.TenantConstant;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
+import com.fuhouyu.sass.platform.system.dto.role.RolePageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Roles;
 import com.fuhouyu.sass.platform.system.mapper.RoleMapper;
 import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
@@ -64,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Long createTenantDefaultRole(Long tenantId, List<Long> permissionIds) {
+    public void createTenantDefaultRole(Long tenantId, List<Long> permissionIds) {
         long id = this.snowflakeIdWorker.nextId();
         Roles role = new Roles();
         role.setId(id);
@@ -78,7 +79,12 @@ public class RoleServiceImpl implements RoleService {
         this.roleMapper.insert(role);
         // 保存权限
         this.roleHasPermissionService.saveRolePermission(id, permissionIds);
-        return id;
+    }
+
+
+    @Override
+    public List<RoleDTO> list() {
+        return ROLES_ASSEMBLER.toDTO(this.roleMapper.queryList(new RolePageQueryDTO()));
     }
 
     @Override
