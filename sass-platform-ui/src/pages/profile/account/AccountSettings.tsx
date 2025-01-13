@@ -21,6 +21,7 @@ import {accountApi} from "@/apis/account.tsx";
 import {Account, AccountType} from "@/model/account.tsx";
 import {useTranslation} from "react-i18next";
 import {ExclamationCircleFilled} from "@ant-design/icons";
+import {useAppSelector} from "@/store";
 
 interface UpdatePasswordForm {
     oldPassword: string;
@@ -40,6 +41,7 @@ export const AccountSettings = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState(false);
     const [passwordForm] = Form.useForm<UpdatePasswordForm>();
     const {t} = useTranslation()
+    const language = useAppSelector(state => state.locale.language);
     const {confirm} = AntdModal;
     const getAccounts = async () => {
         setAccounts(await accountApi.getAccountForMe());
@@ -86,7 +88,7 @@ export const AccountSettings = () => {
 
         // 定时检查窗口是否关闭
         const timer = setInterval(() => {
-            if (newWindow && newWindow.closed) {
+            if (newWindow?.closed) {
                 clearInterval(timer);
                 // 在这里处理窗口关闭后的逻辑，比如刷新页面或更新状态
                 getAccounts().then();
@@ -168,10 +170,10 @@ export const AccountSettings = () => {
             >
                 <Form
                     form={passwordForm}
-                    style={{maxWidth: 400}}
-                    name="updatePassword"
+                    name="modal-form"
                     labelAlign={'right'}
-                    labelCol={{span: 8}}
+                    labelCol={{span: language === 'zh' ? 4 : 7}}
+                    colon={false}
                     clearOnDestroy={true}
 
                 >

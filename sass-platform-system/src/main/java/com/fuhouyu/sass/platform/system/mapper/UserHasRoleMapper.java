@@ -13,42 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
+import com.fuhouyu.sass.platform.system.entity.UserHasRole;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * <p>
- * 角色接口
+ * 用户角色mapper
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 20:47
+ * @since 2025/1/13 22:05
  */
-public interface RoleService extends BaseService<Long, RoleDTO> {
+public interface UserHasRoleMapper {
 
     /**
-     * 通过角色编码获取角色
+     * 插入用户角色
      *
-     * @param roleCode 角色编码
-     * @return 角色dto对象
+     * @param userHasRole 用户角色对象
      */
-    RoleDTO findByRoleCode(String roleCode);
+    void insert(UserHasRole userHasRole);
 
     /**
-     * 创建默认的租户角色
+     * 批量插入用户角色
      *
-     * @param tenantId      租户id
-     * @param permissionIds 权限id集合
+     * @param list 用户角色列表
      */
-    void createTenantDefaultRole(Long tenantId, List<Long> permissionIds);
+    void insertBatch(@Param("list") List<UserHasRole> list);
 
     /**
-     * 角色列表
+     * 通过用户id删除
      *
-     * @return 角色列表
+     * @param userIds 用户id删除
      */
-    List<RoleDTO> list();
+    void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
 }

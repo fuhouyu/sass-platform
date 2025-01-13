@@ -194,7 +194,9 @@ export const User: React.FC = () => {
         await form.validateFields();
         setIsModalButtonLoading(true);
         const userDetail: Userinfo = form.getFieldsValue();
-        userDetail.account!.accountType = AccountType.PASSWORD;
+        if (userDetail.account) {
+            userDetail.account.accountType = AccountType.PASSWORD;
+        }
         try {
             await (updateUserId ? userApi.editInfoApi(updateUserId, userDetail) : userApi.saveInfoApi(userDetail));
             message.success(t('Common.success')).then();

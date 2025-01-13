@@ -29,7 +29,16 @@ class RoleApi extends DefaultApiImpl<Role> {
         super(BaseUrlConstant.ROLE_API_PREFIX);
     }
 
+    /**
+     * 检查角色编码是否存在
+     * @param roleCode 角色编码
+     */
     checkRoleCodeExists: (roleCode: string) => Promise<boolean> = (roleCode: string): Promise<boolean> => request.get(`${this.baseUrl}/exists`, {params: {roleCode}})
+
+    /**
+     * 获取角色列表
+     */
+    list: () => Promise<Role[]> = (): Promise<Role[]> => request.get(`${this.baseUrl}/list`)
 }
 
 export const roleApi: RoleApi = new RoleApi();
