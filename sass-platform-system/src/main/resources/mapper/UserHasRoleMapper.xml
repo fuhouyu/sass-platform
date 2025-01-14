@@ -75,4 +75,10 @@
             #{userId}
         </foreach>
     </delete>
+
+    <select id="queryRoleIdsByUserId" resultType="java.lang.Long">
+        SELECT role_id FROM
+        <include refid="TableName"/>
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

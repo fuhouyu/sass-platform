@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -42,4 +43,12 @@ public interface UserHasRoleService {
      * @param userIds 用户id集合
      */
     void removeByUserIds(Collection<Long> userIds);
+
+    /**
+     * 通过用户查询角色id集合
+     *
+     * @param userId 用户id
+     * @return 角色id集合
+     */
+    List<Long> findRoleIdsByUserId(Long userId);
 }

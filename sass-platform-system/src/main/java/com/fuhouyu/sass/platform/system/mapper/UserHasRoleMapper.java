@@ -51,4 +51,12 @@ public interface UserHasRoleMapper {
      * @param userIds 用户id删除
      */
     void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
+
+    /**
+     * 通过用户id查询角色id
+     *
+     * @param userId 用户id
+     * @return 角色id
+     */
+    List<Long> queryRoleIdsByUserId(@Param("userId") Long userId);
 }

@@ -60,4 +60,9 @@ public class UserHasRoleServiceImpl implements UserHasRoleService {
     public void removeByUserIds(Collection<Long> userIds) {
         this.userHasRoleMapper.deleteByUserIds(userIds);
     }
+
+    @Override
+    public List<Long> findRoleIdsByUserId(Long userId) {
+        return this.userHasRoleMapper.queryRoleIdsByUserId(userId);
+    }
 }

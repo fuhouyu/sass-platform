@@ -106,7 +106,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailDTO findDetailById(Long id) {
-        return this.userMapper.queryDetailById(id);
+        UserDetailDTO userDetailDTO = this.userMapper.queryDetailById(id);
+        if (Objects.isNull(userDetailDTO)) {
+            return null;
+        }
+        List<Long> roleIds = this.userHasRoleService.findRoleIdsByUserId(id);
+        userDetailDTO.setRoleIds(roleIds);
+        return userDetailDTO;
     }
 
     @Override
