@@ -190,6 +190,8 @@ const EnUS = {
         accountInfo: 'Account Info',
         info: 'User Info',
         positionInfo: 'Position Info',
+        role: 'Role',
+        rolePlaceholder: 'Please choose Roles',
 
     },
 

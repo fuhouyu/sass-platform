@@ -161,7 +161,8 @@ const ZhCN = {
         accountInfo: '账号信息',
         info: '用户信息',
         positionInfo: '职位信息',
-
+        role: '角色',
+        rolePlaceholder: '请选择角色',
 
     },
     // 权限

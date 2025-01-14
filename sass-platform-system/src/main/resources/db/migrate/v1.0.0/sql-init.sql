@@ -456,35 +456,6 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
 VALUES (264, 26, 'delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
--- 岗位管理
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (27, 2, 'positionManage', 'system:position:list', 2, 'i-drxx95', 'position', 'system/position',
-        '', false, 'MENU', false, true,
-        false, true, 1, false, now(), 'admin', now(), 'admin');
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (271, 27, 'query', 'system:position:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (272, 27, 'add', 'system:position:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false,
-        now(), 'admin', now(), 'admin');
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (273, 27, 'edit', 'system:position:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (274, 27, 'delete', 'system:position:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
 CREATE TABLE role_has_permission
@@ -576,14 +547,6 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 263, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 264, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 271, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 272, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 273, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 274, now(), 'admin');
 
 DROP TABLE IF EXISTS accounts;
 -- 账号表
@@ -769,6 +732,11 @@ COMMENT ON COLUMN organizations.update_at IS '更新时间';
 COMMENT ON COLUMN organizations.create_by IS '创建人';
 COMMENT ON COLUMN organizations.update_by IS '更新人';
 
+INSERT INTO organizations (id, parent_id, organization_name, organization_code, organization_type, is_enabled, is_leaf,
+                           remark, display_order, owner_tenant_id, is_deleted, create_at, update_at, create_by,
+                           update_by)
+VALUES (1, -1, '根组织', 'ROOT', 'ROOT', true, true, '根组织', 1, 1, false, now(), now(), 'admin', 'admin');
+
 DROP TABLE IF EXISTS user_positions;
 CREATE TABLE user_positions
 (
@@ -790,12 +758,12 @@ COMMENT ON column user_positions.user_id IS '用户id';
 COMMENT ON column user_positions.position_name IS '职位信息';
 COMMENT ON column user_positions.is_main IS '是否是主职部门 true 是 false 否';
 COMMENT ON column user_positions.order_in_organization IS '组织内的排序';
-COMMENT ON COLUMN organizations.create_at IS '创建时间';
-COMMENT ON COLUMN organizations.update_at IS '更新时间';
-COMMENT ON COLUMN organizations.create_by IS '创建人';
-COMMENT ON COLUMN organizations.update_by IS '更新人';
+COMMENT ON COLUMN user_positions.create_at IS '创建时间';
+COMMENT ON COLUMN user_positions.update_at IS '更新时间';
+COMMENT ON COLUMN user_positions.create_by IS '创建人';
+COMMENT ON COLUMN user_positions.update_by IS '更新人';
 
 INSERT INTO user_positions (organization_id, user_id, position_name, is_main, order_in_organization, create_at,
                             update_at, create_by, update_by)
-VALUES (1, 1, '管理者', true, 1, '2024-11-10 21:35:00', '2024-11-10 21:35:00', 'admin', 'admin'),
+VALUES (1, 1, '系统所有者', true, 1, '2024-11-10 21:35:00', '2024-11-10 21:35:00', 'admin', 'admin');
 

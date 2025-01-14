@@ -51,6 +51,8 @@ import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {AccountType} from "@/model/account.tsx";
 import {useAppSelector} from "@/store";
+import {roleApi} from "@/apis/role.tsx";
+import {Role} from "@/model/role.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -142,22 +144,18 @@ export const User: React.FC = () => {
         pageNum: 1,
         pageSize: 10,
     });
-    const initForm: Userinfo = {
-        gender: 'MALE',
-        userPosition: {
-            isMain: true,
-        },
-    }
+
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
-    const [formInitValues, setFormInitValues] = useState<Userinfo>(initForm);
+    const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
+    const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
     const language = useAppSelector(state => state.locale.language);
 
 
@@ -168,6 +166,7 @@ export const User: React.FC = () => {
     const openModal = async (userId?: string) => {
         setUpdateUserId(userId);
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
+        setRoleSelectList(await roleApi.list())
         if (!userId) {
             setIsModalOpen(true);
             return;
@@ -183,7 +182,7 @@ export const User: React.FC = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         const organizationId = formInitValues.userPosition?.organizationId;
-        setFormInitValues({...initForm, userPosition: {organizationId}});
+        setFormInitValues({userPosition: {organizationId}});
         form.resetFields();
     }
 
@@ -241,7 +240,6 @@ export const User: React.FC = () => {
                                     return
                                 }
                                 setFormInitValues({
-                                    ...initForm,
                                     userPosition: {organizationId: selectedKeys[0] as string}
                                 });
                                 setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
@@ -436,11 +434,33 @@ export const User: React.FC = () => {
                                         hasFeedback
                                         colon={false}
                                         rules={[{required: true}]}
+                                        initialValue={'MALE'}
                                     >
                                         <Radio.Group>
                                             <Radio value="MALE">{t('User.male')}</Radio>
                                             <Radio value="FEMALE">{t('User.female')}</Radio>
                                         </Radio.Group>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.role')}
+                                        name={['roleIds']}
+                                        key="roleIds"
+                                        colon={false}
+                                        hasFeedback
+                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                    >
+                                        <Select<Role>
+                                            mode="multiple"
+                                            allowClear
+                                            style={{width: '100%'}}
+                                            placeholder={t('User.rolePlaceholder')}
+                                            fieldNames={{label: 'roleName', value: 'id'}}
+                                            options={roleSelectList}
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -514,6 +534,7 @@ export const User: React.FC = () => {
                                         hasFeedback
                                         labelCol={{span: language == 'zh' ? 7 : 8}}
                                         required
+                                        initialValue={true}
                                     >
                                         <Radio.Group>
                                             <Radio value={true}>{t('Common.yes')}</Radio>

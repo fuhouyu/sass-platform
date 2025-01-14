@@ -164,6 +164,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                 new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), simpleGrantedAuthorities);
         usernamePasswordAuthenticationToken.setDetails(userDetailsDTO);
         this.tokenStore.storeAuth2Token(auth2Token, usernamePasswordAuthenticationToken);
+        this.tokenStore.storeRefreshToken(auth2Token.getRefreshToken(), usernamePasswordAuthenticationToken);
     }
 
     /**
