@@ -17,3 +17,6 @@ base:
     cache:
       service:
         cache-service-type: caffeine
+jasypt:
+  encryptor:
+    password: 1
