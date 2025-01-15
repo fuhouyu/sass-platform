@@ -62,16 +62,12 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
     </dependencies>
 
 
     <profiles>
         <profile>
-            <id>h2</id>
+            <id>local</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -80,6 +76,10 @@
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.github.ben-manes.caffeine</groupId>
+                    <artifactId>caffeine</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -90,6 +90,10 @@
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                 </dependency>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-redis</artifactId>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -98,6 +102,10 @@
                 <dependency>
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-java</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-redis</artifactId>
                 </dependency>
             </dependencies>
         </profile>
