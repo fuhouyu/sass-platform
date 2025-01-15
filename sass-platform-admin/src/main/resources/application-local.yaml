@@ -12,5 +12,8 @@ spring:
   h2:
     console:
       enabled: true
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: caffeine
