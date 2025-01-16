@@ -294,6 +294,7 @@ export const Permission: React.FC = () => {
                     {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
                     <div className='tree-info'>
                         <Tree
+                            height={870}
                             defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'permissionName'}}

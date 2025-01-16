@@ -218,6 +218,7 @@ export const Organization = () => {
                     {/*    placeholder={t('Organization.namePlaceholder')} allowClear/>*/}
                     <div className='tree-info'>
                         <Tree
+                            height={870}
                             defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'organizationName'}}

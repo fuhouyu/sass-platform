@@ -99,6 +99,7 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
                 </Space>
             </div>
             <Tree<T>
+                height={870}
                 className="menu-tree"
                 checkable
                 checkStrictly
