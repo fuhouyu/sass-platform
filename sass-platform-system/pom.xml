@@ -84,24 +84,11 @@
             </dependencies>
         </profile>
         <profile>
-            <id>postgresql</id>
+            <id>prod</id>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-redis</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>mysql</id>
-            <dependencies>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.springframework.boot</groupId>

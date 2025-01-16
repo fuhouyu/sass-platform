@@ -118,9 +118,6 @@ export const User: React.FC = () => {
             title: t('Common.updateAt'),
             align: 'center',
             dataIndex: 'updateAt',
-            sorter: true,
-            defaultSortOrder: "descend",
-            showSorterTooltip: false
         },
         {
             title: t('Common.updateBy'),
@@ -229,6 +226,7 @@ export const User: React.FC = () => {
                 <Col span={3} className={'tree-container'}>
                     <div className='tree-info'>
                         <Tree<Organization>
+                            height={870}
                             defaultExpandParent={true}
                             showLine
                             fieldNames={{key: 'id', title: 'organizationName'}}

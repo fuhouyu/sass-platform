@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 0
       - name: Build with Maven
         run: |
-          mvn clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Ppostgresql
+          mvn clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
           mv sass-platform-admin/target/sass-platform-admin-*.jar sass-platform-admin.jar
       - name: Scp Jar File
         uses: appleboy/scp-action@v0.1.7

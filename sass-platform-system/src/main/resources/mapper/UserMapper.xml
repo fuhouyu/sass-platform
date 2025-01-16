@@ -240,6 +240,7 @@
                 AND gender = #{pageQuery.gender}
             </if>
         </where>
+        ORDER BY up.order_in_organization
     </select>
 
     <select id="queryDetailById" resultMap="UserDetailResultMap">
