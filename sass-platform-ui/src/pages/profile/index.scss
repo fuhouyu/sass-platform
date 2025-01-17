@@ -55,8 +55,8 @@
   flex: 8;
 
   .profile-right-title {
-    font-size: 19px;
-    margin: 20px;
+    font-size: 1.1875rem;
+    margin: 1.25rem;
     position: relative;
   }
 
@@ -67,15 +67,15 @@
     height: 1px;
     background-color: #f0f0f0;
     position: absolute;
-    bottom: -20px;
-    left: -20px;
+    bottom: -1.25rem;
+    left: -1.25rem;
   }
 }
 
-.profile-form {
-  padding-top: 20px;
+.userinfo {
+  padding: 1.25rem;
 
-  .profile-submit button {
+  .userinfo-submit button {
     margin: 0 20px;
   }
 }

@@ -130,7 +130,7 @@ export const Profile: React.FC = () => {
                     {selectedMenuInterface.label}
                 </div>
                 {
-                    selectedMenuInterface.key === 'userinfo' ? <Form className="profile-form"
+                    selectedMenuInterface.key === 'userinfo' ? <Form className="userinfo"
                                                                      form={form}
                                                                      name="modal-form"
                                                                      labelCol={{span: 8}}
@@ -152,12 +152,12 @@ export const Profile: React.FC = () => {
 
                         <Form.Item name="gender" key="gender" label={t('User.gender')}>
                             <Radio.Group>
-                                <Radio value='male'>{t('User.male')}</Radio>
-                                <Radio value='female'>{t('User.female')}</Radio>
+                                <Radio value='MALE'>{t('User.male')}</Radio>
+                                <Radio value='FEMALE'>{t('User.female')}</Radio>
                             </Radio.Group>
                         </Form.Item>
 
-                        <Form.Item className="profile-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
+                        <Form.Item className="userinfo-submit text-align-center" wrapperCol={{offset: 8, span: 16}}>
                             <Button type="primary" htmlType="submit" loading={buttonLoading}>
                                 {t('Button.confirm')}
                             </Button>
