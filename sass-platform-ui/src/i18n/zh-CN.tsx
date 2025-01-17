@@ -36,7 +36,7 @@ const ZhCN = {
         paramsError: '参数错误',
         pending: '处理中，请稍候...',
         listTips: '选择列表数据后可进行批量操作',
-
+        welcome: '您好'
     },
     // button
     Button: {

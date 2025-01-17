@@ -36,7 +36,7 @@ const EnUS = {
         paramsError: 'Params Error',
         pending: 'Processing, please wait...',
         listTips: 'Select list data for batch operations',
-
+        welcome: 'Welcome'
     },
     // button
     Button: {
