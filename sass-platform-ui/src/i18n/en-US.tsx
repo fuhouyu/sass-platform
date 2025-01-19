@@ -36,7 +36,9 @@ const EnUS = {
         paramsError: 'Params Error',
         pending: 'Processing, please wait...',
         listTips: 'Select list data for batch operations',
-        welcome: 'Welcome'
+        welcome: 'Welcome',
+        selectAllOrSelectNone: 'Select All/Select None',
+        expandOrCollapse: 'Expand/Collapse',
     },
     // button
     Button: {
@@ -192,7 +194,7 @@ const EnUS = {
         positionInfo: 'Position Info',
         role: 'Role',
         rolePlaceholder: 'Please choose Roles',
-
+        roleAuthorization: 'Role authorization',
     },
 
     // 角色

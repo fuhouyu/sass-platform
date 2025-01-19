@@ -16,12 +16,15 @@
 
 
 .menu-list {
+  height: 13rem;
   padding-top: 0.3rem;
+  margin-bottom: 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-
   .menu-tree {
+    height: 13rem;
+    overflow-y: auto;
     padding: 0.2rem 0;
     border: 1px solid #E5E6E7;
   }

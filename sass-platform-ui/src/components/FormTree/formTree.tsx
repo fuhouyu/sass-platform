@@ -18,12 +18,15 @@ import React, {Key, useEffect, useRef, useState} from "react";
 import {Checkbox, CheckboxProps, Space, Tree, TreeProps} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import './index.scss'
+import {useTranslation} from "react-i18next";
 
 
 export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
     formTreeProps: TreeProps<T>,
     onSelectedAll?: (ids: string[]) => void
 }) => {
+
+    const {t} = useTranslation();
 
     const extractAllIds = (treeData?: T[], key?: string): string[] => {
         if (!treeData) {
@@ -84,7 +87,7 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
         <div className="menu-list">
             <div>
                 <Space>
-                    <Checkbox checked={expanded} onChange={onExpanded}>展开/折叠</Checkbox>
+                    <Checkbox checked={expanded} onChange={onExpanded}>{t('Common.expandOrCollapse')}</Checkbox>
                     <Checkbox checked={selectedAll} onChange={e => {
                         if (!onSelectedAll) {
                             return
@@ -95,32 +98,33 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
                         } else {
                             onSelectedAll([]);
                         }
-                    }}>全选/全不选</Checkbox>
+                    }}>{t('Common.selectAllOrSelectNone')}</Checkbox>
                 </Space>
             </div>
-            <Tree<T>
-                height={870}
-                className="menu-tree"
-                checkable
-                checkStrictly
-                blockNode={true}
-                expandedKeys={expandedKeys}
-                onExpand={(expandedKeysValue: Key[]) => {
-                    setExpandedKeys(expandedKeysValue);
-                }}
-                {...formTreeProps}
-                onCheck={(checked, info) => {
-                    if (!formTreeProps.onCheck) {
-                        return
-                    }
-                    formTreeProps.onCheck(checked, info);
-                    if ((checked as Key[]).length === ids.length) {
-                        setSelectedAll(true)
-                    } else {
-                        setSelectedAll(false)
-                    }
-                }}
-            />
+            <div className={'tree-info'}>
+                <Tree<T>
+                    className="menu-tree"
+                    checkable
+                    motion={false}
+                    blockNode
+                    expandedKeys={expandedKeys}
+                    onExpand={(expandedKeysValue: Key[]) => {
+                        setExpandedKeys(expandedKeysValue);
+                    }}
+                    {...formTreeProps}
+                    onCheck={(checked, info) => {
+                        if (!formTreeProps.onCheck) {
+                            return
+                        }
+                        formTreeProps.onCheck(checked, info);
+                        if ((checked as Key[]).length === ids.length) {
+                            setSelectedAll(true)
+                        } else {
+                            setSelectedAll(false)
+                        }
+                    }}
+                />
+            </div>
         </div>
     )
 }
