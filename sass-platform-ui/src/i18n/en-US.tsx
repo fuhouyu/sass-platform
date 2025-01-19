@@ -194,7 +194,7 @@ const EnUS = {
         positionInfo: 'Position Info',
         role: 'Role',
         rolePlaceholder: 'Please choose Roles',
-
+        roleAuthorization: 'Role authorization',
     },
 
     // 角色

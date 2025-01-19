@@ -165,6 +165,9 @@ const ZhCN = {
         positionInfo: '职位信息',
         role: '角色',
         rolePlaceholder: '请选择角色',
+        roleAuthorization: '角色授权',
+
+
 
     },
     // 权限

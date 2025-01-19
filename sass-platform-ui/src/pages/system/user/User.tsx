@@ -53,6 +53,8 @@ import {AccountType} from "@/model/account.tsx";
 import {useAppSelector} from "@/store";
 import {roleApi} from "@/apis/role.tsx";
 import {Role} from "@/model/role.tsx";
+import {userHasRoleApi} from "@/apis/userHasRole.tsx";
+
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
@@ -130,9 +132,19 @@ export const User: React.FC = () => {
             dataIndex: 'action',
             render: (_, record: Userinfo) => {
                 return (
-                    <PermissionButton permissionStr={UserPermissionConstant.EDIT} buttonPermissions={buttonPermissions}>
-                        <EditButton onClick={() => openModal(record.id)}/>
-                    </PermissionButton>
+                    <Space>
+                        <PermissionButton permissionStr={UserPermissionConstant.EDIT}
+                                          buttonPermissions={buttonPermissions}>
+                            <EditButton onClick={() => openModal(record.id)}/>
+                        </PermissionButton>
+                        <PermissionButton permissionStr={UserPermissionConstant.EDIT}
+                                          buttonPermissions={buttonPermissions}>
+                            <Button onClick={() => openRoleAuthenticationModal(record!)}
+                                    icon={<IconFont type="i-jiaoseshouquan"/>}>
+                                {t('User.roleAuthorization')}
+                            </Button>
+                        </PermissionButton>
+                    </Space>
                 )
             }
         }
@@ -145,8 +157,10 @@ export const User: React.FC = () => {
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const [userHasRoleForm] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
@@ -154,6 +168,11 @@ export const User: React.FC = () => {
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
     const language = useAppSelector(state => state.locale.language);
+    const [userHasRole, setUserHasRole] = useState<{
+        username?: string,
+        userId?: string,
+        roleIds?: string[]
+    }>()
 
 
     /**
@@ -163,7 +182,7 @@ export const User: React.FC = () => {
     const openModal = async (userId?: string) => {
         setUpdateUserId(userId);
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
-        setRoleSelectList(await roleApi.list())
+        setRoleSelectList(await roleApi.list());
         if (!userId) {
             setIsModalOpen(true);
             return;
@@ -174,12 +193,37 @@ export const User: React.FC = () => {
     }
 
     /**
+     * 打开角色授权modal
+     * @param userinfo 用户详情
+     */
+    const openRoleAuthenticationModal = async (userinfo: Userinfo) => {
+        const roleIds = await userHasRoleApi.getRoleIdListByUserId(userinfo.id!);
+        setRoleSelectList(await roleApi.list());
+        setUserHasRole({
+            username: userinfo.username!,
+            userId: userinfo.id!,
+            roleIds: roleIds,
+        });
+        setIsRoleAuthenticationModalOpen(true);
+        setFormInitValues(userinfo);
+    }
+
+    /**
      * 关闭模态组
      */
     const closeModal = () => {
         setIsModalOpen(false);
         const organizationId = formInitValues.userPosition?.organizationId;
         setFormInitValues({userPosition: {organizationId}});
+        form.resetFields();
+    }
+
+    /**
+     * 关闭角色授权
+     */
+    const closeRoleAuthentication = () => {
+        setUserHasRole(undefined)
+        setIsRoleAuthenticationModalOpen(false);
         form.resetFields();
     }
 
@@ -201,6 +245,19 @@ export const User: React.FC = () => {
         } finally {
             setIsModalButtonLoading(false);
         }
+    }
+
+    /**
+     * 保存用户的角色信息
+     */
+    const saveUserRole = async () => {
+        if (!userHasRole) {
+            return
+        }
+        await userHasRoleApi.saveUserRole(userHasRole.userId!, userHasRole.roleIds ?? []);
+        setIsRoleAuthenticationModalOpen(false);
+        setIsModalButtonLoading(false);
+        message.success(t('Common.success')).then();
     }
 
     const pageQueryCallback = useCallback(async () => {
@@ -310,7 +367,7 @@ export const User: React.FC = () => {
                 title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"
                 open={isModalOpen}
-                destroyOnClose={true}
+                destroyOnClose
                 width={750}
                 onCancel={() => closeModal()}
                 footer={[
@@ -323,7 +380,7 @@ export const User: React.FC = () => {
                 }}/>}
             >
                 <Form
-                    clearOnDestroy={true}
+                    clearOnDestroy
                     name="modal-form"
                     form={form}
                     validateTrigger={'onBlur'}
@@ -544,6 +601,68 @@ export const User: React.FC = () => {
                             </Row>
                         </Card>
                     </Space>
+                </Form>
+            </Modal>
+
+            {/*角色授权*/}
+            <Modal
+                title={'角色授权'}
+                className="ant-modal-header"
+                open={isRoleAuthenticationModalOpen}
+                destroyOnClose
+                onCancel={() => closeRoleAuthentication()}
+                footer={[
+                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                            onClick={saveUserRole}>{t('Button.confirm')}</Button>,
+                    <Button key='onCancel' onClick={() => closeRoleAuthentication()}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '24px',
+                }}/>}
+            >
+                <Form
+                    clearOnDestroy
+                    name="modal-form"
+                    labelCol={{span: language === 'zh' ? 3 : 4}}
+                    form={userHasRoleForm}
+                    validateTrigger={'onBlur'}
+                    initialValues={{
+                        ...userHasRole
+                    }}
+                >
+                    <Form.Item
+                        label={t('User.username')}
+                        name="username"
+                        validateTrigger="onBlur"
+                        key="username"
+                        colon={false}
+                    >
+                        <Input disabled/>
+                    </Form.Item>
+
+
+                    <Form.Item
+                        label={t('User.role')}
+                        name={['roleIds']}
+                        key="roleIds"
+                        colon={false}
+                    >
+                        <Select
+                            mode="multiple"
+                            allowClear
+                            onChange={(value: string[]) => {
+                                setUserHasRole({
+                                    ...userHasRole,
+                                    roleIds: value ?? []
+                                });
+                            }}
+                            placeholder={t('User.rolePlaceholder')}
+                            fieldNames={{label: 'roleName', value: 'id'}}
+                            options={roleSelectList}
+                        />
+                    </Form.Item>
+
+
                 </Form>
             </Modal>
         </>
