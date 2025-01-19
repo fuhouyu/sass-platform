@@ -606,7 +606,7 @@ export const User: React.FC = () => {
 
             {/*角色授权*/}
             <Modal
-                title={'角色授权'}
+                title={t('User.roleAuthorization')}
                 className="ant-modal-header"
                 open={isRoleAuthenticationModalOpen}
                 destroyOnClose
