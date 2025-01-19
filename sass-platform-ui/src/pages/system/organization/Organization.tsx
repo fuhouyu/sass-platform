@@ -218,9 +218,10 @@ export const Organization = () => {
                     {/*    placeholder={t('Organization.namePlaceholder')} allowClear/>*/}
                     <div className='tree-info'>
                         <Tree
-                            height={870}
                             defaultExpandParent={true}
                             showLine
+                            blockNode
+                            motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}

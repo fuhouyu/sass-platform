@@ -226,9 +226,9 @@ export const User: React.FC = () => {
                 <Col span={3} className={'tree-container'}>
                     <div className='tree-info'>
                         <Tree<Organization>
-                            height={870}
                             defaultExpandParent={true}
                             showLine
+                            blockNode
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
