@@ -242,6 +242,7 @@ const EnUS = {
         nameCheckMessage: 'Please input Organization Name',
         code: 'Organization Code',
         type: 'Organization Type',
+        addUser: 'Add User',
     },
     Position: {
         ownerOrganization: 'Owner Organization',

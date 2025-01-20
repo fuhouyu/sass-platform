@@ -248,6 +248,7 @@ const ZhCN = {
         nameCheckMessage: '请输入组织名称',
         code: '组织编码',
         type: '组织类型',
+        addUser: '新增成员',
     },
     Position: {
         ownerOrganization: '所属组织',
