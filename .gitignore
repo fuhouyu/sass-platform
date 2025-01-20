@@ -352,3 +352,4 @@ Temporary Items
 .apdisk
 package-lock.json
 .flattened-pom.xml
+pnpm-lock.yaml

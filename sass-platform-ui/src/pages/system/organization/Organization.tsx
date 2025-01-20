@@ -35,7 +35,7 @@ import {
 } from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
-import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
+import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {DownOutlined} from "@ant-design/icons";
 import {OrganizationPermissionConstant} from "@/constants/permissionConstant.tsx";
@@ -71,37 +71,44 @@ export const Organization = () => {
         {
             title: t('Organization.name'),
             dataIndex: 'organizationName',
+            align: 'center',
         },
         {
             title: t('Organization.code'),
             dataIndex: 'organizationCode',
-
+            align: 'center',
         },
         {
             title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
+            align: 'center',
             sorter: true,
             defaultSortOrder: 'descend',
         },
         {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
+            align: 'center',
             sorter: true,
             showSorterTooltip: false
         },
         {
             title: t('Common.updateBy'),
+            align: 'center',
             dataIndex: 'updateBy',
         },
         {
             title: t('Common.action'),
+            align: 'center',
             dataIndex: 'action',
             render: (_: AnyObject, record: OrganizationModal) => {
                 return (
+
                     <PermissionButton buttonPermissions={buttonPermissions}
                                       permissionStr={OrganizationPermissionConstant.EDIT}>
                         <EditButton onClick={() => openModal(record.id)}/>
-                    </PermissionButton>)
+                    </PermissionButton>
+                )
             }
         }
     ];
@@ -251,8 +258,21 @@ export const Organization = () => {
                         components={[
                             <>
                                 <PermissionButton buttonPermissions={buttonPermissions}
+                                                  permissionStr={OrganizationPermissionConstant.EDIT}>
+                                    <Button
+                                        disabled={formParentOrganization.id === undefined}
+                                        icon={<IconFont type="i-xinzengyonghu"/>}>
+                                        {t('Organization.addUser')}
+                                    </Button>
+                                </PermissionButton>
+                                <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={OrganizationPermissionConstant.ADD}>
-                                    <AddButton onClick={() => openModal()}/>
+                                    <Button className="add-button"
+                                            onClick={() => openModal()}
+                                            icon={<IconFont type="i-add"/>}
+                                    >
+                                        {t('Organization.add')}
+                                    </Button>
                                 </PermissionButton>
                                 <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={OrganizationPermissionConstant.DELETE}>
