@@ -19,7 +19,7 @@ import {PermissionButton} from "./Button/permissionButton";
 import {FormTree} from "./FormTree/formTree";
 import {IconFont} from "./Iconfont/iconfont";
 import {PageList, SearchHeader, Table} from "./List";
-import {Modal} from "./Modal/Modal";
+import {Modal} from "./Modal/modal.tsx";
 import {PageLoading} from "./PageLoading/pageLoading";
 import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
 

@@ -142,7 +142,6 @@ export const Header = () => {
                 centered
                 destroyOnClose={true}
                 title={t('Tenant.list')}
-                className="switch-tenant"
                 closable={false}
                 onCancel={() => setSwitchTenantModalOpen(false)}
                 open={switchTenantModalOpen}
