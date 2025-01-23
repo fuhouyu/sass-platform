@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,9 +220,6 @@ export const Organization = () => {
         <>
             <Row gutter={24} className={'main-container'}>
                 <Col span={3} className={'tree-container'}>
-                    {/*<Input*/}
-                    {/*    className='search-input'*/}
-                    {/*    placeholder={t('Organization.namePlaceholder')} allowClear/>*/}
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
