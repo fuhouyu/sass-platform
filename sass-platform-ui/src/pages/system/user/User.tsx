@@ -43,7 +43,6 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
-import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
@@ -162,7 +161,6 @@ export const User: React.FC = () => {
     const [userHasRoleForm] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
-    const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
