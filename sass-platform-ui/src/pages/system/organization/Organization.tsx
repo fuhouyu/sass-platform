@@ -296,7 +296,6 @@ export const Organization = () => {
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Organization.edit') : t('Organization.add')}
-                className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
                 footer={[
@@ -306,9 +305,6 @@ export const Organization = () => {
                     >{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form
                     clearOnDestroy={true}
@@ -404,6 +400,7 @@ export const Organization = () => {
                 </Form>
 
             </Modal>
+
         </>
     )
 }

@@ -260,7 +260,6 @@ export const Role: React.FC = () => {
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Role.edit') : t('Role.add')}
-                className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
@@ -268,9 +267,6 @@ export const Role: React.FC = () => {
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
                     <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form<RoleModel>
                     name="modal-form"

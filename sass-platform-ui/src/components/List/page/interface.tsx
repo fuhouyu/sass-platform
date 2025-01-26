@@ -38,11 +38,3 @@ export interface PageListProps {
      */
     setPageQuery?: (pageQuery: PageQuery) => void;
 }
-
-/**
- * 分页处理器
- */
-export type PageListHandler = {
-    setSearchValue: (key: string, value: unknown) => void;
-    refresh: () => void;
-} | undefined;
