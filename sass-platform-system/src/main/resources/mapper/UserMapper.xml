@@ -195,12 +195,8 @@
         user_positions up ON u.id = up.user_id
         <where>
             up.organization_id = #{pageQuery.organizationId}
-            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
-                AND (username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
-                OR
-                real_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
-                OR
-                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%'))
+            <if test="pageQuery.username != null and pageQuery.username != ''">
+                AND username LIKE CONCAT('%', #{pageQuery.username}, '%')
             </if>
             <if test="pageQuery.gender != null and pageQuery.gender != ''">
                 AND gender = #{pageQuery.gender}
@@ -229,12 +225,8 @@
         LEFT JOIN user_positions up ON u.id = up.user_id
         <where>
             up.organization_id = #{pageQuery.organizationId}
-            <if test="pageQuery.keyword != null and pageQuery.keyword != ''">
-                AND (username LIKE CONCAT('%', #{pageQuery.keyword}, '%')
-                OR
-                real_name LIKE CONCAT('%', #{pageQuery.keyword}, '%')
-                OR
-                nickname LIKE CONCAT('%', #{pageQuery.keyword}, '%'))
+            <if test="pageQuery.username != null and pageQuery.username != ''">
+                AND username LIKE CONCAT('%', #{pageQuery.username}, '%')
             </if>
             <if test="pageQuery.gender != null and pageQuery.gender != ''">
                 AND gender = #{pageQuery.gender}
