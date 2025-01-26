@@ -39,6 +39,7 @@ const EnUS = {
         welcome: 'Welcome',
         selectAllOrSelectNone: 'Select All/Select None',
         expandOrCollapse: 'Expand/Collapse',
+        pageLoading: 'Page Loading....',
     },
     // button
     Button: {

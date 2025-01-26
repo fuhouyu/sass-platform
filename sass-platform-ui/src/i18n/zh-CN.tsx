@@ -39,6 +39,7 @@ const ZhCN = {
         welcome: '您好',
         selectAllOrSelectNone: '全选/全不选',
         expandOrCollapse: '展开/折叠',
+        pageLoading: '页面加载中....',
     },
     // button
     Button: {

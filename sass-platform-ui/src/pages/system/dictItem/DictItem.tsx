@@ -292,7 +292,6 @@ export const DictItem = () => {
                 centered
                 destroyOnClose={true}
                 title={updateId ? t('DictItem.edit') : t('DictItem.add')}
-                className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
@@ -300,9 +299,6 @@ export const DictItem = () => {
                             onClick={handlerForm}>{t('Button.submit')}</Button>,
                     <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form<DictItemModel>
                     name="modal-form"

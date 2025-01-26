@@ -31,10 +31,9 @@ import {
     Space,
     TableColumnsType,
     Tag,
-    Tree,
     TreeSelect
 } from "antd";
-import {IconFont, Modal, PageList, PermissionButton} from "@/components";
+import {IconFont, Modal, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {userApi} from "@/apis/user";
@@ -44,8 +43,6 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
-import {DownOutlined} from "@ant-design/icons";
-import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
@@ -54,6 +51,7 @@ import {useAppSelector} from "@/store";
 import {roleApi} from "@/apis/role.tsx";
 import {Role} from "@/model/role.tsx";
 import {userHasRoleApi} from "@/apis/userHasRole.tsx";
+import {OrganizationUser} from "@components/Organization/organizationUser.tsx";
 
 
 export const User: React.FC = () => {
@@ -163,7 +161,6 @@ export const User: React.FC = () => {
     const [userHasRoleForm] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
-    const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
@@ -279,93 +276,75 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
-                    <div className='tree-info'>
-                        <Tree<Organization>
-                            defaultExpandParent={true}
-                            showLine
-                            blockNode
-                            fieldNames={{key: 'id', title: 'organizationName'}}
-                            switcherIcon={<DownOutlined/>}
-                            loadData={onLoadData}
-                            treeData={organizationLazyData}
-                            onSelect={(selectedKeys: Key[]) => {
-                                if (!selectedKeys) {
-                                    return
-                                }
-                                setFormInitValues({
-                                    userPosition: {organizationId: selectedKeys[0] as string}
-                                });
-                                setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
-                            }}
-                        />
-                    </div>
-                </Col>
-                <Col span={21}>
-                    <PageList
-                        tableProps={{
-                            tableName: t('User.list'),
-                            columns: columns,
-                            pageData: pageResult,
-                            pageQuery: pageQuery,
-                            setPageQuery: setPageQuery,
-                            rowSelection: rowSelection,
-                            components: [
-                                <>
-                                    <PermissionButton permissionStr={UserPermissionConstant.ADD}
-                                                      buttonPermissions={buttonPermissions}>
-                                        <AddButton onClick={() => openModal()}/>
-                                    </PermissionButton>
-                                    <PermissionButton permissionStr={UserPermissionConstant.DELETE}
-                                                      buttonPermissions={buttonPermissions}>
-                                        <Popconfirm
-                                            title={t('Button.delete')}
-                                            description={t('Button.deleteConfirm')}
-                                            okText={t('Common.yes')}
-                                            cancelText={t('Common.no')}
-                                            onConfirm={async () => {
-                                                await userApi.deleteInfoApi(rowKeys as string[]);
-                                                await pageQueryCallback();
-                                            }}
-                                        >
-                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                        </Popconfirm>
-                                    </PermissionButton>
+            <OrganizationUser
+                tableProps={{
+                    tableName: t('User.list'),
+                    columns: columns,
+                    pageData: pageResult,
+                    pageQuery: pageQuery,
+                    setPageQuery: setPageQuery,
+                    rowSelection: rowSelection,
+                    components: [
+                        <>
+                            <PermissionButton permissionStr={UserPermissionConstant.ADD}
+                                              buttonPermissions={buttonPermissions}>
+                                <AddButton onClick={() => openModal()}/>
+                            </PermissionButton>
+                            <PermissionButton permissionStr={UserPermissionConstant.DELETE}
+                                              buttonPermissions={buttonPermissions}>
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        await userApi.deleteInfoApi(rowKeys as string[]);
+                                        await pageQueryCallback();
+                                    }}
+                                >
+                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                </Popconfirm>
+                            </PermissionButton>
 
-                                </>
-                            ]
-                        }}
-                        headerSearchProps={{
-                            components: [
-                                <><label htmlFor="username">{t('User.username')}</label>
-                                    <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
-                                           onChange={(e) => {
-                                               setUserQuery({username: e.target.value})
-                                           }}/>
-                                </>,
-                                <>
-                                    <span>{t('User.gender')}</span>
-                                    <Select
-                                        key={'gender'}
-                                        placeholder={t('User.genderPlaceholder')}
-                                        onChange={(value) => userQuery['gender'] = value}
-                                        options={[
-                                            {value: 'MALE', label: <span>{t('User.male')}</span>},
-                                            {value: 'FEMALE', label: <span>{t('User.female')}</span>}
-                                        ]}
-                                    />
-                                </>
-                            ],
-                            onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
-                        }}
-                    />
-                </Col>
-            </Row>
+                        </>
+                    ]
+                }}
+                headerSearchProps={{
+                    components: [
+                        <><label htmlFor="username">{t('User.username')}</label>
+                            <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
+                                   onChange={(e) => {
+                                       setUserQuery({username: e.target.value})
+                                   }}/>
+                        </>,
+                        <>
+                            <span>{t('User.gender')}</span>
+                            <Select
+                                key={'gender'}
+                                placeholder={t('User.genderPlaceholder')}
+                                onChange={(value) => userQuery['gender'] = value}
+                                options={[
+                                    {value: 'MALE', label: <span>{t('User.male')}</span>},
+                                    {value: 'FEMALE', label: <span>{t('User.female')}</span>}
+                                ]}
+                            />
+                        </>
+                    ],
+                    onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                }}
+                onSelectTree={(selectedKeys: Key[]) => {
+                    if (!selectedKeys) {
+                        return
+                    }
+                    setFormInitValues({
+                        userPosition: {organizationId: selectedKeys[0] as string}
+                    });
+                    setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
+                }}
+            />
 
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}
-                className="ant-modal-header"
                 open={isModalOpen}
                 destroyOnClose
                 width={750}
@@ -375,9 +354,6 @@ export const User: React.FC = () => {
                             onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form
                     clearOnDestroy
@@ -389,56 +365,56 @@ export const User: React.FC = () => {
                 >
                     <Space style={{width: '100%'}} wrap direction={'vertical'}>
                         <Card title={t('User.accountInfo')} size={'small'}>
-                                <Row gutter={24}>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            label={t('User.username')}
-                                            name="username"
-                                            validateTrigger="onBlur"
-                                            key="username"
-                                            colon={false}
-                                            required={true}
-                                            hasFeedback
-                                            rules={updateUserId ? [] : [{
-                                                required: true,
-                                                type: "string",
-                                                message: t('User.usernamePlaceholder'),
-                                                max: 20,
-                                            },
-                                                () => ({
-                                                    validator: async (_, value: string) => {
-                                                        const exists: boolean = await userApi.checkUsernameExistsApi(value);
-                                                        if (exists) {
-                                                            return Promise.reject(new Error(t('User.usernameExistsErrorMessage')));
-                                                        }
-
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={t('User.username')}
+                                        name="username"
+                                        validateTrigger="onBlur"
+                                        key="username"
+                                        colon={false}
+                                        required={true}
+                                        hasFeedback
+                                        rules={updateUserId ? [] : [{
+                                            required: true,
+                                            type: "string",
+                                            message: t('User.usernamePlaceholder'),
+                                            max: 20,
+                                        },
+                                            () => ({
+                                                validator: async (_, value: string) => {
+                                                    const exists: boolean = await userApi.checkUsernameExistsApi(value);
+                                                    if (exists) {
+                                                        return Promise.reject(new Error(t('User.usernameExistsErrorMessage')));
                                                     }
-                                                })
-                                            ]}
-                                        >
-                                            <Input disabled={updateUserId != undefined}
-                                                   placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Form.Item
-                                            label={updateUserId ? t('User.editPassword') : t('User.password')}
-                                            name={['account', 'password']}
-                                            key="password"
-                                            hasFeedback
-                                            colon={false}
-                                            rules={updateUserId ? [] : [{
-                                                required: true,
-                                                message: t('User.passwordPlaceholder'),
-                                            }]}
-                                        >
-                                            <Input.Password
-                                                placeholder={t('User.passwordPlaceholder')}
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
+
+                                                }
+                                            })
+                                        ]}
+                                    >
+                                        <Input disabled={updateUserId != undefined}
+                                               placeholder={t('User.usernamePlaceholder')} maxLength={20}/>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label={updateUserId ? t('User.editPassword') : t('User.password')}
+                                        name={['account', 'password']}
+                                        key="password"
+                                        hasFeedback
+                                        colon={false}
+                                        rules={updateUserId ? [] : [{
+                                            required: true,
+                                            message: t('User.passwordPlaceholder'),
+                                        }]}
+                                    >
+                                        <Input.Password
+                                            placeholder={t('User.passwordPlaceholder')}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
 
                         <Card title={t('User.info')} size={'small'}>
                             <Row gutter={24}>
@@ -607,7 +583,6 @@ export const User: React.FC = () => {
             {/*角色授权*/}
             <Modal
                 title={t('User.roleAuthorization')}
-                className="ant-modal-header"
                 open={isRoleAuthenticationModalOpen}
                 destroyOnClose
                 onCancel={() => closeRoleAuthentication()}
@@ -616,9 +591,6 @@ export const User: React.FC = () => {
                             onClick={saveUserRole}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeRoleAuthentication()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form
                     clearOnDestroy

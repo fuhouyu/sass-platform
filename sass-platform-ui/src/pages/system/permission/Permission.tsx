@@ -356,7 +356,6 @@ export const Permission: React.FC = () => {
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Permission.edit') : t('Permission.add')}
-                className="ant-modal-header"
                 open={isModalOpen}
                 onCancel={() => closeModal()}
                 width={750}
@@ -367,9 +366,6 @@ export const Permission: React.FC = () => {
                     >{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
             >
                 <Form
                     clearOnDestroy={true}

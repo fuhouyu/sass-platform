@@ -18,8 +18,10 @@
 import {Spin} from "antd";
 import React from "react";
 import './index.scss'
+import {useTranslation} from "react-i18next";
 
 export const PageLoading = () => {
+    const {t} = useTranslation();
     const contentStyle: React.CSSProperties = {
         background: 'rgba(0, 0, 0, 0.05)',
         borderRadius: 10,
@@ -27,7 +29,7 @@ export const PageLoading = () => {
 
     const content = <div style={contentStyle}/>;
     return (
-        <Spin delay={1000} tip="页面加载中..." fullscreen={true} size="large" className="page-loading">
+        <Spin delay={1000} tip={t('Common.pageLoading')} fullscreen={true} size="large" className="page-loading">
             {content}
         </Spin>
     )

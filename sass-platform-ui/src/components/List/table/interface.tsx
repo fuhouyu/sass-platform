@@ -34,7 +34,7 @@ export interface TableProps<RecordType = AnyObject> {
     /**
      * 分页数据
      */
-    pageData?: PageResult<AnyObject>;
+    pageData?: PageResult<RecordType>;
 
     /**
      * 查询参数
