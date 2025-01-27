@@ -26,7 +26,7 @@ export interface TableProps<RecordType = AnyObject> {
     /**
      * 名称
      */
-    tableName: string;
+    tableName?: string;
     /**
      * table的列
      */

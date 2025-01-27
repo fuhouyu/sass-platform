@@ -44,6 +44,7 @@ import './index.scss'
 import TextArea from "antd/es/input/TextArea";
 import {useAppSelector} from "@/store";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
+import {OrganizationUserModal} from "@/pages/system/organization/OrganizationUserModal.tsx";
 
 
 export const Organization = () => {
@@ -66,6 +67,9 @@ export const Organization = () => {
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
     const {onLoadData, organizationLazyData} = useOrganizationLazyData();
     const language = useAppSelector(state => state.locale.language);
+    const [isOrganizationUserModalOpen, setIsOrganizationUserModalOpen] = useState<boolean>(false);
+    const [isOrganizationLoading, setIsOrganizationUserLoading] = useState<boolean>(false);
+    const [addOrganizationUserIds, setAddOrganizationUserIds] = useState<Key[]>([]);
 
     const columns: TableColumnsType<OrganizationModal> = [
         {
@@ -192,9 +196,17 @@ export const Organization = () => {
 
 
     /**
+     * 关闭组织用户modal
+     */
+    const closeOrganizationUserModal = () => {
+        setIsOrganizationUserModalOpen(false);
+    }
+
+
+    /**
      * 处理表单
      */
-    const handlerForm = async () => {
+    const handleForm = async () => {
         let values: OrganizationModal;
         try {
             values = await form.validateFields();
@@ -212,6 +224,12 @@ export const Organization = () => {
             message.success(t('Common.success')).then()
         } finally {
             setIsModalButtonLoading(false);
+        }
+    }
+
+    const handleOrganizationUser = () => {
+        if (addOrganizationUserIds.length > 0) {
+            // 保存组织和用户的关系
         }
     }
 
@@ -258,7 +276,8 @@ export const Organization = () => {
                                                   permissionStr={OrganizationPermissionConstant.EDIT}>
                                     <Button
                                         disabled={formParentOrganization.id === undefined}
-                                        icon={<IconFont type="i-xinzengyonghu"/>}>
+                                        icon={<IconFont type="i-xinzengyonghu"/>}
+                                        onClick={() => setIsOrganizationUserModalOpen(true)}>
                                         {t('Organization.addUser')}
                                     </Button>
                                 </PermissionButton>
@@ -301,7 +320,7 @@ export const Organization = () => {
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}
-                            onClick={handlerForm}
+                            onClick={handleForm}
                     >{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
@@ -401,6 +420,25 @@ export const Organization = () => {
 
             </Modal>
 
+            <Modal
+                title={t('Organization.addUser')}
+                open={isOrganizationUserModalOpen}
+                destroyOnClose
+                width={900}
+                styles={{body: {height: '44.5vh'}}}
+                onCancel={() => closeOrganizationUserModal()}
+                footer={[
+                    <Button key='onOrganizationUserAddOk' type="primary" onClick={handleOrganizationUser}
+                            loading={isModalButtonLoading}>{t('Button.confirm')}</Button>,
+                    <Button key='onOrganizationUserAddCancel'
+                            onClick={() => closeOrganizationUserModal()}>{t('Button.cancel')}</Button>
+                ]}
+            >
+                <OrganizationUserModal onChange={(selectedRowKeys) => {
+                    setAddOrganizationUserIds(selectedRowKeys);
+                }}/>
+
+            </Modal>
         </>
     )
 }

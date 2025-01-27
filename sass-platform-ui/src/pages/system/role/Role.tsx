@@ -148,7 +148,7 @@ export const Role: React.FC = () => {
     /**
      * 处理角色表单
      */
-    const handlerForm = async () => {
+    const handleForm = async () => {
         await form.validateFields();
         const role: RoleModel = form.getFieldsValue();
         role.permissionIds = permissionIds;
@@ -264,7 +264,7 @@ export const Role: React.FC = () => {
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerForm}>{t('Button.submit')}</Button>,
+                            onClick={handleForm}>{t('Button.submit')}</Button>,
                     <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
             >

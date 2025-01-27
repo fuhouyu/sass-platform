@@ -227,7 +227,7 @@ export const User: React.FC = () => {
     /**
      * 处理用户表单
      */
-    const handlerUserForm = async () => {
+    const handleUserForm = async () => {
         await form.validateFields();
         setIsModalButtonLoading(true);
         const userDetail: Userinfo = form.getFieldsValue();
@@ -351,7 +351,7 @@ export const User: React.FC = () => {
                 onCancel={() => closeModal()}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
+                            onClick={handleUserForm}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
             >

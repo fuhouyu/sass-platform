@@ -61,9 +61,10 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
         <>
             <div className="table-container">
                 <div className="title-line">
+                    {tableName &&
                         <span className="title">
                             {tableName}
-                        </span>
+                        </span>}
                     <div className="components">
                         {components?.map((component, index) => (
                             <div className='component' key={index}>
