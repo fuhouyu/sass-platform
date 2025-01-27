@@ -151,7 +151,7 @@ export const DictType = () => {
     /**
      * 处理角色表单
      */
-    const handlerForm = async () => {
+    const handleForm = async () => {
         await form.validateFields();
         const dictType: DictTypeModel = form.getFieldsValue();
         setIsModalButtonLoading(true);
@@ -270,7 +270,7 @@ export const DictType = () => {
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handlerForm}>{t('Button.submit')}</Button>,
+                            onClick={handleForm}>{t('Button.submit')}</Button>,
                     <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
             >

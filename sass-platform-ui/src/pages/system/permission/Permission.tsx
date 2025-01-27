@@ -261,7 +261,7 @@ export const Permission: React.FC = () => {
     /**
      * 处理表单
      */
-    const handlerForm = async () => {
+    const handleForm = async () => {
         let values: Menu;
         try {
             values = await form.validateFields();
@@ -362,7 +362,7 @@ export const Permission: React.FC = () => {
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}
-                            onClick={handlerForm}
+                            onClick={handleForm}
                     >{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
