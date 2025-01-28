@@ -31,9 +31,10 @@ import {
     Space,
     TableColumnsType,
     Tag,
+    Tree,
     TreeSelect
 } from "antd";
-import {IconFont, Modal, PermissionButton} from "@/components";
+import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {userApi} from "@/apis/user";
@@ -43,6 +44,8 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {DownOutlined} from "@ant-design/icons";
+import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
@@ -51,7 +54,7 @@ import {useAppSelector} from "@/store";
 import {roleApi} from "@/apis/role.tsx";
 import {Role} from "@/model/role.tsx";
 import {userHasRoleApi} from "@/apis/userHasRole.tsx";
-import {OrganizationUser} from "@components/Organization/organizationUser.tsx";
+import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
 
 
 export const User: React.FC = () => {
@@ -161,6 +164,7 @@ export const User: React.FC = () => {
     const [userHasRoleForm] = Form.useForm();
     const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
+    const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
@@ -168,8 +172,10 @@ export const User: React.FC = () => {
     const [userHasRole, setUserHasRole] = useState<{
         username?: string,
         userId?: string,
-        roleIds?: string[]
-    }>()
+        roleIds?: string[];
+    }>();
+    const [isOrganizationUserModalOpen, setIsOrganizationUserModalOpen] = useState<boolean>(false);
+    const [chooseUserSelect, setChooseUserSelect] = useState<Key[]>([]);
 
 
     /**
@@ -227,7 +233,7 @@ export const User: React.FC = () => {
     /**
      * 处理用户表单
      */
-    const handleUserForm = async () => {
+    const handlerUserForm = async () => {
         await form.validateFields();
         setIsModalButtonLoading(true);
         const userDetail: Userinfo = form.getFieldsValue();
@@ -261,6 +267,21 @@ export const User: React.FC = () => {
         setPageResult(await userApi.pageInfoListApi(pageQuery));
     }, [pageQuery]);
 
+    /**
+     * 用户列选择
+     */
+    const userRowSelection: TableRowSelection<Userinfo> = {
+        onChange: (selectedRowKeys: React.Key[]) => {
+            setChooseUserSelect(selectedRowKeys)
+        },
+    }
+
+    const handleOrganizationUser = () => {
+        if (!chooseUserSelect) {
+            return
+        }
+    }
+
     useEffect(() => {
         pageQueryCallback().then();
     }, [pageQueryCallback])
@@ -276,84 +297,114 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <OrganizationUser
-                tableProps={{
-                    tableName: t('User.list'),
-                    columns: columns,
-                    pageData: pageResult,
-                    pageQuery: pageQuery,
-                    setPageQuery: setPageQuery,
-                    rowSelection: rowSelection,
-                    components: [
-                        <>
-                            <PermissionButton permissionStr={UserPermissionConstant.ADD}
-                                              buttonPermissions={buttonPermissions}>
-                                <AddButton onClick={() => openModal()}/>
-                            </PermissionButton>
-                            <PermissionButton permissionStr={UserPermissionConstant.DELETE}
-                                              buttonPermissions={buttonPermissions}>
-                                <Popconfirm
-                                    title={t('Button.delete')}
-                                    description={t('Button.deleteConfirm')}
-                                    okText={t('Common.yes')}
-                                    cancelText={t('Common.no')}
-                                    onConfirm={async () => {
-                                        await userApi.deleteInfoApi(rowKeys as string[]);
-                                        await pageQueryCallback();
-                                    }}
-                                >
-                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                </Popconfirm>
-                            </PermissionButton>
+            <Row gutter={24} className={'main-container'}>
+                <Col span={3} className={'tree-container'}>
+                    <div className='tree-info'>
+                        <Tree<Organization>
+                            defaultExpandParent={true}
+                            showLine
+                            blockNode
+                            fieldNames={{key: 'id', title: 'organizationName'}}
+                            switcherIcon={<DownOutlined/>}
+                            loadData={onLoadData}
+                            treeData={organizationLazyData}
+                            onSelect={(selectedKeys: Key[]) => {
+                                if (!selectedKeys) {
+                                    return
+                                }
+                                setFormInitValues({
+                                    userPosition: {organizationId: selectedKeys[0] as string}
+                                });
+                                setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
+                            }}
+                        />
+                    </div>
+                </Col>
+                <Col span={21}>
+                    <PageList
+                        tableProps={{
+                            tableName: t('User.list'),
+                            columns: columns,
+                            pageData: pageResult,
+                            pageQuery: pageQuery,
+                            setPageQuery: setPageQuery,
+                            rowSelection: rowSelection,
+                            components: [
+                                <>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={UserPermissionConstant.EDIT}>
+                                        <Button
+                                            disabled={formInitValues.userPosition?.organizationId === undefined}
+                                            icon={<IconFont type="i-xinzengyonghu"/>}
+                                            onClick={() => setIsOrganizationUserModalOpen(true)}>
+                                            {t('User.addUser')}
+                                        </Button>
+                                    </PermissionButton>
+                                    <PermissionButton permissionStr={UserPermissionConstant.ADD}
+                                                      buttonPermissions={buttonPermissions}>
+                                        <AddButton onClick={() => openModal()}/>
+                                    </PermissionButton>
+                                    <PermissionButton permissionStr={UserPermissionConstant.DELETE}
+                                                      buttonPermissions={buttonPermissions}>
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
+                                                await userApi.deleteInfoApi(rowKeys as string[]);
+                                                await pageQueryCallback();
+                                            }}
+                                        >
+                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        </Popconfirm>
+                                    </PermissionButton>
 
-                        </>
-                    ]
-                }}
-                headerSearchProps={{
-                    components: [
-                        <><label htmlFor="username">{t('User.username')}</label>
-                            <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
-                                   onChange={(e) => {
-                                       setUserQuery({username: e.target.value})
-                                   }}/>
-                        </>,
-                        <>
-                            <span>{t('User.gender')}</span>
-                            <Select
-                                key={'gender'}
-                                placeholder={t('User.genderPlaceholder')}
-                                onChange={(value) => userQuery['gender'] = value}
-                                options={[
-                                    {value: 'MALE', label: <span>{t('User.male')}</span>},
-                                    {value: 'FEMALE', label: <span>{t('User.female')}</span>}
-                                ]}
-                            />
-                        </>
-                    ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
-                }}
-                onSelectTree={(selectedKeys: Key[]) => {
-                    if (!selectedKeys) {
-                        return
-                    }
-                    setFormInitValues({
-                        userPosition: {organizationId: selectedKeys[0] as string}
-                    });
-                    setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
-                }}
-            />
+                                </>
+                            ]
+                        }}
+                        headerSearchProps={{
+                            components: [
+                                <><label htmlFor="username">{t('User.username')}</label>
+                                    <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
+                                           onChange={(e) => {
+                                               setUserQuery({username: e.target.value})
+                                           }}/>
+                                </>,
+                                <>
+                                    <span>{t('User.gender')}</span>
+                                    <Select
+                                        key={'gender'}
+                                        placeholder={t('User.genderPlaceholder')}
+                                        onChange={(value) => userQuery['gender'] = value}
+                                        options={[
+                                            {value: 'MALE', label: <span>{t('User.male')}</span>},
+                                            {value: 'FEMALE', label: <span>{t('User.female')}</span>}
+                                        ]}
+                                    />
+                                </>
+                            ],
+                            onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                        }}
+                    />
+                </Col>
+            </Row>
 
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}
+                className="ant-modal-header"
                 open={isModalOpen}
                 destroyOnClose
                 width={750}
                 onCancel={() => closeModal()}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={handleUserForm}>{t('Button.confirm')}</Button>,
+                            onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '24px',
+                }}/>}
             >
                 <Form
                     clearOnDestroy
@@ -583,6 +634,7 @@ export const User: React.FC = () => {
             {/*角色授权*/}
             <Modal
                 title={t('User.roleAuthorization')}
+                className="ant-modal-header"
                 open={isRoleAuthenticationModalOpen}
                 destroyOnClose
                 onCancel={() => closeRoleAuthentication()}
@@ -591,6 +643,9 @@ export const User: React.FC = () => {
                             onClick={saveUserRole}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeRoleAuthentication()}>{t('Button.cancel')}</Button>
                 ]}
+                closeIcon={<IconFont type="i-Close" style={{
+                    fontSize: '24px',
+                }}/>}
             >
                 <Form
                     clearOnDestroy
@@ -637,6 +692,13 @@ export const User: React.FC = () => {
 
                 </Form>
             </Modal>
+
+            <OrganizationUserModal
+                isModalOpen={isOrganizationUserModalOpen}
+                setIsModalOpen={setIsOrganizationUserModalOpen}
+                rowSelection={userRowSelection}
+                handleOrganizationUser={handleOrganizationUser}
+            />
         </>
     );
 }
