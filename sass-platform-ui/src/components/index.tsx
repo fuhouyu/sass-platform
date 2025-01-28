@@ -22,6 +22,7 @@ import {PageList, SearchHeader, Table} from "./List";
 import {Modal} from "./Modal/modal.tsx";
 import {PageLoading} from "./PageLoading/pageLoading";
 import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
+import {OrganizationUserModal} from "./Organization/OrganizationUserModal";
 
 export {
     IconFont,
@@ -33,5 +34,6 @@ export {
     FormTree,
     WeLinkLogin,
     PermissionButton,
-    Modal
+    Modal,
+    OrganizationUserModal
 }

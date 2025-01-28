@@ -13,3 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+import {Dispatch, SetStateAction} from "react";
+import {TableRowSelection} from "antd/es/table/interface";
+import {Userinfo} from "@/model/user.tsx";
+
+export interface OrganizationUserModalProps {
+    isModalOpen: boolean;
+    setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+    rowSelection?: TableRowSelection<Userinfo>;
+    handleOrganizationUser?: () => void;
+}

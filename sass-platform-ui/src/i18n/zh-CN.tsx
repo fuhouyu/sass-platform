@@ -167,9 +167,8 @@ const ZhCN = {
         role: '角色',
         rolePlaceholder: '请选择角色',
         roleAuthorization: '角色授权',
-
-
-
+        addUser: '新增成员',
+        chooseUser: '选择成员',
     },
     // 权限
     Permission: {
@@ -249,7 +248,6 @@ const ZhCN = {
         nameCheckMessage: '请输入组织名称',
         code: '组织编码',
         type: '组织类型',
-        addUser: '新增成员',
     },
     Position: {
         ownerOrganization: '所属组织',

@@ -196,6 +196,8 @@ const EnUS = {
         role: 'Role',
         rolePlaceholder: 'Please choose Roles',
         roleAuthorization: 'Role authorization',
+        addUser: 'Add User',
+        chooseUser: 'Choose User',
     },
 
     // 角色
@@ -243,7 +245,6 @@ const EnUS = {
         nameCheckMessage: 'Please input Organization Name',
         code: 'Organization Code',
         type: 'Organization Type',
-        addUser: 'Add User',
     },
     Position: {
         ownerOrganization: 'Owner Organization',

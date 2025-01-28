@@ -13,3 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.organization-tree {
+  height: 100%;
+  border: 1px solid #e8e8e8;
+}
+
+.organization-user-search {
+  display: flex;
+  gap: .5rem;
+  padding-bottom: 1rem;
+  align-items: center;
+
+  input {
+    width: 30%;
+  }
+}
