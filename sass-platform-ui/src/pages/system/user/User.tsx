@@ -175,7 +175,8 @@ export const User: React.FC = () => {
         roleIds?: string[];
     }>();
     const [isOrganizationUserModalOpen, setIsOrganizationUserModalOpen] = useState<boolean>(false);
-    const [chooseUserSelect, setChooseUserSelect] = useState<Key[]>([]);
+    const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
+    const [chooseUserSelect, setChooseUserSelect] = useState<Userinfo>({} as Userinfo);
 
 
     /**
@@ -212,12 +213,19 @@ export const User: React.FC = () => {
     }
 
     /**
+     * 组织用户modal
+     */
+    const openOrganizationUserModal = async () => {
+        setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
+        setIsOrganizationUserModalOpen(true);
+    }
+
+    /**
      * 关闭模态组
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        const organizationId = formInitValues.userPosition?.organizationId;
-        setFormInitValues({userPosition: {organizationId}});
+        setFormInitValues({userPosition: {organizationId: formInitValues.userPosition?.organizationId}});
         form.resetFields();
     }
 
@@ -227,6 +235,17 @@ export const User: React.FC = () => {
     const closeRoleAuthentication = () => {
         setUserHasRole(undefined)
         setIsRoleAuthenticationModalOpen(false);
+        setFormInitValues({userPosition: {organizationId: formInitValues.userPosition?.organizationId}});
+        form.resetFields();
+    }
+
+    /**
+     * 关闭组织用户modal
+     */
+    const closeOrganizationUserModal = () => {
+        setIsOrganizationUserModalOpen(false);
+        setOrganizationTree([]);
+        setFormInitValues({userPosition: {organizationId: formInitValues.userPosition?.organizationId}});
         form.resetFields();
     }
 
@@ -271,15 +290,23 @@ export const User: React.FC = () => {
      * 用户列选择
      */
     const userRowSelection: TableRowSelection<Userinfo> = {
-        onChange: (selectedRowKeys: React.Key[]) => {
-            setChooseUserSelect(selectedRowKeys)
+        onChange: (_: React.Key[], selectedRows: Userinfo[]) => {
+            if (selectedRows.length === 0) {
+                return
+            }
+            setFormInitValues({
+                ...formInitValues,
+                userPosition: {
+                    ...formInitValues.userPosition,
+                    userId: selectedRows[0].id,
+                },
+                realName: selectedRows[0].realName,
+            });
         },
     }
 
-    const handleOrganizationUser = () => {
-        if (!chooseUserSelect) {
-            return
-        }
+    const handleOrganizationUser = async () => {
+        form.resetFields();
     }
 
     useEffect(() => {
@@ -336,8 +363,8 @@ export const User: React.FC = () => {
                                         <Button
                                             disabled={formInitValues.userPosition?.organizationId === undefined}
                                             icon={<IconFont type="i-xinzengyonghu"/>}
-                                            onClick={() => setIsOrganizationUserModalOpen(true)}>
-                                            {t('User.addUser')}
+                                            onClick={() => openOrganizationUserModal()}>
+                                            {t('Organization.addUser')}
                                         </Button>
                                     </PermissionButton>
                                     <PermissionButton permissionStr={UserPermissionConstant.ADD}
@@ -402,9 +429,7 @@ export const User: React.FC = () => {
                             onClick={handlerUserForm}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
+                closeIcon={<IconFont type="i-Close"/>}
             >
                 <Form
                     clearOnDestroy
@@ -643,9 +668,7 @@ export const User: React.FC = () => {
                             onClick={saveUserRole}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={() => closeRoleAuthentication()}>{t('Button.cancel')}</Button>
                 ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '24px',
-                }}/>}
+                closeIcon={<IconFont type="i-Close"/>}
             >
                 <Form
                     clearOnDestroy
@@ -693,9 +716,131 @@ export const User: React.FC = () => {
                 </Form>
             </Modal>
 
+            {/*新增成员*/}
+            <Modal
+                title={t('Organization.addUser')}
+                width={750}
+                className="ant-modal-header"
+                open={isOrganizationUserModalOpen}
+                destroyOnClose
+                onCancel={closeOrganizationUserModal}
+                footer={[
+                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                            onClick={saveUserRole}>{t('Button.confirm')}</Button>,
+                    <Button key='onCancel' onClick={closeOrganizationUserModal}>{t('Button.cancel')}</Button>
+                ]}
+                closeIcon={<IconFont type="i-Close"/>}
+            >
+                <Form
+                    clearOnDestroy
+                    name="modal-form"
+                    form={form}
+                    validateTrigger={'onBlur'}
+                    labelCol={{span: 7}}
+                    initialValues={formInitValues}
+                >
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Position.ownerOrganization')}
+                                name={['userPosition', 'organizationId']}
+                                key="organizationId"
+                                colon={false}
+                                hasFeedback
+                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
+                            >
+                                <TreeSelect<Organization>
+                                    disabled={formInitValues.userPosition?.organizationId != null}
+                                    showSearch
+                                    placeholder={t('Position.ownerOrganizationPlaceholder')}
+                                    fieldNames={{label: 'organizationName', value: 'id'}}
+                                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                    allowClear
+                                    treeDefaultExpandAll
+                                    treeData={organizationTree}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Organization.chooseUser')}
+                                name="realName"
+                                key="realName"
+                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                colon={false}
+                                hasFeedback
+                                rules={[{required: true, message: t('Organization.chooseUserPlaceholder')}]}
+                            >
+                                <Input
+                                    disabled={formInitValues.realName != null}
+                                    allowClear
+                                    onClick={() => setIsChooseUserModalOpen(true)}
+                                    placeholder={t('Organization.chooseUserPlaceholder')}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Position.name')}
+                                name={['userPosition', 'positionName']}
+                                key="positionName"
+                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                colon={false}
+                                hasFeedback
+                                rules={[{required: true, message: t('Position.namePlaceholder')}]}
+                            >
+                                <Input max={50} placeholder={t('Position.namePlaceholder')}/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Position.isMain')}
+                                name={['userPosition', 'isMain']}
+                                key={'isMain'}
+                                colon={false}
+                                hasFeedback
+                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                required
+                                initialValue={true}
+                            >
+                                <Radio.Group>
+                                    <Radio value={true}>{t('Common.yes')}</Radio>
+                                    <Radio value={false}>{t('Common.no')}</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Form.Item
+                                label={t('Position.orderInOrganization')}
+                                name={['userPosition', 'orderInOrganization']}
+                                key="orderInOrganization"
+                                colon={false}
+                                hasFeedback
+                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                rules={[{
+                                    required: true,
+                                    message: t('Position.orderInOrganizationPlaceholder')
+                                }]}
+                            >
+                                <InputNumber changeOnWheel
+                                             controls
+                                             style={{width: language == 'zh' ? 230 : 164}}
+                                             placeholder={t('Position.orderInOrganizationPlaceholder')}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Modal>
+
             <OrganizationUserModal
-                isModalOpen={isOrganizationUserModalOpen}
-                setIsModalOpen={setIsOrganizationUserModalOpen}
+                isModalOpen={isChooseUserModalOpen}
+                setIsModalOpen={setIsChooseUserModalOpen}
                 rowSelection={userRowSelection}
                 handleOrganizationUser={handleOrganizationUser}
             />
