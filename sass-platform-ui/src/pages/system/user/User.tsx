@@ -55,6 +55,7 @@ import {roleApi} from "@/apis/role.tsx";
 import {Role} from "@/model/role.tsx";
 import {userHasRoleApi} from "@/apis/userHasRole.tsx";
 import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
+import {userPositionApi} from "@/apis/userPosition.tsx";
 
 
 export const User: React.FC = () => {
@@ -176,7 +177,6 @@ export const User: React.FC = () => {
     }>();
     const [isOrganizationUserModalOpen, setIsOrganizationUserModalOpen] = useState<boolean>(false);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
-    const [chooseUserSelect, setChooseUserSelect] = useState<Userinfo>({} as Userinfo);
 
 
     /**
@@ -282,6 +282,28 @@ export const User: React.FC = () => {
         message.success(t('Common.success')).then();
     }
 
+    /**
+     * 保存用户职务信息
+     */
+    const saveUserPosition = async () => {
+        await form.validateFields();
+        setIsModalButtonLoading(true);
+        const userinfo: Userinfo = form.getFieldsValue();
+        const userPosition = userinfo.userPosition;
+        if (!userPosition) {
+            return
+        }
+        try {
+            await userPositionApi.saveUserPosition(userPosition);
+            message.success(t('Common.success')).then();
+            await pageQueryCallback();
+            setIsOrganizationUserModalOpen(false);
+        } finally {
+            setIsModalButtonLoading(false);
+        }
+
+    }
+
     const pageQueryCallback = useCallback(async () => {
         setPageResult(await userApi.pageInfoListApi(pageQuery));
     }, [pageQuery]);
@@ -303,10 +325,6 @@ export const User: React.FC = () => {
                 realName: selectedRows[0].realName,
             });
         },
-    }
-
-    const handleOrganizationUser = async () => {
-        form.resetFields();
     }
 
     useEffect(() => {
@@ -726,7 +744,7 @@ export const User: React.FC = () => {
                 onCancel={closeOrganizationUserModal}
                 footer={[
                     <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={saveUserRole}>{t('Button.confirm')}</Button>,
+                            onClick={saveUserPosition}>{t('Button.confirm')}</Button>,
                     <Button key='onCancel' onClick={closeOrganizationUserModal}>{t('Button.cancel')}</Button>
                 ]}
                 closeIcon={<IconFont type="i-Close"/>}
@@ -739,6 +757,12 @@ export const User: React.FC = () => {
                     labelCol={{span: 7}}
                     initialValues={formInitValues}
                 >
+                    <Form.Item
+                        hidden
+                        name={['userPosition', 'userId']}
+                        key="userId"
+                        colon={false}
+                    />
                     <Row gutter={24}>
                         <Col span={12}>
                             <Form.Item
@@ -842,7 +866,7 @@ export const User: React.FC = () => {
                 isModalOpen={isChooseUserModalOpen}
                 setIsModalOpen={setIsChooseUserModalOpen}
                 rowSelection={userRowSelection}
-                handleOrganizationUser={handleOrganizationUser}
+                handleOrganizationUser={() => form.resetFields()}
             />
         </>
     );

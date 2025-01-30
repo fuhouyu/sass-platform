@@ -76,4 +76,9 @@ export class BaseUrlConstant {
      */
     static readonly USER_HAS_ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/user-role`
 
+    /**
+     * 用户职务api接口
+     */
+    static readonly USER_POSITION_API_PREFIX = `${BaseUrlConstant.VERSION}/user-position`
+
 }
