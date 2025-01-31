@@ -54,7 +54,7 @@ public interface BaseMapper<ID, T extends BaseEntity> {
      * @param id 主键id
      * @return 影响行数
      */
-    int deleteById(ID id);
+    int deleteById(@Param("id") ID id);
 
     /**
      * 通过id集合进行删除

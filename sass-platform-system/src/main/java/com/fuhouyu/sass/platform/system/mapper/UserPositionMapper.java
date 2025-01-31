@@ -51,4 +51,14 @@ public interface UserPositionMapper {
      * @param userIds 用户id删除
      */
     void deleteByUserIds(@Param("userIds") Collection<Long> userIds);
+
+    /**
+     * 通过用户id和组织id批量删除
+     *
+     * @param organizationId 组织id
+     * @param userIds        用户id集合
+     * @return 影响行数
+     */
+    Long deleteByOrganizationIdAndUserIds(@Param("organizationId") Long organizationId,
+                                          @Param("userIds") Collection<Long> userIds);
 }

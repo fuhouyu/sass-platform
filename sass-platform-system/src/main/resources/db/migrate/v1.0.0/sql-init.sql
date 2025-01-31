@@ -455,6 +455,18 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
 VALUES (264, 26, 'delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (265, 26, 'addMember', 'system:organization:add-member', 5, '', '', '', '', false, 'BUTTON', false, true, true,
+        true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (266, 26, 'deleteMember', 'system:organization:delete-member', 6, '', '', '', '', false, 'BUTTON', false, true,
+        true, true, 1,
+        false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
@@ -547,7 +559,10 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 263, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 264, now(), 'admin');
-
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 265, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 266, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

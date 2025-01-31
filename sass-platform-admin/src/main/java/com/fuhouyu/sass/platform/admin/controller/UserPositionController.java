@@ -21,13 +21,13 @@ import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 /**
  * <p>
@@ -58,5 +58,19 @@ public class UserPositionController {
     public BaseResponse<Void> saveUserPosition(@RequestBody UserPositionDTO userPositionDTO) {
         this.userPositionService.saveUserPosition(userPositionDTO.getUserId(), userPositionDTO);
         return ResponseHelper.success();
+    }
+
+    /**
+     * 通过组织id和用户id删除成员
+     *
+     * @param organizationId 组织id
+     * @param userIds        用户id
+     * @return void
+     */
+    @DeleteMapping("/{organizationId}")
+    @Operation(summary = "通过组织id和用户id删除成员")
+    public BaseResponse<Long> deleteUserPosition(@PathVariable("organizationId") Long organizationId,
+                                                 @NotEmpty(message = "用户未选择") @RequestBody Collection<Long> userIds) {
+        return ResponseHelper.success(this.userPositionService.removeByOrganizationIdAndUserIds(organizationId, userIds));
     }
 }

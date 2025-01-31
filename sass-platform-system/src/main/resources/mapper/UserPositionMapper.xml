@@ -104,4 +104,14 @@
             #{userId}
         </foreach>
     </delete>
+
+    <delete id="deleteByOrganizationIdAndUserIds">
+        DELETE FROM
+            <include refid="TableName"/>
+            WHERE organization_id = #{organizationId}
+        AND user_id IN
+        <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </delete>
 </mapper>

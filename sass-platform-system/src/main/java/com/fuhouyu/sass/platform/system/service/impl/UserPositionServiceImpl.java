@@ -52,4 +52,9 @@ public class UserPositionServiceImpl implements UserPositionService {
     public void removeByUserIds(Collection<Long> userIds) {
         this.userPositionMapper.deleteByUserIds(userIds);
     }
+
+    @Override
+    public Long removeByOrganizationIdAndUserIds(Long organizationId, Collection<Long> userIds) {
+        return this.userPositionMapper.deleteByOrganizationIdAndUserIds(organizationId, userIds);
+    }
 }
