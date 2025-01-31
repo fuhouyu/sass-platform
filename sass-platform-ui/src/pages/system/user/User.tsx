@@ -20,9 +20,11 @@ import {
     Button,
     Card,
     Col,
+    Dropdown,
     Form,
     Input,
     InputNumber,
+    MenuProps,
     message,
     Popconfirm,
     Radio,
@@ -43,7 +45,7 @@ import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButt
 import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
-import {UserPermissionConstant} from "@/constants/permissionConstant.tsx";
+import {OrganizationPermissionConstant, UserPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {DownOutlined} from "@ant-design/icons";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {Organization} from "@/model/organization.tsx";
@@ -60,6 +62,7 @@ import {userPositionApi} from "@/apis/userPosition.tsx";
 
 export const User: React.FC = () => {
     const buttonPermissions = useButton(UserPermissionConstant.List);
+    const organizationButtonPermissions = useButton(OrganizationPermissionConstant.List);
     const {t} = useTranslation();
     const {findDictItemName} = useDictItem(['GENDER']);
     const columns: TableColumnsType = [
@@ -157,7 +160,7 @@ export const User: React.FC = () => {
     });
 
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
-    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+    const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -336,9 +339,36 @@ export const User: React.FC = () => {
      * table列选择
      */
     const rowSelection: TableRowSelection<Userinfo> = {
-        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+        onChange: (selectedRowKeys: React.Key[]) => setSelectUserIds(selectedRowKeys),
     };
 
+
+    /**
+     * 用户职务菜单
+     */
+    const userPositionMenuItems: MenuProps['items'] = [
+        {
+            label: t('Organization.addMember'),
+            key: OrganizationPermissionConstant.ADD_MEMBER,
+            icon: <IconFont type="i-xinzengyonghu"/>,
+            onClick: openOrganizationUserModal,
+            disabled: formInitValues.userPosition?.organizationId === undefined,
+        },
+        {
+            label: t('Organization.deleteMember'),
+            key: OrganizationPermissionConstant.DELETE_MEMBER,
+            icon: <IconFont type="i-delete"/>,
+            disabled: selectUserIds.length === 0,
+            onClick: async () => {
+                const organizationId = formInitValues.userPosition?.organizationId;
+                if (!organizationId || !selectUserIds) {
+                    return
+                }
+                await userPositionApi.deleteUserPosition(organizationId, selectUserIds as string[]);
+                await pageQueryCallback();
+            }
+        },
+    ].filter(item => organizationButtonPermissions.some(permission => permission?.permissionCode === item?.key));
 
     return (
         <>
@@ -376,15 +406,16 @@ export const User: React.FC = () => {
                             rowSelection: rowSelection,
                             components: [
                                 <>
-                                    <PermissionButton buttonPermissions={buttonPermissions}
-                                                      permissionStr={UserPermissionConstant.EDIT}>
-                                        <Button
-                                            disabled={formInitValues.userPosition?.organizationId === undefined}
-                                            icon={<IconFont type="i-xinzengyonghu"/>}
-                                            onClick={() => openOrganizationUserModal()}>
-                                            {t('Organization.addUser')}
+                                    <Dropdown menu={{
+                                        items: userPositionMenuItems
+                                    }}>
+                                        <Button>
+                                            <Space>
+                                                {t('Organization.memberMaintain')}
+                                                <DownOutlined/>
+                                            </Space>
                                         </Button>
-                                    </PermissionButton>
+                                    </Dropdown>
                                     <PermissionButton permissionStr={UserPermissionConstant.ADD}
                                                       buttonPermissions={buttonPermissions}>
                                         <AddButton onClick={() => openModal()}/>
@@ -397,11 +428,12 @@ export const User: React.FC = () => {
                                             okText={t('Common.yes')}
                                             cancelText={t('Common.no')}
                                             onConfirm={async () => {
-                                                await userApi.deleteInfoApi(rowKeys as string[]);
+                                                await userApi.deleteInfoApi(selectUserIds as string[]);
                                                 await pageQueryCallback();
                                             }}
                                         >
-                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                            <DeleteButton
+                                                disabled={selectUserIds === undefined || selectUserIds.length === 0}/>
                                         </Popconfirm>
                                     </PermissionButton>
 
@@ -736,7 +768,7 @@ export const User: React.FC = () => {
 
             {/*新增成员*/}
             <Modal
-                title={t('Organization.addUser')}
+                title={t('Organization.addMember')}
                 width={750}
                 className="ant-modal-header"
                 open={isOrganizationUserModalOpen}
@@ -788,7 +820,7 @@ export const User: React.FC = () => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label={t('Organization.chooseUser')}
+                                label={t('Organization.chooseMember')}
                                 name="realName"
                                 key="realName"
                                 labelCol={{span: language == 'zh' ? 7 : 8}}

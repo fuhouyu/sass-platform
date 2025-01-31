@@ -195,6 +195,16 @@ class OrganizationPermissionConstant {
      * 删除权限
      */
     static readonly DELETE: string = 'system:organization:delete';
+
+    /**
+     * 新增成员
+     */
+    static readonly ADD_MEMBER: string = 'system:organization:add-member';
+
+    /**
+     * 删除成员
+     */
+    static readonly DELETE_MEMBER: string = 'system:organization:delete-member';
 }
 
 export {

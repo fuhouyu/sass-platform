@@ -43,4 +43,14 @@ public interface UserPositionService {
      * @param userIds 用户id
      */
     void removeByUserIds(Collection<Long> userIds);
+
+    /**
+     * 通过用户id和组织id批量删除
+     *
+     * @param organizationId 组织id
+     * @param userIds        用户id集合
+     * @return 影响行数
+     */
+    Long removeByOrganizationIdAndUserIds(Long organizationId,
+                                          Collection<Long> userIds);
 }

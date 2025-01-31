@@ -32,6 +32,14 @@ class UserPositionApi {
      * @param userPosition 用户职务
      */
     saveUserPosition: (userPosition: UserPosition) => Promise<void> = (userPosition: UserPosition): Promise<void> => request.post(`${this._baseUrl}`, userPosition)
+
+    /**
+     * 通过组织id和用户id删除职位
+     * @param organizationId 组织id
+     * @param userIds 用户id集合
+     */
+    deleteUserPosition: (organizationId: string, userIds: string[]) => Promise<void> = (organizationId: string, userIds: string[]): Promise<void> =>
+        request.delete(`${this._baseUrl}/${organizationId}`, {data: userIds})
 }
 
 /**
