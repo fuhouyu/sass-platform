@@ -45,6 +45,10 @@ public class UserPositionServiceImpl implements UserPositionService {
     @Override
     public void saveUserPosition(Long userId, UserPositionDTO userPositionDTO) {
         userPositionDTO.setUserId(userId);
+        if (userPositionDTO.getIsMain()) {
+            // 如果当前用户职位信息为主职，则将当前组织下所有职位信息设置为非主职
+            this.userPositionMapper.updateNotMainByUserId(userId);
+        }
         this.userPositionMapper.insert(USER_POSITION_ASSEMBLER.toEntity(userPositionDTO));
     }
 

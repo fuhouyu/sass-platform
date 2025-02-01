@@ -17,12 +17,15 @@ package com.fuhouyu.sass.platform.system.core.security.authority;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.fuhouyu.sass.platform.system.constants.CommonConstsant.USER_ADDITIONAL_INFORMATION_PERMISIONS;
 
@@ -38,22 +41,46 @@ import static com.fuhouyu.sass.platform.system.constants.CommonConstsant.USER_AD
 public class AuthorityFilter {
 
     /**
-     * 判断是否存在权限
+     * 判断是否存在权限，存在任一一个权限就返回true
      *
-     * @param permission 权限编码
-     * @return true 存在 false 不存在
+     * @param permissions 权限编码
+     * @return true/false
      */
-    public boolean hasPermission(String permission) {
-        if (StringUtils.isEmpty(permission)) {
+    public boolean hasAnyPermission(String... permissions) {
+        return this.doCheckPermissions(userPermissionSet -> Arrays.stream(permissions).anyMatch(userPermissionSet::contains), permissions);
+    }
+
+
+    /**
+     * 判断是否存在所有权限
+     *
+     * @param permissions 权限
+     * @return true/false
+     */
+    public boolean hasAllPermission(String... permissions) {
+        return this.doCheckPermissions(userPermissionSet -> Arrays.stream(permissions).allMatch(userPermissionSet::contains), permissions);
+
+    }
+
+    /**
+     * 检查权限逻辑
+     *
+     * @param checkPermissionLogic 权限逻辑
+     * @param permissions          权限数组
+     * @return true false
+     */
+    private boolean doCheckPermissions(Predicate<Set<String>> checkPermissionLogic, String... permissions) {
+        if (permissions == null || permissions.length == 0) {
             return true;
         }
         User user = ContextHolderStrategy.getContext().getUser();
-        Collection<? extends GrantedAuthority> permissions = user.getAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISIONS);
-        if (CollectionUtils.isEmpty(permissions)) {
+        Collection<? extends GrantedAuthority> userPermissions = user.getAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISIONS);
+        if (CollectionUtils.isEmpty(userPermissions)) {
             return false;
         }
-        return permissions.stream().map(GrantedAuthority::getAuthority)
-                .anyMatch(permission::equals);
+        Set<String> userPermissionSet = userPermissions.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+        return checkPermissionLogic.test(userPermissionSet);
     }
-
 }

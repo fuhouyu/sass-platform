@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,7 @@ public class UserPositionController {
      */
     @PostMapping
     @Operation(summary = "保存用户职务信息")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:add-member')")
     public BaseResponse<Void> saveUserPosition(@RequestBody UserPositionDTO userPositionDTO) {
         this.userPositionService.saveUserPosition(userPositionDTO.getUserId(), userPositionDTO);
         return ResponseHelper.success();
@@ -69,6 +71,7 @@ public class UserPositionController {
      */
     @DeleteMapping("/{organizationId}")
     @Operation(summary = "通过组织id和用户id删除成员")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:delete-member')")
     public BaseResponse<Long> deleteUserPosition(@PathVariable("organizationId") Long organizationId,
                                                  @NotEmpty(message = "用户未选择") @RequestBody Collection<Long> userIds) {
         return ResponseHelper.success(this.userPositionService.removeByOrganizationIdAndUserIds(organizationId, userIds));

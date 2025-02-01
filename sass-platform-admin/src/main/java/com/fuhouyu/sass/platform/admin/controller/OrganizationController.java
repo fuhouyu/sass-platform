@@ -60,7 +60,7 @@ public class OrganizationController {
      */
     @PostMapping
     @Operation(summary = "保存组织dto对象")
-    @PreAuthorize("@auth.hasPermission('system:organization:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:add')")
     public BaseResponse<Long> saveOrganization(@RequestBody OrganizationDTO organizationDTO) {
         return ResponseHelper.success(this.organizationService.save(organizationDTO));
     }
@@ -74,7 +74,7 @@ public class OrganizationController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改组织")
-    @PreAuthorize("@auth.hasPermission('system:organization:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:edit')")
     public BaseResponse<Void> updateOrganization(@PathVariable("id") Long id,
                                                  @RequestBody OrganizationDTO organizationDTO) {
         organizationDTO.setId(id);
@@ -93,7 +93,7 @@ public class OrganizationController {
      */
     @Operation(summary = "通过父级id查询子级菜单，")
     @GetMapping({"/list/{parentId}", "/list"})
-    @PreAuthorize("@auth.hasPermission('system:organization:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:list')")
     public BaseResponse<List<OrganizationDTO>> getOrganizationList(@PathVariable(value = "parentId", required = false) Long parentId) {
         return ResponseHelper.success(this.organizationService.getOrganizationList(
                 Optional.ofNullable(parentId).orElse(-1L)
@@ -108,7 +108,7 @@ public class OrganizationController {
      */
     @Operation(summary = "组织分页查询dto对象")
     @GetMapping("/page")
-    @PreAuthorize("@auth.hasPermission('system:organization:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:list')")
     public BaseResponse<PageResultDTO<OrganizationDTO>> pageList(@ParameterObject OrganizationPageQueryDTO pageQuery) {
         return ResponseHelper.success(this.organizationService.pageList(pageQuery));
     }
@@ -122,7 +122,7 @@ public class OrganizationController {
      */
     @DeleteMapping
     @Operation(summary = "根据组织id删除组织")
-    @PreAuthorize("@auth.hasPermission('system:organization:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:delete')")
     public BaseResponse<Void> deleteOrganization(@RequestBody @NotEmpty(message = "未选择要删除的组织") List<Long> idList) {
         this.organizationService.removeByIds(idList);
         return ResponseHelper.success();
@@ -136,7 +136,7 @@ public class OrganizationController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "组织详情")
-    @PreAuthorize("@auth.hasPermission('system:organization:query')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:query')")
     public BaseResponse<OrganizationDTO> organizationInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.organizationService.findById(id));
     }
@@ -148,7 +148,7 @@ public class OrganizationController {
      */
     @GetMapping("/tree")
     @Operation(summary = "组织树列表")
-    @PreAuthorize("@auth.hasPermission('system:organization:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:list')")
     public BaseResponse<List<OrganizationTreeDTO>> organizationTree() {
         return ResponseHelper.success(this.organizationService.getTreeList());
     }

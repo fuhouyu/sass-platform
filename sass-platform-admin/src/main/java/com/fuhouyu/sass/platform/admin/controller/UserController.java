@@ -78,7 +78,7 @@ public class UserController {
      */
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
-    @PreAuthorize("@auth.hasPermission('system:user:query')")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:query')")
     public BaseResponse<UserDetailDTO> userDetailById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.userService.findDetailById(id));
     }
@@ -105,7 +105,7 @@ public class UserController {
      */
     @Operation(summary = "保存用户信息")
     @PostMapping
-    @PreAuthorize("@auth.hasPermission('system:user:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:add')")
     public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) UserDetailDTO userDTO) {
         return ResponseHelper.success(this.userService.saveUser(userDTO));
     }
@@ -119,7 +119,7 @@ public class UserController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改用户详情")
-    @PreAuthorize("@auth.hasPermission('system:user:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
             @Valid @RequestBody UserDetailDTO userDTO) {
@@ -136,7 +136,7 @@ public class UserController {
      */
     @GetMapping("/page")
     @Operation(summary = "获取用户列表")
-    @PreAuthorize("@auth.hasPermission('system:user:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:list')")
     public BaseResponse<PageResultDTO<UserDTO>> pageList(UserPageQueryDTO userPageQueryDTO) {
         return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
     }
@@ -149,7 +149,7 @@ public class UserController {
      */
     @Operation(summary = "通过用户id删除用户")
     @DeleteMapping
-    @PreAuthorize("@auth.hasPermission('system:user:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:delete')")
     public BaseResponse<Void> removeUserList(
             @RequestBody
             @Size(min = 1, message = "需要删除的用户不能为空")
