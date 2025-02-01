@@ -63,7 +63,7 @@ public class DictItemController {
      */
     @PostMapping
     @Operation(summary = "保存字典项")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:add')")
     public BaseResponse<Long> save(@Valid @RequestBody DictItemDTO dictItemDTO) {
         return ResponseHelper.success(this.dictItemService.save(dictItemDTO));
     }
@@ -76,7 +76,7 @@ public class DictItemController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改字典项")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Valid @RequestBody DictItemDTO dictItemDTO) {
         dictItemDTO.setId(id);
@@ -92,7 +92,7 @@ public class DictItemController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过主键id获取详情")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:query')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:query')")
     public BaseResponse<DictItemDTO> getById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.dictItemService.findById(id));
     }
@@ -105,7 +105,7 @@ public class DictItemController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:delete')")
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.dictItemService.removeByIds(ids));
     }
@@ -119,7 +119,7 @@ public class DictItemController {
      */
     @GetMapping("/page")
     @Operation(summary = "字典项分页查询列表")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:list')")
     public BaseResponse<PageResultDTO<DictItemDTO>> pageList(@ParameterObject DictItemPageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.dictItemService.pageList(pageQueryDTO));
     }
@@ -136,7 +136,7 @@ public class DictItemController {
     @Operation(summary = "检查字典项编码是否存在")
     @Parameter(name = "dictCode", description = "字典编码")
     @Parameter(name = "itemCode", description = "字典项编码")
-    @PreAuthorize("@auth.hasPermission('system:dict-item:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:add')")
     public BaseResponse<Boolean> checkCodeExists(@RequestParam("dictCode") String dictCode,
                                                  @RequestParam("itemCode") String itemCode) {
         return ResponseHelper.success(this.dictItemService.checkItemCodeExists(dictCode, itemCode));

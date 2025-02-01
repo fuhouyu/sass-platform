@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +54,7 @@ public class UserHasRoleController {
      */
     @GetMapping("/{userId}")
     @Operation(summary = "通过用户id查询出角色id集合")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:list')")
     public BaseResponse<List<Long>> findByRoleListByUserId(@PathVariable("userId") Long userId) {
         return ResponseHelper.success(this.userHasRoleService.findRoleIdsByUserId(userId));
     }
@@ -67,6 +69,7 @@ public class UserHasRoleController {
      */
     @PostMapping("/{userId}")
     @Operation(summary = "保存用户和角色的关系")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:add', 'system:user:edit')")
     public BaseResponse<Void> saveUserRole(@PathVariable("userId") Long userId,
                                            @RequestBody List<Long> roleIdList) {
         this.userHasRoleService.saveOrUpdateUserRole(userId, roleIdList);

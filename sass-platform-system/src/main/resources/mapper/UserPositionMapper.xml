@@ -114,4 +114,12 @@
             #{userId}
         </foreach>
     </delete>
+
+    <update id="updateNotMainByUserId">
+        UPDATE
+        <include refid="TableName"/>
+        SET is_main = false
+        WHERE user_id = #{userId}
+        AND is_main = true
+    </update>
 </mapper>

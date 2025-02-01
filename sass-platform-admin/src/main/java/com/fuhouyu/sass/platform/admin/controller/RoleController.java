@@ -62,7 +62,7 @@ public class RoleController {
      */
     @PostMapping
     @Operation(summary = "保存角色")
-    @PreAuthorize("@auth.hasPermission('system:role:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:add')")
     public BaseResponse<Long> save(@Valid @RequestBody RoleDTO roleDTO) {
         return ResponseHelper.success(this.roleService.save(roleDTO));
     }
@@ -75,7 +75,7 @@ public class RoleController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改角色")
-    @PreAuthorize("@auth.hasPermission('system:role:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:edit')")
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Valid @RequestBody RoleDTO roleDTO) {
         roleDTO.setId(id);
@@ -91,7 +91,7 @@ public class RoleController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过主键id获取详情")
-    @PreAuthorize("@auth.hasPermission('system:role:query')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:query')")
     public BaseResponse<RoleDTO> getById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.roleService.findById(id));
     }
@@ -104,7 +104,7 @@ public class RoleController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
-    @PreAuthorize("@auth.hasPermission('system:role:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:delete')")
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.roleService.removeByIds(ids));
     }
@@ -118,7 +118,7 @@ public class RoleController {
      */
     @GetMapping("/page")
     @Operation(summary = "角色分页查询列表")
-    @PreAuthorize("@auth.hasPermission('system:role:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:list')")
     public BaseResponse<PageResultDTO<RoleDTO>> pageList(@ParameterObject RolePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.roleService.pageList(pageQueryDTO));
     }
@@ -132,7 +132,7 @@ public class RoleController {
      */
     @GetMapping("/exists")
     @Operation(summary = "检查角色编码是否存在")
-    @PreAuthorize("@auth.hasPermission('system:role:add')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:add')")
     @Parameter(name = "roleCode", description = "角色编码")
     public BaseResponse<Boolean> checkCodeExists(@RequestParam("roleCode") String roleCode) {
         return ResponseHelper.success(Objects.nonNull(this.roleService.findByRoleCode(roleCode)));
@@ -145,7 +145,7 @@ public class RoleController {
      */
     @GetMapping("/list")
     @Operation(summary = "角色列表 不分页")
-    @PreAuthorize("@auth.hasPermission('system:role:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:list')")
     public BaseResponse<List<RoleDTO>> list() {
         return ResponseHelper.success(this.roleService.list());
     }

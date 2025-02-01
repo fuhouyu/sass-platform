@@ -62,7 +62,7 @@ public class TenantInfoController {
      */
     @PostMapping
     @Operation(summary = "保存租户")
-    @PreAuthorize("@auth.hasPermission('tenant:add')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:add')")
     public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.save(tenantInfoDTO));
     }
@@ -75,7 +75,7 @@ public class TenantInfoController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改租户")
-    @PreAuthorize("@auth.hasPermission('tenant:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:edit')")
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
             @RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
@@ -92,7 +92,7 @@ public class TenantInfoController {
      */
     @GetMapping("/page")
     @Operation(summary = "租户列表")
-    @PreAuthorize("@auth.hasPermission('tenant:list')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:list')")
     public BaseResponse<PageResultDTO<TenantInfoDTO>> pageList(TenantPageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(tenantInfoService.pageList(pageQueryDTO));
     }
@@ -105,7 +105,7 @@ public class TenantInfoController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "通过租户id获取租户详情")
-    @PreAuthorize("@auth.hasPermission('tenant:query')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:query')")
     public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(tenantInfoService.findById(id));
     }
@@ -118,7 +118,7 @@ public class TenantInfoController {
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除租户")
-    @PreAuthorize("@auth.hasPermission('tenant:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:delete')")
     public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的租户")
                                                   List<Long> ids) {
         int count = this.tenantInfoService.removeByIds(ids);

@@ -61,4 +61,11 @@ public interface UserPositionMapper {
      */
     Long deleteByOrganizationIdAndUserIds(@Param("organizationId") Long organizationId,
                                           @Param("userIds") Collection<Long> userIds);
+
+    /**
+     * 修改用户为非主职
+     *
+     * @param userId 用户id
+     */
+    void updateNotMainByUserId(@Param("userId") Long userId);
 }
