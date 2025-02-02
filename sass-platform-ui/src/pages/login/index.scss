@@ -25,7 +25,6 @@
 }
 
 .login-container {
-  height: 30rem;
   width: 25rem;
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -63,9 +62,13 @@
     padding: 0 0.75rem;
   }
 
-  .login-button-container {
-    padding-top: 3.1875rem;
+  .cloudflare-turnstile {
+    span {
+      color: rgb(89, 89, 89);
+    }
+  }
 
+  .login-button-container {
     button {
       height: 3.25rem;
       line-height: 3.25rem;

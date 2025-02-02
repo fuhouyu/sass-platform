@@ -72,6 +72,7 @@ const ZhCN = {
         weLinkQRTips: "打开<span>WeLink APP</span> - 点击右上角“<span>+</span>”图标 - 点击<span>扫一扫</span>",
         loginButton: '登录',
         loginAndBindButton: '登录并绑定',
+        cloudflareTurnstileVerify: '请告知您是人类',
     },
     // 租户
     Tenant: {

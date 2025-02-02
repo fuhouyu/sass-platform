@@ -132,7 +132,7 @@ export const User: React.FC = () => {
             dataIndex: 'updateBy',
         },
         {
-            title: '操作',
+            title: t('Common.action'),
             align: 'center',
             dataIndex: 'action',
             render: (_, record: Userinfo) => {
