@@ -21,30 +21,39 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * <p>
- * 微信开放平台配置类
+ * cloudflare配置项
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/21 20:57
+ * @since 2025/2/2 21:27
  */
-@ConfigurationProperties(prefix = WechatPlatformProperties.PREFIX)
+@ConfigurationProperties(prefix = CloudflareProperties.PREFIX)
 @Data
-public class WechatPlatformProperties {
+public class CloudflareProperties {
 
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "wechat";
-
-    /**
-     * appId
-     */
-    private String appId;
+    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "cloudflare";
 
     /**
-     * appSecret
+     * cloudflare 验证码的配置项
      */
-    private String appSecret;
+    private Turnstile turnstile;
 
-    /**
-     * 配置的token
-     */
-    private String token;
+    @Data
+    public static class Turnstile {
+
+        /**
+         * 启禁用状态
+         */
+        private Boolean enabled;
+
+        /**
+         * url
+         */
+        private String url;
+
+        /**
+         * 密钥
+         */
+        private String secret;
+    }
 }

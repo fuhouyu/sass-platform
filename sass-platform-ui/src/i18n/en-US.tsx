@@ -74,6 +74,7 @@ const EnUS = {
         weLinkQRTips: 'Open the <span>WeLink app</span> - Tap the "<span>+</span>" icon in the top right corner - Tap "<span>Scan QR Code</span>"',
         loginButton: 'Login',
         loginAndBindButton: 'Login And Bind',
+        cloudflareTurnstileVerify: "Let us know you're human",
     },
     // 菜单
     Menu: {

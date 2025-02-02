@@ -43,6 +43,7 @@ export default defineConfig({
     },
     server: {
         host: '0.0.0.0',
+        allowedHosts: true,
         proxy: {
             '/api': {
                 target: 'http://localhost:8080', // 后端服务地址

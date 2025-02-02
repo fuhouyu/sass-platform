@@ -21,3 +21,10 @@ base:
     cache:
       service:
         cache-service-type: redis
+sass:
+  platform:
+    cloudflare:
+      turnstile:
+        enabled: true
+        url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+        secret: ENC(F80/1heErz1mt0hWdMctVSJxKaECnxYvewCQgNqlzLmUSl9jJF0+UOwPga8xph3VIy6Y2xtuOVkdv/glhLHXyY8YPOF10zmL4U6BQuP9qtc=)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "./index.scss"
 import {Button, Divider, Form, Input, message} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -28,6 +28,7 @@ import {router} from "@/routes/routers";
 import {BASE_PORTAL_URL} from "@/constants/commonConstant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
+import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
 
 /**
  * 登录组件
@@ -35,6 +36,7 @@ import {AccountType} from "@/model/account.tsx";
  */
 export const Login: React.FC = () => {
     const navigate = useNavigate();
+    const turnstileRef = useRef<TurnstileInstance | null>(null);
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -43,6 +45,7 @@ export const Login: React.FC = () => {
     const {t} = useTranslation();
     const [weLinkQr, setWeLinkQr] = useState<boolean>(true);
     const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
+    const [turnstileToken, setTurnstileToken] = useState<string | undefined>();
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
@@ -50,14 +53,15 @@ export const Login: React.FC = () => {
         }
     }, [isAuth, navigate]);
     const onFinish = (loginData: UserAuthentication) => {
-
-        setLoginButtonLoading(true)
-        loginData.accountType = AccountType.PASSWORD
+        setLoginButtonLoading(true);
+        loginData.accountType = AccountType.PASSWORD;
+        loginData.cloudflareTurnstileToken = turnstileToken;
         dispatch(fetchLogin(loginData)).then(async () => {
             setLoginButtonLoading(false)
             router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
         }).catch((err: Error) => {
-            message.error(err.message).then()
+            message.error(err.message).then();
+            turnstileRef.current?.reset();
         }).finally(() => {
             setTimeout(() => {
                 setLoginButtonLoading(false);
@@ -78,12 +82,14 @@ export const Login: React.FC = () => {
 
                         <Form className="login-form"
                               name="login"
-                              initialValues={{remember: true}}
+                              initialValues={{
+                                  "identify": "admin",
+                                  "credentials": "admin",
+                              }}
                               onFinish={onFinish}
                         >
                             <Form.Item
                                 name="identify"
-                                initialValue={'admin'}
                                 rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                             >
                                 <Input prefix={<IconFont type={'i-zhanghao'}/>}
@@ -91,19 +97,32 @@ export const Login: React.FC = () => {
                             </Form.Item>
                             <Form.Item
                                 name="credentials"
-                                initialValue={'admin'}
                                 rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                             >
                                 <Input.Password prefix={<IconFont type={'i-mima'}/>}
 
                                                 placeholder={t('Login.passwordPlaceholder')}/>
                             </Form.Item>
+                            {import.meta.env.VITE_CLOUDFLARE_SITE_KEY &&
+                                <Form.Item className={'cloudflare-turnstile'}>
+                                    <label>
+                                        <span>{t('Login.cloudflareTurnstileVerify')}</span>
+                                    </label>
+                                    <Turnstile
+                                        ref={turnstileRef}
+                                        options={{
+                                            theme: 'light',
+                                            size: 'flexible',
+                                        }}
+                                        siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
+                                        onSuccess={(token: string) => setTurnstileToken(token)}
+                                    />
+                                </Form.Item>
+                            }
 
-                            {/*<Form.Item name="remember" valuePropName="checked">*/}
-                            {/*    <Checkbox>同意用户协议</Checkbox>*/}
-                            {/*</Form.Item>*/}
                             <Form.Item className={'login-button-container'}>
-                                <Button block type="primary" htmlType="submit" loading={loginButtonLoading}>
+                                <Button disabled={import.meta.env.VITE_CLOUDFLARE_SITE_KEY && !turnstileToken} block
+                                        type="primary" htmlType="submit" loading={loginButtonLoading}>
                                     {t('Login.loginButton')}
                                 </Button>
                             </Form.Item>

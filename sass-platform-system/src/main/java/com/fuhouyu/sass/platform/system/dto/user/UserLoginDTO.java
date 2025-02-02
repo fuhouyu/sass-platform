@@ -38,12 +38,14 @@ public class UserLoginDTO extends AccountIdDTO {
     @Serial
     private static final long serialVersionUID = 23908102938012983L;
 
-    /**
-     * 凭证
-     */
     @Schema(name = "credentials", description = """
             登录凭证
             """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String credentials;
+
+    @Schema(name = "cloudflareTurnstileToken", description = """
+            cloudflare 令牌，类型为password时，需要验证
+            """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String cloudflareTurnstileToken;
 
 }

@@ -30,6 +30,11 @@ export interface UserAuthentication {
      * 账号类型
      */
     accountType: string;
+
+    /**
+     * cloudflare 验证的token
+     */
+    cloudflareTurnstileToken?: string;
 }
 
 
