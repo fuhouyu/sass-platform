@@ -826,13 +826,13 @@ export const User: React.FC = () => {
                                 labelCol={{span: language == 'zh' ? 7 : 8}}
                                 colon={false}
                                 hasFeedback
-                                rules={[{required: true, message: t('Organization.chooseUserPlaceholder')}]}
+                                rules={[{required: true, message: t('Organization.chooseMemberPlaceholder')}]}
                             >
                                 <Input
                                     disabled={formInitValues.realName != null}
                                     allowClear
                                     onClick={() => setIsChooseUserModalOpen(true)}
-                                    placeholder={t('Organization.chooseUserPlaceholder')}/>
+                                    placeholder={t('Organization.chooseMemberPlaceholder')}/>
                             </Form.Item>
                         </Col>
                     </Row>

@@ -251,7 +251,7 @@ const ZhCN = {
         addMember: '新增成员',
         deleteMember: '删除成员',
         chooseMember: '选择成员',
-        chooseUserPlaceholder: '请选择成员',
+        chooseMemberPlaceholder: '请选择成员',
     },
     Position: {
         ownerOrganization: '所属组织',
