@@ -41,8 +41,8 @@ import {Menu} from "@/model/menu";
 import {Link} from "react-router-dom";
 import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
-import {useAppSelector} from "@/store";
 import {CheckCircleOutlined} from "@ant-design/icons";
+import {useLocaleStore} from "@/store";
 
 /**
  * 字典类型
@@ -132,7 +132,7 @@ export const DictType = () => {
     const [dictTypeQuery, setDictTypeQuery] = useState<{ [key: string]: unknown }>({});
     const [pageResult, setPageResult] = useState<PageResult<DictTypeModel>>();
     const [formInitValues, setFormInitValues] = useState<DictTypeModel>(initForm);
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
     /**
      * 打开模态组
      * @param dictTypeId 角色id

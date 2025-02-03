@@ -17,12 +17,12 @@
 
 import {Breadcrumb, BreadcrumbProps} from "antd";
 import {useMemo} from "react";
-import {useAppSelector} from "@/store";
 import {Menu} from "@/model/menu";
 import './index.scss'
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {BASE_HOME_URL} from "@/constants/commonConstant";
+import {useUserStore} from "@/store";
 
 
 const getBreadcrumbName = (path: string, routers: Menu[]) => {
@@ -50,7 +50,7 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
 
 
 export const Bread = () => {
-    const userMenus = useAppSelector(state => state.user.userMenus);
+    const userMenus = useUserStore(state => state.userMenus);
     const pathname = location.pathname;
     const {t} = useTranslation();
 

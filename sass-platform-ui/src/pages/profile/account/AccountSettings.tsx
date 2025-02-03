@@ -21,7 +21,7 @@ import {accountApi} from "@/apis/account.tsx";
 import {Account, AccountType} from "@/model/account.tsx";
 import {useTranslation} from "react-i18next";
 import {ExclamationCircleFilled} from "@ant-design/icons";
-import {useAppSelector} from "@/store";
+import {useLocaleStore} from "@/store";
 
 interface UpdatePasswordForm {
     oldPassword: string;
@@ -41,7 +41,7 @@ export const AccountSettings = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState(false);
     const [passwordForm] = Form.useForm<UpdatePasswordForm>();
     const {t} = useTranslation()
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
     const {confirm} = AntdModal;
     const getAccounts = async () => {
         setAccounts(await accountApi.getAccountForMe());

@@ -17,20 +17,19 @@
 
 import {Button} from 'antd';
 import {useState} from 'react';
-import {useAppDispatch, useAppSelector} from '@/store';
-import {changeLanguage} from '@/store/modules/locale';
+
 import i18n from 'i18next';
 import {IconFont} from '@/components';
+import {useLocaleStore} from "@/store";
 
 const useLanguageSwitcher = (className?: string) => {
-    const dispatch = useAppDispatch();
-    const currentLanguage = useAppSelector(state => state.locale.language);
-    const [language, setLanguage] = useState<string>(currentLanguage);
+    const {language, changeLanguage} = useLocaleStore(state => state);
+    const [currentLanguage, setCurrentLanguage] = useState<string>(language);
 
     const switchLanguage = async () => {
-        const newLanguage = language === 'zh' ? 'en' : 'zh';
-        setLanguage(newLanguage);
-        dispatch(changeLanguage(newLanguage));
+        const newLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+        setCurrentLanguage(newLanguage);
+        changeLanguage(newLanguage);
         await i18n.changeLanguage(newLanguage);
     };
 
@@ -38,11 +37,11 @@ const useLanguageSwitcher = (className?: string) => {
         <Button
             className={className}
             onClick={switchLanguage}
-            icon={<IconFont type={language === 'zh' ? 'i-yingwen-shuangse' : 'i-zhongwen-shuangse'}/>}
+            icon={<IconFont type={currentLanguage === 'zh' ? 'i-yingwen-shuangse' : 'i-zhongwen-shuangse'}/>}
         />
     );
 
-    return {language, switchLanguage, LanguageSwitcherButton};
+    return {language: currentLanguage, switchLanguage, LanguageSwitcherButton};
 };
 
 export default useLanguageSwitcher;

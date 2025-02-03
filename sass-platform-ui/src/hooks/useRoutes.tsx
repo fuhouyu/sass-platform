@@ -18,10 +18,9 @@ import {NotFound} from "../pages/error/notfound/NotFound.tsx";
 import {lazy, Suspense, useEffect, useState} from "react";
 import {PageLoading} from "@/components";
 import {Menu} from "@/model/menu.tsx";
-import {useAppDispatch} from "@/store";
-import {fetchUserMenus} from "@/store/modules/user.tsx";
 import {router, RouterType} from "@/routes/routers.tsx";
 import {getAccessToken} from "@/utils";
+import {useUserStore} from "@/store";
 
 
 const modules = import.meta.glob('../pages/**/index.tsx');
@@ -60,7 +59,7 @@ export const parseRoutes = (menuProps: Menu[]): RouterType[] => {
  * 路由hook
  */
 export const useRoutes = () => {
-    const dispatch = useAppDispatch();
+    const {fetchUserMenus} = useUserStore();
     const [initialized, setInitialized] = useState(false);
     useEffect(() => {
         const accessToken = getAccessToken();
@@ -71,14 +70,14 @@ export const useRoutes = () => {
         const initializeRoutes = async () => {
             if (initialized) return; // 避免重复调用
 
-            const userMenus = await dispatch(fetchUserMenus());
+            const userMenus = await fetchUserMenus();
             if (router.routes[0]?.children) {
                 router.routes[0].children.push(...parseRoutes(userMenus));
             }
             setInitialized(true);
         };
         initializeRoutes().then();
-    }, [dispatch, initialized]);
+    }, [initialized]);
 
     return initialized;
 }

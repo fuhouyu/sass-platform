@@ -15,44 +15,46 @@
  */
 
 
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {DictItem} from "@/model/dictItem.tsx";
 import {dictItemApi} from "@/apis/dictItem.tsx";
-
+import {create} from "zustand/react";
+import {StateCreator} from "zustand";
 
 /**
- * 字典存储
+ * 字典状态
  */
-export const dictStore = createSlice({
-    name: 'dict',
-    reducers: {
-        storeDictItem: (state, action: PayloadAction<Record<string, DictItem[]>>) => {
-            state.dictTypeItemMapping = {
-                ...state.dictTypeItemMapping,
-                ...action.payload
-            };
-            return state;
-        },
+interface DictState {
+    /**
+     * 字典类型item映射
+     */
+    dictTypeItemMapping: Record<string, DictItem[]>;
+}
 
-    },
-    initialState: {
-        dictTypeItemMapping: {} as Record<string, DictItem[]>,
+/**
+ * action
+ */
+interface DictAction {
+    /**
+     * 字典类型item映射
+     * @param dictCodes 字典在编码
+     */
+    fetchDictItemTypeMapping: (dictCodes: string) => Promise<void>
+}
+
+/**
+ * 创建字典状态
+ */
+const createDictSlice: StateCreator<DictState & DictAction> = (set) => ({
+
+    dictTypeItemMapping: {},
+
+    fetchDictItemTypeMapping: async (dictCodes: string) => {
+        const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(dictCodes);
+        set({dictTypeItemMapping: dictItemMapping})
     }
 });
 
-/**
- * 获取字典项映射
- * @param dictCodes 字典编码，以,分隔
- */
-const fetchDictItemTypeMapping = (dictCodes: string) => {
-    return async (dispatch: (arg0: { payload: Record<string, DictItem[]>; type: `dict/${string}` }) => void) => {
-        const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(dictCodes);
-        dispatch(dictStore.actions.storeDictItem(dictItemMapping));
-    }
-}
 
-export {
-    fetchDictItemTypeMapping
-}
-
-export default dictStore.reducer;
+export const useDictStore = create<DictState & DictAction>()((...a) => ({
+    ...createDictSlice(...a)
+}));

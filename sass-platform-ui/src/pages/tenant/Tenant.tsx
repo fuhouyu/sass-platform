@@ -33,8 +33,8 @@ import {permissionApi} from "@/apis/permission";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
-import {useAppSelector} from "@/store";
 import {CheckCircleOutlined} from "@ant-design/icons";
+import {useLocaleStore} from "@/store";
 
 /**
  * 租户组件
@@ -121,7 +121,7 @@ export const Tenant: React.FC = () => {
     const [formInitValues, setFormInitValues] = useState<TenantInfo>(initForm);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
 
     /**
      * 分页查询

@@ -21,10 +21,10 @@ import {useState} from "react";
 import {MenuProps, useMenuTree} from "@/hooks/useMenuTree";
 import {useNavigate} from "react-router-dom";
 import './index.scss'
-import {useAppSelector} from "@/store";
 import {Menu as UserMenus, MenuType} from "@/model/menu";
 import {IconFont} from "@/components";
 import {useTranslation} from "react-i18next";
+import {useUserStore} from "@/store";
 
 /**
  * 侧边菜单组件
@@ -46,7 +46,7 @@ export const Menu = () => {
         }
     ]
 
-    const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
+    const userMenus: UserMenus[] = useUserStore(state => state.userMenus)
 
     const menuItems: MenuProps[] = useMenuTree(userMenus, [MenuType.BUTTON]) as MenuProps[]
     menuItems.unshift(...commonMenus);

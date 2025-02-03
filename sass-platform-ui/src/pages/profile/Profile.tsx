@@ -19,11 +19,10 @@ import React, {useEffect, useState} from "react";
 import "./index.scss"
 import {AntDesignOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar, Button, Form, Input, message, Radio} from "antd";
-import {useAppDispatch, useAppSelector} from "@/store";
 import {Userinfo as UserinfoModal} from "@/model/user";
-import {fetchEditUserinfo} from "@/store/modules/user.tsx";
 import {useTranslation} from "react-i18next";
 import {AccountSettings} from "@/pages/profile/account/AccountSettings.tsx";
+import {useUserStore} from "@/store";
 
 interface MenuLiInterface {
     key: string;
@@ -55,20 +54,17 @@ export const Profile: React.FC = () => {
     const handleClick = (item: MenuLiInterface) => {
         setSelectedMenuInterface(item); // 更新选中项的索引
     };
-
-    const userinfo: UserinfoModal = useAppSelector((state: {
-        user: { userinfo: UserinfoModal }
-    }) => state.user.userinfo);
+    const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
+    
 
     const formItem: UserinfoFormInterface[] = [
-        {key: 'username', label: t('User.username'), value: userinfo.username!, disabled: true},
-        {key: 'realName', label: t('User.realName'), value: userinfo.realName!, disabled: false},
-        {key: 'nickname', label: t('User.nickname'), value: userinfo.nickname!, disabled: false},
-        {key: 'email', label: t('User.email'), value: userinfo.email!, disabled: false},
-        {key: 'loginDate', label: t('User.loginDate'), value: userinfo.loginDate!, disabled: true},
-        {key: 'loginIp', label: t('User.loginIp'), value: userinfo.loginIp!, disabled: true},
+        {key: 'username', label: t('User.username'), value: userinfo?.username!, disabled: true},
+        {key: 'realName', label: t('User.realName'), value: userinfo?.realName!, disabled: false},
+        {key: 'nickname', label: t('User.nickname'), value: userinfo?.nickname!, disabled: false},
+        {key: 'email', label: t('User.email'), value: userinfo?.email!, disabled: false},
+        {key: 'loginDate', label: t('User.loginDate'), value: userinfo?.loginDate!, disabled: true},
+        {key: 'loginIp', label: t('User.loginIp'), value: userinfo?.loginIp!, disabled: true},
     ]
-    const dispatch = useAppDispatch();
     const [form] = Form.useForm();
     useEffect(() => {
         form.setFieldsValue({...userinfo});
@@ -83,16 +79,15 @@ export const Profile: React.FC = () => {
     }
 
 
-    const onFinish = (values: UserinfoModal): void => {
+    const onFinish = async (values: UserinfoModal) => {
         setButtonLoading(true);
-        dispatch(fetchEditUserinfo(values))
-            .then(() => {
-                form.setFieldsValue({...values});
-                setButtonLoading(false);
-                message.success('修改成功').then();
-            }).catch((error: Error) => {
-            message.error('用户修改失败' + error.message).then();
-        })
+        try {
+            await fetchEditUserinfo(values);
+            form.setFieldsValue({...values});
+            await message.success('修改成功')
+        } catch (error) {
+            await message.error('用户修改失败');
+        }
     }
 
 
@@ -102,11 +97,11 @@ export const Profile: React.FC = () => {
                 <div>
                     <Avatar
                         size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                        src={userinfo.avatar}
+                        src={userinfo?.avatar}
                         icon={<AntDesignOutlined/>}
                     />
                     <p className="text-align-center">
-                        您好，{userinfo.realName}
+                        您好，{userinfo?.realName}
                     </p>
                 </div>
                 <div className="profile-menu">

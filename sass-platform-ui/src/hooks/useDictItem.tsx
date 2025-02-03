@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {useAppDispatch, useAppSelector} from "@/store";
-import {dictStore} from "@/store/modules/dict.tsx";
-import {dictItemApi} from "@/apis/dictItem.tsx";
 import {useCallback, useEffect} from "react";
+import {useDictStore} from "@/store";
 
 /**
  * 获取字典项
@@ -25,9 +23,9 @@ import {useCallback, useEffect} from "react";
  */
 export function useDictItem(dictCodes: string[]) {
 
-    const dispatch = useAppDispatch();
     const queryDictCodes = dictCodes.join(',');
-    const dictTypeItemMapping = useAppSelector(state => state.dict.dictTypeItemMapping);
+    const {dictTypeItemMapping, fetchDictItemTypeMapping} = useDictStore((state) => state);
+
 
     /**
      * 通过字典编码获取字典项
@@ -48,11 +46,10 @@ export function useDictItem(dictCodes: string[]) {
 
     useEffect(() => {
         const initDictType = async () => {
-            const dictItemMapping = await dictItemApi.getDictItemTypeMappingList(queryDictCodes);
-            dispatch(dictStore.actions.storeDictItem(dictItemMapping));
+            await fetchDictItemTypeMapping(queryDictCodes);
         };
         initDictType().then();
-    }, [queryDictCodes, dispatch]);
+    }, [queryDictCodes]);
 
     return {
         findDictItems,

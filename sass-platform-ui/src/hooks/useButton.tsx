@@ -15,17 +15,16 @@
  */
 
 
-import {useAppSelector} from "@/store";
 import {Menu as UserMenus} from "@/model/menu.tsx";
-import {useCallback} from "react";
+import {useUserStore} from "@/store";
 
 /**
  * 获取button权限
  * @param parentPermissionCode 父级权限编码
  */
 export function useButton(parentPermissionCode: string): UserMenus[] {
-    const userMenus: UserMenus[] = useAppSelector((state) => state.user.userMenus);
-    const buttons = useCallback((menus: UserMenus[]): UserMenus[] | undefined => {
+    const userMenus = useUserStore(state => state.userMenus) ?? [];
+    const buttons = (menus: UserMenus[]): UserMenus[] | undefined => {
         if (menus.length == 0) {
             return undefined
         }
@@ -37,7 +36,7 @@ export function useButton(parentPermissionCode: string): UserMenus[] {
                 return buttons(menu.children);
             }
         }).filter(Boolean) as UserMenus[];
-    }, [parentPermissionCode])
+    }
 
     return buttons(userMenus) ?? [];
 }

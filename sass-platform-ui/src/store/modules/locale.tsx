@@ -14,36 +14,40 @@
  * limitations under the License.
  */
 
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {LANGUAGE_KEY} from "@/constants/commonConstant";
-
-const localeStore = createSlice({
-    name: 'locale',
-    initialState: {
-        language: localStorage.getItem(LANGUAGE_KEY) ?? 'zh',
-
-    },
-    reducers: {
-        changeLanguage: (state, action: PayloadAction<string>) => {
-            state.language = action.payload;
-
-            return state;
-        }
-    }
-})
+import {create} from "zustand/react";
+import {StateCreator} from "zustand";
 
 /**
- * 切换语言
- * @param language 语言类型
+ * 状态
  */
-const changeLanguage = (language: string) => {
-    return (dispatch: (arg0: { payload: string; type: `locale/${string}` }) => void) => {
-        localStorage.setItem(LANGUAGE_KEY, language);
-        dispatch(localeStore.actions.changeLanguage(language))
-    }
-};
-
-export {
-    changeLanguage
+interface LocaleState {
+    /**
+     * 语言
+     */
+    language: string;
 }
-export default localeStore.reducer;
+
+
+interface LocaleAction {
+    /**
+     * 改变语言
+     * @param language 语言类型
+     */
+    changeLanguage: (language: string) => void;
+
+}
+
+/**
+ * 创建语言切片
+ * @param set set
+ */
+const createLocaleSlice: StateCreator<LocaleState & LocaleAction> = (set) => ({
+    language: localStorage.getItem(LANGUAGE_KEY) ?? 'zh',
+    changeLanguage: (language: string) => set(({language})),
+});
+
+
+export const useLocaleStore = create<LocaleState & LocaleAction>((...a) => ({
+    ...createLocaleSlice(...a)
+}));

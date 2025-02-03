@@ -52,12 +52,12 @@ import {Organization} from "@/model/organization.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {AccountType} from "@/model/account.tsx";
-import {useAppSelector} from "@/store";
 import {roleApi} from "@/apis/role.tsx";
 import {Role} from "@/model/role.tsx";
 import {userHasRoleApi} from "@/apis/userHasRole.tsx";
 import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
 import {userPositionApi} from "@/apis/userPosition.tsx";
+import {useLocaleStore} from "@/store";
 
 
 export const User: React.FC = () => {
@@ -172,7 +172,7 @@ export const User: React.FC = () => {
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
     const [userHasRole, setUserHasRole] = useState<{
         username?: string,
         userId?: string,

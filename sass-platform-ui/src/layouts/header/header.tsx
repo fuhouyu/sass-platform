@@ -20,9 +20,6 @@ import {Bread, IconFont} from "@/components";
 import {DownOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {Header as _Header} from "antd/es/layout/layout";
 import {useEffect, useState} from "react";
-import {useAppDispatch, useAppSelector} from "@/store";
-import {fetchLogout, fetchUserinfo} from "@/store/modules/user";
-import {Userinfo} from "@/model/user";
 import {useNavigate} from "react-router-dom";
 import type {ItemType} from "antd/es/menu/interface";
 import './index.scss'
@@ -31,22 +28,20 @@ import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant"
 import useTenant from "@/hooks/useTenant";
 import {tenantApi} from "@/apis/tenant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
+import {useUserStore} from "@/store";
 
 
 export const Header = () => {
 
-    const dispatch = useAppDispatch();
     const {t} = useTranslation();
     const [switchTenantModalOpen, setSwitchTenantModalOpen] = useState<boolean>(false);
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
     const tenantInfos = useTenant();
+    const {fetchUserinfo, fetchLogout, userinfo} = useUserStore(state => state);
 
     useEffect(() => {
-        dispatch(fetchUserinfo());
-    }, [dispatch])
-    const realName = useAppSelector((state: {
-        user: { userinfo: Userinfo };
-    }) => state.user.userinfo?.realName);
+        fetchUserinfo().then();
+    }, [])
 
     const navigate = useNavigate();
 
@@ -82,7 +77,7 @@ export const Header = () => {
         }
         switch (e.key) {
             case 'logout':
-                await dispatch(fetchLogout());
+                await fetchLogout();
                 navigate(BASE_LOGIN_URL);
                 break;
             case 'profile':
@@ -123,7 +118,7 @@ export const Header = () => {
                            <span>
 
                                 <Space>
-                                    你好, {realName}
+                                    你好, {userinfo.realName}
                                     <Image
                                         className="avatar"
                                         preview={false}
