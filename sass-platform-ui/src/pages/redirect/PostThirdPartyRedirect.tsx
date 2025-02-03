@@ -17,35 +17,34 @@
 
 import {useLocation, useSearchParams} from "react-router-dom";
 import React, {useCallback, useEffect, useState} from "react";
-import {fetchLogin, fetchLoginBind} from "@/store/modules/user.tsx";
 import {AccountType} from "@/model/account.tsx";
 import {router} from "@/routes/routers.tsx";
 import {BASE_LOGIN_URL, BASE_PORTAL_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {Button, Form, Input, message, Modal, Spin} from "antd";
-import {useAppDispatch} from "@/store";
 import {accountApi} from "@/apis/account.tsx";
 import {useTranslation} from "react-i18next";
 import {IconFont} from "@/components";
 import './index.scss';
 import {ThirdPartyBindAuthentication, UserAuthentication} from "@/model/authentication.tsx";
+import {useUserStore} from "@/store";
 
 export const PostThirdPartyRedirect = () => {
 
     const [searchParams] = useSearchParams();
     const location = useLocation();
     const {t} = useTranslation();
-    const dispatch = useAppDispatch();
     const [bindModal, setBindModal] = useState<boolean>(false);
     const [userForm] = Form.useForm<ThirdPartyBindAuthentication>();
     const [temporaryToken, setTemporaryToken] = useState<string>('');
+    const {fetchLogin, fetchLoginAndBind} = useUserStore();
 
     /**
      * 用户登录
      */
     const login = useCallback((accountType: string, code: string) => {
-        dispatch(fetchLogin({accountType: accountType as AccountType, identify: code})).then(async (res) => {
+        fetchLogin({accountType: accountType as AccountType, identify: code}).then(async (res) => {
             // 如果登录成功直接跳转
-            if (!res) {
+            if (!('userBindToken' in res)) {
                 router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
                 return
             }
@@ -56,8 +55,8 @@ export const PostThirdPartyRedirect = () => {
         }).catch((err) => {
             message.error(err.message).then()
             router.navigate(BASE_LOGIN_URL, {state: location.state}).then();
-        })
-    }, [dispatch, location.state]);
+        });
+    }, [location.state, fetchLogin]);
 
     /**
      * 登录表单
@@ -68,7 +67,7 @@ export const PostThirdPartyRedirect = () => {
         userBindAuthentication.temporaryToken = temporaryToken;
         userBindAuthentication.accountType = AccountType.PASSWORD;
         try {
-            await dispatch(fetchLoginBind(userBindAuthentication));
+            await fetchLoginAndBind(userBindAuthentication);
         } catch {
             router.navigate(BASE_LOGIN_URL, {state: location.state}).then();
         }

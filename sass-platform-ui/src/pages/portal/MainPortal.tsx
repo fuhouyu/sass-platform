@@ -22,8 +22,8 @@ import {tenantApi} from "@/apis/tenant";
 import {useLocation} from "react-router-dom";
 import {router} from "@/routes/routers";
 import {parseRoutes} from "@/hooks/useRoutes.tsx";
-import {fetchUserMenus} from "@/store/modules/user.tsx";
-import {useAppDispatch} from "@/store";
+import {useUserStore} from "@/store";
+
 
 /**
  * 门户页
@@ -34,7 +34,8 @@ export const MainPortal = () => {
     const {t} = useTranslation();
     const [chooseTenant, setChooseTenant] = useState<string>();
     const location = useLocation();
-    const dispatch = useAppDispatch();
+    const {fetchUserMenus} = useUserStore(state => state);
+
     const confirm = async () => {
         if (!chooseTenant) {
             return
@@ -42,7 +43,7 @@ export const MainPortal = () => {
         await tenantApi.switchTenant(chooseTenant);
         const fromRouter = location.state?.from;
         const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
-        const userMenus = await dispatch(fetchUserMenus());
+        const userMenus = await fetchUserMenus();
         if (router.routes[0]?.children) {
             router.routes[0].children.push(...parseRoutes(userMenus));
         }

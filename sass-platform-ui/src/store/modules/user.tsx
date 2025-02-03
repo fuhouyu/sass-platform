@@ -14,136 +14,121 @@
  * limitations under the License.
  */
 
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Userinfo,} from "@/model/user";
-import {ThirdPartyBindAuthentication, UserAuthentication, UserToken} from "@/model/authentication";
+import {ThirdPartyBindAuthentication, UserAuthentication, UserBind, UserToken} from "@/model/authentication";
 import {Menu} from "@/model/menu";
 import {userApi} from "@/apis/user";
 import {permissionApi} from "@/apis/permission";
 import {removeToken, storeToken} from "@/utils";
 import {authenticationApi} from "@/apis/authentication.tsx";
+import {create} from "zustand/react";
+import {StateCreator} from "zustand";
 
+/**
+ * 用户状态
+ */
+interface UserState {
+    /**
+     * 用户token
+     */
+    token: UserToken;
+    /**
+     * 用户详情
+     */
+    userinfo: Userinfo;
+    /**
+     * 用户菜单
+     */
+    userMenus: Menu[];
+}
 
-const userStore = createSlice({
-    name: "user",
-    initialState: {
-        token: {
-            accessToken: "",
-            refreshToken: "",
-        },
-        userinfo: {},
-        // 用户菜单
-        userMenus: [] as Menu[],
+/**
+ * 用户操作
+ */
+interface UserAction {
+    /**
+     * 用户登录
+     * @param loginForm 登录表单对象
+     */
+    fetchLogin: (loginForm: UserAuthentication) => Promise<UserToken | UserBind>
+    /**
+     * 登录并绑定
+     * @param loginForm 表单对象
+     */
+    fetchLoginAndBind: (loginForm: ThirdPartyBindAuthentication) => Promise<UserToken>
+    /**
+     * 用户详情
+     */
+    fetchUserinfo: () => Promise<Userinfo>
+    /**
+     * 用户菜单
+     */
+    fetchUserMenus: () => Promise<Menu[]>
+    /**
+     * 用户登出
+     */
+    fetchLogout: () => Promise<void>
+    /**
+     * 修改用户详情
+     * @param editUserinfo 用户详情
+     */
+    fetchEditUserinfo: (editUserinfo: Userinfo) => Promise<void>,
+}
+
+/**
+ * 用户切片
+ */
+const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
+    token: {
+        accessToken: '',
+        refreshToken: '',
     },
-    reducers: {
-        storeToken: (state, action: PayloadAction<UserToken>) => {
-            state.token = action.payload;
-            storeToken(state.token)
-            return state;
-        },
-        storeUserinfo: (state, action: PayloadAction<Userinfo>) => {
-            state.userinfo = action.payload;
-            return state;
-        },
-        storeMenu: (state, action: PayloadAction<Menu[]>) => {
-            state.userMenus = action.payload;
-            return state;
-        },
-        logout: (state) => {
-            state.userinfo = {};
-            state.token = {
-                accessToken: "",
-                refreshToken: "",
-            };
-            state.userMenus = [];
-            return state;
+    userinfo: {},
+    userMenus: [],
+
+    fetchLogin: async (loginForm) => {
+        const authenticationRes = await authenticationApi.loginApi(loginForm);
+        if (!('isUserBind' in authenticationRes)) {
+            set({token: authenticationRes});
+            storeToken(authenticationRes);
         }
+        return authenticationRes;
     },
+
+    fetchLoginAndBind: async (loginForm: ThirdPartyBindAuthentication) => {
+        const authenticationRes = await authenticationApi.loginBindApi(loginForm);
+        set({token: authenticationRes});
+        storeToken(authenticationRes);
+        return authenticationRes;
+    },
+
+    fetchUserinfo: async () => {
+        const res: Userinfo = await userApi.getInfoMeApi();
+        set({userinfo: res});
+        return res;
+    },
+
+    fetchUserMenus: async () => {
+        const menus = await permissionApi.getUserPermissionApi();
+        set({userMenus: menus});
+        return menus;
+    },
+
+    fetchLogout: async () => {
+        await authenticationApi.logoutApi();
+        set({userinfo: {}, token: {accessToken: '', refreshToken: ''}});
+        removeToken();
+    },
+
+    fetchEditUserinfo: async (editUserinfo) => {
+        await userApi.editInfoApi(editUserinfo.id!, editUserinfo);
+        set({userinfo: editUserinfo});
+    }
 });
 
 /**
- * 用户登录接口
- * @param loginForm 表单参数
+ * 用户的store
  */
-const fetchLogin = (loginForm: UserAuthentication) => {
-    return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
-        const authenticationRes = await authenticationApi.loginApi(loginForm);
-        if ('isUserBind' in authenticationRes) {
-            return authenticationRes;
-        }
-        if (authenticationRes) {
-            dispatch(userStore.actions.storeToken(authenticationRes));
-        }
-    }
-}
-
-
-/**
- * 用户登录且绑定
- */
-const fetchLoginBind = (loginForm: ThirdPartyBindAuthentication) => {
-    return async (dispatch: (arg0: { payload: UserToken; type: `user/${string}` }) => void) => {
-        const authenticationRes = await authenticationApi.loginBindApi(loginForm);
-        if (authenticationRes) {
-            dispatch(userStore.actions.storeToken(authenticationRes));
-        }
-    }
-}
-
-
-/**
- * 用户详情接口
- */
-const fetchUserinfo = () => {
-    return async (dispatch: (arg0: { payload: Userinfo; type: `user/${string}` }) => void) => {
-        const res: Userinfo = await userApi.getInfoMeApi();
-        dispatch(userStore.actions.storeUserinfo(res))
-    }
-}
-
-/**
- * 获取menus
- */
-const fetchUserMenus = () => {
-    return async (dispatch: (arg0: { payload: Menu[]; type: `user/${string}` }) => Menu[]): Promise<Menu[]> => {
-        const menus = await permissionApi.getUserPermissionApi();
-        if (menus) {
-            dispatch(userStore.actions.storeMenu(menus));
-        }
-        return menus;
-    }
-}
-
-/**
- * 用户退出登录
- */
-const fetchLogout = () => {
-    return async (dispatch: (arg0: { payload: undefined; type: `user/${string}` }) => void) => {
-        await authenticationApi.logoutApi();
-        dispatch(userStore.actions.logout())
-        removeToken()
-    }
-}
-
-/**
- * 修改用户详情
- * @param editUserinfo 用户详情接口修改
- */
-const fetchEditUserinfo = (editUserinfo: Userinfo) => {
-    return async (dispatch: (arg0: { payload: Userinfo; type: `user/${string}` }) => void) => {
-        await userApi.editInfoApi(editUserinfo.id!, editUserinfo);
-        const res = await userApi.getInfoByIdApi(editUserinfo.id!);
-        dispatch(userStore.actions.storeUserinfo(res))
-    }
-}
-
-export {
-    fetchLogin,
-    fetchLogout,
-    fetchUserinfo,
-    fetchEditUserinfo,
-    fetchUserMenus,
-    fetchLoginBind
-};
-
-export default userStore.reducer;
+export const useUserStore = create<UserState & UserAction>((...a) => ({
+    ...createUserSlice(...a),
+}))

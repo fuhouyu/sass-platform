@@ -42,8 +42,8 @@ import {OrganizationPermissionConstant} from "@/constants/permissionConstant.tsx
 import {organizationApi} from "@/apis/organization.tsx";
 import './index.scss'
 import TextArea from "antd/es/input/TextArea";
-import {useAppSelector} from "@/store";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
+import {useLocaleStore} from "@/store";
 
 
 export const Organization = () => {
@@ -65,7 +65,7 @@ export const Organization = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
     const {onLoadData, organizationLazyData} = useOrganizationLazyData();
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
 
 
     const columns: TableColumnsType<OrganizationModal> = [

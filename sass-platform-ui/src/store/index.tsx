@@ -14,29 +14,13 @@
  * limitations under the License.
  */
 
-
-import {configureStore} from "@reduxjs/toolkit";
-import userReducer from "@/store/modules/user";
-import localeReducer from "@/store/modules/locale";
-import dictReducer from "@/store/modules/dict";
-import {useDispatch, useSelector, useStore} from "react-redux";
+import {useDictStore} from "./modules/dict";
+import {useLocaleStore} from "./modules/locale";
+import {useUserStore} from "./modules/user";
 
 
-export const store = configureStore({
-    reducer: {
-        user: userReducer,
-        locale: localeReducer,
-        dict: dictReducer
-    }
-})
-
-// Get the type of our store variable
-export type AppStore = typeof store
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = AppStore['dispatch']
-
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
-export const useAppSelector = useSelector.withTypes<RootState>()
-export const useAppStore = useStore.withTypes<AppStore>()
+export {
+    useUserStore,
+    useDictStore,
+    useLocaleStore,
+}

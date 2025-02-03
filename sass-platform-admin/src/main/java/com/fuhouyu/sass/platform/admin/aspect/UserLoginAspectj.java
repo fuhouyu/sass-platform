@@ -73,9 +73,7 @@ public class UserLoginAspectj {
         // 未启用cloudflare验证直接放行
         if (!turnstile.getEnabled()) {
             LoggerUtil.warn(log, "cloudflare turnstile is disabled");
-            TurnstileVerifyResponseDTO response = new TurnstileVerifyResponseDTO();
-            response.setSuccess(true);
-            return response;
+            return joinPoint.proceed();
         }
         String cloudflareTurnstileToken = userLoginDTO.getCloudflareTurnstileToken();
         if (!StringUtils.hasText(cloudflareTurnstileToken)) {

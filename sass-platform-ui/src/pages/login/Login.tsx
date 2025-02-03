@@ -18,8 +18,6 @@ import React, {useEffect, useRef, useState} from "react";
 import "./index.scss"
 import {Button, Divider, Form, Input, message} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
-import {fetchLogin} from "@/store/modules/user";
-import {useAppDispatch} from "@/store";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {IconFont, WeLinkLogin} from "@/components";
@@ -29,6 +27,7 @@ import {BASE_PORTAL_URL} from "@/constants/commonConstant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
+import {useUserStore} from "@/store";
 
 /**
  * 登录组件
@@ -39,34 +38,39 @@ export const Login: React.FC = () => {
     const turnstileRef = useRef<TurnstileInstance | null>(null);
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
     const location = useLocation();
-    const dispatch = useAppDispatch();
     const isAuth = useAuth();
     const {LanguageSwitcherButton} = useLanguageSwitcher('switch-language-button');
     const {t} = useTranslation();
     const [weLinkQr, setWeLinkQr] = useState<boolean>(true);
     const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
     const [turnstileToken, setTurnstileToken] = useState<string | undefined>();
+    const fetchLogin = useUserStore((state) => state.fetchLogin);
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
         }
     }, [isAuth, navigate]);
-    const onFinish = (loginData: UserAuthentication) => {
+    const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
         loginData.accountType = AccountType.PASSWORD;
         loginData.cloudflareTurnstileToken = turnstileToken;
-        dispatch(fetchLogin(loginData)).then(async () => {
+        try {
+            await fetchLogin(loginData);
             setLoginButtonLoading(false)
-            router.navigate(BASE_PORTAL_URL, {state: location.state}).then();
-        }).catch((err: Error) => {
-            message.error(err.message).then();
+            await router.navigate(BASE_PORTAL_URL, {state: location.state});
+        } catch (err) {
+            if (err instanceof Error) {
+                message.error(err.message).then();
+            } else {
+                message.error('An unknown error occurred').then();
+            }
             turnstileRef.current?.reset();
-        }).finally(() => {
+        } finally {
             setTimeout(() => {
                 setLoginButtonLoading(false);
             }, 500)
-        })
+        }
     };
 
 

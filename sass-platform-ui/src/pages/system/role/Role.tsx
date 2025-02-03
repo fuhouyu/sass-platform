@@ -40,8 +40,8 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
-import {useAppSelector} from "@/store";
 import {CheckCircleOutlined} from "@ant-design/icons";
+import {useLocaleStore} from "@/store";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -125,7 +125,8 @@ export const Role: React.FC = () => {
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
+
     /**
      * 打开模态组
      * @param roleId 角色id

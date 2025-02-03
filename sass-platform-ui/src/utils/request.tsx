@@ -72,6 +72,7 @@ request.interceptors.response.use(async function (response) {
             return;
         }
         removeToken();
+        router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
         return
     }
     if (response.data.code === 403) {

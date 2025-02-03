@@ -43,7 +43,7 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {AnyObject} from "antd/es/_util/type";
 import {PermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton";
-import {useAppSelector} from "@/store";
+import {useLocaleStore} from "@/store";
 
 /**
  * 设置树数据
@@ -96,7 +96,7 @@ export const Permission: React.FC = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentPermission, setFormParentPermission] = useState<Menu>({});
     const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
-    const language = useAppSelector(state => state.locale.language);
+    const language = useLocaleStore((state) => state.language);
 
     const columns: TableColumnsType<Menu> = [
         {
