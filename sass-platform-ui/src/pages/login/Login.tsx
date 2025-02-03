@@ -65,6 +65,7 @@ export const Login: React.FC = () => {
             } else {
                 message.error('An unknown error occurred').then();
             }
+            setTurnstileToken(undefined);
             turnstileRef.current?.reset();
         } finally {
             setTimeout(() => {
