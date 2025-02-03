@@ -91,7 +91,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
 
     return (
         <Modal
-            title={t('Organization.chooseUser')}
+            title={t('Organization.chooseMember')}
             open={isModalOpen}
             destroyOnClose
             width={900}
