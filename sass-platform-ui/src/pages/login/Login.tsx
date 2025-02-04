@@ -59,18 +59,16 @@ export const Login: React.FC = () => {
             await fetchLogin(loginData);
             setLoginButtonLoading(false)
             await router.navigate(BASE_PORTAL_URL, {state: location.state});
+            setLoginButtonLoading(false);
         } catch (err) {
+            setLoginButtonLoading(false);
+            setTurnstileToken(undefined);
             if (err instanceof Error) {
                 message.error(err.message).then();
             } else {
                 message.error('An unknown error occurred').then();
             }
-            setTurnstileToken(undefined);
             turnstileRef.current?.reset();
-        } finally {
-            setTimeout(() => {
-                setLoginButtonLoading(false);
-            }, 500)
         }
     };
 
