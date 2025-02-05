@@ -42,8 +42,9 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      *
      * @param tenantId      租户id
      * @param permissionIds 权限id集合
+     * @return 主键id
      */
-    void createTenantDefaultRole(Long tenantId, List<Long> permissionIds);
+    Long createTenantDefaultRole(Long tenantId, List<Long> permissionIds);
 
     /**
      * 角色列表

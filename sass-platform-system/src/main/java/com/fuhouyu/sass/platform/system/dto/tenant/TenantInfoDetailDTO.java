@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.mapper;
+package com.fuhouyu.sass.platform.system.dto.tenant;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.entity.Roles;
+import java.io.Serial;
 
 /**
  * <p>
- * 角色mapper对象
+ * 租户详情的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/9 18:00
+ * @since 2025/2/5 21:07
  */
-public interface RoleMapper extends BaseMapper<Long, Roles> {
+@Schema(name = "TenantInfoDetailDTO", description = "租户详情dto对象")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TenantInfoDetailDTO extends TenantInfoDTO {
 
-    /**
-     * 通过角色编码查询出角色对象
-     *
-     * @param roleCode 角色编码
-     * @return 角色do对象
-     */
-    @TenantQuery
-    Roles queryByRoleCode(String roleCode);
+    @Serial
+    private static final long serialVersionUID = -8912378681465128376L;
+
+    @Schema(name = "adminUserRealName", description = "管理员用户账号真实姓名, 仅返回")
+    private String adminUserRealName;
 }

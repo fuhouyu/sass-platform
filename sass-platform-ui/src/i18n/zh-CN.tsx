@@ -92,7 +92,8 @@ const ZhCN = {
         contactInfoPlaceholder: '请输入联系信息',
         permissions: '租户权限',
         permissionsPlaceholder: '请选择租户权限',
-
+        adminUser: '管理员',
+        adminUserPlaceholder: '请选择管理员账号'
     },
     // 菜单
     Menu: {

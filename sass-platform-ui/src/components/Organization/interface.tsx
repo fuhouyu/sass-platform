@@ -23,5 +23,4 @@ export interface OrganizationUserModalProps {
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
     rowSelection?: TableRowSelection<Userinfo>;
-    handleOrganizationUser?: () => void;
 }

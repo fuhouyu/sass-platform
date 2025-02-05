@@ -113,6 +113,8 @@ const EnUS = {
         contactInfoPlaceholder: 'Please input Contact Info',
         permissions: 'Tenant Permission',
         permissionsPlaceholder: 'Please choose Tenant Permission',
+        adminUser: 'Admin User',
+        adminUserPlaceholder: 'Please select the admin account'
     },
     // 权限
     Permission: {

@@ -64,6 +64,7 @@
             #{createAt},
             #{createBy},
         </trim>
+        ON CONFLICT(tenant_id, user_id) DO NOTHING
     </insert>
 
     <delete id="deleteByTenantIdAndUserIds">

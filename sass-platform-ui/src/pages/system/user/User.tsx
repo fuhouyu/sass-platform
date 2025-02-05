@@ -319,14 +319,12 @@ export const User: React.FC = () => {
             if (selectedRows.length === 0) {
                 return
             }
-            setFormInitValues({
-                ...formInitValues,
-                userPosition: {
-                    ...formInitValues.userPosition,
-                    userId: selectedRows[0].id,
-                },
-                realName: selectedRows[0].realName,
-            });
+            const userPosition = {
+                ...formInitValues.userPosition,
+                userId: selectedRows[0].id,
+            };
+            form.setFieldValue('userPosition', userPosition);
+            form.setFieldValue('realName', selectedRows[0].realName)
         },
     }
 
@@ -433,7 +431,7 @@ export const User: React.FC = () => {
                                             }}
                                         >
                                             <DeleteButton
-                                                disabled={selectUserIds === undefined || selectUserIds.length === 0}/>
+                                                disabled={selectUserIds.length === 0}/>
                                         </Popconfirm>
                                     </PermissionButton>
 
@@ -898,7 +896,6 @@ export const User: React.FC = () => {
                 isModalOpen={isChooseUserModalOpen}
                 setIsModalOpen={setIsChooseUserModalOpen}
                 rowSelection={userRowSelection}
-                handleOrganizationUser={() => form.resetFields()}
             />
         </>
     );

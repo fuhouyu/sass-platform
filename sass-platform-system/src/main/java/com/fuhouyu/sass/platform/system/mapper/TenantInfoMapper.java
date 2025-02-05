@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -54,4 +55,12 @@ public interface TenantInfoMapper extends BaseMapper<Long, TenantInfo> {
      * @return 记录数
      */
     Integer existsUserTenant(@Param("userId") Long userId, @Param("tenantId") Long tenantId);
+
+    /**
+     * 通过id查询出租户详情
+     *
+     * @param id 主键id
+     * @return 详情dto对象
+     */
+    TenantInfoDetailDTO queryDetailById(@Param("id") Long id);
 }

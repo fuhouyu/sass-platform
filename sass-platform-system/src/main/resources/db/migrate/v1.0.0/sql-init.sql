@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id             BIGINT PRIMARY KEY    NOT NULL,
+    admin_user_id BIGINT NOT NULL,
     tenant_code    VARCHAR(64)           NOT NULL,
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
@@ -39,6 +40,7 @@ CREATE TABLE tenant_info
 
 COMMENT ON TABLE tenant_info IS '租户表';
 COMMENT ON COLUMN tenant_info.id IS '主键id';
+COMMENT ON COLUMN tenant_info.admin_user_id IS '管理员id';
 COMMENT ON COLUMN tenant_info.tenant_code IS '租户编码';
 COMMENT ON COLUMN tenant_info.tenant_name IS '租户名称';
 COMMENT ON COLUMN tenant_info.tenant_type IS '租户类型字典项';
@@ -57,10 +59,10 @@ COMMENT ON COLUMN tenant_info.update_by IS '更新人';
 
 
 -- 内置租户
-INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
+INSERT INTO tenant_info(id, admin_user_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, create_at,
                         create_by, update_at, update_by)
-VALUES (1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
+VALUES (1, 1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin');
 
 -- 租户权限

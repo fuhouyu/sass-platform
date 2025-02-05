@@ -18,6 +18,7 @@
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper">
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantInfo" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="admin_user_id" property="adminUserId" jdbcType="BIGINT"/>
         <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR"/>
         <result column="tenant_name" property="tenantName" jdbcType="VARCHAR"/>
         <result column="tenant_type" property="tenantType" jdbcType="VARCHAR"/>
@@ -28,12 +29,17 @@
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
     </resultMap>
 
+    <resultMap id="BaseDetailResult" type="com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO" extends="BaseResultMap">
+        <result column="real_name" property="adminUserRealName"/>
+    </resultMap>
+
     <sql id="TableName">
         tenant_info
     </sql>
 
     <sql id="QueryColumns">
         ti.id,
+        ti.admin_user_id,
         ti.tenant_code,
         ti.tenant_name,
         ti.tenant_type,
@@ -42,7 +48,6 @@
         ti.contact_person,
         ti.contact_info,
         ti.is_enabled,
-        ti.is_deleted,
         ti.create_at,
         ti.update_at,
         ti.create_by,
@@ -51,6 +56,7 @@
 
     <sql id="AllColumns">
         id,
+        admin_user_id,
         tenant_code,
         tenant_name,
         tenant_type,
@@ -75,6 +81,7 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
+            #{adminUserId},
             #{tenantCode},
             #{tenantName},
             #{tenantType},
@@ -101,8 +108,9 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
+                #{entity.adminUserId},
                 #{entity.tenantCode},
-                #{entity.tenatName},
+                #{entity.tenantName},
                 #{entity.tenantType},
                 #{entity.remark},
                 #{entity.icon},
@@ -205,5 +213,15 @@
         ti ON ti.id = thu.tenant_id
         WHERE thu.user_id = #{userId}
         AND ti.id = #{tenantId}
+    </select>
+
+    <select id="queryDetailById" resultMap="BaseDetailResult">
+        SELECT
+        <include refid="QueryColumns"/>,
+        u.real_name
+        FROM
+        <include refid="TableName"/> ti
+        LEFT JOIN users u ON ti.admin_user_id = u.id
+        WHERE ti.id = #{id}
     </select>
 </mapper>
