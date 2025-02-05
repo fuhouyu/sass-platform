@@ -21,10 +21,7 @@ import com.fuhouyu.sass.platform.system.constants.TenantConstant;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.service.PermissionService;
-import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
-import com.fuhouyu.sass.platform.system.service.RoleService;
-import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
+import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -55,6 +52,10 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
 
     private final RoleHasPermissionService roleHasPermissionService;
 
+    private final TenantHasUserService tenantHasUserService;
+
+    private final UserHasRoleService userHasRoleService;
+
     @Override
     public void onApplicationEvent(TenantEvent event) {
         switch (event.getTenantEventEnum()) {
@@ -74,7 +75,10 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         // 关联租户和权限的关系
         this.tenantHasPermissionService.saveOrUpdateTenantPermission(tenantInfoDTO.getId(), permissionIds);
         // 新增角色
-        roleService.createTenantDefaultRole(tenantInfoDTO.getId(), permissionIds);
+        Long roleId = roleService.createTenantDefaultRole(tenantInfoDTO.getId(), permissionIds);
+        // 管理员配置
+        this.tenantHasUserService.save(tenantInfoDTO.getId(), tenantInfoDTO.getAdminUserId());
+        this.userHasRoleService.saveOrUpdateUserRole(tenantInfoDTO.getAdminUserId(), List.of(roleId));
     }
 
 

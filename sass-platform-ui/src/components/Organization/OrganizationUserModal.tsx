@@ -30,7 +30,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
 
     const {t} = useTranslation();
     const {onLoadData, organizationLazyData} = useOrganizationLazyData();
-    const {isModalOpen, setIsModalOpen, rowSelection, handleOrganizationUser} = organizationUserProps;
+    const {isModalOpen, setIsModalOpen, rowSelection} = organizationUserProps;
     const columns: TableColumnsType = [
         {
             title: t('User.username'),
@@ -99,7 +99,6 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
             onCancel={closeOrganizationUserModal}
             footer={[
                 <Button key='onOrganizationUserAddOk' type="primary" onClick={() => {
-                    handleOrganizationUser?.();
                     closeOrganizationUserModal();
                 }}
                 >{t('Button.confirm')}</Button>,

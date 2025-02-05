@@ -43,7 +43,6 @@ public class UserHasRoleServiceImpl implements UserHasRoleService {
 
     @Override
     public void saveOrUpdateUserRole(Long userId, Collection<Long> roleIds) {
-        this.userHasRoleMapper.deleteByUserIds(List.of(userId));
         if (CollectionUtils.isEmpty(roleIds)) {
             return;
         }

@@ -40,4 +40,8 @@ export interface TenantInfo extends BaseModel {
     isEnabled?: boolean;
     // 权限id集合
     permissionIds?: Key[];
+    // 管理员用户id
+    adminUserId?: string;
+    // 管理员用户真实姓名
+    adminUserRealName?: string;
 }

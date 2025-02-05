@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
@@ -165,6 +166,13 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         usernamePasswordAuthenticationToken.setDetails(userDetailsDTO);
         this.tokenStore.storeAuth2Token(auth2Token, usernamePasswordAuthenticationToken);
         this.tokenStore.storeRefreshToken(auth2Token.getRefreshToken(), usernamePasswordAuthenticationToken);
+    }
+
+    @Override
+    public TenantInfoDetailDTO findDetailById(Long id) {
+        TenantInfoDetailDTO tenantInfoDetailDTO = this.tenantInfoMapper.queryDetailById(id);
+        tenantInfoDetailDTO.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
+        return tenantInfoDetailDTO;
     }
 
     /**

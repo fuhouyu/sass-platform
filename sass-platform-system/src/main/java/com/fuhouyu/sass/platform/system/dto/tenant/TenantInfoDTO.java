@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -37,8 +38,14 @@ import java.util.List;
 @Schema(name = "TenantInfoDTO", description = "租户dto对象")
 public class TenantInfoDTO extends BaseDTO {
 
+    @Serial
+    private static final long serialVersionUID = 8971238768756123618L;
+
     @Schema(name = "id", description = "主键id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
+    @Schema(name = "adminUserId", description = "管理员账号id", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long adminUserId;
 
     @Schema(name = "tenantCode", description = "租户编码", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "租户编码未输入")

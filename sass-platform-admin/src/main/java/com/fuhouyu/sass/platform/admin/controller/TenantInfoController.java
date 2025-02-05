@@ -20,6 +20,7 @@ import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -106,8 +107,8 @@ public class TenantInfoController {
     @GetMapping("/{id}")
     @Operation(summary = "通过租户id获取租户详情")
     @PreAuthorize("@auth.hasAnyPermission('tenant:query')")
-    public BaseResponse<TenantInfoDTO> getTenantInfo(@PathVariable("id") Long id) {
-        return ResponseHelper.success(tenantInfoService.findById(id));
+    public BaseResponse<TenantInfoDetailDTO> getTenantInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(tenantInfoService.findDetailById(id));
     }
 
     /**

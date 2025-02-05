@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service;
 
 
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 
 import java.util.List;
 
@@ -53,4 +54,12 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @param id 租户id
      */
     void switchTenant(Long id);
+
+    /**
+     * 通过id查询出租户的详情
+     *
+     * @param id 主键id
+     * @return 租户详情
+     */
+    TenantInfoDetailDTO findDetailById(Long id);
 }

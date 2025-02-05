@@ -18,7 +18,7 @@
 import React, {Key, useEffect, useState} from "react";
 import {Button, Form, Input, message, Popconfirm, Radio, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
-import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
+import {FormTree, IconFont, Modal, OrganizationUserModal, PageList, PermissionButton} from "@/components";
 import {Menu} from "@/model/menu";
 import TextArea from "antd/es/input/TextArea";
 import './index.scss'
@@ -32,7 +32,6 @@ import {Role as RoleModel} from "@/model/role";
 import {permissionApi} from "@/apis/permission";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
-import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 
@@ -43,7 +42,6 @@ import {useLocaleStore} from "@/store";
 export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
-    const {findDictItems} = useDictItem(['TENANT_TYPE']);
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -122,6 +120,7 @@ export const Tenant: React.FC = () => {
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const language = useLocaleStore((state) => state.language);
+    const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
 
     /**
      * 分页查询
@@ -204,6 +203,19 @@ export const Tenant: React.FC = () => {
     const rowSelection: TableRowSelection<Userinfo> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
+
+    /**
+     * 用户列选择
+     */
+    const userRowSelection: TableRowSelection<Userinfo> = {
+        onChange: (_: React.Key[], selectedRows: Userinfo[]) => {
+            if (selectedRows.length === 0) {
+                return
+            }
+            form.setFieldValue('adminUserId', selectedRows[0].id);
+            form.setFieldValue('adminUserRealName', selectedRows[0].realName);
+        },
+    }
 
     return (<>
         <PageList
@@ -340,6 +352,30 @@ export const Tenant: React.FC = () => {
                         onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
                     />
                 </Form.Item>
+
+                <Form.Item
+                    hidden
+                    name={['adminUserId']}
+                    key="adminUserId"
+                >
+                </Form.Item>
+                <Form.Item
+                    label={t('Tenant.adminUser')}
+                    name={['adminUserRealName']}
+                    validateTrigger="onBlur"
+                    key="adminUserRealName"
+                    colon={false}
+                    required={true}
+                    hasFeedback
+                    rules={[{required: true, message: t('Tenant.adminUserPlaceholder')}]}
+                >
+                    <Input
+                        allowClear
+                        onClick={() => setIsChooseUserModalOpen(true)}
+                        placeholder={t('Tenant.adminUserPlaceholder')}
+                    />
+                </Form.Item>
+
                 <Form.Item
                     label={t('Tenant.contactPerson')}
                     name="contactPerson"
@@ -386,5 +422,11 @@ export const Tenant: React.FC = () => {
                 </Form.Item>
             </Form>
         </Modal>
+
+        <OrganizationUserModal
+            isModalOpen={isChooseUserModalOpen}
+            setIsModalOpen={setIsChooseUserModalOpen}
+            rowSelection={userRowSelection}
+        />
     </>)
 }

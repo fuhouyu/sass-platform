@@ -65,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createTenantDefaultRole(Long tenantId, List<Long> permissionIds) {
+    public Long createTenantDefaultRole(Long tenantId, List<Long> permissionIds) {
         long id = this.snowflakeIdWorker.nextId();
         Roles role = new Roles();
         role.setId(id);
@@ -79,6 +79,7 @@ public class RoleServiceImpl implements RoleService {
         this.roleMapper.insert(role);
         // 保存权限
         this.roleHasPermissionService.saveRolePermission(id, permissionIds);
+        return id;
     }
 
 
