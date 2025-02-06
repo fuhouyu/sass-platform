@@ -68,6 +68,7 @@ export const Header = () => {
     const switchTenant = async (tenantId: string) => {
         await tenantApi.switchTenant(tenantId);
         setSwitchTenantModalOpen(false);
+        window.location.reload();
     }
 
     // onClick
