@@ -51,4 +51,9 @@ public class TenantHasUserServiceImpl implements TenantHasUserService {
     public void removeByTenantIdAndUserIds(Long tenantId, Collection<Long> userIds) {
         this.tenantHasUserMapper.deleteByTenantIdAndUserIds(tenantId, userIds);
     }
+
+    @Override
+    public void removeByTenantIds(Collection<Long> tenantIds) {
+        this.tenantHasUserMapper.deleteByTenantIds(tenantIds);
+    }
 }

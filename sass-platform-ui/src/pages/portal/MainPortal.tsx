@@ -64,8 +64,8 @@ export const MainPortal = () => {
                                     e.stopPropagation();
                                     setChooseTenant(tenant.id)
                                 }}
-                                key={tenant.id}
-                                className={`switch-tenant-container ${chooseTenant === tenant.id ? 'tenant-active' : ''}`}
+                                key={tenant?.id}
+                                className={`switch-tenant-container ${chooseTenant === tenant?.id ? 'tenant-active' : ''}`}
                                 hoverable
                             >
                                 <Card.Meta

@@ -97,4 +97,5 @@ public interface BaseMapper<ID, T extends BaseEntity> {
      * @return 批量查询
      */
     <P extends PageQueryDTO> List<T> queryList(@Param("pageQuery") P pageQuery);
+
 }

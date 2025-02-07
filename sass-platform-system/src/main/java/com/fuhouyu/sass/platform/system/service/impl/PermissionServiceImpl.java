@@ -69,7 +69,7 @@ public class PermissionServiceImpl implements PermissionService {
     public List<PermissionTreeDTO> findPermissionListByMe() {
         User user = ContextHolderStrategy.getContext().getUser();
         Long userId = user.getId();
-        List<Permissions> list = this.permissionMapper.queryUserPermissonList(user.getTenantId(), userId);
+        List<Permissions> list = this.permissionMapper.queryUserPermissonList(userId);
         return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(list));
     }
 
@@ -156,7 +156,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<PermissionDTO> getPermissionList(Long parentId) {
-        List<Permissions> list = this.permissionMapper.queryListByParentId(Optional.ofNullable(parentId).orElse(-1L));
+        Long currentParentId = Optional.ofNullable(parentId).orElse(-1L);
+        List<Permissions> list = this.permissionMapper.queryListByParentId(currentParentId);
+        list.addAll(this.permissionMapper.queryAttachTenantPermissionListByParentId(currentParentId));
         return PERMISSION_ASSEMBLER.toDTO(list);
     }
 
@@ -183,6 +185,11 @@ public class PermissionServiceImpl implements PermissionService {
             return Collections.emptySet();
         }
         return permissionCodeList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+    }
+
+    @Override
+    public void removeByTenantIds(Collection<Long> tenantIds) {
+        this.permissionMapper.deleteByTenantIds(tenantIds);
     }
 
     /**

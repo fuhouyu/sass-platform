@@ -42,4 +42,11 @@ public interface TenantHasUserService {
      * @param userIds  用户id集合
      */
     void removeByTenantIdAndUserIds(Long tenantId, Collection<Long> userIds);
+
+    /**
+     * 通过租户ids删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

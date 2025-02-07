@@ -30,9 +30,7 @@ import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
-import com.fuhouyu.sass.platform.system.service.PermissionService;
-import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
-import com.fuhouyu.sass.platform.system.service.TenantInfoService;
+import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,6 +39,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,7 +63,11 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final TenantInfoMapper tenantInfoMapper;
 
+    private final RoleService roleService;
+
     private final TenantHasPermissionService tenantHasPermissionService;
+
+    private final TenantHasUserService tenantHasUserService;
 
     private final SnowflakeIdWorker snowflakeIdWorker;
 
@@ -73,6 +76,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final TokenStore tokenStore;
 
     private final PermissionService permissionService;
+
+    private final OrganizationService organizationService;
 
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
@@ -104,7 +109,9 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public int removeById(Long id) {
-        return this.tenantInfoMapper.deleteById(id);
+        int count = this.tenantInfoMapper.deleteById(id);
+        this.doRemoveTenantAttach(List.of(id));
+        return count;
     }
 
     @Override
@@ -114,9 +121,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "当前登录的租户不允许删除操作！");
         }
-        int count = this.tenantInfoMapper.deleteByIds(ids);
-        this.tenantHasPermissionService.removeTenantPermissions(ids);
-        return count;
+        this.doRemoveTenantAttach(ids);
+        return this.tenantInfoMapper.deleteByIds(ids);
     }
 
     @Override
@@ -187,5 +193,21 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "用户当前无可访问该租户的权限");
         }
+    }
+
+    /**
+     * 删除租户关联的信息
+     *
+     * @param tenantIds 租户id集合
+     */
+    private void doRemoveTenantAttach(Collection<Long> tenantIds) {
+        if (CollectionUtils.isEmpty(tenantIds)) {
+            return;
+        }
+        this.tenantHasPermissionService.removeTenantPermissions(tenantIds);
+        this.roleService.removeByTenantIds(tenantIds);
+        this.permissionService.removeByTenantIds(tenantIds);
+        this.tenantHasUserService.removeByTenantIds(tenantIds);
+        this.organizationService.removeOrganizationByTenantIds(tenantIds);
     }
 }

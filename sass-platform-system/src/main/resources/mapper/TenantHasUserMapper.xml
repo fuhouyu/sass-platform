@@ -77,4 +77,13 @@
             #{userId}
         </foreach>
     </delete>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
 </mapper>

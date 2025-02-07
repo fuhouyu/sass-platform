@@ -53,4 +53,11 @@ public interface UserPositionService {
      */
     Long removeByOrganizationIdAndUserIds(Long organizationId,
                                           Collection<Long> userIds);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

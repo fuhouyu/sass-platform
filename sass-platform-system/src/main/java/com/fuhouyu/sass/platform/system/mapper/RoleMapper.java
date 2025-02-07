@@ -17,7 +17,12 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Roles;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -37,4 +42,42 @@ public interface RoleMapper extends BaseMapper<Long, Roles> {
      */
     @TenantQuery
     Roles queryByRoleCode(String roleCode);
+
+    /**
+     * 通过id进行查询
+     *
+     * @param id 主键id
+     * @return 实体对象
+     */
+    @TenantQuery
+    @Override
+    Roles queryById(Long id);
+
+    /**
+     * 批量通过id进行查询
+     *
+     * @param list id集合
+     * @return 查询到的实体对象
+     */
+    @TenantQuery
+    @Override
+    List<Roles> queryByIds(@Param("list") Collection<Long> list);
+
+    /**
+     * 批量查询
+     *
+     * @param pageQuery 分页查询对象
+     * @param <P>       范围查询的类型
+     * @return 批量查询
+     */
+    @TenantQuery
+    @Override
+    <P extends PageQueryDTO> List<Roles> queryList(@Param("pageQuery") P pageQuery);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户id集合
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

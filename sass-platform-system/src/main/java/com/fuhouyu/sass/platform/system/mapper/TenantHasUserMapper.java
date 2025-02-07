@@ -51,4 +51,11 @@ public interface TenantHasUserMapper {
      * @param userIds  用户id集合
      */
     void deleteByTenantIdAndUserIds(@Param("tenantId") Long tenantId, @Param("userIds") Collection<Long> userIds);
+
+    /**
+     * 通过租户ids删除关联信息
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

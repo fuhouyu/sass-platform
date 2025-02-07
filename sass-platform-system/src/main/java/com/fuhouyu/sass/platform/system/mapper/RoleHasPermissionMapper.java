@@ -55,4 +55,11 @@ public interface RoleHasPermissionMapper {
      * @return 权限id集合
      */
     List<Long> queryPermissionIdByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 通过租户ids进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteRolePermissionByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

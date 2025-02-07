@@ -56,6 +56,8 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
 
     private final UserHasRoleService userHasRoleService;
 
+    private final OrganizationService organizationService;
+
     @Override
     public void onApplicationEvent(TenantEvent event) {
         switch (event.getTenantEventEnum()) {
@@ -76,6 +78,8 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         this.tenantHasPermissionService.saveOrUpdateTenantPermission(tenantInfoDTO.getId(), permissionIds);
         // 新增角色
         Long roleId = roleService.createTenantDefaultRole(tenantInfoDTO.getId(), permissionIds);
+        // 组织配置
+        this.organizationService.createTenantDefaultOrganization(tenantInfoDTO);
         // 管理员配置
         this.tenantHasUserService.save(tenantInfoDTO.getId(), tenantInfoDTO.getAdminUserId());
         this.userHasRoleService.saveOrUpdateUserRole(tenantInfoDTO.getAdminUserId(), List.of(roleId));
@@ -95,7 +99,7 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         // 更新角色和权限
         RoleDTO roleDTO = this.roleService.findByRoleCode(TenantConstant.DEFAULT_TENANT_ROLE_CODE);
         // 这里的角色不会为空
-        this.roleHasPermissionService.removeRolePermission(roleDTO.getId());
+        this.roleHasPermissionService.removeRolePermissionByRoleId(roleDTO.getId());
         this.roleHasPermissionService.saveRolePermission(roleDTO.getId(), permissionIds);
     }
 
