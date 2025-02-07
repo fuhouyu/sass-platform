@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -52,4 +53,11 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      * @return 角色列表
      */
     List<RoleDTO> list();
+
+    /**
+     * 删除租户下所有的权限
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

@@ -89,6 +89,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public void removeByTenantIds(Collection<Long> tenantIds) {
+        this.roleHasPermissionService.removeRolePermissionByTenantIds(tenantIds);
+        this.roleMapper.deleteByTenantIds(tenantIds);
+    }
+
+    @Override
     public Long save(RoleDTO dto) {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);
@@ -111,7 +117,7 @@ public class RoleServiceImpl implements RoleService {
     public void edit(RoleDTO dto) {
         this.roleMapper.update(ROLES_ASSEMBLER.toEntity(dto));
         // 保存角色和权限关系
-        this.roleHasPermissionService.removeRolePermission(dto.getId());
+        this.roleHasPermissionService.removeRolePermissionByRoleId(dto.getId());
         this.roleHasPermissionService.saveRolePermission(dto.getId(), dto.getPermissionIds());
     }
 

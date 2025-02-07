@@ -231,4 +231,13 @@
         FROM <include refid="TableName"/> o
         WHERE o.parent_id = #{parentId}
     </select>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
 </mapper>

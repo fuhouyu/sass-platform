@@ -89,4 +89,10 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      */
     Collection<? extends GrantedAuthority> findUserSimpleGrantedAuthorities(Long tenantId, Long userId);
 
+    /**
+     * 通过租户id删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

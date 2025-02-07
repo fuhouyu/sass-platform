@@ -42,16 +42,7 @@ public interface RoleHasPermissionService {
      *
      * @param roleId 角色id
      */
-    void removeRolePermission(Long roleId);
-
-    /**
-     * 删除角色和id的关联关系
-     *
-     * @param roleId               角色id
-     * @param excludePermissionIds 需要排除的权限id，为空则删除所有
-     */
-    void removeRolePermission(Long roleId,
-                              Collection<Long> excludePermissionIds);
+    void removeRolePermissionByRoleId(Long roleId);
 
 
     /**
@@ -61,4 +52,11 @@ public interface RoleHasPermissionService {
      * @return 权限id集合
      */
     List<Long> findPermissionIdsByRoleId(Long roleId);
+
+    /**
+     * 通过租户id删除
+     *
+     * @param tenantIds 租户id
+     */
+    void removeRolePermissionByTenantIds(Collection<Long> tenantIds);
 }

@@ -268,10 +268,9 @@
         FROM
         user_has_role uhr
         LEFT JOIN role_has_permission uhp ON uhr.role_id = uhp.role_id
-        LEFT JOIN permissions p ON p.id = uhp.permission_id AND p.is_deleted = false
+        LEFT JOIN roles r ON r.id = uhp.role_id
+        LEFT JOIN <include refid="TableName"/> p ON p.id = uhp.permission_id AND p.is_deleted = false
         WHERE
-        p.owner_tenant_id = #{tenantId}
-        AND
         uhr.user_id = #{userId}
         ORDER BY p.display_order
     </select>
@@ -325,5 +324,25 @@
         AND uhr.user_id = #{userId}
         AND r.is_deleted = false
         AND p.is_deleted = false
+    </select>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
+
+    <select id="queryAttachTenantPermissionListByParentId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        tenant_has_permission thp
+        LEFT JOIN <include refid="TableName"/> p ON p.id = thp.permission_id
+        WHERE parent_id = #{parentId}
+        AND is_deleted = false
+        ORDER BY display_order
     </select>
 </mapper>

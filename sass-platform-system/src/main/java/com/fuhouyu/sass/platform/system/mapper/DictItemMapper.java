@@ -16,6 +16,8 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.DictItem;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,6 +41,7 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param itemCode 字典项编码
      * @return 字典项dto对象
      */
+    @TenantQuery
     DictItem queryByDictCodeAndItemCode(@Param("dictCode") String dictCode,
                                         @Param("itemCode") String itemCode);
 
@@ -48,5 +51,38 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param dictCodeList 字典编码列表
      * @return 字典项列表
      */
+    @TenantQuery
     List<DictItem> queryListByDictCodes(@Param("dictCodeList") Collection<String> dictCodeList);
+
+    /**
+     * 通过id进行查询
+     *
+     * @param id 主键id
+     * @return 实体对象
+     */
+    @TenantQuery
+    @Override
+    DictItem queryById(Long id);
+
+    /**
+     * 批量通过id进行查询
+     *
+     * @param list id集合
+     * @return 查询到的实体对象
+     */
+    @TenantQuery
+    @Override
+    List<DictItem> queryByIds(@Param("list") Collection<Long> list);
+
+
+    /**
+     * 批量查询
+     *
+     * @param pageQuery 分页查询对象
+     * @param <P>       范围查询的类型
+     * @return 批量查询
+     */
+    @TenantQuery
+    @Override
+    <P extends PageQueryDTO> List<DictItem> queryList(@Param("pageQuery") P pageQuery);
 }

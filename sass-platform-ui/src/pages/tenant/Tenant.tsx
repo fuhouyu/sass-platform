@@ -240,7 +240,7 @@ export const Tenant: React.FC = () => {
                                 okText={t('Common.yes')}
                                 cancelText={t('Common.no')}
                                 onConfirm={async () => {
-                                    tenantApi.deleteInfoApi(rowKeys as string[]).then();
+                                    await tenantApi.deleteInfoApi(rowKeys as string[]);
                                     await pageRequest();
                                 }}
                             >

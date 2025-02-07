@@ -25,9 +25,12 @@ import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.entity.Organizations;
 import com.fuhouyu.sass.platform.system.mapper.OrganizationMapper;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;
+import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     private final OrganizationMapper organizationMapper;
+
+    private final UserPositionService userPositionService;
 
     @Override
     public Long save(OrganizationDTO dto) {
@@ -139,6 +144,39 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<OrganizationTreeDTO> getTreeList() {
         List<Organizations> organizationList = this.organizationMapper.queryList(new OrganizationPageQueryDTO());
         return TreeConvertUtil.buildTree(ORGANIZATIONS_ASSEMBLER.toTreeDTOList(organizationList));
+    }
+
+    @Override
+    public void createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO) {
+        Organizations organizations = new Organizations();
+        long id = snowflakeIdWorker.nextId();
+        organizations.setId(id);
+        organizations.setParentId(-1L);
+        organizations.setOrganizationName(tenantInfoDTO.getTenantName());
+        organizations.setOrganizationType("UNIT");
+        organizations.setOrganizationCode(String.format("GO_%s", UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT)));
+        organizations.setIsEnabled(true);
+        organizations.setIsLeaf(true);
+        organizations.setRemark("组织配置");
+        organizations.setDisplayOrder(1);
+        organizations.setOwnerTenantId(tenantInfoDTO.getId());
+        this.organizationMapper.insert(organizations);
+
+        // 关联职务
+        UserPositionDTO userPositionDTO = new UserPositionDTO();
+        userPositionDTO.setOrganizationId(id);
+        userPositionDTO.setPositionName("管理员");
+        userPositionDTO.setIsMain(true);
+        userPositionDTO.setOrderInOrganization(1L);
+
+        this.userPositionService.saveUserPosition(tenantInfoDTO.getAdminUserId(), userPositionDTO);
+    }
+
+
+    @Override
+    public void removeOrganizationByTenantIds(Collection<Long> tenantIds) {
+        this.userPositionService.removeByTenantIds(tenantIds);
+        this.organizationMapper.deleteByTenantIds(tenantIds);
     }
 
     /**

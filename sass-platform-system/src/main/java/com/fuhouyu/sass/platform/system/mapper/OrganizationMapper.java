@@ -84,5 +84,13 @@ public interface OrganizationMapper extends BaseMapper<Long, Organizations> {
      * @param parentId 父级id
      * @return 组织集合
      */
+    @TenantQuery
     List<Organizations> queryListByParentId(@Param("parentId") Long parentId);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

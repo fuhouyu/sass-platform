@@ -122,4 +122,18 @@
         WHERE user_id = #{userId}
         AND is_main = true
     </update>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE organization_id IN
+        (
+        SELECT id
+        FROM organizations
+        WHERE owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" item="tenantId">
+            #{tenantId}
+        </foreach>
+        )
+    </delete>
 </mapper>

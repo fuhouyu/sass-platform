@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,6 +40,7 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param permissionCode 权限编码
      * @return 权限do对象
      */
+    @TenantQuery(column = "p.owner_tenant_id")
     Permissions queryByPermissionCode(String permissionCode);
 
     /**
@@ -46,17 +49,17 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param roleIdList 角色id集合
      * @return 权限集合
      */
+    @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
 
     /**
      * 查询当前租户下的用户权限
      *
-     * @param tenantId 租户id
      * @param userId   用户id
      * @return 权限列表
      */
-    List<Permissions> queryUserPermissonList(@Param("tenantId") Long tenantId,
-                                             @Param("userId") Long userId);
+    @TenantQuery(column = "r.owner_tenant_id")
+    List<Permissions> queryUserPermissonList(@Param("userId") Long userId);
 
     /**
      * 通过父级id查询子级
@@ -64,6 +67,7 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param parentId 父级id
      * @return 权限集合
      */
+    @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryListByParentId(@Param("parentId") Long parentId);
 
     /**
@@ -89,4 +93,53 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @return 权限编码集合
      */
     Set<String> queryUserPermissionCodeList(@Param("tenantId") Long tenantId, @Param("userId") Long userId);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
+
+    /**
+     * 通过id进行查询
+     *
+     * @param id 主键id
+     * @return 实体对象
+     */
+    @TenantQuery(column = "p.owner_tenant_id")
+    @Override
+    Permissions queryById(Long id);
+
+    /**
+     * 批量通过id进行查询
+     *
+     * @param list id集合
+     * @return 查询到的实体对象
+     */
+    @TenantQuery(column = "p.owner_tenant_id")
+    @Override
+    List<Permissions> queryByIds(@Param("list") Collection<Long> list);
+
+
+    /**
+     * 批量查询
+     *
+     * @param pageQuery 分页查询对象
+     * @param <P>       范围查询的类型
+     * @return 批量查询
+     */
+    @TenantQuery(column = "p.owner_tenant_id")
+    @Override
+    <P extends PageQueryDTO> List<Permissions> queryList(@Param("pageQuery") P pageQuery);
+
+    /**
+     * 查询租户关联的权限
+     *
+     * @param parentId 父级id
+     * @return 权限集合
+     */
+    @TenantQuery(column = "thp.tenant_id")
+    List<Permissions> queryAttachTenantPermissionListByParentId(@Param("parentId") Long parentId);
+
 }

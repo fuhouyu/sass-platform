@@ -68,4 +68,11 @@ public interface UserPositionMapper {
      * @param userId 用户id
      */
     void updateNotMainByUserId(@Param("userId") Long userId);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

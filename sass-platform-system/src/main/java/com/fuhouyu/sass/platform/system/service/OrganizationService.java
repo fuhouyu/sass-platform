@@ -17,7 +17,9 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -52,4 +54,18 @@ public interface OrganizationService extends BaseService<Long, OrganizationDTO> 
      * @return 组织树dto列表
      */
     List<OrganizationTreeDTO> getTreeList();
+
+    /**
+     * 创建默认的组织
+     *
+     * @param tenantInfoDTO 租户dto对象
+     */
+    void createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO);
+
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeOrganizationByTenantIds(Collection<Long> tenantIds);
 }

@@ -57,7 +57,7 @@
         </include>
         WHERE role_id = #{roleId}
         <if test="excludePermissionIds != null and excludePermissionIds.size() > 0">
-            AND excludePermissionIds NOT IN
+            AND permission_id NOT IN
             <foreach collection="excludePermissionIds" open="(" close=")" item="permissionId" separator=",">
                 #{permissionId}
             </foreach>
@@ -70,4 +70,16 @@
         <include refid="TableName"/>
         WHERE role_id = #{roleId}
     </select>
+    
+    <delete id="deleteRolePermissionByTenantIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE role_id IN
+        (
+        SELECT id FROM roles WHERE owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" item="tenantId" >
+            #{tenantId}
+        </foreach>
+        )
+    </delete>
 </mapper>

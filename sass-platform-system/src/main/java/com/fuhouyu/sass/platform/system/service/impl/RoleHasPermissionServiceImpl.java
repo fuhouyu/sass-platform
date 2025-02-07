@@ -43,6 +43,7 @@ public class RoleHasPermissionServiceImpl implements RoleHasPermissionService {
 
     @Override
     public void saveRolePermission(Long roleId, Collection<Long> permissionIds) {
+        this.roleHasPermissionMapper.deleteByRoleId(roleId, permissionIds);
         if (CollectionUtils.isEmpty(permissionIds)) {
             return;
         }
@@ -56,17 +57,19 @@ public class RoleHasPermissionServiceImpl implements RoleHasPermissionService {
     }
 
     @Override
-    public void removeRolePermission(Long roleId) {
+    public void removeRolePermissionByRoleId(Long roleId) {
         this.roleHasPermissionMapper.deleteByRoleId(roleId, null);
     }
 
-    @Override
-    public void removeRolePermission(Long roleId, Collection<Long> excludePermissionIds) {
-        this.roleHasPermissionMapper.deleteByRoleId(roleId, excludePermissionIds);
-    }
 
     @Override
     public List<Long> findPermissionIdsByRoleId(Long roleId) {
         return this.roleHasPermissionMapper.queryPermissionIdByRoleId(roleId);
+    }
+
+
+    @Override
+    public void removeRolePermissionByTenantIds(Collection<Long> tenantIds) {
+        this.roleHasPermissionMapper.deleteRolePermissionByTenantIds(tenantIds);
     }
 }
