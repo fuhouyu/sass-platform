@@ -29,6 +29,7 @@ import useTenant from "@/hooks/useTenant";
 import {tenantApi} from "@/apis/tenant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {useUserStore} from "@/store";
+import {TenantInfo} from "@/model/tenant.tsx";
 
 
 export const Header = () => {
@@ -37,11 +38,14 @@ export const Header = () => {
     const [switchTenantModalOpen, setSwitchTenantModalOpen] = useState<boolean>(false);
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
     const tenantInfos = useTenant();
+    const [tenant, setTenant] = useState<TenantInfo | undefined>()
     const {fetchUserinfo, fetchLogout, userinfo} = useUserStore(state => state);
 
     useEffect(() => {
         fetchUserinfo().then();
-    }, [])
+        console.log(userinfo)
+        setTenant(tenantInfos.find(t => t.id === userinfo.tenantId))
+    }, [fetchUserinfo, tenantInfos, userinfo.tenantId])
 
     const navigate = useNavigate();
 
@@ -96,20 +100,10 @@ export const Header = () => {
                     </Col>
                     <Col className="user-header">
                         {LanguageSwitcherButton}
-                        {/*<Button*/}
-                        {/*    className='language-button'*/}
-                        {/*    onClick={async () => {*/}
-                        {/*        const switchLanguage: string = language === 'zh' ? 'en' : 'zh'*/}
-                        {/*        setLanguage(switchLanguage);*/}
-                        {/*        dispatch(changeLanguage(switchLanguage));*/}
-                        {/*        await i18n.changeLanguage(switchLanguage).then();*/}
-                        {/*    }}*/}
-                        {/*    icon={*/}
-                        {/*        <IconFont type={language === 'zh' ? 'i-en' : 'i-cn'}/>*/}
-                        {/*    }/>*/}
                         <div>
                                       <span className="tenant">
-                                    我的租户
+                                    {/*{tenantInfo}*/}
+                                          {tenant?.tenantName}
                                <IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>
                                </span>
                             <Dropdown menu={{
@@ -119,7 +113,7 @@ export const Header = () => {
                            <span>
 
                                 <Space>
-                                    你好, {userinfo.realName}
+                                    {t('Common.welcome')},{userinfo.realName}
                                     <Image
                                         className="avatar"
                                         preview={false}

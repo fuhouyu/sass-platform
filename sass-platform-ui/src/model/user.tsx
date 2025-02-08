@@ -38,6 +38,7 @@ export interface UserPosition extends BaseModel {
      */
     isMain?: boolean;
 
+
 }
 /**
  * 用户详情
@@ -89,4 +90,9 @@ export interface Userinfo extends BaseModel {
      * 用户账号
      */
     account?: Account;
+
+    /**
+     租户id
+     */
+    tenantId: string;
 }
