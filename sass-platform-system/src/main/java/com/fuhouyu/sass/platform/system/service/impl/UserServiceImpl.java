@@ -129,7 +129,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findById(Long userId) {
         Users users = this.userMapper.queryById(userId);
-        return USERS_ASSEMBLER.toDTO(users);
+        UserDTO userDTO = USERS_ASSEMBLER.toDTO(users);
+        userDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        return userDTO;
     }
 
     @Override
