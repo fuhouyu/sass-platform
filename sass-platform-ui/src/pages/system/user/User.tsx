@@ -828,6 +828,7 @@ export const User: React.FC = () => {
                             >
                                 <Select
                                     mode="multiple"
+                                    notFoundContent={null}
                                     disabled={formInitValues.realName != null}
                                     allowClear
                                     onClick={() => setIsChooseUserModalOpen(true)}

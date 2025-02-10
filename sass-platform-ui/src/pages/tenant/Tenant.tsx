@@ -370,8 +370,10 @@ export const Tenant: React.FC = () => {
                     rules={[{required: true, message: t('Tenant.adminUserPlaceholder')}]}
                 >
                     <Select
+                        onDropdownVisibleChange={() => false}
                         allowClear
                         onClick={() => setIsChooseUserModalOpen(true)}
+                        notFoundContent={null}
                         placeholder={t('Tenant.adminUserPlaceholder')}
                         mode="multiple"
                     />
