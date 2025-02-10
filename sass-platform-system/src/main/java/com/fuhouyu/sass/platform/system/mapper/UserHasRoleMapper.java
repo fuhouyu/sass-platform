@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
 import com.fuhouyu.sass.platform.system.entity.UserHasRole;
 import org.apache.ibatis.annotations.Param;
 
@@ -58,5 +59,6 @@ public interface UserHasRoleMapper {
      * @param userId 用户id
      * @return 角色id
      */
+    @TenantQuery(column = "r.owner_tenant_id")
     List<Long> queryRoleIdsByUserId(@Param("userId") Long userId);
 }
