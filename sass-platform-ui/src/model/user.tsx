@@ -94,5 +94,5 @@ export interface Userinfo extends BaseModel {
     /**
      租户id
      */
-    tenantId: string;
+    tenantId?: string;
 }

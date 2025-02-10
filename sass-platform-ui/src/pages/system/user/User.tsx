@@ -826,7 +826,9 @@ export const User: React.FC = () => {
                                 hasFeedback
                                 rules={[{required: true, message: t('Organization.chooseMemberPlaceholder')}]}
                             >
-                                <Input
+                                <Select
+                                    mode="multiple"
+                                    notFoundContent={null}
                                     disabled={formInitValues.realName != null}
                                     allowClear
                                     onClick={() => setIsChooseUserModalOpen(true)}

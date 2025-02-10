@@ -16,7 +16,7 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {Button, Form, Input, message, Popconfirm, Radio, TableColumnsType, Tag} from "antd";
+import {Button, Form, Input, message, Popconfirm, Radio, Select, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {FormTree, IconFont, Modal, OrganizationUserModal, PageList, PermissionButton} from "@/components";
 import {Menu} from "@/model/menu";
@@ -369,10 +369,13 @@ export const Tenant: React.FC = () => {
                     hasFeedback
                     rules={[{required: true, message: t('Tenant.adminUserPlaceholder')}]}
                 >
-                    <Input
+                    <Select
+                        onDropdownVisibleChange={() => false}
                         allowClear
                         onClick={() => setIsChooseUserModalOpen(true)}
+                        notFoundContent={null}
                         placeholder={t('Tenant.adminUserPlaceholder')}
+                        mode="multiple"
                     />
                 </Form.Item>
 

@@ -62,7 +62,7 @@ COMMENT ON COLUMN tenant_info.update_by IS '更新人';
 INSERT INTO tenant_info(id, admin_user_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, create_at,
                         create_by, update_at, update_by)
-VALUES (1, 1, 'platform_tenant', '平台租户', 'company', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
+VALUES (1, 1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin');
 
 -- 租户权限

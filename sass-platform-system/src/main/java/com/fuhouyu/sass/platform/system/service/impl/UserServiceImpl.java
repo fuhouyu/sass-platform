@@ -130,7 +130,11 @@ public class UserServiceImpl implements UserService {
     public UserDTO findById(Long userId) {
         Users users = this.userMapper.queryById(userId);
         UserDTO userDTO = USERS_ASSEMBLER.toDTO(users);
-        userDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+
+        if (Objects.nonNull(ContextHolderStrategy.getContext().getUser())) {
+            userDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        }
+
         return userDTO;
     }
 
