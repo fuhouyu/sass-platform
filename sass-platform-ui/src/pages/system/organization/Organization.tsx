@@ -52,6 +52,8 @@ export const Organization = () => {
         pageNum: 1,
         pageSize: 10,
         parentId: '-1',
+        sortColumn: 'display_order',
+        isAsc: true,
     });
 
     const {t} = useTranslation();

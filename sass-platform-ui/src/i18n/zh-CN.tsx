@@ -114,6 +114,8 @@ const ZhCN = {
         dictItem: '字典项',
         profile: '个人资料',
         accountSettings: '账号设置',
+        addMember: '新增成员',
+        deleteMember: '删除成员',
     },
     Account: {
         personal: '个人账号',
@@ -249,8 +251,6 @@ const ZhCN = {
         code: '组织编码',
         type: '组织类型',
         memberMaintain: '成员维护',
-        addMember: '新增成员',
-        deleteMember: '删除成员',
         chooseMember: '选择成员',
         chooseMemberPlaceholder: '请选择成员',
     },
