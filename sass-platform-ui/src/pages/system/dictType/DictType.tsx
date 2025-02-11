@@ -99,8 +99,6 @@ export const DictType = () => {
         {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
-            sorter: true,
-            defaultSortOrder: "descend",
             align: "center",
             showSorterTooltip: false
         },

@@ -38,14 +38,14 @@ export const Header = () => {
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
     const tenantInfos = useTenant();
     const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUserinfo().then();
         const currentTenant = tenantInfos.find(t => t.id === userinfo.tenantId);
         storeTenant(currentTenant);
-    }, [fetchUserinfo, storeTenant, tenantInfos, userinfo, userinfo.tenantId])
+    }, [fetchUserinfo, storeTenant, tenantInfos, userinfo.tenantId])
 
-    const navigate = useNavigate();
 
     /**
      * 下拉选择框
