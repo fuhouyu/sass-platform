@@ -34,6 +34,7 @@ export const Menu = () => {
 
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
+    const {tenant} = useUserStore(state => state);
     const {t} = useTranslation();
 
     const commonMenus: MenuProps[] = [
@@ -62,7 +63,7 @@ export const Menu = () => {
             <Sider className='layout-sider' collapsible collapsed={collapsed}
                    onCollapse={(value) => setCollapsed(value)}>
                 <h3 className="platform-title">
-                    {!collapsed && t('Header.title')}
+                    {!collapsed && tenant?.tenantName}
                 </h3>
                 <Divider/>
                 <_Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"

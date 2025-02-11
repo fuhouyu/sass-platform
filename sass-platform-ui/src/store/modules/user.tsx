@@ -23,6 +23,7 @@ import {removeToken, storeToken} from "@/utils";
 import {authenticationApi} from "@/apis/authentication.tsx";
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
+import {TenantInfo} from "@/model/tenant.tsx";
 
 /**
  * 用户状态
@@ -40,6 +41,11 @@ interface UserState {
      * 用户菜单
      */
     userMenus: Menu[];
+
+    /**
+     * 当前用户的租户
+     */
+    tenant?: TenantInfo;
 }
 
 /**
@@ -73,6 +79,12 @@ interface UserAction {
      * @param editUserinfo 用户详情
      */
     fetchEditUserinfo: (editUserinfo: Userinfo) => Promise<void>,
+    /**
+     * 存储租户
+     * @param tenant 租户
+     *
+     */
+    storeTenant: (tenant?: TenantInfo) => void;
 }
 
 /**
@@ -85,7 +97,8 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
     },
     userinfo: {},
     userMenus: [],
-
+    tenant: {},
+    storeTenant: (tenant) => set({tenant}),
     fetchLogin: async (loginForm) => {
         const authenticationRes = await authenticationApi.loginApi(loginForm);
         if (!('isUserBind' in authenticationRes)) {

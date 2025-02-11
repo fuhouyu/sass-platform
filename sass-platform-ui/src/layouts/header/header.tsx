@@ -29,7 +29,6 @@ import useTenant from "@/hooks/useTenant";
 import {tenantApi} from "@/apis/tenant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {useUserStore} from "@/store";
-import {TenantInfo} from "@/model/tenant.tsx";
 
 
 export const Header = () => {
@@ -38,14 +37,13 @@ export const Header = () => {
     const [switchTenantModalOpen, setSwitchTenantModalOpen] = useState<boolean>(false);
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
     const tenantInfos = useTenant();
-    const [tenant, setTenant] = useState<TenantInfo | undefined>()
-    const {fetchUserinfo, fetchLogout, userinfo} = useUserStore(state => state);
+    const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
 
     useEffect(() => {
         fetchUserinfo().then();
-        console.log(userinfo)
-        setTenant(tenantInfos.find(t => t.id === userinfo.tenantId))
-    }, [fetchUserinfo, tenantInfos, userinfo.tenantId])
+        const currentTenant = tenantInfos.find(t => t.id === userinfo.tenantId);
+        storeTenant(currentTenant);
+    }, [fetchUserinfo, storeTenant, tenantInfos, userinfo, userinfo.tenantId])
 
     const navigate = useNavigate();
 
@@ -102,8 +100,6 @@ export const Header = () => {
                         {LanguageSwitcherButton}
                         <div>
                                       <span className="tenant">
-                                    {/*{tenantInfo}*/}
-                                          {tenant?.tenantName}
                                <IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>
                                </span>
                             <Dropdown menu={{

@@ -32,7 +32,7 @@ export const Layout = () => {
         if (!accessToken) {
             router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
         }
-    }, [accessToken]);
+    }, [accessToken, pathname]);
     return (
             <AntdLayout className="layout-container">
                 <Menu/>
