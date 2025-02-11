@@ -346,14 +346,14 @@ export const User: React.FC = () => {
      */
     const userPositionMenuItems: MenuProps['items'] = [
         {
-            label: t('Organization.addMember'),
+            label: t('Menu.addMember'),
             key: OrganizationPermissionConstant.ADD_MEMBER,
             icon: <IconFont type="i-xinzengyonghu"/>,
             onClick: openOrganizationUserModal,
             disabled: formInitValues.userPosition?.organizationId === undefined,
         },
         {
-            label: t('Organization.deleteMember'),
+            label: t('Menu.deleteMember'),
             key: OrganizationPermissionConstant.DELETE_MEMBER,
             icon: <IconFont type="i-delete"/>,
             disabled: selectUserIds.length === 0,
@@ -766,7 +766,7 @@ export const User: React.FC = () => {
 
             {/*新增成员*/}
             <Modal
-                title={t('Organization.addMember')}
+                title={t('Menu.addMember')}
                 width={750}
                 className="ant-modal-header"
                 open={isOrganizationUserModalOpen}

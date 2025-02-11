@@ -83,6 +83,8 @@ export const Permission: React.FC = () => {
         pageNum: 1,
         pageSize: 10,
         parentId: '-1',
+        sortColumn: 'display_order',
+        isAsc: true,
     });
 
     const {t} = useTranslation();

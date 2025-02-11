@@ -167,6 +167,8 @@ export const Role: React.FC = () => {
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
+        sortColumn: 'display_order',
+        isAsc: true,
     });
 
 

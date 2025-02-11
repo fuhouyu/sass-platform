@@ -94,6 +94,8 @@ const EnUS = {
         dictItem: 'Dictionary Item',
         profile: 'User Profile',
         accountSettings: 'Account Settings',
+        addMember: 'Add User',
+        deleteMember: 'Delete User',
     },
     // 租户
     Tenant: {
@@ -247,9 +249,8 @@ const EnUS = {
         code: 'Organization Code',
         type: 'Organization Type',
         memberMaintain: 'Member Maintain',
-        addMember: 'Add User',
-        deleteMember: 'Delete User',
         chooseMember: 'Choose User',
+        chooseMemberPlaceholder: 'Please select members',
     },
     Position: {
         ownerOrganization: 'Owner Organization',
