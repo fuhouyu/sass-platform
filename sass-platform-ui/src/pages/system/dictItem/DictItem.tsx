@@ -72,7 +72,6 @@ export const DictItem = () => {
             align: "center",
             sorter: true,
             defaultSortOrder: "descend",
-            showSorterTooltip: false
         },
         {
             title: t('Common.status'),
@@ -93,10 +92,7 @@ export const DictItem = () => {
         {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
-            sorter: true,
-            defaultSortOrder: "descend",
             align: "center",
-            showSorterTooltip: false
         },
         {
             title: t('Common.updateBy'),
@@ -172,7 +168,9 @@ export const DictItem = () => {
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
-        ...params
+        ...params,
+        sortColumn: 'display_order',
+        isAsc: true,
     });
 
 

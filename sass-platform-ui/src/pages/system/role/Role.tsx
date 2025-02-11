@@ -91,10 +91,7 @@ export const Role: React.FC = () => {
         {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
-            sorter: true,
-            defaultSortOrder: "descend",
             align: "center",
-            showSorterTooltip: false
         },
         {
             title: t('Common.updateBy'),

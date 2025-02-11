@@ -118,7 +118,7 @@ export const Permission: React.FC = () => {
         {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
-            sorter: true,
+            align: 'center',
             showSorterTooltip: false
         },
         {
