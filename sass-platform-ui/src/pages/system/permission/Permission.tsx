@@ -27,6 +27,7 @@ import {
     Popconfirm,
     Radio,
     Row,
+    Splitter,
     TableColumnsType,
     Tooltip,
     Tree,
@@ -105,15 +106,17 @@ export const Permission: React.FC = () => {
             title: t('Permission.name'),
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
+            align: 'center',
         },
         {
             title: t('Permission.code'),
             dataIndex: 'permissionCode',
-
+            align: 'center',
         },
         {
             title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
+            align: 'center',
             sorter: true,
             defaultSortOrder: 'descend',
         },
@@ -125,11 +128,14 @@ export const Permission: React.FC = () => {
         },
         {
             title: t('Common.updateBy'),
+            align: 'center',
             dataIndex: 'updateBy',
         },
         {
             title: t('Common.action'),
             dataIndex: 'action',
+            align: 'center',
+            fixed: 'right',
             render: (_: AnyObject, record: Menu) => {
                 return (<>
                     <PermissionButton buttonPermissions={buttonPermissions} permissionStr={PermissionConstant.EDIT}>
@@ -289,11 +295,11 @@ export const Permission: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
-                    {/*<Input*/}
-                    {/*    className='search-input'*/}
-                    {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
+            {/*<Input*/}
+            {/*    className='search-input'*/}
+            {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
+            <Splitter>
+                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
@@ -308,53 +314,54 @@ export const Permission: React.FC = () => {
                             onSelect={onSelectTree}
                         />
                     </div>
-                </Col>
-                <Col span={21}>
-                    <SearchHeader
-                        components={[
-                            <><label htmlFor="permissionName">{t('Permission.name')}</label>
-                                <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
-                                       onChange={(e) => setSearch({permissionName: e.target.value})}/>
-                            </>,
-                        ]}
-                        onSearchClick={() => {
-                            setPageQuery({...pageQuery, ...search})
-                        }}
-                    />
-                    <Table<Menu>
-                        tableName={t('Permission.list')}
-                        columns={columns}
-                        rowSelection={rowSelection}
-                        setPageQuery={tableSearch}
-                        pageData={pageData}
-                        components={[
-                            <>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={PermissionConstant.ADD}>
-                                    <AddButton onClick={() => openModal()}/>
-                                </PermissionButton>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={PermissionConstant.DELETE}>
-                                    <Popconfirm
-                                        title={t('Button.delete')}
-                                        description={t('Button.deleteConfirm')}
-                                        okText={t('Common.yes')}
-                                        cancelText={t('Common.no')}
-                                        onConfirm={async () => {
-                                            permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                            setPageQuery({...pageQuery});
-                                            await permissionTreeSelect();
-                                        }}
-                                    >
-                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                    </Popconfirm>
-                                </PermissionButton>
-                            </>
-                        ]}
-                    />
-                </Col>
-            </Row>
-
+                </Splitter.Panel>
+                <Splitter.Panel>
+                    <div className={'table-container'}>
+                        <SearchHeader
+                            components={[
+                                <><label htmlFor="permissionName">{t('Permission.name')}</label>
+                                    <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
+                                           onChange={(e) => setSearch({permissionName: e.target.value})}/>
+                                </>,
+                            ]}
+                            onSearchClick={() => {
+                                setPageQuery({...pageQuery, ...search})
+                            }}
+                        />
+                        <Table<Menu>
+                            tableName={t('Permission.list')}
+                            columns={columns}
+                            rowSelection={rowSelection}
+                            setPageQuery={tableSearch}
+                            pageData={pageData}
+                            tableComponents={[
+                                <>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={PermissionConstant.ADD}>
+                                        <AddButton onClick={() => openModal()}/>
+                                    </PermissionButton>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={PermissionConstant.DELETE}>
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
+                                                permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                                setPageQuery({...pageQuery});
+                                                await permissionTreeSelect();
+                                            }}
+                                        >
+                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        </Popconfirm>
+                                    </PermissionButton>
+                                </>
+                            ]}
+                        />
+                    </div>
+                </Splitter.Panel>
+            </Splitter>
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Permission.edit') : t('Permission.add')}

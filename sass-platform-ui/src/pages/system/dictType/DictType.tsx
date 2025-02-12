@@ -207,7 +207,7 @@ export const DictType = () => {
                     pageQuery: pageQuery,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
-                    components: [
+                    tableComponents: [
                         <>
                             <PermissionButton permissionStr={DictTypePermissionConstant.ADD}
                                               buttonPermissions={buttonPermissions}>

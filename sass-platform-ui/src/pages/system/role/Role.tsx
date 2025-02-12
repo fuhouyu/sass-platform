@@ -204,7 +204,7 @@ export const Role: React.FC = () => {
                     pageQuery: pageQuery,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
-                    components: [
+                    tableComponents: [
                         <>
                             <PermissionButton permissionStr={RolePermissionConstant.ADD}
                                               buttonPermissions={buttonPermissions}>

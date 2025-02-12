@@ -21,14 +21,13 @@ import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {
     Button,
-    Col,
     Form,
     Input,
     InputNumber,
     message,
     Popconfirm,
     Radio,
-    Row,
+    Splitter,
     TableColumnsType,
     Tree,
     TreeSelect
@@ -103,6 +102,7 @@ export const Organization = () => {
         {
             title: t('Common.action'),
             align: 'center',
+            fixed: 'right',
             dataIndex: 'action',
             render: (_: AnyObject, record: OrganizationModal) => {
                 return (
@@ -222,8 +222,8 @@ export const Organization = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
+            <Splitter>
+                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
@@ -237,58 +237,59 @@ export const Organization = () => {
                             onSelect={onSelectTree}
                         />
                     </div>
-                </Col>
-                <Col span={21}>
-                    <SearchHeader
-                        components={[
-                            <><label htmlFor="organizationName">{t('Organization.name')}</label>
-                                <Input placeholder={t('Organization.namePlaceholder')} id={'organizationName'}
-                                       onChange={(e) => setSearch({organizationName: e.target.value})}/>
-                            </>,
-                        ]}
-                        onSearchClick={() => {
-                            setPageQuery({...pageQuery, ...search})
-                        }}
-                    />
-                    <Table<OrganizationModal>
-                        tableName={t('Organization.list')}
-                        columns={columns}
-                        rowSelection={rowSelection}
-                        setPageQuery={tableSearch}
-                        pageData={pageData}
-                        components={[
-                            <>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={OrganizationPermissionConstant.ADD}>
-                                    <Button className="add-button"
-                                            onClick={() => openModal()}
-                                            icon={<IconFont type="i-add"/>}
-                                    >
-                                        {t('Organization.add')}
-                                    </Button>
-                                </PermissionButton>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={OrganizationPermissionConstant.DELETE}>
-                                    <Popconfirm
-                                        title={t('Button.delete')}
-                                        description={t('Button.deleteConfirm')}
-                                        okText={t('Common.yes')}
-                                        cancelText={t('Common.no')}
-                                        onConfirm={async () => {
-                                            await organizationApi.deleteInfoApi(rowKeys as string[]).then();
-                                            setPageQuery({...pageQuery});
-                                            await onLoadData({key: formParentOrganization.id});
-                                        }}
-                                    >
-                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                    </Popconfirm>
-                                </PermissionButton>
-                            </>
-                        ]}
-                    />
-                </Col>
-            </Row>
-
+                </Splitter.Panel>
+                <Splitter.Panel>
+                    <div className={'table-container'}>
+                        <SearchHeader
+                            components={[
+                                <><label htmlFor="organizationName">{t('Organization.name')}</label>
+                                    <Input placeholder={t('Organization.namePlaceholder')} id={'organizationName'}
+                                           onChange={(e) => setSearch({organizationName: e.target.value})}/>
+                                </>,
+                            ]}
+                            onSearchClick={() => {
+                                setPageQuery({...pageQuery, ...search})
+                            }}
+                        />
+                        <Table<OrganizationModal>
+                            tableName={t('Organization.list')}
+                            columns={columns}
+                            rowSelection={rowSelection}
+                            setPageQuery={tableSearch}
+                            pageData={pageData}
+                            tableComponents={[
+                                <>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={OrganizationPermissionConstant.ADD}>
+                                        <Button className="add-button"
+                                                onClick={() => openModal()}
+                                                icon={<IconFont type="i-add"/>}
+                                        >
+                                            {t('Organization.add')}
+                                        </Button>
+                                    </PermissionButton>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={OrganizationPermissionConstant.DELETE}>
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
+                                                await organizationApi.deleteInfoApi(rowKeys as string[]).then();
+                                                setPageQuery({...pageQuery});
+                                                await onLoadData({key: formParentOrganization.id});
+                                            }}
+                                        >
+                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        </Popconfirm>
+                                    </PermissionButton>
+                                </>
+                            ]}
+                        />
+                    </div>
+                </Splitter.Panel>
+            </Splitter>
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Organization.edit') : t('Organization.add')}

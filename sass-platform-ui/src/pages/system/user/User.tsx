@@ -31,6 +31,7 @@ import {
     Row,
     Select,
     Space,
+    Splitter,
     TableColumnsType,
     Tag,
     Tree,
@@ -135,6 +136,7 @@ export const User: React.FC = () => {
             title: t('Common.action'),
             align: 'center',
             dataIndex: 'action',
+            fixed: 'right',
             render: (_, record: Userinfo) => {
                 return (
                     <Space>
@@ -370,8 +372,8 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
+            <Splitter>
+                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
                         <Tree<Organization>
                             defaultExpandParent={true}
@@ -392,8 +394,9 @@ export const User: React.FC = () => {
                             }}
                         />
                     </div>
-                </Col>
-                <Col span={21}>
+                </Splitter.Panel>
+                <Splitter.Panel>
+                    <div className={'table-container'}>
                     <PageList
                         tableProps={{
                             tableName: t('User.list'),
@@ -402,7 +405,7 @@ export const User: React.FC = () => {
                             pageQuery: pageQuery,
                             setPageQuery: setPageQuery,
                             rowSelection: rowSelection,
-                            components: [
+                            tableComponents: [
                                 <>
                                     <Dropdown menu={{
                                         items: userPositionMenuItems
@@ -462,9 +465,9 @@ export const User: React.FC = () => {
                             onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
                         }}
                     />
-                </Col>
-            </Row>
-
+                    </div>
+                </Splitter.Panel>
+            </Splitter>
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"

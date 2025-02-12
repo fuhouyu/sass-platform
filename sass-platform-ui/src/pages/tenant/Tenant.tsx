@@ -223,7 +223,7 @@ export const Tenant: React.FC = () => {
                 pageQuery: pageQuery,
                 setPageQuery: setPageQuery,
                 rowSelection: rowSelection,
-                components: [
+                tableComponents: [
                     <>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.ADD}>

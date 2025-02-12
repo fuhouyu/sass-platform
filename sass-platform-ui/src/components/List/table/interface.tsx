@@ -15,22 +15,18 @@
  */
 
 import React from "react";
-import {TableColumnsType} from "antd";
+import {TableProps as AntdTableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AnyObject} from "antd/es/_util/type";
-import type {TableRowSelection} from "antd/es/table/interface";
 
 
 // 搜索组件的主接口
-export interface TableProps<RecordType = AnyObject> {
+export interface TableProps<RecordType = AnyObject> extends AntdTableProps<RecordType> {
     /**
      * 名称
      */
     tableName?: string;
-    /**
-     * table的列
-     */
-    columns: TableColumnsType<RecordType>;
+
     /**
      * 分页数据
      */
@@ -50,12 +46,8 @@ export interface TableProps<RecordType = AnyObject> {
      */
     rowKey?: string;
     /**
-     * table 多选
-     */
-    rowSelection?: TableRowSelection<RecordType>;
-    /**
      * 组件数组
      */
-    components?: React.ReactNode[];
+    tableComponents?: React.ReactNode[];
 
 }
