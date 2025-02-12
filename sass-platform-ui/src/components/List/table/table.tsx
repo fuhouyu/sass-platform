@@ -30,7 +30,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 };
 
 const Table = <T extends object>(tableProps: TableProps<T>) => {
-    const {pageQuery, setPageQuery, rowKey, rowSelection, tableName, pageData, columns, components} = tableProps;
+    const {pageQuery, setPageQuery, tableName, pageData, tableComponents} = tableProps;
     const {t} = useTranslation();
 
     /**
@@ -66,7 +66,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                             {tableName}
                         </span>}
                     <div className="components">
-                        {components?.map((component, index) => (
+                        {tableComponents?.map((component, index) => (
                             <div className='component' key={index}>
                                 {component}
                             </div>
@@ -83,13 +83,12 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
             </div>
             <div className="list">
                 <AntdTable
-                    rowSelection={rowSelection}
+                    {...tableProps}
                     scroll={{x: '100%'}}
-                    columns={columns}
                     style={{tableLayout: 'fixed'}}
-                    rowKey={rowKey ?? "id"}
-                    dataSource={pageData?.list}
+                    rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
+                    dataSource={pageData?.list}
                     pagination={{
                         total: pageData?.total,
                         hideOnSinglePage: false,

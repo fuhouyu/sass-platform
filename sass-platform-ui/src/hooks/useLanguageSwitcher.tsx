@@ -21,15 +21,17 @@ import {useState} from 'react';
 import i18n from 'i18next';
 import {IconFont} from '@/components';
 import {useLocaleStore} from "@/store";
+import {EN_LANGUAGE, ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
 
     const switchLanguage = async () => {
-        const newLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+        const newLanguage = currentLanguage === ZH_CN_LANGUAGE ? EN_LANGUAGE : ZH_CN_LANGUAGE;
         setCurrentLanguage(newLanguage);
         changeLanguage(newLanguage);
+        console.log(newLanguage)
         await i18n.changeLanguage(newLanguage);
     };
 
@@ -37,7 +39,7 @@ const useLanguageSwitcher = (className?: string) => {
         <Button
             className={className}
             onClick={switchLanguage}
-            icon={<IconFont type={currentLanguage === 'zh' ? 'i-yingwen-shuangse' : 'i-zhongwen-shuangse'}/>}
+            icon={<IconFont type={currentLanguage === ZH_CN_LANGUAGE ? 'i-yingwen-shuangse' : 'i-zhongwen-shuangse'}/>}
         />
     );
 

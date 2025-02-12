@@ -218,7 +218,7 @@ export const DictItem = () => {
                     pageQuery: pageQuery,
                     setPageQuery: setPageQuery,
                     rowSelection: rowSelection,
-                    components: [
+                    tableComponents: [
                         <>
                             <PermissionButton permissionStr={DictItemPermissionConstant.ADD}
                                               buttonPermissions={buttonPermissions}>

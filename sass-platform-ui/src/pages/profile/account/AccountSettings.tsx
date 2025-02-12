@@ -172,7 +172,7 @@ export const AccountSettings = () => {
                     form={passwordForm}
                     name="modal-form"
                     labelAlign={'right'}
-                    labelCol={{span: language === 'zh' ? 4 : 7}}
+                    labelCol={{span: language === ZH_CN_LANGUAGE ? 4 : 7}}
                     colon={false}
                     clearOnDestroy={true}
 

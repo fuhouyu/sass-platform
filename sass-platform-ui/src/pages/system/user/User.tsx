@@ -31,6 +31,7 @@ import {
     Row,
     Select,
     Space,
+    Splitter,
     TableColumnsType,
     Tag,
     Tree,
@@ -58,6 +59,7 @@ import {userHasRoleApi} from "@/apis/userHasRole.tsx";
 import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
 import {userPositionApi} from "@/apis/userPosition.tsx";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 
 
 export const User: React.FC = () => {
@@ -135,6 +137,7 @@ export const User: React.FC = () => {
             title: t('Common.action'),
             align: 'center',
             dataIndex: 'action',
+            fixed: 'right',
             render: (_, record: Userinfo) => {
                 return (
                     <Space>
@@ -370,8 +373,8 @@ export const User: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
+            <Splitter>
+                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
                         <Tree<Organization>
                             defaultExpandParent={true}
@@ -392,8 +395,9 @@ export const User: React.FC = () => {
                             }}
                         />
                     </div>
-                </Col>
-                <Col span={21}>
+                </Splitter.Panel>
+                <Splitter.Panel>
+                    <div className={'table-container'}>
                     <PageList
                         tableProps={{
                             tableName: t('User.list'),
@@ -402,7 +406,7 @@ export const User: React.FC = () => {
                             pageQuery: pageQuery,
                             setPageQuery: setPageQuery,
                             rowSelection: rowSelection,
-                            components: [
+                            tableComponents: [
                                 <>
                                     <Dropdown menu={{
                                         items: userPositionMenuItems
@@ -462,9 +466,9 @@ export const User: React.FC = () => {
                             onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
                         }}
                     />
-                </Col>
-            </Row>
-
+                    </div>
+                </Splitter.Panel>
+            </Splitter>
             <Modal
                 title={updateUserId ? t('User.edit') : t('User.add')}
                 className="ant-modal-header"
@@ -606,7 +610,7 @@ export const User: React.FC = () => {
                                         key="roleIds"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                     >
                                         <Select<Role>
                                             mode="multiple"
@@ -630,7 +634,7 @@ export const User: React.FC = () => {
                                         key="organizationId"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                         rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                                     >
                                         <TreeSelect<Organization>
@@ -650,7 +654,7 @@ export const User: React.FC = () => {
                                         label={t('Position.name')}
                                         name={['userPosition', 'positionName']}
                                         key="positionName"
-                                        labelCol={{span: language == 'zh' ? 7 : 8}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                         colon={false}
                                         hasFeedback
                                         rules={[{required: true, message: t('Position.namePlaceholder')}]}
@@ -668,7 +672,7 @@ export const User: React.FC = () => {
                                         key="orderInOrganization"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                         rules={[{
                                             required: true,
                                             message: t('Position.orderInOrganizationPlaceholder')
@@ -676,7 +680,7 @@ export const User: React.FC = () => {
                                     >
                                         <InputNumber changeOnWheel
                                                      controls
-                                                     style={{width: language == 'zh' ? 230 : 164}}
+                                                     style={{width: language == ZH_CN_LANGUAGE ? 230 : 164}}
                                                      placeholder={t('Position.orderInOrganizationPlaceholder')}/>
                                     </Form.Item>
                                 </Col>
@@ -687,7 +691,7 @@ export const User: React.FC = () => {
                                         key={'isMain'}
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 8}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                         required
                                         initialValue={true}
                                     >
@@ -721,7 +725,7 @@ export const User: React.FC = () => {
                 <Form
                     clearOnDestroy
                     name="modal-form"
-                    labelCol={{span: language === 'zh' ? 3 : 4}}
+                    labelCol={{span: language === ZH_CN_LANGUAGE ? 3 : 4}}
                     form={userHasRoleForm}
                     validateTrigger={'onBlur'}
                     initialValues={{
@@ -801,7 +805,7 @@ export const User: React.FC = () => {
                                 key="organizationId"
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                 rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                             >
                                 <TreeSelect<Organization>
@@ -821,7 +825,7 @@ export const User: React.FC = () => {
                                 label={t('Organization.chooseMember')}
                                 name="realName"
                                 key="realName"
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 colon={false}
                                 hasFeedback
                                 rules={[{required: true, message: t('Organization.chooseMemberPlaceholder')}]}
@@ -843,7 +847,7 @@ export const User: React.FC = () => {
                                 label={t('Position.name')}
                                 name={['userPosition', 'positionName']}
                                 key="positionName"
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 colon={false}
                                 hasFeedback
                                 rules={[{required: true, message: t('Position.namePlaceholder')}]}
@@ -858,7 +862,7 @@ export const User: React.FC = () => {
                                 key={'isMain'}
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 required
                                 initialValue={true}
                             >
@@ -878,7 +882,7 @@ export const User: React.FC = () => {
                                 key="orderInOrganization"
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                 rules={[{
                                     required: true,
                                     message: t('Position.orderInOrganizationPlaceholder')
@@ -886,7 +890,7 @@ export const User: React.FC = () => {
                             >
                                 <InputNumber changeOnWheel
                                              controls
-                                             style={{width: language == 'zh' ? 230 : 164}}
+                                             style={{width: language == ZH_CN_LANGUAGE ? 230 : 164}}
                                              placeholder={t('Position.orderInOrganizationPlaceholder')}/>
                             </Form.Item>
                         </Col>

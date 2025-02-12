@@ -27,6 +27,7 @@ import {
     Popconfirm,
     Radio,
     Row,
+    Splitter,
     TableColumnsType,
     Tooltip,
     Tree,
@@ -44,6 +45,7 @@ import {AnyObject} from "antd/es/_util/type";
 import {PermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 /**
  * 设置树数据
@@ -105,15 +107,17 @@ export const Permission: React.FC = () => {
             title: t('Permission.name'),
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
+            align: 'center',
         },
         {
             title: t('Permission.code'),
             dataIndex: 'permissionCode',
-
+            align: 'center',
         },
         {
             title: t('Common.displayOrder'),
             dataIndex: 'displayOrder',
+            align: 'center',
             sorter: true,
             defaultSortOrder: 'descend',
         },
@@ -125,11 +129,14 @@ export const Permission: React.FC = () => {
         },
         {
             title: t('Common.updateBy'),
+            align: 'center',
             dataIndex: 'updateBy',
         },
         {
             title: t('Common.action'),
             dataIndex: 'action',
+            align: 'center',
+            fixed: 'right',
             render: (_: AnyObject, record: Menu) => {
                 return (<>
                     <PermissionButton buttonPermissions={buttonPermissions} permissionStr={PermissionConstant.EDIT}>
@@ -289,11 +296,11 @@ export const Permission: React.FC = () => {
 
     return (
         <>
-            <Row gutter={24} className={'main-container'}>
-                <Col span={3} className={'tree-container'}>
-                    {/*<Input*/}
-                    {/*    className='search-input'*/}
-                    {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
+            {/*<Input*/}
+            {/*    className='search-input'*/}
+            {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
+            <Splitter>
+                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
@@ -308,53 +315,54 @@ export const Permission: React.FC = () => {
                             onSelect={onSelectTree}
                         />
                     </div>
-                </Col>
-                <Col span={21}>
-                    <SearchHeader
-                        components={[
-                            <><label htmlFor="permissionName">{t('Permission.name')}</label>
-                                <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
-                                       onChange={(e) => setSearch({permissionName: e.target.value})}/>
-                            </>,
-                        ]}
-                        onSearchClick={() => {
-                            setPageQuery({...pageQuery, ...search})
-                        }}
-                    />
-                    <Table<Menu>
-                        tableName={t('Permission.list')}
-                        columns={columns}
-                        rowSelection={rowSelection}
-                        setPageQuery={tableSearch}
-                        pageData={pageData}
-                        components={[
-                            <>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={PermissionConstant.ADD}>
-                                    <AddButton onClick={() => openModal()}/>
-                                </PermissionButton>
-                                <PermissionButton buttonPermissions={buttonPermissions}
-                                                  permissionStr={PermissionConstant.DELETE}>
-                                    <Popconfirm
-                                        title={t('Button.delete')}
-                                        description={t('Button.deleteConfirm')}
-                                        okText={t('Common.yes')}
-                                        cancelText={t('Common.no')}
-                                        onConfirm={async () => {
-                                            permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                            setPageQuery({...pageQuery});
-                                            await permissionTreeSelect();
-                                        }}
-                                    >
-                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                    </Popconfirm>
-                                </PermissionButton>
-                            </>
-                        ]}
-                    />
-                </Col>
-            </Row>
-
+                </Splitter.Panel>
+                <Splitter.Panel>
+                    <div className={'table-container'}>
+                        <SearchHeader
+                            components={[
+                                <><label htmlFor="permissionName">{t('Permission.name')}</label>
+                                    <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
+                                           onChange={(e) => setSearch({permissionName: e.target.value})}/>
+                                </>,
+                            ]}
+                            onSearchClick={() => {
+                                setPageQuery({...pageQuery, ...search})
+                            }}
+                        />
+                        <Table<Menu>
+                            tableName={t('Permission.list')}
+                            columns={columns}
+                            rowSelection={rowSelection}
+                            setPageQuery={tableSearch}
+                            pageData={pageData}
+                            tableComponents={[
+                                <>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={PermissionConstant.ADD}>
+                                        <AddButton onClick={() => openModal()}/>
+                                    </PermissionButton>
+                                    <PermissionButton buttonPermissions={buttonPermissions}
+                                                      permissionStr={PermissionConstant.DELETE}>
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
+                                                permissionApi.deleteInfoApi(rowKeys as string[]).then();
+                                                setPageQuery({...pageQuery});
+                                                await permissionTreeSelect();
+                                            }}
+                                        >
+                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        </Popconfirm>
+                                    </PermissionButton>
+                                </>
+                            ]}
+                        />
+                    </div>
+                </Splitter.Panel>
+            </Splitter>
             <Modal
                 destroyOnClose={true}
                 title={updateId ? t('Permission.edit') : t('Permission.add')}
@@ -437,7 +445,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 label={t('Permission.name')}
-                                labelCol={{span: language == 'zh' ? 6 : 10}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
                                 name="permissionName"
                                 key="permissionName"
                                 colon={false}
@@ -497,7 +505,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 label={t('Common.displayOrder')}
-                                labelCol={{span: language == 'zh' ? 6 : 10}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
                                 name="displayOrder"
                                 key="displayOrder"
                                 colon={false}
@@ -517,7 +525,7 @@ export const Permission: React.FC = () => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                labelCol={{span: language == 'zh' ? 6 : 9}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
                                 label={t('Common.status')}
                                 name="isEnabled"
                                 key="isEnabled"
@@ -537,7 +545,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == 'zh' ? 6 : 10}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
                                         label={t('Permission.isFrame')}
                                         name="isFrame"
                                         key="isFrame"
@@ -552,7 +560,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == 'zh' ? 6 : 9}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
                                         label={t('Permission.routePath')}
                                         name="routePath"
                                         key="routePath"
@@ -587,7 +595,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == 'zh' ? 6 : 10}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
                                         label={t('Permission.componentPath')}
                                         name="componentPath"
                                         key="componentPath"
@@ -607,7 +615,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == 'zh' ? 6 : 9}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
                                         label={t('Permission.routeParams')}
                                         name="urlParams"
                                         key="urlParams"
@@ -627,7 +635,7 @@ export const Permission: React.FC = () => {
                                 <Row gutter={24}>
                                     <Col span={12}>
                                         <Form.Item
-                                            labelCol={{span: language == 'zh' ? 6 : 10}}
+                                            labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
                                             label={t('Permission.icon')}
                                             name="icon"
                                             key="icon"
@@ -638,7 +646,7 @@ export const Permission: React.FC = () => {
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
-                                            labelCol={{span: language == 'zh' ? 6 : 9}}
+                                            labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
                                             label={t('Permission.displayStatus')}
                                             name="isVisible"
                                             key="isVisible"

@@ -34,6 +34,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 /**
  * 租户组件
@@ -223,7 +224,7 @@ export const Tenant: React.FC = () => {
                 pageQuery: pageQuery,
                 setPageQuery: setPageQuery,
                 rowSelection: rowSelection,
-                components: [
+                tableComponents: [
                     <>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.ADD}>
@@ -277,7 +278,7 @@ export const Tenant: React.FC = () => {
                 clearOnDestroy={true}
                 name="modal-form"
                 form={form}
-                labelCol={{span: language == 'zh' ? 4 : 7}}
+                labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
                 autoComplete="off"
                 onFinish={handleTenant}
                 initialValues={formInitValues}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {LANGUAGE_KEY} from "@/constants/commonConstant";
+import {LANGUAGE_KEY, ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
 
@@ -43,7 +43,7 @@ interface LocaleAction {
  * @param set set
  */
 const createLocaleSlice: StateCreator<LocaleState & LocaleAction> = (set) => ({
-    language: localStorage.getItem(LANGUAGE_KEY) ?? 'zh',
+    language: localStorage.getItem(LANGUAGE_KEY) ?? ZH_CN_LANGUAGE,
     changeLanguage: (language: string) => set(({language})),
 });
 
