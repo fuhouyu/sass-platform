@@ -22,6 +22,7 @@ import {Account, AccountType} from "@/model/account.tsx";
 import {useTranslation} from "react-i18next";
 import {ExclamationCircleFilled} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 interface UpdatePasswordForm {
     oldPassword: string;
