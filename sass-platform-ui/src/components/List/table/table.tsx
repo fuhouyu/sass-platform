@@ -86,6 +86,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     {...tableProps}
                     scroll={{x: '100%'}}
                     style={{tableLayout: 'fixed'}}
+                    rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
                     dataSource={pageData?.list}
                     pagination={{
@@ -93,7 +94,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                         hideOnSinglePage: false,
                         showSizeChanger: true,
                         defaultPageSize: pageData?.pageSize ?? 10,
-                        // locale: {items_per_page: '条/页'}
+                        locale: {items_per_page: '条/页'}
                     }}
                     showSorterTooltip={{target: 'sorter-icon'}}
                 />
