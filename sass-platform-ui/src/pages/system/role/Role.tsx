@@ -42,6 +42,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -271,7 +272,7 @@ export const Role: React.FC = () => {
                 <Form<RoleModel>
                     name="modal-form"
                     form={form}
-                    labelCol={{span: language == 'zh' ? 4 : 6}}
+                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 6}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}

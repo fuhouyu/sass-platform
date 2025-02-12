@@ -44,3 +44,13 @@ export const BASE_HOME_URL: string = '/home';
  * 个人资料
  */
 export const BASE_USER_PROFILE_URL: string = '/profile';
+
+/**
+ * 中文
+ */
+export const ZH_CN_LANGUAGE = 'zh_cn';
+
+/**
+ * 英文
+ */
+export const EN_LANGUAGE = 'en';

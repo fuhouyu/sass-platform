@@ -17,7 +17,7 @@
 import i18n from "i18next";
 import {initReactI18next} from "react-i18next";
 import {ZhCN} from "@/i18n/zh-CN";
-import {LANGUAGE_KEY} from "@/constants/commonConstant";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 import {EnUS} from "@/i18n/en-US";
 
 i18n
@@ -27,17 +27,16 @@ i18n
     // 所有配置选项: https://www.i18next.com/overview/configuration-options
     .init({
         resources: {
-            "en": {
+            en: {
                 translation: EnUS
             },
-            "zh": {
+            zh_cn: {
                 translation: ZhCN
             },
         },
-        fallbackLng: "zh",
-        lng: localStorage.getItem(LANGUAGE_KEY) ?? 'zh',
+        fallbackLng: ZH_CN_LANGUAGE,
+        lng: ZH_CN_LANGUAGE,
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         }
     }).then();
-export default i18n;

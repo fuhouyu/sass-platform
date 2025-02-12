@@ -59,6 +59,7 @@ import {userHasRoleApi} from "@/apis/userHasRole.tsx";
 import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
 import {userPositionApi} from "@/apis/userPosition.tsx";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 
 
 export const User: React.FC = () => {
@@ -609,7 +610,7 @@ export const User: React.FC = () => {
                                         key="roleIds"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                     >
                                         <Select<Role>
                                             mode="multiple"
@@ -633,7 +634,7 @@ export const User: React.FC = () => {
                                         key="organizationId"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                         rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                                     >
                                         <TreeSelect<Organization>
@@ -653,7 +654,7 @@ export const User: React.FC = () => {
                                         label={t('Position.name')}
                                         name={['userPosition', 'positionName']}
                                         key="positionName"
-                                        labelCol={{span: language == 'zh' ? 7 : 8}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                         colon={false}
                                         hasFeedback
                                         rules={[{required: true, message: t('Position.namePlaceholder')}]}
@@ -671,7 +672,7 @@ export const User: React.FC = () => {
                                         key="orderInOrganization"
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 12}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                         rules={[{
                                             required: true,
                                             message: t('Position.orderInOrganizationPlaceholder')
@@ -679,7 +680,7 @@ export const User: React.FC = () => {
                                     >
                                         <InputNumber changeOnWheel
                                                      controls
-                                                     style={{width: language == 'zh' ? 230 : 164}}
+                                                     style={{width: language == ZH_CN_LANGUAGE ? 230 : 164}}
                                                      placeholder={t('Position.orderInOrganizationPlaceholder')}/>
                                     </Form.Item>
                                 </Col>
@@ -690,7 +691,7 @@ export const User: React.FC = () => {
                                         key={'isMain'}
                                         colon={false}
                                         hasFeedback
-                                        labelCol={{span: language == 'zh' ? 7 : 8}}
+                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                         required
                                         initialValue={true}
                                     >
@@ -724,7 +725,7 @@ export const User: React.FC = () => {
                 <Form
                     clearOnDestroy
                     name="modal-form"
-                    labelCol={{span: language === 'zh' ? 3 : 4}}
+                    labelCol={{span: language === ZH_CN_LANGUAGE ? 3 : 4}}
                     form={userHasRoleForm}
                     validateTrigger={'onBlur'}
                     initialValues={{
@@ -804,7 +805,7 @@ export const User: React.FC = () => {
                                 key="organizationId"
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                 rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                             >
                                 <TreeSelect<Organization>
@@ -824,7 +825,7 @@ export const User: React.FC = () => {
                                 label={t('Organization.chooseMember')}
                                 name="realName"
                                 key="realName"
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 colon={false}
                                 hasFeedback
                                 rules={[{required: true, message: t('Organization.chooseMemberPlaceholder')}]}
@@ -846,7 +847,7 @@ export const User: React.FC = () => {
                                 label={t('Position.name')}
                                 name={['userPosition', 'positionName']}
                                 key="positionName"
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 colon={false}
                                 hasFeedback
                                 rules={[{required: true, message: t('Position.namePlaceholder')}]}
@@ -861,7 +862,7 @@ export const User: React.FC = () => {
                                 key={'isMain'}
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 8}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 8}}
                                 required
                                 initialValue={true}
                             >
@@ -881,7 +882,7 @@ export const User: React.FC = () => {
                                 key="orderInOrganization"
                                 colon={false}
                                 hasFeedback
-                                labelCol={{span: language == 'zh' ? 7 : 12}}
+                                labelCol={{span: language == ZH_CN_LANGUAGE ? 7 : 12}}
                                 rules={[{
                                     required: true,
                                     message: t('Position.orderInOrganizationPlaceholder')
@@ -889,7 +890,7 @@ export const User: React.FC = () => {
                             >
                                 <InputNumber changeOnWheel
                                              controls
-                                             style={{width: language == 'zh' ? 230 : 164}}
+                                             style={{width: language == ZH_CN_LANGUAGE ? 230 : 164}}
                                              placeholder={t('Position.orderInOrganizationPlaceholder')}/>
                             </Form.Item>
                         </Col>

@@ -43,6 +43,7 @@ import './index.scss'
 import TextArea from "antd/es/input/TextArea";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {useLocaleStore} from "@/store";
+import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 
 export const Organization = () => {
@@ -307,7 +308,7 @@ export const Organization = () => {
                     clearOnDestroy={true}
                     name="modal-form"
                     form={form}
-                    labelCol={{span: language == 'zh' ? 4 : 8}}
+                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 8}}
                     autoComplete="off"
                     initialValues={{
                         parentId: formParentOrganization.id,
