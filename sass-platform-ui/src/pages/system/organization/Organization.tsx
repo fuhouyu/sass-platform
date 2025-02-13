@@ -104,6 +104,7 @@ export const Organization = () => {
             title: t('Common.action'),
             align: 'center',
             fixed: 'right',
+            width: 120,
             dataIndex: 'action',
             render: (_: AnyObject, record: OrganizationModal) => {
                 return (
@@ -240,7 +241,6 @@ export const Organization = () => {
                     </div>
                 </Splitter.Panel>
                 <Splitter.Panel>
-                    <div className={'table-container'}>
                         <SearchHeader
                             components={[
                                 <><label htmlFor="organizationName">{t('Organization.name')}</label>
@@ -258,6 +258,7 @@ export const Organization = () => {
                             rowSelection={rowSelection}
                             setPageQuery={tableSearch}
                             pageData={pageData}
+                            scroll={{x: 1500}}
                             tableComponents={[
                                 <>
                                     <PermissionButton buttonPermissions={buttonPermissions}
@@ -288,7 +289,6 @@ export const Organization = () => {
                                 </>
                             ]}
                         />
-                    </div>
                 </Splitter.Panel>
             </Splitter>
             <Modal

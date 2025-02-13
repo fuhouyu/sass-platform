@@ -146,7 +146,6 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                             hideOnSinglePage: false,
                             showSizeChanger: true,
                             defaultPageSize: pageResult?.pageSize ?? 10,
-                            // locale: {items_per_page: '条/页'}
                         }}
                     />
                 </Col>

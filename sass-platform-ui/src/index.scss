@@ -83,5 +83,8 @@ ul {
 }
 
 .table-container {
-  padding-left: .3rem;
+  padding: .5rem;
+  background-color: #ffffff;
+  flex-grow: 1;
+  overflow: auto;
 }

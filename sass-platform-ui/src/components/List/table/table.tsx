@@ -80,12 +80,9 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                         <span>{t('Common.listTips')}</span>
                     </Space>
                 </div>
-            </div>
-            <div className="list">
                 <AntdTable
                     {...tableProps}
-                    scroll={{x: '100%'}}
-                    style={{tableLayout: 'fixed'}}
+                    // style={{tableLayout: 'fixed'}}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
                     dataSource={pageData?.list}
@@ -94,7 +91,6 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                         hideOnSinglePage: false,
                         showSizeChanger: true,
                         defaultPageSize: pageData?.pageSize ?? 10,
-                        locale: {items_per_page: '条/页'}
                     }}
                     showSorterTooltip={{target: 'sorter-icon'}}
                 />

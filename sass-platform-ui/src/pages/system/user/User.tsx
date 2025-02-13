@@ -137,6 +137,7 @@ export const User: React.FC = () => {
             title: t('Common.action'),
             align: 'center',
             dataIndex: 'action',
+            width: 240,
             fixed: 'right',
             render: (_, record: Userinfo) => {
                 return (
@@ -397,11 +398,11 @@ export const User: React.FC = () => {
                     </div>
                 </Splitter.Panel>
                 <Splitter.Panel>
-                    <div className={'table-container'}>
                     <PageList
                         tableProps={{
                             tableName: t('User.list'),
                             columns: columns,
+                            scroll: {x: 1500},
                             pageData: pageResult,
                             pageQuery: pageQuery,
                             setPageQuery: setPageQuery,
@@ -466,7 +467,6 @@ export const User: React.FC = () => {
                             onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
                         }}
                     />
-                    </div>
                 </Splitter.Panel>
             </Splitter>
             <Modal
@@ -708,7 +708,8 @@ export const User: React.FC = () => {
                 </Form>
             </Modal>
 
-            {/*角色授权*/}
+            {/*角色授权*/
+            }
             <Modal
                 title={t('User.roleAuthorization')}
                 className="ant-modal-header"
@@ -768,7 +769,8 @@ export const User: React.FC = () => {
                 </Form>
             </Modal>
 
-            {/*新增成员*/}
+            {/*新增成员*/
+            }
             <Modal
                 title={t('Menu.addMember')}
                 width={750}
@@ -904,5 +906,6 @@ export const User: React.FC = () => {
                 rowSelection={userRowSelection}
             />
         </>
-    );
+    )
+        ;
 }
