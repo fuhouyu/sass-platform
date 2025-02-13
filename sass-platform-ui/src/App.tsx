@@ -33,6 +33,7 @@ export const App: React.FC = () => {
     const language = useLocaleStore(state => state.language);
     const [antdLocale, setAntdLocale] = useState<Locale>();
     useEffect(() => {
+        console.log(language)
         if (language === ZH_CN_LANGUAGE) {
             setAntdLocale(zhCN)
         } else {
