@@ -35,6 +35,7 @@ import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
+import {useDictItem} from "@/hooks/useDictItem.tsx";
 
 /**
  * 租户组件
@@ -57,6 +58,9 @@ export const Tenant: React.FC = () => {
         {
             title: t('Tenant.type'),
             dataIndex: 'tenantType',
+            render: (_, record: TenantInfo) => {
+                return findDictItemName('TENANT_TYPE', record.tenantType);
+            }
         },
         {
             title: t('Tenant.contactPerson'),
@@ -118,6 +122,7 @@ export const Tenant: React.FC = () => {
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const language = useLocaleStore((state) => state.language);
+    const {findDictItemName} = useDictItem(["TENANT_TYPE"]);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
 
     /**

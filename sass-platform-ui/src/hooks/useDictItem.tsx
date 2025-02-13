@@ -49,7 +49,7 @@ export function useDictItem(dictCodes: string[]) {
             await fetchDictItemTypeMapping(queryDictCodes);
         };
         initDictType().then();
-    }, [queryDictCodes]);
+    }, [fetchDictItemTypeMapping, queryDictCodes]);
 
     return {
         findDictItems,
