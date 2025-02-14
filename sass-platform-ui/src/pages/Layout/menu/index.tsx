@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-
-import Sider from "antd/es/layout/Sider";
-import {Divider, Menu as _Menu} from 'antd';
-import {useState} from "react";
-import {MenuProps, useMenuTree} from "@/hooks/useMenuTree";
 import {useNavigate} from "react-router-dom";
-import './index.scss'
-import {Menu as UserMenus, MenuType} from "@/model/menu";
-import {IconFont} from "@/components";
-import {useTranslation} from "react-i18next";
+import {useState} from "react";
 import {useUserStore} from "@/store";
+import {useTranslation} from "react-i18next";
+import {MenuProps, useMenuTree} from "@/hooks/useMenuTree.tsx";
+import {IconFont} from "@/components";
+import {Menu as UserMenus, MenuType} from "@/model/menu.tsx";
+import Sider from "antd/es/layout/Sider";
+import {Divider, Menu} from "antd";
 
-/**
- * 侧边菜单组件
- * @constructor 构造函数
- */
-export const Menu = () => {
-
+export const LayoutMenu = () => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const {tenant} = useUserStore(state => state);
@@ -60,14 +53,11 @@ export const Menu = () => {
 
     return (
         <>
-            <Sider className='layout-sider' collapsible collapsed={collapsed}
+            <Sider theme={"light"} collapsible collapsed={collapsed}
                    onCollapse={(value) => setCollapsed(value)}>
-                <h3 className="platform-title">
-                    {!collapsed && tenant?.tenantName}
-                </h3>
                 <Divider/>
-                <_Menu className="layout-menu" theme='dark' defaultSelectedKeys={['1']} mode="inline"
-                       items={menuItems} onClick={onMenuClick}/>
+                <Menu className="layout-menu" defaultSelectedKeys={['1']} mode="inline"
+                      items={menuItems} onClick={onMenuClick}/>
             </Sider>
         </>
     )

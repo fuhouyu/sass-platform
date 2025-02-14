@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import {Layout as AntdLayout} from "antd";
-import {Content} from "antd/es/layout/layout";
+import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation} from "react-router-dom";
-import {Menu} from "@/layouts/menu/menu";
-import {Header} from "@/layouts/header/header";
-import './index.scss'
 import {useEffect} from "react";
 import {router} from "@/routes/routers.tsx";
 import {BASE_LOGIN_URL} from "@/constants/commonConstant.tsx";
-import useAuth from "@/hooks/useAuth.tsx";
+import Layout, {Content} from "antd/es/layout/layout";
+import {LayoutHeader} from "@/pages/Layout/header";
+import {LayoutMenu} from "@/pages/Layout/menu";
+import './index.scss'
+import {Bread} from "@/components";
 
-export const Layout = () => {
+export const LayoutMain = () => {
     const accessToken = useAuth();
     const pathname = useLocation().pathname;
     useEffect(() => {
@@ -34,14 +34,17 @@ export const Layout = () => {
         }
     }, [accessToken, pathname]);
     return (
-            <AntdLayout className="layout-container">
-                <Menu/>
-                <AntdLayout>
-                    <Header/>
+        <Layout className={'layout-container'}>
+            <LayoutHeader/>
+            <Content>
+                <Layout>
+                    <LayoutMenu/>
                     <Content className="layout-content">
+                        <Bread/>
                         <Outlet/>
                     </Content>
-                </AntdLayout>
-            </AntdLayout>
+                </Layout>
+            </Content>
+        </Layout>
     )
 }
