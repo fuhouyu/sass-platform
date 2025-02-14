@@ -33,18 +33,15 @@ export const App: React.FC = () => {
     const language = useLocaleStore(state => state.language);
     const [antdLocale, setAntdLocale] = useState<Locale>();
     useEffect(() => {
-        console.log(language)
-        if (language === ZH_CN_LANGUAGE) {
-            setAntdLocale(zhCN)
-        } else {
-            setAntdLocale(enUS)
-        }
+        setAntdLocale(language === ZH_CN_LANGUAGE ? zhCN : enUS);
     }, [language])
     if (!initialize) {
         return <PageLoading/>;
     }
     return (
-        <ConfigProvider locale={antdLocale}>
+        <ConfigProvider
+            locale={antdLocale}
+        >
             <RouterProvider router={router} fallbackElement={<PageLoading/>}/>
         </ConfigProvider>
     );

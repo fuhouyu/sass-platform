@@ -17,7 +17,6 @@
 import {createBrowserRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
 import React from "react";
-import {Layout} from "@/layouts/layout";
 import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Home} from "@/pages/home/Home";
 import {Profile} from "@/pages/profile/Profile.tsx";
@@ -34,6 +33,7 @@ import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.ts
 import {LoaderFunction} from "@remix-run/router/utils.ts";
 import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
+import {LayoutMain} from "@/pages/Layout";
 
 export type RouterType = {
     id: string;
@@ -55,7 +55,7 @@ export const commonRouter: RouterType[] = [
         id: 'layout',
         title: 'dashboard',
         path: '/',
-        element: <Layout/>,
+        element: <LayoutMain/>,
         loader: async () => {
             const accessToken = getAccessToken();
             if (!accessToken) {

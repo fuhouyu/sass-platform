@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.ant-layout-header {
+  padding: 0 1rem;
+}
 
 // 布局头
 .layout-header {
   background-color: #fff;
-  height: 3.125rem;
-  line-height: 3.125rem;
-  padding: 0 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 下边角阴影 */
   // 用户头
   .user-header {
     display: flex;
@@ -57,7 +58,6 @@
   line-height: 3.125rem;
   text-align: center;
   margin: 0 auto;
-  color: white;
 }
 
 .switch-tenant-container {

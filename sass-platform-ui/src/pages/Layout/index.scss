@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.layout-sider, .layout-menu, .ant-layout-sider-trigger, {
-  background-color: #304156 !important;
-  color: #ffffff !important;
+.layout-container, .ant-layout-has-sider, .ant-layout-content {
+  height: 100%;
+  padding: 0;
+  width: 100%;
+}
+// 内容区域
+.layout-content {
+  margin: 0 1rem;
 }
 
-.ant-menu-sub {
-  background-color: #202D3D !important;
+// 分隔线
+.ant-divider {
+  margin: 0;
+}
+
+.ant-layout-sider-has-trigger {
+  padding: 0;
 }
