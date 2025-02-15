@@ -44,7 +44,10 @@ interface LocaleAction {
  */
 const createLocaleSlice: StateCreator<LocaleState & LocaleAction> = (set) => ({
     language: localStorage.getItem(LANGUAGE_KEY) ?? ZH_CN_LANGUAGE,
-    changeLanguage: (language: string) => set(({language})),
+    changeLanguage: (language: string) => {
+        set(({language}));
+        localStorage.setItem(LANGUAGE_KEY, language);
+    },
 });
 
 

@@ -34,8 +34,6 @@ import {LoaderFunction} from "@remix-run/router/utils.ts";
 import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
-import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
-import {AccountSettings} from "@/pages/profile/account/AccountSettings";
 
 export type RouterType = {
     id: string;
@@ -77,20 +75,6 @@ export const commonRouter: RouterType[] = [
                 title: 'profile',
                 path: BASE_USER_PROFILE_URL,
                 element: <UserProfile/>,
-                children: [
-                    {
-                        id: 'userinfo',
-                        title: 'userinfo',
-                        path: '',
-                        element: <Userinfo/>
-                    },
-                    {
-                        id: 'accountsBinding',
-                        title: 'accountsBinding',
-                        path: 'accounts',
-                        element: <AccountSettings/>
-                    }
-                ]
             }
         ]
     },

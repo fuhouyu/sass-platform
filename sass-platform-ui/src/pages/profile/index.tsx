@@ -15,7 +15,7 @@
  */
 
 
-import React from "react";
+import React, {useState} from "react";
 import "./index.scss"
 import {SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar, Divider, Menu, Space} from "antd";
@@ -23,9 +23,13 @@ import {useTranslation} from "react-i18next";
 import {useUserStore} from "@/store";
 import {IconFont} from "@/components";
 import Layout, {Content, Header} from "antd/es/layout/layout";
-import {Outlet, useNavigate} from "react-router-dom";
 import type {MenuItemType} from "antd/es/menu/interface";
+import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
+import {AccountsBinding} from "@/pages/profile/account/AccountsBinding.tsx";
 
+interface MenuItem extends MenuItemType {
+    element: React.ReactNode
+}
 
 /**
  * 个人中心用户详情
@@ -34,29 +38,23 @@ import type {MenuItemType} from "antd/es/menu/interface";
 export const UserProfile: React.FC = () => {
     const {t} = useTranslation();
     const {userinfo} = useUserStore(state => state);
-    const navigate = useNavigate();
-    const [headerTitle, setHeaderTitle] = React.useState<string>(t('Menu.profile'));
 
-    const menuClick = (path: string, title: string) => {
-        navigate(path);
-        setHeaderTitle(title);
-    }
-    const menuItems: MenuItemType[] = [
+    const menuItems: MenuItem[] = [
         {
             key: 'profile',
             icon: <UserOutlined/>,
             label: t('Menu.profile'),
-            onClick: () => menuClick('', t('Menu.profile'))
+            element: <Userinfo/>,
         },
         {
-            key: 'accountsBinding',
+            key: 'accounts',
             icon: <SettingOutlined/>,
             label: t('Menu.accountsBinding'),
-            onClick: () => menuClick('accounts', t('Menu.accountsBinding'))
+            element: <AccountsBinding/>,
         },
         // 可以继续添加其他菜单项
     ];
-
+    const [selectedMenu, setSelectedMenu] = useState<MenuItem>(menuItems[0]);
 
     return (
         <Layout className={'profile-container'}>
@@ -102,19 +100,22 @@ export const UserProfile: React.FC = () => {
                 <Menu
                     className={'profile-menu'}
                     mode="inline"
-                    defaultSelectedKeys={['profile']}
+                    defaultSelectedKeys={[selectedMenu.key.toString()]}
                     items={menuItems}
+                    onClick={(menu) => {
+                        setSelectedMenu(menuItems.find(item => item.key === menu.key) as MenuItem);
+                    }}
                 />
             </div>
             <div className="profile-right">
                 <Content>
                     <Header className="layout-header">
                         <h2 className="profile-right-title">
-                            {headerTitle}
+                            {selectedMenu.label}
                         </h2>
                     </Header>
                     <Divider/>
-                    <Outlet/>
+                    {selectedMenu.element}
                 </Content>
             </div>
         </Layout>

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 import './index.scss'
-import {Button, Card, Flex, Form, Input, Modal as AntdModal, Space} from "antd";
-import {IconFont, Modal} from "@/components";
+import {Button, Flex, Modal as AntdModal} from "antd";
+import {IconFont} from "@/components";
 import React, {useEffect, useState} from "react";
 import {accountApi} from "@/apis/account.tsx";
 import {Account, AccountType} from "@/model/account.tsx";
 import {useTranslation} from "react-i18next";
 import {ExclamationCircleFilled} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 
 interface UpdatePasswordForm {
     oldPassword: string;
@@ -34,13 +33,10 @@ interface UpdatePasswordForm {
  * 账号设置
  * @constructor 构造函数
  */
-export const AccountSettings = () => {
+export const AccountsBinding = () => {
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const weLinkBind = accounts.find(account => account.accountType === AccountType.WELINK);
-    const [openModal, setOpenModal] = useState(false);
-    const [isModalButtonLoading, setIsModalButtonLoading] = useState(false);
-    const [passwordForm] = Form.useForm<UpdatePasswordForm>();
     const {t} = useTranslation()
     const language = useLocaleStore((state) => state.language);
     const {confirm} = AntdModal;
@@ -98,40 +94,10 @@ export const AccountSettings = () => {
     }
 
 
-    /**
-     * 修改密码
-     */
-    const updatePassword = async () => {
-        await passwordForm.validateFields();
-        setIsModalButtonLoading(true);
-        const values = passwordForm.getFieldsValue();
-        try {
-            await accountApi.updatePasswordMe(values);
-            setOpenModal(false);
-        } finally {
-            setIsModalButtonLoading(false);
-        }
-    }
 
 
     return (
         <div className={'account-container'}>
-            <Card title={t('Account.personal')} bordered={false}>
-                <ul className={'account-settings'}>
-                    <li>
-                        <Space>
-                            <p>{t('Account.loginPassword')}</p>
-
-
-                            <Input.Password
-                                prefix={<IconFont type={'i-mima'}/>}
-                                value={'******'} disabled/>
-                            <Button onClick={() => setOpenModal(true)}>{t('Account.updatePassword')}</Button>
-                        </Space>
-                    </li>
-                </ul>
-            </Card>
-            <Card title={t('Account.thirdPartyAccount')} bordered={false}>
                 <ul>
                     <li>
                         <Flex justify={'space-between'} align={'center'}>
@@ -153,56 +119,6 @@ export const AccountSettings = () => {
                         </Flex>
                     </li>
                 </ul>
-            </Card>
-
-            <Modal
-                title={t('Account.updatePassword')}
-                open={openModal}
-                onCancel={() => setOpenModal(false)}
-                footer={[
-                    <Button key='onOk' type="primary" loading={isModalButtonLoading}
-                            onClick={updatePassword}>{t('Button.submit')}</Button>,
-                    <Button key='onCancel' onClick={() => setOpenModal(false)}>{t('Button.cancel')}</Button>
-                ]}
-                closeIcon={<IconFont type="i-Close" style={{
-                    fontSize: '1.5rem',
-                }}/>}
-                destroyOnClose={true}
-            >
-                <Form
-                    form={passwordForm}
-                    name="modal-form"
-                    labelAlign={'right'}
-                    labelCol={{span: language === ZH_CN_LANGUAGE ? 4 : 7}}
-                    colon={false}
-                    clearOnDestroy={true}
-
-                >
-
-                    <Form.Item<UpdatePasswordForm>
-                        label={t('Account.oldPassword')}
-                        name="oldPassword"
-                        rules={[{required: true, message: t('Account.oldPasswordPlaceholder')}]}
-                    >
-                        <Input.Password placeholder={t('Account.oldPasswordPlaceholder')}/>
-                    </Form.Item>
-                    <Form.Item<UpdatePasswordForm>
-                        label={t('Account.newPassword')}
-                        name="newPassword"
-                        rules={[{required: true, message: t('Account.newPasswordPlaceholder')}]}
-                    >
-                        <Input.Password placeholder={t('Account.newPasswordPlaceholder')}/>
-                    </Form.Item>
-
-                    <Form.Item<UpdatePasswordForm>
-                        label={t('Account.confirmPassword')}
-                        name="confirmPassword"
-                        rules={[{required: true, message: t('Account.confirmPasswordPlaceholder')}]}
-                    >
-                        <Input.Password placeholder={t('Account.confirmPasswordPlaceholder')}/>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </div>
     );
 };
