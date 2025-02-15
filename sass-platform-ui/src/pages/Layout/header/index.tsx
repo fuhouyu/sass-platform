@@ -38,7 +38,6 @@ export const LayoutHeader = () => {
     const {tenant} = useUserStore(state => state);
 
     useEffect(() => {
-        fetchUserinfo().then();
         const setTenant = async () => {
             const currentUserinfo = await fetchUserinfo();
             const currentTenant = tenantInfos.find(t => t.id === currentUserinfo.tenantId);

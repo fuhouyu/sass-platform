@@ -19,7 +19,7 @@ import type {Router} from "@remix-run/router/dist/router";
 import React from "react";
 import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Home} from "@/pages/home/Home";
-import {Profile} from "@/pages/profile/Profile.tsx";
+import {UserProfile} from "@/pages/profile";
 import Login from "@/pages/login";
 import {
     BASE_HOME_URL,
@@ -34,6 +34,8 @@ import {LoaderFunction} from "@remix-run/router/utils.ts";
 import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
+import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
+import {AccountSettings} from "@/pages/profile/account/AccountSettings";
 
 export type RouterType = {
     id: string;
@@ -74,7 +76,21 @@ export const commonRouter: RouterType[] = [
                 id: 'profile',
                 title: 'profile',
                 path: BASE_USER_PROFILE_URL,
-                element: <Profile/>
+                element: <UserProfile/>,
+                children: [
+                    {
+                        id: 'userinfo',
+                        title: 'userinfo',
+                        path: '',
+                        element: <Userinfo/>
+                    },
+                    {
+                        id: 'accountsBinding',
+                        title: 'accountsBinding',
+                        path: 'accounts',
+                        element: <AccountSettings/>
+                    }
+                ]
             }
         ]
     },

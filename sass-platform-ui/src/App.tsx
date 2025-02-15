@@ -45,7 +45,7 @@ export const App: React.FC = () => {
                 components: {
                     Tree: {
                         titleHeight: 32,
-                    }
+                    },
                 }
             }}
         >

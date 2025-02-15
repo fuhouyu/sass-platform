@@ -40,6 +40,7 @@ const EnUS = {
         selectAllOrSelectNone: 'Select All/Select None',
         expandOrCollapse: 'Expand/Collapse',
         pageLoading: 'Page Loading....',
+        updateAvatar: 'Update Avatar',
     },
     // button
     Button: {
@@ -93,7 +94,7 @@ const EnUS = {
         dictManage: 'Dictionary Manage',
         dictItem: 'Dictionary Item',
         profile: 'User Profile',
-        accountSettings: 'Account Settings',
+        accountsBinding: 'Accounts Binding',
         addMember: 'Add User',
         deleteMember: 'Delete User',
     },
@@ -201,6 +202,7 @@ const EnUS = {
         role: 'Role',
         rolePlaceholder: 'Please choose Roles',
         roleAuthorization: 'Role authorization',
+        updateUserinfo: 'Update Profile'
     },
 
     // 角色

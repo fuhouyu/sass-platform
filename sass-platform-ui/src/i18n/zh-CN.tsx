@@ -40,6 +40,7 @@ const ZhCN = {
         selectAllOrSelectNone: '全选/全不选',
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
+        updateAvatar: '更新头像',
     },
     // button
     Button: {
@@ -112,8 +113,8 @@ const ZhCN = {
         positionManage: '岗位管理',
         dictManage: '字典管理',
         dictItem: '字典项',
-        profile: '个人资料',
-        accountSettings: '账号设置',
+        profile: '基本信息',
+        accountsBinding: '账号绑定',
         addMember: '新增成员',
         deleteMember: '删除成员',
     },
@@ -171,6 +172,7 @@ const ZhCN = {
         role: '角色',
         rolePlaceholder: '请选择角色',
         roleAuthorization: '角色授权',
+        updateUserinfo: '更新基本信息'
     },
     // 权限
     Permission: {
