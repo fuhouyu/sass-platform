@@ -58,12 +58,12 @@ export const Profile: React.FC = () => {
     
 
     const formItem: UserinfoFormInterface[] = [
-        {key: 'username', label: t('User.username'), value: userinfo?.username!, disabled: true},
-        {key: 'realName', label: t('User.realName'), value: userinfo?.realName!, disabled: false},
-        {key: 'nickname', label: t('User.nickname'), value: userinfo?.nickname!, disabled: false},
-        {key: 'email', label: t('User.email'), value: userinfo?.email!, disabled: false},
-        {key: 'loginDate', label: t('User.loginDate'), value: userinfo?.loginDate!, disabled: true},
-        {key: 'loginIp', label: t('User.loginIp'), value: userinfo?.loginIp!, disabled: true},
+        {key: 'username', label: t('User.username'), value: userinfo?.username ?? '', disabled: true},
+        {key: 'realName', label: t('User.realName'), value: userinfo?.realName ?? '', disabled: false},
+        {key: 'nickname', label: t('User.nickname'), value: userinfo?.nickname ?? '', disabled: false},
+        {key: 'email', label: t('User.email'), value: userinfo?.email ?? '', disabled: false},
+        {key: 'loginDate', label: t('User.loginDate'), value: userinfo?.loginDate ?? '', disabled: true},
+        {key: 'loginIp', label: t('User.loginIp'), value: userinfo?.loginIp ?? '', disabled: true},
     ]
     const [form] = Form.useForm();
     useEffect(() => {
@@ -85,7 +85,7 @@ export const Profile: React.FC = () => {
             await fetchEditUserinfo(values);
             form.setFieldsValue({...values});
             await message.success('修改成功')
-        } catch (error) {
+        } catch {
             await message.error('用户修改失败');
         }
     }

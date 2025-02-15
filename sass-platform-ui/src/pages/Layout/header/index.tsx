@@ -27,7 +27,6 @@ import {tenantApi} from "@/apis/tenant.tsx";
 import type {ItemType} from "antd/es/menu/interface";
 import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {Header} from "antd/es/layout/layout";
-import {IconFont} from "@/components";
 import './index.scss'
 
 export const LayoutHeader = () => {
@@ -98,11 +97,13 @@ export const LayoutHeader = () => {
                         </h2>
                     </Col>
                     <Col className="user-header">
-                        {LanguageSwitcherButton}
-                        <div>
-                                      <span className="tenant">
-                               <IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>
-                               </span>
+                        <Flex>
+                            {LanguageSwitcherButton}
+                        </Flex>
+                        <div className={'header-actions-avatar'}>
+                            {/*       <span className="tenant">*/}
+                            {/*<IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>*/}
+                            {/*</span>*/}
                             <Dropdown menu={{
                                 items: dropDownMenus,
                                 onClick: onDropDownClick

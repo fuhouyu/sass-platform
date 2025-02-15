@@ -28,9 +28,8 @@
     margin-left: auto;
     font-size: 1rem;
 
-    .language-button {
-      margin: 0 .5rem;
-      border: 0;
+    .header-actions-avatar {
+      padding: 0 0.5rem;
     }
 
     // 租户标签
@@ -67,4 +66,9 @@
 
 .switch-tenant-container:hover {
   background-color: #2196f3;
+}
+
+.language-button {
+  margin: 0 .5rem;
+  border: 0;
 }
