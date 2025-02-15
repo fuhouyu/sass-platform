@@ -17,7 +17,7 @@
 import i18n from "i18next";
 import {initReactI18next} from "react-i18next";
 import {ZhCN} from "@/i18n/zh-CN";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant";
+import {LANGUAGE_KEY, ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 import {EnUS} from "@/i18n/en-US";
 
 i18n
@@ -35,7 +35,7 @@ i18n
             },
         },
         fallbackLng: ZH_CN_LANGUAGE,
-        lng: ZH_CN_LANGUAGE,
+        lng: localStorage.getItem(LANGUAGE_KEY) ?? ZH_CN_LANGUAGE,
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         }

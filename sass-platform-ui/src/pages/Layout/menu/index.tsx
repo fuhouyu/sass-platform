@@ -23,11 +23,11 @@ import {IconFont} from "@/components";
 import {Menu as UserMenus, MenuType} from "@/model/menu.tsx";
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu} from "antd";
+import './index.scss'
 
 export const LayoutMenu = () => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
-    const {tenant} = useUserStore(state => state);
     const {t} = useTranslation();
 
     const commonMenus: MenuProps[] = [
@@ -53,7 +53,7 @@ export const LayoutMenu = () => {
 
     return (
         <>
-            <Sider theme={"light"} collapsible collapsed={collapsed}
+            <Sider className={'layout-main-sider'} theme={"light"} collapsible collapsed={collapsed}
                    onCollapse={(value) => setCollapsed(value)}>
                 <Divider/>
                 <Menu className="layout-menu" defaultSelectedKeys={['1']} mode="inline"

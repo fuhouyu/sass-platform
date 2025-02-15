@@ -15,35 +15,65 @@
  */
 
 
-import {Button} from 'antd';
+import {Button, Dropdown, MenuProps} from 'antd';
 import {useState} from 'react';
 
 import i18n from 'i18next';
 import {IconFont} from '@/components';
 import {useLocaleStore} from "@/store";
 import {EN_LANGUAGE, ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
+import type {ItemType} from "antd/es/menu/interface";
 
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
 
-    const switchLanguage = async () => {
-        const newLanguage = currentLanguage === ZH_CN_LANGUAGE ? EN_LANGUAGE : ZH_CN_LANGUAGE;
+    const switchLanguage: MenuProps['onClick'] = async (e: ItemType) => {
+        if (!e) {
+            return;
+        }
+        const newLanguage = e.key as string;
         setCurrentLanguage(newLanguage);
         changeLanguage(newLanguage);
-        console.log(newLanguage)
         await i18n.changeLanguage(newLanguage);
     };
 
+    const languageItems: MenuProps['items'] = [
+        {
+            key: ZH_CN_LANGUAGE,
+            label: (
+                <span>
+                    简体中文
+                </span>
+            )
+        },
+        {
+            key: EN_LANGUAGE,
+            label: (
+                <span>
+                    English
+                </span>
+            ),
+        }
+    ]
+
     const LanguageSwitcherButton = (
-        <Button
-            className={className}
-            onClick={switchLanguage}
-            icon={<IconFont type={currentLanguage === ZH_CN_LANGUAGE ? 'i-yingwen-shuangse' : 'i-zhongwen-shuangse'}/>}
-        />
+        <Dropdown
+            placement="bottomLeft"
+            menu={{
+                items: languageItems,
+                onClick: switchLanguage,
+                selectedKeys: [currentLanguage]
+            }}
+            className={className}>
+            <Button
+                ghost icon={<IconFont
+                style={{fontSize: '2rem'}}
+                type={'i-fanyi'}/>}/>
+        </Dropdown>
     );
 
-    return {language: currentLanguage, switchLanguage, LanguageSwitcherButton};
+    return {language: language, LanguageSwitcherButton};
 };
 
 export default useLanguageSwitcher;

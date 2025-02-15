@@ -41,6 +41,13 @@ export const App: React.FC = () => {
     return (
         <ConfigProvider
             locale={antdLocale}
+            theme={{
+                components: {
+                    Tree: {
+                        titleHeight: 32,
+                    },
+                }
+            }}
         >
             <RouterProvider router={router} fallbackElement={<PageLoading/>}/>
         </ConfigProvider>

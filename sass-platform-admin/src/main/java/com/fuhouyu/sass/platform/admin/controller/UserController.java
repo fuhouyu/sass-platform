@@ -64,10 +64,11 @@ public class UserController {
      */
     @Operation(summary = "当前用户详情")
     @GetMapping("/me")
-    public BaseResponse<UserDTO> userinfo() {
+    public BaseResponse<UserDetailDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
-        UserDTO userDTO = this.userService.findById(userId);
-        return ResponseHelper.success(userDTO);
+        UserDetailDTO userDetail = this.userService.findDetailById(userId);
+        userDetail.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        return ResponseHelper.success(userDetail);
     }
 
 
