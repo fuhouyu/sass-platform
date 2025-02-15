@@ -21,10 +21,9 @@ import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Card, Col, Dropdown, Flex, Image, MenuProps, Modal, Row, Space} from "antd";
-import {DownOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons";
+import {Avatar, Card, Divider, Dropdown, Flex, MenuProps, Modal, Space} from "antd";
+import {LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {tenantApi} from "@/apis/tenant.tsx";
-import type {ItemType} from "antd/es/menu/interface";
 import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
@@ -40,9 +39,13 @@ export const LayoutHeader = () => {
 
     useEffect(() => {
         fetchUserinfo().then();
-        const currentTenant = tenantInfos.find(t => t.id === userinfo.tenantId);
-        storeTenant(currentTenant);
-    }, [fetchUserinfo, storeTenant, tenantInfos, userinfo.tenantId])
+        const setTenant = async () => {
+            const currentUserinfo = await fetchUserinfo();
+            const currentTenant = tenantInfos.find(t => t.id === currentUserinfo.tenantId);
+            storeTenant(currentTenant);
+        }
+        setTenant().then();
+    }, [fetchUserinfo, storeTenant, tenantInfos])
 
 
     /**
@@ -53,11 +56,18 @@ export const LayoutHeader = () => {
             key: 'profile',
             label: t('Menu.profile'),
             icon: <UserOutlined/>,
+            onClick: () => {
+                navigate(BASE_USER_PROFILE_URL);
+            }
         },
         {
             key: 'logout',
             label: t('Header.logout'),
             icon: <LogoutOutlined/>,
+            onClick: async () => {
+                await fetchLogout();
+                navigate(BASE_LOGIN_URL);
+            },
         },
     ];
 
@@ -71,59 +81,75 @@ export const LayoutHeader = () => {
         window.location.reload();
     }
 
-    // onClick
-    const onDropDownClick: MenuProps['onClick'] = async (e: ItemType) => {
-        if (!e) {
-            return;
-        }
-        switch (e.key) {
-            case 'logout':
-                await fetchLogout();
-                navigate(BASE_LOGIN_URL);
-                break;
-            case 'profile':
-                navigate(BASE_USER_PROFILE_URL);
-                break;
-        }
-    };
 
     return (
         <>
             <Header className="layout-header">
-                <Row gutter={24} align={"middle"}>
-                    <Col>
-                        <h2 className="platform-title">
-                            {tenant?.tenantName}
-                        </h2>
-                    </Col>
-                    <Col className="user-header">
-                        <Flex>
-                            {LanguageSwitcherButton}
-                        </Flex>
-                        <div className={'header-actions-avatar'}>
-                            {/*       <span className="tenant">*/}
-                            {/*<IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>*/}
-                            {/*</span>*/}
-                            <Dropdown menu={{
-                                items: dropDownMenus,
-                                onClick: onDropDownClick
-                            }}>
-                           <span>
+                <div className={'header-title-container'}>
+                    <h2 className="platform-title">
+                        {tenant?.tenantName}
+                    </h2>
+                    <Divider className={'header-title-divider'} type="vertical"/>
+                </div>
 
-                                <Space>
-                                    {t('Common.welcome')},{userinfo.realName}
-                                    <Image
-                                        className="avatar"
-                                        preview={false}
-                                        fallback="https://oss.fuhouyu.com/2.jpeg"
-                                    />
-                                    <DownOutlined/>
-                                </Space>
-                           </span>
-                            </Dropdown>
-                        </div>
-                    </Col>
-                </Row>
+                <Flex className={'header-actions-user-container'} justify={'center'} align={'center'} gap={20}>
+                    <Flex>
+                        {LanguageSwitcherButton}
+                    </Flex>
+                    <Flex justify={'center'} align={'center'}>
+                        <Dropdown menu={{items: dropDownMenus}}>
+                            <Space>
+                                <Avatar size={24} src={'https://oss.fuhouyu.com/2.jpeg'}/>
+                                <span>{userinfo.realName}</span>
+                            </Space>
+                        </Dropdown>
+                        {/*<Space>*/}
+
+
+                        {/*<Image*/}
+                        {/*    className="avatar"*/}
+                        {/*    preview={false}*/}
+                        {/*    fallback="https://oss.fuhouyu.com/2.jpeg"*/}
+                        {/*/>*/}
+                        {/*<DownOutlined/>*/}
+                        {/*</Space>*/}
+                    </Flex>
+                </Flex>
+
+                {/*<Row gutter={24} align={"middle"}>*/}
+                {/*    <Col>*/}
+                {/*        <h2 className="platform-title">*/}
+                {/*            {tenant?.tenantName}*/}
+                {/*        </h2>*/}
+                {/*    </Col>*/}
+                {/*    <Col className="user-header">*/}
+                {/*        <Flex>*/}
+                {/*            {LanguageSwitcherButton}*/}
+                {/*        </Flex>*/}
+                {/*        <div className={'header-actions-avatar'}>*/}
+                {/*            /!*       <span className="tenant">*!/*/}
+                {/*            /!*<IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>*!/*/}
+                {/*            /!*</span>*!/*/}
+                {/*            <Dropdown menu={{*/}
+                {/*                items: dropDownMenus,*/}
+                {/*                onClick: onDropDownClick*/}
+                {/*            }}>*/}
+                {/*           <span>*/}
+
+                {/*                <Space>*/}
+                {/*                    {t('Common.welcome')},{userinfo.realName}*/}
+                {/*                    <Image*/}
+                {/*                        className="avatar"*/}
+                {/*                        preview={false}*/}
+                {/*                        fallback="https://oss.fuhouyu.com/2.jpeg"*/}
+                {/*                    />*/}
+                {/*                    <DownOutlined/>*/}
+                {/*                </Space>*/}
+                {/*           </span>*/}
+                {/*            </Dropdown>*/}
+                {/*        </div>*/}
+                {/*    </Col>*/}
+                {/*</Row>*/}
 
             </Header>
             <Modal

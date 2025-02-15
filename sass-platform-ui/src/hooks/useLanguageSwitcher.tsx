@@ -16,7 +16,7 @@
 
 
 import {Button, Dropdown, MenuProps} from 'antd';
-import {useState} from 'react';
+import {CSSProperties, useState} from 'react';
 
 import i18n from 'i18next';
 import {IconFont} from '@/components';
@@ -27,6 +27,9 @@ import type {ItemType} from "antd/es/menu/interface";
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
+    const activeProperties: CSSProperties = {
+        backgroundColor: '#1890ff', // 选中项的文字颜色
+    };
     const switchLanguage: MenuProps['onClick'] = async (e: ItemType) => {
         if (!e) {
             return;
@@ -52,7 +55,7 @@ const useLanguageSwitcher = (className?: string) => {
                 <span>
                     English
                 </span>
-            )
+            ),
         }
     ]
 
@@ -61,7 +64,8 @@ const useLanguageSwitcher = (className?: string) => {
             placement="bottomLeft"
             menu={{
                 items: languageItems,
-                onClick: switchLanguage
+                onClick: switchLanguage,
+                selectedKeys: [currentLanguage]
             }}
             className={className}>
             <Button

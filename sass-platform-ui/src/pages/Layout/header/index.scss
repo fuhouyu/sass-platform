@@ -14,61 +14,74 @@
  * limitations under the License.
  */
 .ant-layout-header {
-  padding: 0 1rem;
+  padding: 0;
 }
 
 // 布局头
 .layout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 下边角阴影 */
-  // 用户头
-  .user-header {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    font-size: 1rem;
+  //// 用户头
+  //.user-header {
+  //  display: flex;
+  //  align-items: center;
+  //  margin-left: auto;
+  //  font-size: 1rem;
+  //
+  //  .header-actions-avatar {
+  //    padding: 0 0.5rem;
+  //  }
+  //}
+  //
+  //// 头像
+  //.avatar {
+  //  width: 2rem;
+  //  height: 2rem;
+  //  border-radius: 50%;
+  //}
+}
 
-    .header-actions-avatar {
-      padding: 0 0.5rem;
-    }
+// 头部标题
+.header-title-container {
+  display: flex;
+  width: 12.5rem;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
 
-    // 租户标签
-    .tenant {
-      padding-right: 1rem;
-
-      span {
-        padding-left: 0.3rem;
-      }
-    }
+  .platform-title {
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
   }
 
-  // 头像
-  .avatar {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
+  .header-title-divider {
+    background-color: #F0F0F0;
   }
 }
+
+.header-actions-user-container {
+  align-items: center;
+  padding-right: 1rem;
+}
+
+
 
 // 平台title
-.platform-title {
-  height: 3.125rem;
-  width: 100%;
-  line-height: 3.125rem;
-  text-align: center;
-  margin: 0 auto;
-}
+//.platform-title {
+//  height: 3.125rem;
+//  width: 100%;
+//  line-height: 3.125rem;
+//  text-align: center;
+//  margin: 0 auto;
+//}
 
-.switch-tenant-container {
-  max-height: 6rem;
-  max-width: 12rem;
-}
 
-.switch-tenant-container:hover {
-  background-color: #2196f3;
-}
-
-.language-button {
-  margin: 0 .5rem;
-  border: 0;
-}
+//.language-button {
+//  margin: 0 .5rem;
+//  border: 0;
+//}
