@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {createBrowserRouter} from "react-router-dom";
+import {createBrowserRouter, createHashRouter} from "react-router-dom";
 import type {Router} from "@remix-run/router/dist/router";
 import React from "react";
 import {NotFound} from "@/pages/error/notfound/NotFound";
@@ -111,5 +111,6 @@ export const commonRouter: RouterType[] = [
     }
 
 ]
-export const router: Router = createBrowserRouter(commonRouter);
+export const router: Router =
+    import.meta.env.VITE_ROUTE_TYPE === 'HASH' ? createHashRouter(commonRouter) : createBrowserRouter(commonRouter);
 
