@@ -172,4 +172,5 @@ public class UserController {
     public BaseResponse<Boolean> validUsernameExists(@RequestParam("username") String username) {
         return ResponseHelper.success(Objects.nonNull(this.userService.findByUsername(username)));
     }
+
 }

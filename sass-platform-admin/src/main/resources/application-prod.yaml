@@ -21,6 +21,10 @@ base:
     cache:
       service:
         cache-service-type: redis
+    s3:
+      access-key-id: ENC(1jUCodj9k/b9P/oosIKuL3BiKVPgIVHSsl/Ina5bg+k6BXzte1LrNymYTTbs9zWI)
+      secret-key: ENC(DkqIcMbrpHHiFmOh5iqfJaMFneHZ7KAUQ9mZJFAJ36O0j0dSmuPiNauBud6dPdh4)
+      endpoint: ENC(hdlw+8cG79Oh9XQbDi7S7FPfVnQITyFV96WPFgDh4XRs1M6LfN8wAfS1UZbH0TcwIoAlUCTrQfPxLqRjl0teng==)
 sass:
   platform:
     cloudflare:

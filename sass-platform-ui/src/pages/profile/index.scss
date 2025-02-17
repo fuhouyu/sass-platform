@@ -30,15 +30,24 @@
   padding: 1rem;
   border-right: 1px solid #f0f0f0;
 
-  // 用户详情
-  .profile-userinfo {
-
-  }
-
+  // 菜单
   .profile-menu {
     height: 100%;
     border: none;
   }
+
+  // 头像上传
+  .avatar-upload-button {
+    cursor: pointer;
+    opacity: 0; /* 默认隐藏 */
+    transition: opacity 0.3s ease; /* 添加过渡效果 */
+
+  }
+
+  .avatar:hover .avatar-upload-button {
+    opacity: 1; /* 鼠标悬停时显示上传按钮 */
+  }
+
 }
 
 

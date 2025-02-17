@@ -202,7 +202,9 @@ const EnUS = {
         role: 'Role',
         rolePlaceholder: 'Please choose Roles',
         roleAuthorization: 'Role authorization',
-        updateUserinfo: 'Update Profile'
+        updateUserinfo: 'Update Profile',
+        updateAvatarSuccess: 'Update Avatar Success',
+        updateAvatarError: 'Update Avatar Error',
     },
 
     // 角色
