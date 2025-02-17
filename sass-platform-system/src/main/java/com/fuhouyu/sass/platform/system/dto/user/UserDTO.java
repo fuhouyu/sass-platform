@@ -63,8 +63,8 @@ public class UserDTO extends BaseDTO {
     @Schema(name = "gender", description = "性别")
     private String gender;
 
-    @Schema(name = "avatar", description = "头像地址")
-    private String avatar;
+    @Schema(name = "avatar", description = "头像的资源id")
+    private Long avatar;
 
     @Schema(name = "loginDate", description = "登录时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime loginDate;

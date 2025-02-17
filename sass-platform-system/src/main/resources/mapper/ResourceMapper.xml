@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2025 fuhouyu.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.ResourceMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Resources" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="size" property="size"/>
+        <result column="mime_type" property="mimeType"/>
+        <result column="object_key" property="objectKey"/>
+        <result column="url" property="url"/>
+        <result column="version" property="version"/>
+        <result column="is_public" property="isPublic"/>
+        <result column="owner_tenant_id" property="ownerTenantId"/>
+    </resultMap>
+
+    <sql id="TableName">
+        resources
+    </sql>
+
+    <sql id="InsertColumns">
+        id,
+        name,
+        size,
+        mime_type,
+        object_key,
+        url,
+        version,
+        is_deleted,
+        is_public,
+        owner_tenant_id,
+        create_at,
+        update_at,
+        create_by,
+        update_by
+    </sql>
+
+
+    <sql id="QueryColumns">
+        r.id,
+        r.name,
+        r.size,
+        r.mime_type,
+        r.object_key,
+        r.url,
+        r.version,
+        r.is_deleted,
+        r.is_public,
+        r.owner_tenant_id,
+        r.create_at,
+        r.update_at,
+        r.create_by,
+        r.update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Resources">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{id},
+            #{name},
+            #{size},
+            #{mimeType},
+            #{objectKey},
+            #{url},
+            #{version},
+            #{isDeleted},
+            #{isPublic},
+            #{ownerTenantId},
+            #{createAt},
+            #{updateAt},
+            #{createBy},
+            #{updateBy}
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.id},
+                #{entity.name},
+                #{entity.size},
+                #{entity.mimeType},
+                #{entity.objectKey},
+                #{entity.url},
+                #{entity.version},
+                #{entity.isDeleted},
+                #{entity.isPublic},
+                #{entity.ownerTenantId},
+                #{entity.createAt},
+                #{entity.updateAt},
+                #{entity.createBy},
+                #{entity.updateBy}
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Resources">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="mimeType != null and mimeType != ''">
+            mime_type = #{mimeType},
+        </if>
+        <if test="objectKey != null and objectKey != ''">
+            object_key = #{objectKey},
+        </if>
+        <if test="version != null">
+            version = #{version},
+        </if>
+        <if test="isPublic != null">
+            is_public = #{isPublic},
+        </if>
+        update_at = #{updateAt},
+        update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM <include refid="TableName"/>
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE id = #{id}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="InsertColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="QueryColumns"/>
+                FROM
+        <include refid="TableName"/> r
+    </select>
+
+</mapper>

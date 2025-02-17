@@ -16,7 +16,7 @@
 
 
 import {useTranslation} from "react-i18next";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
@@ -27,6 +27,7 @@ import {tenantApi} from "@/apis/tenant.tsx";
 import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 export const LayoutHeader = () => {
     const {t} = useTranslation();
@@ -37,14 +38,18 @@ export const LayoutHeader = () => {
     const navigate = useNavigate();
     const {tenant} = useUserStore(state => state);
 
-    useEffect(() => {
-        const setTenant = async () => {
-            const currentUserinfo = await fetchUserinfo();
-            const currentTenant = tenantInfos.find(t => t.id === currentUserinfo.tenantId);
-            storeTenant(currentTenant);
+    const setTenant = useCallback(async () => {
+        if (tenantInfos.length === 0) {
+            return;
         }
-        setTenant().then();
+        const currentUserinfo = await fetchUserinfo();
+        const currentTenant = tenantInfos.find(t => t.id === currentUserinfo.tenantId);
+        storeTenant(currentTenant);
     }, [fetchUserinfo, storeTenant, tenantInfos])
+
+    useEffect(() => {
+        setTenant().then();
+    }, [setTenant])
 
 
     /**
@@ -98,7 +103,9 @@ export const LayoutHeader = () => {
                     <Flex justify={'center'} align={'center'}>
                         <Dropdown menu={{items: dropDownMenus}}>
                             <Space>
-                                <Avatar size={24} src={'https://oss.fuhouyu.com/2.jpeg'}/>
+                                <Avatar size={24}
+                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                                />
                                 <span>{userinfo.realName}</span>
                             </Space>
                         </Dropdown>

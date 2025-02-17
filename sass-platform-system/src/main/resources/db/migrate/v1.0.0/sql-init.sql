@@ -92,7 +92,7 @@ CREATE TABLE users
     nickname   VARCHAR(64),
     email      VARCHAR(64),
     gender     VARCHAR(8),
-    avatar     VARCHAR(32),
+    avatar    BIGINT,
     login_date TIMESTAMP,
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN DEFAULT TRUE,
@@ -112,7 +112,7 @@ COMMENT ON COLUMN users.real_name IS '真实姓名';
 COMMENT ON COLUMN users.nickname IS '昵称';
 COMMENT ON COLUMN users.email IS '邮箱地址';
 COMMENT ON COLUMN users.gender IS '性别';
-COMMENT ON COLUMN users.avatar IS '头像地址';
+COMMENT ON COLUMN users.avatar IS '头像资源id';
 COMMENT ON COLUMN users.login_date IS '登录日期';
 COMMENT ON COLUMN users.login_ip IS '登录ip';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
@@ -571,14 +571,14 @@ CREATE TABLE accounts
 (
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
-    user_id   BIGINT    NOT NULL,
+    user_id     BIGINT    NOT NULL,
     credentials VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
     is_enabled                  BOOLEAN DEFAULT true NOT NULL,
-    create_at TIMESTAMP NOT NULL,
+    create_at   TIMESTAMP NOT NULL,
     create_by                   VARCHAR(32)          NOT NULL,
-    update_at TIMESTAMP NOT NULL,
+    update_at   TIMESTAMP NOT NULL,
     update_by                   VARCHAR(32)          NOT NULL,
     PRIMARY KEY (account, account_type)
 );
@@ -616,7 +616,7 @@ CREATE TABLE dict_type
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     display_order   INT     DEFAULT 0    NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
-    remark VARCHAR(128),
+    remark          VARCHAR(128),
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
@@ -654,7 +654,7 @@ DROP TABLE IF EXISTS dict_item;
 CREATE TABLE dict_item
 (
     id                BIGINT                NOT NULL PRIMARY KEY,
-    dict_code VARCHAR(128) NOT NULL,
+    dict_code       VARCHAR(128)         NOT NULL,
     item_name         VARCHAR(128)          NOT NULL,
     item_code         VARCHAR(128)          NOT NULL,
     display_order     INT                   NOT NULL DEFAULT 0,
@@ -662,7 +662,7 @@ CREATE TABLE dict_item
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    remark    VARCHAR(128),
+    remark          VARCHAR(128),
     create_at         TIMESTAMP             NOT NULL,
     create_by         VARCHAR(32)           NOT NULL,
     update_at         TIMESTAMP             NOT NULL,
@@ -784,3 +784,65 @@ INSERT INTO user_positions (organization_id, user_id, position_name, is_main, or
                             update_at, create_by, update_by)
 VALUES (1, 1, '系统所有者', true, 1, '2024-11-10 21:35:00', '2024-11-10 21:35:00', 'admin', 'admin');
 
+-- 租户空间
+DROP TABLE IF EXISTS tenant_space;
+CREATE TABLE tenant_space
+(
+    tenant_id   BIGINT       NOT NULL,
+    bucket_name VARCHAR(100) NOT NULL,
+    create_at   TIMESTAMP    NOT NULL,
+    create_by   VARCHAR(32)  NOT NULL,
+    update_at   TIMESTAMP    NOT NULL,
+    update_by   VARCHAR(32)  NOT NULL,
+    PRIMARY KEY (tenant_id)
+);
+COMMENT ON TABLE tenant_space IS '租户空间表';
+COMMENT ON COLUMN tenant_space.tenant_id IS '租户id';
+COMMENT ON COLUMN tenant_space.bucket_name IS '存储空间名称';
+COMMENT ON COLUMN tenant_space.create_at IS '创建时间';
+COMMENT ON COLUMN tenant_space.create_by IS '创建人';
+COMMENT ON COLUMN tenant_space.update_at IS '更新时间';
+COMMENT ON COLUMN tenant_space.update_by IS '更新人';
+
+
+INSERT INTO tenant_space (tenant_id, bucket_name, create_at, create_by, update_at, update_by)
+VALUES (1, 'platform-bucket', now(), 'admin', now(), 'admin');
+
+-- 资源表
+DROP TABLE IF EXISTS resources;
+CREATE TABLE resources
+(
+    id              BIGSERIAL PRIMARY KEY,
+    name            VARCHAR(255) NOT NULL,
+    size            BIGINT       NOT NULL DEFAULT 0,
+    mime_type       VARCHAR(100),
+    object_key      VARCHAR(255),
+    url             VARCHAR(500),
+    version         INT          NOT NULL DEFAULT 1,
+    is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
+    is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
+    owner_tenant_id BIGINT       NOT NULL,
+    create_at       TIMESTAMP    NOT NULL,
+    create_by       VARCHAR(32)  NOT NULL,
+    update_at       TIMESTAMP    NOT NULL,
+    update_by       VARCHAR(32)  NOT NULL,
+    UNIQUE (owner_tenant_id, object_key)
+);
+
+
+COMMENT ON TABLE resources IS '存储各种类型的资源信息';
+COMMENT ON COLUMN resources.id IS '资源唯一标识';
+COMMENT ON COLUMN resources.name IS '资源名称';
+COMMENT ON COLUMN resources.size IS '资源大小（字节）';
+COMMENT ON COLUMN resources.mime_type IS '资源的 MIME 类型';
+COMMENT ON COLUMN resources.owner_tenant_id IS '所属的租户id';
+COMMENT ON COLUMN resources.object_key IS '对象存储中的对象名称';
+COMMENT ON COLUMN resources.url IS '资源的访问 URL';
+COMMENT ON COLUMN resources.tags IS '资源标签（JSON 格式存储）';
+COMMENT ON COLUMN resources.metadata IS '资源的元数据（JSON 格式存储）';
+COMMENT ON COLUMN resources.version IS '资源的版本号';
+COMMENT ON COLUMN resources.is_public IS '是否允许公开访问';
+COMMENT ON COLUMN resources.create_at IS '创建时间';
+COMMENT ON COLUMN resources.create_by IS '创建人';
+COMMENT ON COLUMN resources.update_at IS '更新时间';
+COMMENT ON COLUMN resources.update_by IS '更新人';

@@ -23,7 +23,7 @@
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
-        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="BIGINT"/>
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
     </resultMap>

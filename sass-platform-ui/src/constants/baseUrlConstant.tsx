@@ -81,4 +81,9 @@ export class BaseUrlConstant {
      */
     static readonly USER_POSITION_API_PREFIX = `${BaseUrlConstant.VERSION}/user-position`
 
+    /**
+     * 资源api接口
+     */
+    static readonly RESOURCE_API_PREFIX = `${BaseUrlConstant.VERSION}/resource`
+
 }

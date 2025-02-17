@@ -15,28 +15,25 @@
  */
 package com.fuhouyu.sass.platform.system.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
-import java.time.LocalDateTime;
 
 /**
  * <p>
- * 用户do对象
+ * 资源实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/24 19:22
+ * @since 2025/2/17 21:26
  */
-@Getter
-@Setter
-@ToString(callSuper = true)
-public class Users extends BaseEntity {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Resources extends BaseEntity {
 
     @Serial
-    private static final long serialVersionUID = 1292364198231612311L;
+    private static final long serialVersionUID = 1671235498129908299L;
 
     /**
      * 主键id
@@ -44,47 +41,42 @@ public class Users extends BaseEntity {
     private Long id;
 
     /**
-     * 用户名
+     * 资源名称
      */
-    private String username;
+    private String name;
 
     /**
-     * 真实姓名
+     * 资源大小
      */
-    private String realName;
+    private Long size;
 
     /**
-     * 昵称
+     * 资源类型
      */
-    private String nickname;
+    private String mimeType;
 
     /**
-     * 邮件地址
+     * 对象key
      */
-    private String email;
+    private String objectKey;
 
     /**
-     * 性别
+     * 资源url
      */
-    private String gender;
+    private String url;
 
     /**
-     * 头像资源id
+     * 版本号
      */
-    private Long avatar;
+    private Integer version;
 
     /**
-     * 登录时间
+     * 是否公开
      */
-    private LocalDateTime loginDate;
+    private Boolean isPublic;
 
     /**
-     * 登录ip
+     * 租户id
      */
-    private String loginIp;
-
-    /**
-     * 是否删除标记
-     */
-    private Boolean isDeleted;
+    private Long ownerTenantId;
 }

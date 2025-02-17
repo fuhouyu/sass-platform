@@ -29,7 +29,7 @@ class PermissionApi extends DefaultApiImpl<Menu> {
     /**
      *  获取当前用户的权限api
      */
-    getUserPermissionApi = (): Promise<Menu[]> => request.get(`${this.baseUrl}/me`);
+    getUserPermissionApi: () => Promise<Menu[]> = (): Promise<Menu[]> => request.get(`${this.baseUrl}/me`);
 
     /**
      * 查询子集列表
