@@ -129,7 +129,6 @@ public class ResourceServiceImpl implements ResourceService {
             }
 
             // 设置部分响应头
-            response.setHeader(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + (end == -1 ? "" : end) + "/" + headers.get(HttpHeaders.CONTENT_LENGTH));
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
                     String.format("%s, %s", HttpHeaders.CONTENT_RANGE, HttpHeaders.CONTENT_LENGTH));
