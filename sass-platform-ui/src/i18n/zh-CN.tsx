@@ -173,6 +173,7 @@ const ZhCN = {
         rolePlaceholder: '请选择角色',
         roleAuthorization: '角色授权',
         updateUserinfo: '更新基本信息',
+        updateAvatar: '更新头像',
         updateAvatarSuccess: '更换头像成功',
         updateAvatarError: '更换头像失败',
     },

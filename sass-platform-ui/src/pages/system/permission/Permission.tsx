@@ -303,9 +303,9 @@ export const Permission: React.FC = () => {
             <Splitter>
                 <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree
+                        <Tree.DirectoryTree
                             defaultExpandParent={true}
-                            showLine
+                            showIcon={false}
                             blockNode
                             motion={false}
                             fieldNames={{key: 'id', title: 'permissionName'}}

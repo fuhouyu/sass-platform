@@ -18,7 +18,7 @@
 import React, {useState} from "react";
 import "./index.scss"
 import {SettingOutlined, UploadOutlined, UserOutlined} from "@ant-design/icons";
-import {Avatar, Divider, Menu, message, Space, Upload} from "antd";
+import {Avatar, Divider, Menu, message, Space, Tooltip, Upload} from "antd";
 import {useTranslation} from "react-i18next";
 import {useUserStore} from "@/store";
 import {IconFont} from "@/components";
@@ -72,51 +72,54 @@ export const UserProfile: React.FC = () => {
     return (
         <Layout className={'profile-container'}>
             <div className="profile-left">
+                <Upload
+                    customRequest={async (options) => {
+                        const resourcePresignedUrlResponse = await resourceApi.generateResourcePresignedUrl({
+                            businessName: 'user-avatar',
+                            method: 'PUT',
+                        });
+                        const {file}: { file: UploadRequestFile | RcFile } = options;
+                        const fileToUpload = file as RcFile;
+                        try {
+                            await fetch(resourcePresignedUrlResponse.presignedUrl, {
+                                method: 'PUT',
+                                body: fileToUpload,
+                                headers: {
+                                    'Content-Type': fileToUpload.type,
+                                },
+                            });
+                            const resourceId = await resourceApi.saveInfoApi({
+                                name: fileToUpload.name,
+                                size: fileToUpload.size,
+                                mimeType: fileToUpload.type,
+                                isPublic: true,
+                                version: 1,
+                                objectKey: resourcePresignedUrlResponse.objectKey,
+                            });
+                            await fetchEditUserinfo({...userinfo, avatar: resourceId});
+                            message.success(t('User.updateAvatarSuccess'));
+                        } catch {
+                            message.error(t('User.updateAvatarError'));
+                        }
+
+                    }}
+                    showUploadList={false}
+                    beforeUpload={beforeUpload}
+                >
+                    <Tooltip className={'avatar-upload-button'} placement="top"
+                             title={t('User.updateAvatar')}>
+                        <UploadOutlined style={{fontSize: '20px', color: '#1890ff'}}/>
+                    </Tooltip>
+                </Upload>
+
                 <div style={{textAlign: 'center'}}>
-                    <Avatar
+
+                <Avatar
                         size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
                         src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
                         className="avatar"
                     >
-                        <Upload
-                            customRequest={async (options) => {
-                                const resourcePresignedUrlResponse = await resourceApi.generateResourcePresignedUrl({
-                                    businessName: 'user-avatar',
-                                    method: 'PUT',
-                                });
-                                const {file}: { file: UploadRequestFile | RcFile } = options;
-                                const fileToUpload = file as RcFile;
-                                try {
-                                    await fetch(resourcePresignedUrlResponse.presignedUrl, {
-                                        method: 'PUT',
-                                        body: fileToUpload,
-                                        headers: {
-                                            'Content-Type': fileToUpload.type,
-                                        },
-                                    });
-                                    const resourceId = await resourceApi.saveInfoApi({
-                                        name: fileToUpload.name,
-                                        size: fileToUpload.size,
-                                        mimeType: fileToUpload.type,
-                                        isPublic: true,
-                                        version: 1,
-                                        objectKey: resourcePresignedUrlResponse.objectKey,
-                                    });
-                                    await fetchEditUserinfo({...userinfo, avatar: resourceId});
-                                    message.success(t('User.updateAvatarSuccess'));
-                                } catch {
-                                    message.error(t('User.updateAvatarError'));
-                                }
 
-                            }}
-                            showUploadList={false}
-                            beforeUpload={beforeUpload}
-                        >
-                            <div className={'avatar-upload-button'}>
-                                <UploadOutlined style={{fontSize: '20px', color: '#1890ff'}}/>
-                                <div style={{marginTop: 8}}>上传</div>
-                            </div>
-                        </Upload>
                     </Avatar>
                     <div>
                         <h2 className="text-align-center">

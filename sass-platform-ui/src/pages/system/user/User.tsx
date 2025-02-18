@@ -377,9 +377,9 @@ export const User: React.FC = () => {
             <Splitter>
                 <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree<Organization>
+                        <Tree.DirectoryTree<Organization>
                             defaultExpandParent={true}
-                            showLine
+                            showIcon={false}
                             blockNode
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
