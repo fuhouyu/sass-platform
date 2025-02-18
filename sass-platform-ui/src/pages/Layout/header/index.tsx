@@ -104,7 +104,7 @@ export const LayoutHeader = () => {
                         <Dropdown menu={{items: dropDownMenus}}>
                             <Space>
                                 <Avatar size={24}
-                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
                                 />
                                 <span>{userinfo.realName}</span>
                             </Space>
