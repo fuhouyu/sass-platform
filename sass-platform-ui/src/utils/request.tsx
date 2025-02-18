@@ -64,6 +64,7 @@ request.interceptors.response.use(async function (response) {
                 identify: refreshToken
             }) as UserToken;
             if (!res) {
+                removeToken();
                 router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
                 return;
             }
