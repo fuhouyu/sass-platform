@@ -42,8 +42,6 @@ interface MenuItem extends MenuItemType {
 export const UserProfile: React.FC = () => {
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
-    const previewUrl =
-        (import.meta.env.VITE_API_URL).endsWith('/') ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview` : `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview`;
 
     const menuItems: MenuItem[] = [
         {
@@ -118,7 +116,7 @@ export const UserProfile: React.FC = () => {
 
                 <Avatar
                         size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                        src={userinfo.avatar ? `${previewUrl}/${userinfo.avatar}` : ''}
+                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
                         className="avatar"
                     >
 
