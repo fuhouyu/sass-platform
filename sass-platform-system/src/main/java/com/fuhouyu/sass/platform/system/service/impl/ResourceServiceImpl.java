@@ -42,6 +42,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -101,47 +103,42 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void previewResource(Long id, HttpServletRequest request,
                                 HttpServletResponse response) {
-        Resources resources = this.resourceMapper.queryById(id);
-        if (Objects.isNull(resources)) {
-            LoggerUtil.warn(log, "资源不存在, id: {}", id);
-            return;
-        }
-        if (!resources.getIsPublic()) {
-            if (Objects.isNull(ContextHolderStrategy.getContext().getUser()) ||
-                    !Objects.equals(ContextHolderStrategy.getContext().getUser().getTenantId(), resources.getOwnerTenantId())) {
-                throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "无权访问该资源");
-            }
-        }
+        Resources resources = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
+
+
+        long[] ranges = this.parseRequestRanges(request);
+        long start = ranges[0];
+        long end = ranges[1];
         GetObjectArgs getObjectArgs = GetObjectArgs.builder()
                 .bucket(tenantSpaceDTO.getBucketName())
                 .object(resources.getObjectKey())
+                .offset(start)
+                .length(end == -1 ? Long.MAX_VALUE : end - start + 1)
                 .build();
-        try (ServletOutputStream outputStream = response.getOutputStream()) {
-            GetObjectResponse getObjectResponse = this.minioClient.getObject(getObjectArgs);
+
+        try (ServletOutputStream outputStream = response.getOutputStream();
+             GetObjectResponse getObjectResponse = this.minioClient.getObject(getObjectArgs)) {
             Headers headers = getObjectResponse.headers();
             headers.forEach(key -> response.setHeader(key.component1(), key.component2()));
-            outputStream.write(getObjectResponse.readAllBytes());
+            // 写入数据
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = getObjectResponse.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            // 设置部分响应头
+            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
+                    String.format("%s, %s", HttpHeaders.CONTENT_RANGE, HttpHeaders.CONTENT_LENGTH));
         } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
             LoggerUtil.error(log, "预览资源失败", e);
             throw new ServiceException(ResponseStatusEnum.SERVER_ERROR,
                     "预览资源失败");
         }
-
     }
 
-    /**
-     * 生成随机的objectKey
-     *
-     * @param businessName 业务名称
-     * @return objectKey
-     */
-    private String generateKey(String businessName) {
-        String datetime = LocalDate.now().format(DATETIME_FORMAT);
-        String randomString = RandomUtil.randomString(5);
-        return String.format("%s/%s-%s", businessName, datetime, randomString);
-
-    }
 
     @Override
     public Long save(ResourceDTO dto) {
@@ -177,5 +174,60 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Function<PageQueryDTO, List<ResourceDTO>> getPageResult() {
         return p -> RESOURCES_ASSEMBLER.toDTO(this.resourceMapper.queryList(p));
+    }
+
+    /**
+     * 检查资源权限
+     *
+     * @param id 资源id
+     * @return 资源
+     */
+    private Resources checkResourcePermission(Long id) {
+        Resources resources = this.resourceMapper.queryById(id);
+        if (Objects.isNull(resources)) {
+            LoggerUtil.warn(log, "资源不存在, id: {}", id);
+            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
+                    "资源文件不存在");
+        }
+        if (!resources.getIsPublic()) {
+            if (Objects.isNull(ContextHolderStrategy.getContext().getUser()) ||
+                    !Objects.equals(ContextHolderStrategy.getContext().getUser().getTenantId(), resources.getOwnerTenantId())) {
+                throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "无权访问该资源");
+            }
+        }
+        return resources;
+    }
+
+    /**
+     * 生成随机的objectKey
+     *
+     * @param businessName 业务名称
+     * @return objectKey
+     */
+    private String generateKey(String businessName) {
+        String datetime = LocalDate.now().format(DATETIME_FORMAT);
+        String randomString = RandomUtil.randomString(5);
+        return String.format("%s/%s-%s", businessName, datetime, randomString);
+    }
+
+    /**
+     * 解析请求范围
+     *
+     * @param request 请求
+     * @return 请求范围
+     */
+    private long[] parseRequestRanges(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.RANGE);
+        if (StringUtils.isAllEmpty(header)) {
+            return new long[]{0, -1};
+        }
+        if (header.startsWith("bytes=")) {
+            String range = header.substring(6);
+            String[] ranges = range.split("-");
+            long start = Long.parseLong(ranges[0]);
+            long end = ranges.length > 1 && !ranges[1].isEmpty() ? Long.parseLong(ranges[1]) : -1;
+            return new long[]{start, end};
+        }
+        return new long[]{0, -1};
     }
 }
