@@ -116,7 +116,7 @@ export const UserProfile: React.FC = () => {
 
                 <Avatar
                         size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}/${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
                         className="avatar"
                     >
 
