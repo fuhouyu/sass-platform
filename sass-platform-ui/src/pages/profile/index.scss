@@ -38,14 +38,18 @@
 
   // 头像上传
   .avatar-upload-button {
+    position: relative;
     cursor: pointer;
     opacity: 0; /* 默认隐藏 */
     transition: opacity 0.3s ease; /* 添加过渡效果 */
-
+    left: 3.8125rem;
+    top: 4.625rem;
+    z-index: 1;
   }
 
   .avatar:hover .avatar-upload-button {
     opacity: 1; /* 鼠标悬停时显示上传按钮 */
+    z-index: 1;
   }
 
 }

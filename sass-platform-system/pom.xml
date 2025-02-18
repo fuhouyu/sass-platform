@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>com.fuhouyu</groupId>
-            <artifactId>base-framework-resource-starter</artifactId>
+            <artifactId>base-framework-s3-starter</artifactId>
         </dependency>
     </dependencies>
 

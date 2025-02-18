@@ -203,6 +203,7 @@ const EnUS = {
         rolePlaceholder: 'Please choose Roles',
         roleAuthorization: 'Role authorization',
         updateUserinfo: 'Update Profile',
+        updateAvatar: 'Update Avatar',
         updateAvatarSuccess: 'Update Avatar Success',
         updateAvatarError: 'Update Avatar Error',
     },

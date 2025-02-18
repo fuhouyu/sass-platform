@@ -229,7 +229,6 @@ export const Organization = () => {
                     <div className='tree-info'>
                         <Tree
                             defaultExpandParent={true}
-                            showLine
                             blockNode
                             motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}
