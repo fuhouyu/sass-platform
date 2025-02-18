@@ -60,20 +60,14 @@ body,
 .tree-container {
   background-color: #fff;
 
-  .ant-tree-list-holder-inner {
-    gap: .5rem;
-  }
-
   .ant-tree-node-content-wrapper {
     font-size: 1.1rem;
-    padding-inline: 0;
   }
   .search-input {
     margin: .5rem 0;
   }
 
   .tree-info {
-    padding: 1rem;
     overflow: auto;
   }
 

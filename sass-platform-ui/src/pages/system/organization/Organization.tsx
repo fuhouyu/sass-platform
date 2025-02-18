@@ -227,7 +227,8 @@ export const Organization = () => {
             <Splitter>
                 <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree
+                        <Tree.DirectoryTree
+                            showIcon={false}
                             defaultExpandParent={true}
                             blockNode
                             motion={false}
