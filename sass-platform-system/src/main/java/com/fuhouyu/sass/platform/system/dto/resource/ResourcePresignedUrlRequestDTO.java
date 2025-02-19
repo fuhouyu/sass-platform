@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.dto.resource;
 
-import io.minio.http.Method;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -37,14 +36,9 @@ public class ResourcePresignedUrlRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1941236546871923564L;
 
-    @Schema(name = "method", description = "请求方法")
-    private Method method;
 
     @Schema(name = "businessName", description = "业务名称")
     private String businessName;
 
 
-    public ResourcePresignedUrlRequestDTO() {
-        this.method = Method.POST;
-    }
 }

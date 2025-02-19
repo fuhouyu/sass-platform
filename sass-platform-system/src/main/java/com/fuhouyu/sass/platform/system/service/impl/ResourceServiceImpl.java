@@ -31,24 +31,21 @@ import com.fuhouyu.sass.platform.system.entity.Resources;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
-import io.minio.GetObjectArgs;
-import io.minio.GetObjectResponse;
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.MinioClient;
-import io.minio.errors.MinioException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -71,7 +68,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private final MinioClient minioClient;
+    private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
     private final SnowflakeIdWorker snowflake;
     private final ResourceMapper resourceMapper;
     private final TenantSpaceService tenantSpaceService;
@@ -83,21 +81,14 @@ public class ResourceServiceImpl implements ResourceService {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "当前租户空间不存在");
         }
-        try {
-            String objectKey = this.generateKey(resourcePresignedUrlRequestDTO.getBusinessName());
-            String url = this.minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                    .bucket(tenantSpaceDTO.getBucketName())
-                    .object(objectKey)
-                    .method(resourcePresignedUrlRequestDTO.getMethod()).build());
-            return ResourcePresignedUrlResponseDTO.builder()
-                    .objectKey(objectKey)
-                    .presignedUrl(url)
-                    .build();
-        } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
-            LoggerUtil.error(log, "生成资源上传url失败", e);
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR,
-                    "生成资源上传url失败");
-        }
+        String objectKey = this.generateKey(resourcePresignedUrlRequestDTO.getBusinessName());
+        PresignedPutObjectRequest presignedPutObjectRequest = this.s3Presigner.presignPutObject(builder -> builder.putObjectRequest(r ->
+                r.bucket(tenantSpaceDTO.getBucketName()).key(objectKey)).signatureDuration(Duration.ofDays(1))
+        );
+        return ResourcePresignedUrlResponseDTO.builder()
+                .objectKey(objectKey)
+                .presignedUrl(presignedPutObjectRequest.url().toExternalForm())
+                .build();
     }
 
     @Override
@@ -106,36 +97,25 @@ public class ResourceServiceImpl implements ResourceService {
         Resources resources = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
 
-
-        long[] ranges = this.parseRequestRanges(request);
-        long start = ranges[0];
-        long end = ranges[1];
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder()
-                .bucket(tenantSpaceDTO.getBucketName())
-                .object(resources.getObjectKey())
-                .offset(start)
-                .length(end == -1 ? Long.MAX_VALUE : end - start + 1)
-                .build();
-
         try (ServletOutputStream outputStream = response.getOutputStream();
-             GetObjectResponse getObjectResponse = this.minioClient.getObject(getObjectArgs)) {
-            Headers headers = getObjectResponse.headers();
-            headers.forEach(key -> response.setHeader(key.component1(), key.component2()));
-            // 写入数据
-            byte[] buffer = new byte[1024];
+             ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.s3Client.getObject(builder ->
+                     builder.bucket(tenantSpaceDTO.getBucketName()).key(resources.getObjectKey())
+             )) {
+            // 设置必要的 HTTP 头部
+            this.setHttpResponseHeader(responseResponseInputStream.response(), response, resources.getName());
+
+            // 8KB 缓冲区
+            byte[] buffer = new byte[8192];
             int bytesRead;
-            while ((bytesRead = getObjectResponse.read(buffer)) != -1) {
+            while ((bytesRead = responseResponseInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-
-            // 设置部分响应头
-            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
-                    String.format("%s, %s", HttpHeaders.CONTENT_RANGE, HttpHeaders.CONTENT_LENGTH));
-        } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
-            LoggerUtil.error(log, "预览资源失败", e);
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR,
-                    "预览资源失败");
+            LoggerUtil.info(log, "资源下载成功: bucket={}, key={}, size={}",
+                    tenantSpaceDTO.getBucketName(),
+                    resources.getObjectKey(),
+                    responseResponseInputStream.response().contentLength());
+        } catch (IOException e) {
+            // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
         }
     }
 
@@ -210,24 +190,27 @@ public class ResourceServiceImpl implements ResourceService {
         return String.format("%s/%s-%s", businessName, datetime, randomString);
     }
 
+
     /**
-     * 解析请求范围
-     *
-     * @param request 请求
-     * @return 请求范围
+     * 设置http响应头
+     * @param objectResponse object响应
+     * @param response 响应
+     * @param resourceName 资源名称
      */
-    private long[] parseRequestRanges(HttpServletRequest request) {
-        String header = request.getHeader(HttpHeaders.RANGE);
-        if (StringUtils.isAllEmpty(header)) {
-            return new long[]{0, -1};
-        }
-        if (header.startsWith("bytes=")) {
-            String range = header.substring(6);
-            String[] ranges = range.split("-");
-            long start = Long.parseLong(ranges[0]);
-            long end = ranges.length > 1 && !ranges[1].isEmpty() ? Long.parseLong(ranges[1]) : -1;
-            return new long[]{start, end};
-        }
-        return new long[]{0, -1};
+    private void setHttpResponseHeader(GetObjectResponse objectResponse,
+                                       HttpServletResponse response,
+                                       String resourceName) {
+        response.setHeader(HttpHeaders.CONTENT_TYPE, objectResponse.contentType());
+        response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(objectResponse.contentLength()));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + resourceName);
+        response.setHeader(HttpHeaders.CACHE_CONTROL, objectResponse.cacheControl());
+        response.setHeader(HttpHeaders.EXPIRES, objectResponse.expiresString());
+        response.setHeader(HttpHeaders.ETAG, objectResponse.eTag());
+        response.setHeader(HttpHeaders.LAST_MODIFIED, objectResponse.lastModified().toString());
+        response.setHeader(HttpHeaders.ACCEPT_RANGES, objectResponse.acceptRanges());
+        response.setHeader(HttpHeaders.CONTENT_RANGE, objectResponse.contentRange());
+        response.setHeader(HttpHeaders.CONTENT_ENCODING, objectResponse.contentEncoding());
+        response.setHeader(HttpHeaders.CONTENT_LANGUAGE, objectResponse.contentLanguage());
     }
+
 }
