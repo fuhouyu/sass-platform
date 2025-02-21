@@ -53,7 +53,7 @@ export const commonRouter: RouterType[] = [
 
     {
         id: 'layout',
-        title: 'dashboard',
+        title: 'layout',
         path: '/',
         element: <LayoutMain/>,
         loader: async () => {

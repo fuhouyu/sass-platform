@@ -97,6 +97,7 @@ const EnUS = {
         accountsBinding: 'Accounts Binding',
         addMember: 'Add User',
         deleteMember: 'Delete User',
+        tenantForm: 'Tenant Form',
     },
     // 租户
     Tenant: {
