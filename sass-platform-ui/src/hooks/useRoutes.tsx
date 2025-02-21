@@ -77,7 +77,7 @@ export const useRoutes = () => {
             setInitialized(true);
         };
         initializeRoutes().then();
-    }, [initialized]);
+    }, [fetchUserMenus, initialized]);
 
     return initialized;
 }

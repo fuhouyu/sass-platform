@@ -117,6 +117,8 @@ const ZhCN = {
         accountsBinding: '账号绑定',
         addMember: '新增成员',
         deleteMember: '删除成员',
+        tenantForm: '租户表单',
+
     },
     Account: {
         personal: '个人账号',
