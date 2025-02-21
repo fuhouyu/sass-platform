@@ -33,10 +33,10 @@ import {useParams} from "react-router-dom";
 const TenantForm = () => {
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
-    const initForm: TenantInfo = {
-        isEnabled: true,
-    }
     const [tenantInfoForm] = Form.useForm();
+    const [tenantInfo, setTenantInfo] = useState<TenantInfo>({
+        isEnabled: true,
+    });
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const language = useLocaleStore((state) => state.language);
@@ -48,12 +48,11 @@ const TenantForm = () => {
         const tenantId = params.tenantId;
         setUpdateId(tenantId);
         const init = async () => {
+            setTreeSelectData(await permissionApi.getPermissionTreeSelect());
             if (tenantId) {
                 const tenantInfo = await tenantApi.getInfoByIdApi(tenantId);
                 tenantInfoForm.setFieldsValue({...tenantInfo})
             }
-            const treeData = await permissionApi.getPermissionTreeSelect();
-            setTreeSelectData(treeData);
         }
         init().then();
     }, [tenantInfoForm, params.tenantId]);
@@ -83,6 +82,19 @@ const TenantForm = () => {
     }
 
 
+    const next = async () => {
+        if (current === 0) {
+            await tenantInfoForm.validateFields()
+            setTenantInfo(tenantInfoForm.getFieldsValue());
+        }
+        setCurrent(current + 1);
+    };
+
+    const prev = () => {
+        setCurrent(current - 1);
+    };
+
+
     const steps = [
         {
             title: '租户详情',
@@ -97,7 +109,7 @@ const TenantForm = () => {
                     wrapperCol={{span: 15}}
                     autoComplete="off"
                     onFinish={handleTenant}
-                    initialValues={initForm}
+                    initialValues={tenantInfo}
                 >
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
@@ -269,13 +281,7 @@ const TenantForm = () => {
         },
     ];
 
-    const next = () => {
-        setCurrent(current + 1);
-    };
 
-    const prev = () => {
-        setCurrent(current - 1);
-    };
 
     const items = steps.map((item) => ({key: item.title, title: item.title}));
 

@@ -158,7 +158,7 @@ export const Tenant: React.FC = () => {
                     <>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.ADD}>
-                            <AddButton onClick={() => navigate('tenant-form')}/>
+                            <AddButton onClick={() => navigate('/tenant-form')}/>
                         </PermissionButton>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
