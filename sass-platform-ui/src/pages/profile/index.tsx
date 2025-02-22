@@ -17,18 +17,15 @@
 
 import React, {useState} from "react";
 import "./index.scss"
-import {SettingOutlined, UploadOutlined, UserOutlined} from "@ant-design/icons";
-import {Avatar, Divider, Menu, message, Space, Tooltip, Upload} from "antd";
+import {SettingOutlined, UserOutlined} from "@ant-design/icons";
+import {Avatar, Divider, Menu, message, Space, Tooltip} from "antd";
 import {useTranslation} from "react-i18next";
 import {useUserStore} from "@/store";
-import {IconFont} from "@/components";
+import {IconFont, S3Upload} from "@/components";
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import type {MenuItemType} from "antd/es/menu/interface";
 import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
 import {AccountsBinding} from "@/pages/profile/account/AccountsBinding.tsx";
-import {resourceApi} from "@/apis/resource.tsx";
-import {RcFile} from "antd/es/upload";
-import {UploadRequestFile} from "rc-upload/lib/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 interface MenuItem extends MenuItemType {
@@ -68,59 +65,32 @@ export const UserProfile: React.FC = () => {
         return isImage;
     }
 
-
     return (
         <Layout className={'profile-container'}>
             <div className="profile-left">
-                <Upload
-                    customRequest={async (options) => {
-                        const resourcePresignedUrlResponse = await resourceApi.generateResourcePresignedUrl({
-                            businessName: 'user-avatar',
-                            method: 'PUT',
-                        });
-                        const {file}: { file: UploadRequestFile | RcFile } = options;
-                        const fileToUpload = file as RcFile;
-                        try {
-                            await fetch(resourcePresignedUrlResponse.presignedUrl, {
-                                method: 'PUT',
-                                body: fileToUpload,
-                                headers: {
-                                    'Content-Type': fileToUpload.type,
-                                },
-                            });
-                            const resourceId = await resourceApi.saveInfoApi({
-                                name: fileToUpload.name,
-                                size: fileToUpload.size,
-                                mimeType: fileToUpload.type,
-                                isPublic: true,
-                                version: 1,
-                                objectKey: resourcePresignedUrlResponse.objectKey,
-                            });
-                            await fetchEditUserinfo({...userinfo, avatar: resourceId});
-                            message.success(t('User.updateAvatarSuccess'));
-                        } catch {
-                            message.error(t('User.updateAvatarError'));
-                        }
 
-                    }}
-                    showUploadList={false}
-                    beforeUpload={beforeUpload}
-                >
-                    <Tooltip className={'avatar-upload-button'} placement="top"
-                             title={t('User.updateAvatar')}>
-                        <UploadOutlined style={{fontSize: '20px', color: '#1890ff'}}/>
-                    </Tooltip>
-                </Upload>
 
                 <div style={{textAlign: 'center'}}>
 
-                <Avatar
-                        size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
-                        className="avatar"
+                    <S3Upload
+                        uploadProps={{
+                            businessName: 'user-avatar',
+                            isPublic: true,
+                            beforeUpload,
+                            onUploadSuccess: async (resourceId) => {
+                                await fetchEditUserinfo({...userinfo, avatar: resourceId});
+                                message.success(t('User.updateAvatarSuccess'));
+                            },
+                        }}
                     >
-
-                    </Avatar>
+                        <Tooltip title={t('User.updateAvatar')}>
+                            <Avatar
+                                size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
+                                src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                                className="avatar"
+                            />
+                        </Tooltip>
+                    </S3Upload>
                     <div>
                         <h2 className="text-align-center">
                             {userinfo.realName}

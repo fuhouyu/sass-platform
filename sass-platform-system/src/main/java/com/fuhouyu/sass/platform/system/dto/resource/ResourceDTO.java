@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.dto.resource;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -47,6 +49,14 @@ public class ResourceDTO extends BaseDTO implements Serializable {
 
     @Schema(name = "size", description = "资源大小", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long size;
+
+    @Schema(name = "eTag", description = "资源etag", requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonProperty("eTag")
+    @JsonAlias({
+            "eTag",
+            "etag"
+    })
+    private String eTag;
 
     @Schema(name = "mimeType", description = "资源类型", requiredMode = Schema.RequiredMode.REQUIRED)
     private String mimeType;

@@ -16,29 +16,36 @@
 package com.fuhouyu.sass.platform.system.dto.resource;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
- * 资源预签名dto请求
+ * 预签名url响应结果
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/16 20:38
+ * @since 2025/2/16 22:11
  */
+@Schema(name = "ResourcePresignedUrlResponseDTO", description = "预签名url响应结果")
 @Data
-@Schema(name = "ResourcePresignedUrlRequestDTO", description = "资源预签名dto请求")
-public class ResourcePresignedUrlRequestDTO implements Serializable {
+@Builder
+public class PresignedUrlResponseDTO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1941236546871923564L;
+    private static final long serialVersionUID = 1547897123654123879L;
 
+    @Schema(name = "presignedUrl", description = "预签名url")
+    private String presignedUrl;
 
-    @Schema(name = "businessName", description = "业务名称")
-    private String businessName;
+    @Schema(name = "objectKey", description = "对象key")
+    private String objectKey;
 
-
+    @Schema(name = "singedHeaders", description = "签名头信息")
+    private Map<String, List<String>> singedHeaders;
 }

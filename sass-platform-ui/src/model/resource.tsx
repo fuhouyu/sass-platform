@@ -15,33 +15,47 @@
  */
 
 
-export interface GenerateResourcePresignedUrl {
+export interface StsTemporaryTokenResponse {
 
     /**
-     * 业务名称
+     * ak
      */
-    businessName: string;
+    accessKeyId: string;
 
     /**
-     * 请求方法
+     * sk
      */
-    method?: 'POST' | 'PUT' | 'GET' | 'DELETE';
-
-}
-
-
-export interface ResourcePresignedUrlResponse {
+    secretAccessKey: string;
 
     /**
-     * 临时url
+     * stsToken
      */
-    presignedUrl: string;
+    stsToken: string;
 
     /**
-     * objectKey
+     * bucketName
+     */
+    bucketName: string;
+
+    /**
+     * key
      */
     objectKey: string;
 
+    /**
+     * endpoint
+     */
+    endpoint: string;
+
+    /**
+     * 区域
+     */
+    region: string;
+
+    /**
+     * 启用路径样式
+     */
+    enabledPathStyle: boolean;
 }
 
 
@@ -51,6 +65,16 @@ export interface Resource {
      * id
      */
     id?: string;
+
+    /**
+     * 业务名称
+     */
+    businessName: string;
+
+    /**
+     * eTag
+     */
+    eTag: string;
 
     /**
      * 名称

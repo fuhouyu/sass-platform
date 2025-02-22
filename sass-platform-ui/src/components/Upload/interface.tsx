@@ -13,36 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+
+import {UploadProps} from "antd/lib";
 
 /**
- * <p>
- * 租户接口
- * </p>
- *
- * @author fuhouyu
- * @since 2025/2/17 21:57
+ * S3UploadProps
  */
-public interface TenantSpaceService {
-
+export interface S3UploadProps extends UploadProps {
+    /**
+     * 业务名称
+     */
+    businessName: string;
 
     /**
-     * 通过租户id查询租户空间dto元旦
-     *
-     * @param tenantId 租户id
-     * @return 租户空间dto对象
+     * 是否是公共访问资源
      */
-    TenantSpaceDTO findByTenantId(Long tenantId);
-
+    isPublic: boolean;
 
     /**
-     * 检查租户空间是否存在，存在则返回，否则抛出异常
-     *
-     * @param tenantId 租户id
-     * @return 租户空间dto对象
+     * 上传成功回调
+     * @param resourceId 资源id
      */
-    TenantSpaceDTO checkExists(Long tenantId);
-
+    onUploadSuccess: (resourceId: string) => void;
 }

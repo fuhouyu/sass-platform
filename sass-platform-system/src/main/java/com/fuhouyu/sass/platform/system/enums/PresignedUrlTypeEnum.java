@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
-
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+package com.fuhouyu.sass.platform.system.enums;
 
 /**
  * <p>
- * 租户接口
+ * 签名类型枚举
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/17 21:57
+ * @since 2025/2/22 11:41
  */
-public interface TenantSpaceService {
-
-
-    /**
-     * 通过租户id查询租户空间dto元旦
-     *
-     * @param tenantId 租户id
-     * @return 租户空间dto对象
-     */
-    TenantSpaceDTO findByTenantId(Long tenantId);
-
+public enum PresignedUrlTypeEnum {
 
     /**
-     * 检查租户空间是否存在，存在则返回，否则抛出异常
-     *
-     * @param tenantId 租户id
-     * @return 租户空间dto对象
+     * 初始化分片上传
      */
-    TenantSpaceDTO checkExists(Long tenantId);
+    INIT_MULTIPART_UPLOAD,
 
+    /**
+     * 分片上传
+     */
+    MULTIPART_UPLOAD,
+
+    /**
+     * 完成分片上传
+     */
+    COMPLETE_UPLOAD,
+
+    /**
+     * 放弃上传
+     */
+    ABORT_UPLOAD,
 }

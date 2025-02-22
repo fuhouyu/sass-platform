@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.dto.resource;
 
+import com.fuhouyu.sass.platform.system.enums.PresignedUrlTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serial;
@@ -24,23 +24,32 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 预签名url响应结果
+ * 资源预签名dto请求
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/16 22:11
+ * @since 2025/2/16 20:38
  */
-@Schema(name = "ResourcePresignedUrlResponseDTO", description = "预签名url响应结果")
 @Data
-@Builder
-public class ResourcePresignedUrlResponseDTO implements Serializable {
+@Schema(name = "PresignedUrlRequestDTO", description = "资源预签名dto请求")
+public class PresignedUrlRequestDTO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1547897123654123879L;
+    private static final long serialVersionUID = 1941236546871923564L;
 
-    @Schema(name = "presignedUrl", description = "预签名url")
-    private String presignedUrl;
+    @Schema(name = "businessName", description = "业务名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String businessName;
+
+
+    @Schema(name = "presignedUrlType", description = "预签名url类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    private PresignedUrlTypeEnum presignedUrlType;
+
+    @Schema(name = "partNumber", description = "分片号")
+    private Integer partNumber;
 
     @Schema(name = "objectKey", description = "对象key")
     private String objectKey;
+
+    @Schema(name = "uploadId", description = "分片上传的id，如果是分片上传，该值不能为空")
+    private String uploadId;
 }

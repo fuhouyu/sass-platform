@@ -23,6 +23,7 @@ import {Modal} from "./Modal/modal.tsx";
 import {PageLoading} from "./PageLoading/pageLoading";
 import {WeLinkLogin} from "./ThirdPlatformLogin/weLink/WeLinkLogin";
 import {OrganizationUserModal} from "./Organization/OrganizationUserModal";
+import {S3Upload} from "./Upload/s3Upload.tsx";
 
 export {
     IconFont,
@@ -35,5 +36,6 @@ export {
     WeLinkLogin,
     PermissionButton,
     Modal,
-    OrganizationUserModal
+    OrganizationUserModal,
+    S3Upload,
 }

@@ -15,13 +15,18 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.assembler.TenantSpaceAssembler;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.entity.TenantSpace;
 import com.fuhouyu.sass.platform.system.mapper.TenantSpaceMapper;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -45,5 +50,13 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         return TENANT_SPACE_ASSEMBLER.toDTO(this.tenantSpaceMapper.queryById(tenantId));
     }
 
-
+    @Override
+    public TenantSpaceDTO checkExists(Long tenantId) {
+        TenantSpace tenantSpace = this.tenantSpaceMapper.queryById(tenantId);
+        if (Objects.isNull(tenantSpace)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前租户空间不存在");
+        }
+        return TENANT_SPACE_ASSEMBLER.toDTO(tenantSpace);
+    }
 }
