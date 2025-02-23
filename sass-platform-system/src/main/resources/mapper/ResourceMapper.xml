@@ -185,4 +185,11 @@
         <include refid="TableName"/> r
     </select>
 
+    <select id="queryByEtag" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> r
+        WHERE r.etag = #{etag}
+    </select>
 </mapper>

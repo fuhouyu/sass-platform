@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
 import com.fuhouyu.sass.platform.system.entity.Resources;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -28,4 +30,12 @@ import com.fuhouyu.sass.platform.system.entity.Resources;
 public interface ResourceMapper extends BaseMapper<Long, Resources> {
 
 
+    /**
+     * 根据etag查询资源
+     *
+     * @param etag etag
+     * @return 资源对象
+     */
+    @TenantQuery
+    Resources queryByEtag(@Param("etag") String etag);
 }

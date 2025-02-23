@@ -56,4 +56,12 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @return 资源id
      */
     Long saveResource(SaveResourceDTO resourceDTO);
+
+    /**
+     * 根据etag查询资源
+     *
+     * @param etag etag
+     * @return 资源对象
+     */
+    ResourceDTO findResourceByEtag(String etag);
 }

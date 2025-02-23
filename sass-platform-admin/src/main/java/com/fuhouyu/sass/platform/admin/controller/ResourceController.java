@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -126,4 +127,17 @@ public class ResourceController {
         return ResponseHelper.success();
     }
 
+
+    /**
+     * 通过etag获取资源信息
+     *
+     * @param etag etag
+     * @return 资源信息
+     */
+    @Operation(summary = "通过etag获取资源信息")
+    @GetMapping
+    @Parameter(name = "etag", description = "etag")
+    public BaseResponse<ResourceDTO> getResourceByEtag(@RequestParam("etag") String etag) {
+        return ResponseHelper.success(this.resourceService.findResourceByEtag(etag));
+    }
 }

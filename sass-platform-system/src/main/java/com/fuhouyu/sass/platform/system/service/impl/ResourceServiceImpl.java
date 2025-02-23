@@ -194,6 +194,11 @@ public class ResourceServiceImpl implements ResourceService {
         return id;
     }
 
+    @Override
+    public ResourceDTO findResourceByEtag(String etag) {
+        return RESOURCES_ASSEMBLER.toDTO(this.resourceMapper.queryByEtag(etag));
+    }
+
     /**
      * 检查资源权限
      *
