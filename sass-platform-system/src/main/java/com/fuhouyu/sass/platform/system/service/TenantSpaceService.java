@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
 
+import java.util.Collection;
+
 /**
  * <p>
  * 租户接口
@@ -61,4 +63,18 @@ public interface TenantSpaceService {
      */
     TenantSpaceDTO checkExists(Long tenantId);
 
+    /**
+     * 检查当前租户空间是否存在
+     *
+     * @param spaceName 桶名称
+     * @return true 已存在 false不存在
+     */
+    Boolean checkNameExists(String spaceName);
+
+    /**
+     * 删除租户空间
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeSpaceByTenantIds(Collection<Long> tenantIds);
 }

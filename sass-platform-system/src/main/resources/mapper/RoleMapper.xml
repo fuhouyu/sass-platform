@@ -191,8 +191,14 @@
         DELETE FROM
         <include refid="TableName"/>
         WHERE owner_tenant_id IN
-        <foreach collection="tenantIds" open="(" close=")" item="tenantId" >
+        <foreach collection="tenantIds" open="(" close=")" separator="," item="tenantId" >
             #{tenantId}
         </foreach>
     </delete>
+
+    <select id="queryByRoleCodeByTenantId" resultMap="BaseResultMap">
+        SELECT <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> r
+        WHERE r.role_code = #{roleCode} AND r.owner_tenant_id = #{tenantId}
+    </select>
 </mapper>

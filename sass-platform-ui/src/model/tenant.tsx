@@ -44,4 +44,32 @@ export interface TenantInfo extends BaseModel {
     adminUserId?: string;
     // 管理员用户真实姓名
     adminUserRealName?: string;
+    /**
+     * 租户空间
+     */
+    tenantSpace?: TenantSpace;
+}
+
+
+export interface TenantSpace extends BaseModel {
+
+    /**
+     * 租户名称
+     */
+    tenant: string;
+
+    /**
+     * 桶名称
+     */
+    bucketName: string;
+
+    /**
+     * acl
+     */
+    acl: 'private' | 'public-read' | 'public-read-write' | 'authenticated-read';
+
+    /**
+     * 容量
+     */
+    capacity: number;
 }

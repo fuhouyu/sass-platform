@@ -64,8 +64,8 @@ public class TenantInfoController {
     @PostMapping
     @Operation(summary = "保存租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:add')")
-    public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
-        return ResponseHelper.success(tenantInfoService.save(tenantInfoDTO));
+    public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
+        return ResponseHelper.success(tenantInfoService.saveTenantDetail(tenantInfoDTO));
     }
 
     /**
@@ -79,9 +79,9 @@ public class TenantInfoController {
     @PreAuthorize("@auth.hasAnyPermission('tenant:edit')")
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
-            @RequestBody @Valid TenantInfoDTO tenantInfoDTO) {
+            @RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
         tenantInfoDTO.setId(id);
-        this.tenantInfoService.edit(tenantInfoDTO);
+        this.tenantInfoService.editDetail(tenantInfoDTO);
         return ResponseHelper.success();
     }
     

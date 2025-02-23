@@ -54,36 +54,40 @@ export class BaseUrlConstant {
     /**
      * 字典类型api
      */
-    static readonly DICT_TYPE_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-type`
+    static readonly DICT_TYPE_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-type`;
 
     /**
      * 字典项api
      */
-    static readonly DICT_ITEM_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-item`
+    static readonly DICT_ITEM_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-item`;
 
     /**
      * 账号api接口
      */
-    static readonly ACCOUNT_API_PREFIX = `${BaseUrlConstant.VERSION}/account`
+    static readonly ACCOUNT_API_PREFIX = `${BaseUrlConstant.VERSION}/account`;
 
     /**
      * 组织api接口
      */
-    static readonly ORGANIZATION_API_PREFIX = `${BaseUrlConstant.VERSION}/organization`
+    static readonly ORGANIZATION_API_PREFIX = `${BaseUrlConstant.VERSION}/organization`;
 
     /**
      * 用户角色api接口
      */
-    static readonly USER_HAS_ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/user-role`
+    static readonly USER_HAS_ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/user-role`;
 
     /**
      * 用户职务api接口
      */
-    static readonly USER_POSITION_API_PREFIX = `${BaseUrlConstant.VERSION}/user-position`
+    static readonly USER_POSITION_API_PREFIX = `${BaseUrlConstant.VERSION}/user-position`;
 
     /**
      * 资源api接口
      */
-    static readonly RESOURCE_API_PREFIX = `${BaseUrlConstant.VERSION}/resource`
+    static readonly RESOURCE_API_PREFIX = `${BaseUrlConstant.VERSION}/resource`;
 
+    /**
+     * 租户空间api接口
+     */
+    static readonly TENANT_SPACE_PREFIX = `${BaseUrlConstant.VERSION}/tenant-space`
 }

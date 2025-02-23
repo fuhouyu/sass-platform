@@ -14,58 +14,104 @@
  * limitations under the License.
  */
 
-import {Button, Card, Col, Form, Input, message, Radio, Select, Steps} from "antd";
-import React, {Key, useEffect, useState} from "react";
+import {Button, Card, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
+import React, {Key, useCallback, useEffect, useState} from "react";
 import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {FormTree, OrganizationUserModal} from "@/components";
 import {Menu} from "@/model/menu.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {useTranslation} from "react-i18next";
-import {TenantInfo} from "@/model/tenant.tsx";
+import {TenantInfo, TenantSpace} from "@/model/tenant.tsx";
 import {useLocaleStore} from "@/store";
 import './index.scss'
 import {permissionApi} from "@/apis/permission.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 
 const TenantForm = () => {
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
-    const [tenantInfoForm] = Form.useForm();
-    const [tenantInfo, setTenantInfo] = useState<TenantInfo>({
-        isEnabled: true,
-    });
+    const [tenantInfoForm] = Form.useForm<TenantInfo>();
+    const [tenantSpaceForm] = Form.useForm<TenantSpace>();
+    const [tenantInfo, setTenantInfo] = useState<TenantInfo | undefined>(undefined);
+    const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
-    const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
+    const [treeSelectData, setTreeSelectData] = useState<Menu[] | undefined>(undefined);
     const language = useLocaleStore((state) => state.language);
-    const [updateId, setUpdateId] = useState<string>();
+    const [tenantId, setTenantId] = useState<string>();
     const params = useParams();
+    const navigate = useNavigate();
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
 
-    useEffect(() => {
-        const tenantId = params.tenantId;
-        setUpdateId(tenantId);
-        const init = async () => {
-            setTreeSelectData(await permissionApi.getPermissionTreeSelect());
-            if (tenantId) {
-                const tenantInfo = await tenantApi.getInfoByIdApi(tenantId);
-                tenantInfoForm.setFieldsValue({...tenantInfo})
-            }
+    /**
+     * 查询租户
+     */
+    const queryTenant = useCallback(async () => {
+        const tenantId = params.tenantId
+        if (tenantId === undefined) {
+            return
         }
-        init().then();
-    }, [tenantInfoForm, params.tenantId]);
+        setTenantId(tenantId);
+        const res = await tenantApi.getInfoByIdApi(tenantId);
+        tenantInfoForm.setFieldsValue({...res});
+        setTenantInfo(res);
+    }, [params.tenantId, tenantInfoForm]);
+
+    /**
+     * 查询权限树
+     */
+    const queryPermissionTreeData = useCallback(async () => {
+        setTreeSelectData(await permissionApi.getPermissionTreeSelect());
+    }, [])
+
+    useEffect(() => {
+        queryPermissionTreeData().then();
+        if (tenantInfo === undefined) {
+            queryTenant().then();
+        } else {
+            tenantInfoForm.setFieldsValue({...tenantInfo});
+        }
+    }, [queryPermissionTreeData, queryTenant, tenantInfo, tenantInfoForm])
+
+
+    useEffect(() => {
+        if (current !== 1) {
+            return
+        }
+        const initSpaceForm = async () => {
+            if (tenantId) {
+                const res = await tenantSpaceApi.getTenantSpaceByTenantId(tenantId);
+                setTenantSpace({...res})
+                tenantSpaceForm.setFieldsValue({...res})
+            }
+        };
+        if (tenantSpace === undefined) {
+            initSpaceForm().then();
+        } else {
+            tenantSpaceForm.setFieldsValue({...tenantSpace})
+        }
+
+    }, [current, tenantId, tenantSpace, tenantSpaceForm]);
 
     /**
      * 处理租户
      */
     const handleTenant = async () => {
-        const tenantInfo: TenantInfo = tenantInfoForm.getFieldsValue();
-        tenantInfo.permissionIds = permissionIds;
-        await tenantInfoForm.validateFields();
-        await (updateId ? tenantApi.editInfoApi(updateId, tenantInfo) : tenantApi.saveInfoApi(tenantInfo));
-        message.success(t('Common.success')).then();
+        try {
+            await tenantSpaceForm.validateFields();
+
+            const tenant = tenantInfo!
+            tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
+            tenant.permissionIds = permissionIds;
+            await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
+            message.success(t('Common.success'));
+            navigate('/tenant')
+        } catch {
+            await message.success(t('Common.failed'));
+        }
     }
 
     /**
@@ -85,7 +131,6 @@ const TenantForm = () => {
     const next = async () => {
         if (current === 0) {
             await tenantInfoForm.validateFields()
-            console.log(tenantInfoForm.getFieldsValue())
             setTenantInfo(tenantInfoForm.getFieldsValue());
         }
         setCurrent(current + 1);
@@ -93,6 +138,7 @@ const TenantForm = () => {
 
     const prev = () => {
         setCurrent(current - 1);
+        tenantInfoForm.setFieldsValue({...tenantInfo})
     };
 
 
@@ -104,13 +150,14 @@ const TenantForm = () => {
                     layout={'inline'}
                     className={'tenant-form'}
                     clearOnDestroy={true}
-                    name="modal-form"
+                    name="tenant-form"
                     form={tenantInfoForm}
                     labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
                     wrapperCol={{span: 15}}
                     autoComplete="off"
-                    onFinish={handleTenant}
-                    initialValues={tenantInfo}
+                    initialValues={{
+                        isEnabled: true,
+                    }}
                 >
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
@@ -136,7 +183,7 @@ const TenantForm = () => {
                             required={true}
                             hasFeedback={true}
                             validateFirst={true}
-                            rules={updateId ? [] : [
+                            rules={tenantId ? [] : [
                                 {required: true, message: t('Tenant.codePlaceholder')},
                                 {
                                     required: true,
@@ -152,7 +199,7 @@ const TenantForm = () => {
                                 }
                             ]}
                         >
-                            <Input disabled={updateId != null} placeholder={t('Tenant.codePlaceholder')}
+                            <Input disabled={tenantId != null} placeholder={t('Tenant.codePlaceholder')}
                                    maxLength={20}/>
                         </Form.Item>
                     </Col>
@@ -181,7 +228,6 @@ const TenantForm = () => {
                                 onClick={() => setIsChooseUserModalOpen(true)}
                                 notFoundContent={null}
                                 placeholder={t('Tenant.adminUserPlaceholder')}
-                                mode="multiple"
                             />
                         </Form.Item>
                     </Col>
@@ -284,14 +330,88 @@ const TenantForm = () => {
         },
         {
             title: t('Tenant.space'),
-            content: 'Second-content',
-        },
-        {
-            title: 'Last',
-            content: 'Last-content',
+            content: <div>
+                <Form
+                    className={'space-form'}
+                    clearOnDestroy={true}
+                    name="space-form"
+                    form={tenantSpaceForm}
+                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
+                    wrapperCol={{span: 15, offset: 2}}
+                    autoComplete="off"
+                    initialValues={{
+                        acl: 'private'
+                    }}
+                >
+                    <Form.Item
+                        label={t('Tenant.bucketName')}
+                        key="bucketName"
+                        name='bucketName'
+                        colon={false}
+                        required={true}
+                        validateTrigger="onBlur"
+                        hasFeedback={true}
+                        rules={tenantId ? [] : [{required: true, message: t('Tenant.bucketNamePlaceholder')},
+                            {
+                                required: true,
+                                validator: async (_, value: string) => {
+                                    if (value == null || value == '') {
+                                        return;
+                                    }
+                                    const exists = await tenantSpaceApi.checkSpaceNameExists(value);
+                                    if (exists) {
+                                        return Promise.reject(new Error(t('Tenant.bucketNameExistsErrorMessage')));
+                                    }
+                                }
+                            }]}
+                    >
+                        <Input disabled={tenantId !== undefined} placeholder={t('Tenant.bucketNamePlaceholder')}
+                               maxLength={20}/>
+                    </Form.Item>
+                    <Space/>
+
+                    <Form.Item
+                        label={t('Tenant.spaceAcl')}
+                        key="acl"
+                        name='acl'
+                        colon={false}
+                        required={true}
+                        validateTrigger="onBlur"
+                        hasFeedback={true}
+                        rules={[
+                            {required: true, message: t('Tenant.spaceAclPlaceholder')},
+                        ]}
+                    >
+                        <Radio.Group
+                            options={[
+                                {value: 'private', label: t('Tenant.privateAcl')},
+                                {value: 'public-read', label: t('Tenant.publicReadAcl')},
+                                {value: 'public-read-write', label: t('Tenant.publicWriteAcl')},
+                                {value: 'authenticated-read', label: t('Tenant.authenticationRead')},
+                            ]}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label={t('Tenant.capacity')}
+                        key="capacity"
+                        name='capacity'
+                        colon={false}
+                        required={true}
+                        validateTrigger="onBlur"
+                        hasFeedback={true}
+                        rules={[
+                            {required: true, message: t('Tenant.capacityPlaceholder')},
+                        ]}
+                    >
+                        <InputNumber addonAfter="Gi"/>
+                    </Form.Item>
+                    <Space/>
+
+                </Form>
+            </div>
         },
     ];
-
 
 
     const items = steps.map((item) => ({key: item.title, title: item.title}));
@@ -300,7 +420,7 @@ const TenantForm = () => {
         <>
             <Steps current={current} items={items}/>
             <Card className={'tenant-content'}>
-                {steps[current].content}
+                <div>{steps[current].content}</div>
             </Card>
             <div className={'step-action'}>
                 {current > 0 && (
@@ -309,7 +429,7 @@ const TenantForm = () => {
                     </Button>
                 )}
                 {current === steps.length - 1 && (
-                    <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                    <Button type="primary" onClick={handleTenant}>
                         完成
                     </Button>
                 )}

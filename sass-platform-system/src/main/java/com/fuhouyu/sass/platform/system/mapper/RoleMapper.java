@@ -80,4 +80,13 @@ public interface RoleMapper extends BaseMapper<Long, Roles> {
      * @param tenantIds 租户id集合
      */
     void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
+
+    /**
+     * 通过角色编码和租户id查询角色对象
+     *
+     * @param roleCode 角色编码
+     * @param tenantId 租户id
+     * @return 角色信息
+     */
+    Roles queryByRoleCodeByTenantId(@Param("roleCode") String roleCode, @Param("tenantId") Long tenantId);
 }

@@ -97,7 +97,8 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         // 关联租户和权限的关系
         this.tenantHasPermissionService.saveOrUpdateTenantPermission(tenantInfoDTO.getId(), permissionIds);
         // 更新角色和权限
-        RoleDTO roleDTO = this.roleService.findByRoleCode(TenantConstant.DEFAULT_TENANT_ROLE_CODE);
+        RoleDTO roleDTO = this.roleService.findByRoleCodeAndTenantId(TenantConstant.DEFAULT_TENANT_ROLE_CODE,
+                tenantInfoDTO.getId());
         // 这里的角色不会为空
         this.roleHasPermissionService.removeRolePermissionByRoleId(roleDTO.getId());
         this.roleHasPermissionService.saveRolePermission(roleDTO.getId(), permissionIds);

@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.dto.tenant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,4 +40,8 @@ public class TenantInfoDetailDTO extends TenantInfoDTO {
 
     @Schema(name = "adminUserRealName", description = "管理员用户账号真实姓名, 仅返回")
     private String adminUserRealName;
+
+    @Schema(name = "tenantSpace", description = "租户空间信息")
+    @Valid
+    private TenantSpaceDTO tenantSpace;
 }

@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.platform.system.assembler.TenantSpaceAssembler;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantSpace;
@@ -25,8 +26,12 @@ import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.BucketAlreadyOwnedByYouException;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -60,10 +65,17 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         }
         TenantSpace entity = TENANT_SPACE_ASSEMBLER.toEntity(tenantSpaceDTO);
         this.tenantSpaceMapper.insert(entity);
-        this.s3Client.createBucket(builder -> {
-            builder.bucket(entity.getBucketName());
-            builder.acl(tenantSpaceDTO.getAcl());
-        });
+        try {
+
+            this.s3Client.createBucket(builder -> {
+                builder.bucket(entity.getBucketName());
+                builder.acl(tenantSpaceDTO.getAcl());
+            });
+        } catch (BucketAlreadyOwnedByYouException e) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前租户空间 [%s] 已存在，请修改后重试");
+        }
+
     }
 
     @Override
@@ -89,5 +101,24 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
                     "当前租户空间不存在");
         }
         return TENANT_SPACE_ASSEMBLER.toDTO(tenantSpace);
+    }
+
+    @Override
+    public Boolean checkNameExists(String spaceName) {
+        return this.tenantSpaceMapper.countTenantSpaceByName(spaceName) > 0;
+    }
+
+    @Override
+    public void removeSpaceByTenantIds(Collection<Long> tenantIds) {
+        List<TenantSpace> tenantSpaces = this.tenantSpaceMapper.queryByIds(tenantIds);
+        if (CollectionUtils.isEmpty(tenantSpaces)) {
+            LoggerUtil.warn(log, "当前租户空间不存在，无需删除，租户id:{}", tenantIds);
+        }
+
+        this.tenantSpaceMapper.deleteByIds(tenantIds);
+        tenantSpaces.forEach(tenantSpace -> {
+            this.s3Client.deleteBucket(builder -> builder.bucket(tenantSpace.getBucketName()));
+        });
+
     }
 }

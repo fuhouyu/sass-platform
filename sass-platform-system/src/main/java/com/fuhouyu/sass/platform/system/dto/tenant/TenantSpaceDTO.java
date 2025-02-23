@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.dto.tenant;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,11 +43,13 @@ public class TenantSpaceDTO extends BaseDTO {
     private Long tenantId;
 
     @Schema(name = "bucketName", description = "存储桶名称")
+    @NotEmpty(message = "存储桶名未输入")
     private String bucketName;
 
     @Schema(name = "capacity", description = "容量，单位G")
     private Long capacity;
 
     @Schema(name = "acl", description = "存储桶权限")
+    @NotEmpty(message = "权限未输入")
     private String acl;
 }

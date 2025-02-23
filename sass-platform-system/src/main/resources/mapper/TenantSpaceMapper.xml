@@ -144,4 +144,8 @@
         <include refid="TableName"/> ts
     </select>
 
+    <select id="countTenantSpaceByName" resultType="int">
+        SELECT COUNT(1) FROM <include refid="TableName"/>
+        WHERE bucket_name = #{spaceName}
+    </select>
 </mapper>
