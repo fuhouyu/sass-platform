@@ -20,8 +20,8 @@ import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourcePresignedUrlRequestDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourcePresignedUrlResponseDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,15 +55,13 @@ public class ResourceController {
 
 
     /**
-     * 生成minio临时url
-     *
-     * @param resourcePresignedUrlRequestDTO 预览dto对象
-     * @return 临时的url响应dto对象
+     * 生成stsToken
+     * @return stsToken
      */
-    @GetMapping("/url-generate")
-    @Operation(summary = "生成预览临时的url")
-    public BaseResponse<ResourcePresignedUrlResponseDTO> generateResourceUrl(ResourcePresignedUrlRequestDTO resourcePresignedUrlRequestDTO) {
-        return ResponseHelper.success(resourceService.generateResourcePresignedUrl(resourcePresignedUrlRequestDTO));
+    @GetMapping("/sts-token")
+    @Operation(summary = "生成临时的stsToken")
+    public BaseResponse<StsTemporaryTokenDTO> generateStsToken() {
+        return ResponseHelper.success(this.resourceService.generateToken());
     }
 
 
@@ -91,8 +89,8 @@ public class ResourceController {
      */
     @Operation(summary = "保存资源信息")
     @PostMapping
-    public BaseResponse<Long> saveResource(@RequestBody @Validated({ValidGroups.SaveGroup.class}) ResourceDTO resourceDTO) {
-        return ResponseHelper.success(this.resourceService.save(resourceDTO));
+    public BaseResponse<Long> saveResource(@RequestBody @Validated({ValidGroups.SaveGroup.class}) SaveResourceDTO resourceDTO) {
+        return ResponseHelper.success(this.resourceService.saveResource(resourceDTO));
     }
 
     /**

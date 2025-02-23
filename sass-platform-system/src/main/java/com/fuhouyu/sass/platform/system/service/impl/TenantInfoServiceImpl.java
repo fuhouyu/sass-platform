@@ -25,6 +25,7 @@ import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
@@ -79,6 +80,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final OrganizationService organizationService;
 
+    private final TenantSpaceService tenantSpaceService;
+
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
         TenantInfo existsTenant = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
@@ -122,7 +125,10 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "当前登录的租户不允许删除操作！");
         }
         this.doRemoveTenantAttach(ids);
-        return this.tenantInfoMapper.deleteByIds(ids);
+        int count = this.tenantInfoMapper.deleteByIds(ids);
+        this.tenantSpaceService.removeSpaceByTenantIds(ids);
+        return count;
+
     }
 
     @Override
@@ -179,6 +185,23 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         TenantInfoDetailDTO tenantInfoDetailDTO = this.tenantInfoMapper.queryDetailById(id);
         tenantInfoDetailDTO.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
         return tenantInfoDetailDTO;
+    }
+
+    @Override
+    public Long saveTenantDetail(TenantInfoDetailDTO tenantInfoDTO) {
+        Long id = this.save(tenantInfoDTO);
+        TenantSpaceDTO tenantSpaceDTO = tenantInfoDTO.getTenantSpace();
+        tenantSpaceDTO.setTenantId(id);
+        this.tenantSpaceService.saveTenantSpace(tenantSpaceDTO);
+        return id;
+    }
+
+    @Override
+    public void editDetail(TenantInfoDetailDTO tenantInfoDTO) {
+        this.edit(tenantInfoDTO);
+        TenantSpaceDTO tenantSpace = tenantInfoDTO.getTenantSpace();
+        tenantSpace.setTenantId(tenantInfoDTO.getId());
+        this.tenantSpaceService.editTenantSpace(tenantSpace);
     }
 
     /**

@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.sass.platform.system.entity.TenantSpace;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -26,4 +27,12 @@ import com.fuhouyu.sass.platform.system.entity.TenantSpace;
  * @since 2025/2/17 21:51
  */
 public interface TenantSpaceMapper extends BaseMapper<Long, TenantSpace> {
+
+    /**
+     * 根据桶名称查询租户空间
+     *
+     * @param spaceName 桶名称
+     * @return count数
+     */
+    int countTenantSpaceByName(@Param("spaceName") String spaceName);
 }

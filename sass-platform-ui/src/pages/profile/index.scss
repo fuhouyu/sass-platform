@@ -37,19 +37,8 @@
   }
 
   // 头像上传
-  .avatar-upload-button {
-    position: relative;
+  .avatar-uploader {
     cursor: pointer;
-    opacity: 0; /* 默认隐藏 */
-    transition: opacity 0.3s ease; /* 添加过渡效果 */
-    left: 4.5rem;
-    top: 4rem;
-    z-index: 1;
-  }
-
-  .avatar:hover .avatar-upload-button {
-    opacity: 1; /* 鼠标悬停时显示上传按钮 */
-    z-index: 1;
   }
 
 }

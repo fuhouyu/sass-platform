@@ -13,40 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.entity;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+package com.fuhouyu.sass.platform.system.enums;
 
 /**
  * <p>
- * 租户dto对象
+ * 签名类型枚举
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/17 21:51
+ * @since 2025/2/22 11:41
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class TenantSpace extends BaseEntity {
+public enum PresignedUrlTypeEnum {
 
     /**
-     * 租户id
+     * 初始化分片上传
      */
-    private Long tenantId;
+    INIT_MULTIPART_UPLOAD,
 
     /**
-     * 桶名
+     * 分片上传
      */
-    private String bucketName;
+    MULTIPART_UPLOAD,
 
     /**
-     * 存储容量
+     * 完成分片上传
      */
-    private Long capacity;
+    COMPLETE_UPLOAD,
 
     /**
-     * acl控制权限
+     * 放弃上传
      */
-    private String acl;
+    ABORT_UPLOAD,
 }

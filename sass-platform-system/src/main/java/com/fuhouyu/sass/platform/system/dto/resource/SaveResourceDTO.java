@@ -13,40 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.entity;
+package com.fuhouyu.sass.platform.system.dto.resource;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
 /**
  * <p>
- * 租户dto对象
+ * 保存资源的dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/17 21:51
+ * @since 2025/2/22 23:07
  */
 @Data
+@Schema(name = "SaveResourceDTO", description = "保存资源的dto对象")
 @EqualsAndHashCode(callSuper = true)
-public class TenantSpace extends BaseEntity {
+public class SaveResourceDTO extends ResourceDTO {
 
-    /**
-     * 租户id
-     */
-    private Long tenantId;
+    @Serial
+    private static final long serialVersionUID = 8917239667152376512L;
 
-    /**
-     * 桶名
-     */
-    private String bucketName;
-
-    /**
-     * 存储容量
-     */
-    private Long capacity;
-
-    /**
-     * acl控制权限
-     */
-    private String acl;
+    @Schema(name = "businessName", description = "业务名称")
+    @NotEmpty(message = "业务未填写")
+    private String businessName;
 }

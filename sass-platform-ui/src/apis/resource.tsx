@@ -17,7 +17,7 @@
 
 import {request} from "@/utils";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {GenerateResourcePresignedUrl, Resource, ResourcePresignedUrlResponse} from "@/model/resource.tsx";
+import {Resource, StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
 
 class ResourceApi extends DefaultApiImpl<Resource> {
@@ -28,12 +28,11 @@ class ResourceApi extends DefaultApiImpl<Resource> {
     }
 
     /**
-     * 生成资源预签名url
-     * @param generateResourcePresignedUrl 生成资源预签名url
+     *生成临时的stsToken
      */
-    generateResourcePresignedUrl: (generateResourcePresignedUrl: GenerateResourcePresignedUrl) =>
-        Promise<ResourcePresignedUrlResponse> = (generateResourcePresignedUrl: GenerateResourcePresignedUrl): Promise<ResourcePresignedUrlResponse> =>
-        request.get(`${this.baseUrl}/url-generate`, {params: generateResourcePresignedUrl});
+    generateStsToken: () =>
+        Promise<StsTemporaryTokenResponse> = (): Promise<StsTemporaryTokenResponse> =>
+        request.get(`${this.baseUrl}/sts-token`);
 
 }
 

@@ -13,40 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import {UploadProps} from "antd/lib";
 
 /**
- * <p>
- * 租户dto对象
- * </p>
- *
- * @author fuhouyu
- * @since 2025/2/17 21:51
+ * S3UploadProps
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class TenantSpace extends BaseEntity {
+export interface S3UploadProps extends UploadProps {
+    /**
+     * 业务名称
+     */
+    businessName: string;
 
     /**
-     * 租户id
+     * 是否是公共访问资源
      */
-    private Long tenantId;
+    isPublic: boolean;
 
     /**
-     * 桶名
+     * 上传成功回调
+     * @param resourceId 资源id
      */
-    private String bucketName;
-
-    /**
-     * 存储容量
-     */
-    private Long capacity;
-
-    /**
-     * acl控制权限
-     */
-    private String acl;
+    onUploadSuccess: (resourceId: string) => void;
 }

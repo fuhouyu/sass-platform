@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourcePresignedUrlRequestDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourcePresignedUrlResponseDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -31,15 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface ResourceService extends BaseService<Long, ResourceDTO> {
 
-
-    /**
-     * 生成资源上传的url
-     *
-     * @param resourcePresignedUrlRequestDTO 资源预签名dto对象
-     * @return 响应dto对象
-     */
-    ResourcePresignedUrlResponseDTO generateResourcePresignedUrl(ResourcePresignedUrlRequestDTO resourcePresignedUrlRequestDTO);
-
     /**
      * 预览资源
      *
@@ -50,4 +41,19 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
     void previewResource(Long id,
                          HttpServletRequest request,
                          HttpServletResponse response);
+
+    /**
+     * 生成sts临时token
+     *
+     * @return sts临时token
+     */
+    StsTemporaryTokenDTO generateToken();
+
+    /**
+     * 保存资源详情
+     *
+     * @param resourceDTO 资源dto对象
+     * @return 资源id
+     */
+    Long saveResource(SaveResourceDTO resourceDTO);
 }

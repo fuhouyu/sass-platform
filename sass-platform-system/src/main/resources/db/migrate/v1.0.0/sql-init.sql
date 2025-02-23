@@ -790,6 +790,8 @@ CREATE TABLE tenant_space
 (
     tenant_id   BIGINT       NOT NULL,
     bucket_name VARCHAR(100) NOT NULL,
+    capacity BIGINT      NOT NULL,
+    acl      VARCHAR(32) NOT NULL,
     create_at   TIMESTAMP    NOT NULL,
     create_by   VARCHAR(32)  NOT NULL,
     update_at   TIMESTAMP    NOT NULL,
@@ -799,14 +801,17 @@ CREATE TABLE tenant_space
 COMMENT ON TABLE tenant_space IS '租户空间表';
 COMMENT ON COLUMN tenant_space.tenant_id IS '租户id';
 COMMENT ON COLUMN tenant_space.bucket_name IS '存储空间名称';
+COMMENT ON COLUMN tenant_space.capacity IS '存储容量，GB';
+COMMENT ON COLUMN tenant_space.acl IS '存储策略: private, public-read, public-read-write, authenticated-read';
 COMMENT ON COLUMN tenant_space.create_at IS '创建时间';
 COMMENT ON COLUMN tenant_space.create_by IS '创建人';
 COMMENT ON COLUMN tenant_space.update_at IS '更新时间';
 COMMENT ON COLUMN tenant_space.update_by IS '更新人';
 
 
-INSERT INTO tenant_space (tenant_id, bucket_name, create_at, create_by, update_at, update_by)
-VALUES (1, 'platform-bucket', now(), 'admin', now(), 'admin');
+INSERT INTO tenant_space (tenant_id, bucket_name, capacity, acl,
+                          create_at, create_by, update_at, update_by)
+VALUES (1, 'platform-bucket', 1, 'private', now(), 'admin', now(), 'admin');
 
 -- 资源表
 DROP TABLE IF EXISTS resources;
@@ -819,6 +824,7 @@ CREATE TABLE resources
     object_key      VARCHAR(255),
     url             VARCHAR(500),
     version         INT          NOT NULL DEFAULT 1,
+    eTag VARCHAR(64) NOT NULL,
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
@@ -838,8 +844,7 @@ COMMENT ON COLUMN resources.mime_type IS '资源的 MIME 类型';
 COMMENT ON COLUMN resources.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN resources.object_key IS '对象存储中的对象名称';
 COMMENT ON COLUMN resources.url IS '资源的访问 URL';
-COMMENT ON COLUMN resources.tags IS '资源标签（JSON 格式存储）';
-COMMENT ON COLUMN resources.metadata IS '资源的元数据（JSON 格式存储）';
+COMMENT ON COLUMN resources.eTag IS 'eTag';
 COMMENT ON COLUMN resources.version IS '资源的版本号';
 COMMENT ON COLUMN resources.is_public IS '是否允许公开访问';
 COMMENT ON COLUMN resources.create_at IS '创建时间';

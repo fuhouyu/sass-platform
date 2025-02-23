@@ -21,6 +21,7 @@
         <result column="name" property="name"/>
         <result column="size" property="size"/>
         <result column="mime_type" property="mimeType"/>
+        <result column="eTag" property="eTag"/>
         <result column="object_key" property="objectKey"/>
         <result column="url" property="url"/>
         <result column="version" property="version"/>
@@ -39,6 +40,7 @@
         mime_type,
         object_key,
         url,
+        eTag,
         version,
         is_deleted,
         is_public,
@@ -57,6 +59,7 @@
         r.mime_type,
         r.object_key,
         r.url,
+        r.eTag,
         r.version,
         r.is_deleted,
         r.is_public,
@@ -81,6 +84,7 @@
             #{mimeType},
             #{objectKey},
             #{url},
+            #{eTag},
             #{version},
             #{isDeleted},
             #{isPublic},
@@ -107,6 +111,7 @@
                 #{entity.mimeType},
                 #{entity.objectKey},
                 #{entity.url},
+                #{entity.eTag},
                 #{entity.version},
                 #{entity.isDeleted},
                 #{entity.isPublic},

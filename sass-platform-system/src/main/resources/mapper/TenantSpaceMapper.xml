@@ -29,6 +29,8 @@
     <sql id="InsertColumns">
         tenant_id,
         bucket_name,
+        capacity,
+        acl,
         create_at,
         update_at,
         create_by,
@@ -39,6 +41,8 @@
     <sql id="QueryColumns">
         ts.tenant_id,
         ts.bucket_name,
+        ts.capacity,
+        ts.acl,
         ts.create_at,
         ts.update_at,
         ts.create_by,
@@ -55,6 +59,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{tenantId},
             #{bucketName},
+            #{capacity},
+            #{acl},
             #{createAt},
             #{updateAt},
             #{createBy},
@@ -73,6 +79,8 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.tenantId},
                 #{entity.bucketName},
+                #{entity.capacity},
+                #{entity.acl},
                 #{entity.createAt},
                 #{entity.updateAt},
                 #{entity.createBy},
@@ -87,6 +95,12 @@
         SET
         <if test="bucketName != null and bucketName != ''">
             bucket_name = #{bucketName},
+        </if>
+        <if test="capacity != null">
+            capacity = #{capacity},
+        </if>
+        <if test="acl != null and acl != ''">
+            acl = #{acl},
         </if>
         update_at = #{updateAt},
         update_by = #{updateBy}
@@ -130,4 +144,8 @@
         <include refid="TableName"/> ts
     </select>
 
+    <select id="countTenantSpaceByName" resultType="int">
+        SELECT COUNT(1) FROM <include refid="TableName"/>
+        WHERE bucket_name = #{spaceName}
+    </select>
 </mapper>

@@ -95,6 +95,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public RoleDTO findByRoleCodeAndTenantId(String roleCode, Long tenantId) {
+        return ROLES_ASSEMBLER.toDTO(this.roleMapper.queryByRoleCodeByTenantId(roleCode, tenantId));
+    }
+
+    @Override
     public Long save(RoleDTO dto) {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);

@@ -118,7 +118,20 @@ const EnUS = {
         permissions: 'Tenant Permission',
         permissionsPlaceholder: 'Please choose Tenant Permission',
         adminUser: 'Admin User',
-        adminUserPlaceholder: 'Please select the admin account'
+        adminUserPlaceholder: 'Please select the admin account',
+        basicInfo: 'Basic Info',
+        space: 'Tenant Space',
+        bucketName: 'Space Name',
+        bucketNamePlaceholder: 'Please input Space Name',
+        bucketNameExistsErrorMessage: 'Space Name is exists',
+        spaceAcl: 'Space Acl',
+        spaceAclPlaceholder: 'Please choose Space Acl',
+        capacity: 'Capacity',
+        capacityPlaceholder: 'Please input Space Capacity',
+        privateAcl: 'Private Read Write',
+        publicReadAcl: 'Public Read',
+        publicWriteAcl: 'Public Read Write',
+        authenticationRead: 'Authentication Read',
     },
     // 权限
     Permission: {

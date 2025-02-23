@@ -51,6 +51,11 @@ public class Resources extends BaseEntity {
     private Long size;
 
     /**
+     * eTag
+     */
+    private String eTag;
+
+    /**
      * 资源类型
      */
     private String mimeType;

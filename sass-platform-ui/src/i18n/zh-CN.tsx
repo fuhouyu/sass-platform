@@ -94,7 +94,20 @@ const ZhCN = {
         permissions: '租户权限',
         permissionsPlaceholder: '请选择租户权限',
         adminUser: '管理员',
-        adminUserPlaceholder: '请选择管理员账号'
+        adminUserPlaceholder: '请选择管理员账号',
+        basicInfo: '基本信息',
+        space: '租户空间',
+        bucketName: '空间名称',
+        bucketNamePlaceholder: '请输入空间名称',
+        bucketNameExistsErrorMessage: '空间名称已存在',
+        spaceAcl: '空间权限',
+        spaceAclPlaceholder: '请选择空间权限',
+        capacity: '容量',
+        capacityPlaceholder: '请输入容量',
+        privateAcl: '私有读写',
+        publicReadAcl: '公开读',
+        publicWriteAcl: '公开读写',
+        authenticationRead: '认证读',
     },
     // 菜单
     Menu: {

@@ -62,4 +62,19 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @return 租户详情
      */
     TenantInfoDetailDTO findDetailById(Long id);
+
+    /**
+     * 保存租户空间详情
+     *
+     * @param tenantInfoDTO 租户信息
+     * @return id
+     */
+    Long saveTenantDetail(TenantInfoDetailDTO tenantInfoDTO);
+
+    /**
+     * 修改租户空间详情
+     *
+     * @param tenantInfoDTO 租户详情dto
+     */
+    void editDetail(TenantInfoDetailDTO tenantInfoDTO);
 }

@@ -60,4 +60,13 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      * @param tenantIds 租户ids
      */
     void removeByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 通过角色编码和租户id获取角色
+     *
+     * @param roleCode 角色编码
+     * @param tenantId 租户id
+     * @return 角色dto对象
+     */
+    RoleDTO findByRoleCodeAndTenantId(String roleCode, Long tenantId);
 }
