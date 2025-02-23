@@ -29,6 +29,22 @@ public interface TenantSpaceService {
 
 
     /**
+     * 保存租户空间
+     *
+     * @param tenantSpaceDTO 租户空间dto对象
+     */
+    void saveTenantSpace(TenantSpaceDTO tenantSpaceDTO);
+
+
+    /**
+     * 更新租户空间
+     *
+     * @param tenantSpaceDTO 租户空间dto对象
+     */
+    void editTenantSpace(TenantSpaceDTO tenantSpaceDTO);
+
+
+    /**
      * 通过租户id查询租户空间dto元旦
      *
      * @param tenantId 租户id

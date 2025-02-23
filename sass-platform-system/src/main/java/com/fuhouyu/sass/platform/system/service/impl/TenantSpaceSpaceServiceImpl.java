@@ -25,6 +25,7 @@ import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.Objects;
 
@@ -44,6 +45,36 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
     private static final TenantSpaceAssembler TENANT_SPACE_ASSEMBLER = TenantSpaceAssembler.INSTANCE;
 
     private final TenantSpaceMapper tenantSpaceMapper;
+
+    private final S3Client s3Client;
+
+
+    @Override
+    public void saveTenantSpace(TenantSpaceDTO tenantSpaceDTO) {
+        if (Objects.isNull(tenantSpaceDTO.getTenantId())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "未选择租户");
+        }
+        TenantSpace tenantSpace = this.tenantSpaceMapper.queryById(tenantSpaceDTO.getTenantId());
+        if (Objects.nonNull(tenantSpace)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前租户空间已存在");
+        }
+        TenantSpace entity = TENANT_SPACE_ASSEMBLER.toEntity(tenantSpaceDTO);
+        this.tenantSpaceMapper.insert(entity);
+        this.s3Client.createBucket(builder -> {
+            builder.bucket(entity.getBucketName());
+            builder.acl(tenantSpaceDTO.getAcl());
+        });
+    }
+
+    @Override
+    public void editTenantSpace(TenantSpaceDTO tenantSpaceDTO) {
+        TenantSpaceDTO currentTenantSpace = this.checkExists(tenantSpaceDTO.getTenantId());
+        if (!Objects.equals(currentTenantSpace.getAcl(), tenantSpaceDTO.getAcl())) {
+            this.s3Client.putBucketAcl(builder -> builder.acl(tenantSpaceDTO.getAcl()));
+        }
+        this.tenantSpaceMapper.update(TENANT_SPACE_ASSEMBLER.toEntity(tenantSpaceDTO));
+
+    }
 
     @Override
     public TenantSpaceDTO findByTenantId(Long tenantId) {

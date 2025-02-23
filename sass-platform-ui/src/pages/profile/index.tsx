@@ -57,6 +57,10 @@ export const UserProfile: React.FC = () => {
     ];
     const [selectedMenu, setSelectedMenu] = useState<MenuItem>(menuItems[0]);
 
+    /**
+     * 验证是否为图片
+     * @param file 文件
+     */
     const beforeUpload = async (file: File) => {
         const isImage = file.type.startsWith('image/');
         if (!isImage) {

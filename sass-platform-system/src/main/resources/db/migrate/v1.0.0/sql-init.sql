@@ -790,6 +790,8 @@ CREATE TABLE tenant_space
 (
     tenant_id   BIGINT       NOT NULL,
     bucket_name VARCHAR(100) NOT NULL,
+    capacity BIGINT      NOT NULL,
+    acl      VARCHAR(32) NOT NULL,
     create_at   TIMESTAMP    NOT NULL,
     create_by   VARCHAR(32)  NOT NULL,
     update_at   TIMESTAMP    NOT NULL,
@@ -799,14 +801,17 @@ CREATE TABLE tenant_space
 COMMENT ON TABLE tenant_space IS '租户空间表';
 COMMENT ON COLUMN tenant_space.tenant_id IS '租户id';
 COMMENT ON COLUMN tenant_space.bucket_name IS '存储空间名称';
+COMMENT ON COLUMN tenant_space.capacity IS '存储容量，GB';
+COMMENT ON COLUMN tenant_space.acl IS '存储策略: private, public-read, public-read-write, authenticated-read';
 COMMENT ON COLUMN tenant_space.create_at IS '创建时间';
 COMMENT ON COLUMN tenant_space.create_by IS '创建人';
 COMMENT ON COLUMN tenant_space.update_at IS '更新时间';
 COMMENT ON COLUMN tenant_space.update_by IS '更新人';
 
 
-INSERT INTO tenant_space (tenant_id, bucket_name, create_at, create_by, update_at, update_by)
-VALUES (1, 'platform-bucket', now(), 'admin', now(), 'admin');
+INSERT INTO tenant_space (tenant_id, bucket_name, capacity, acl,
+                          create_at, create_by, update_at, update_by)
+VALUES (1, 'platform-bucket', 1, 'private', now(), 'admin', now(), 'admin');
 
 -- 资源表
 DROP TABLE IF EXISTS resources;

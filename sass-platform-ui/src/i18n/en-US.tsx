@@ -118,7 +118,9 @@ const EnUS = {
         permissions: 'Tenant Permission',
         permissionsPlaceholder: 'Please choose Tenant Permission',
         adminUser: 'Admin User',
-        adminUserPlaceholder: 'Please select the admin account'
+        adminUserPlaceholder: 'Please select the admin account',
+        basicInfo: 'Basic Info',
+        space: 'Tenant Space',
     },
     // 权限
     Permission: {

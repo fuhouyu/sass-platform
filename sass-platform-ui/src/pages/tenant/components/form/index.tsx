@@ -85,6 +85,7 @@ const TenantForm = () => {
     const next = async () => {
         if (current === 0) {
             await tenantInfoForm.validateFields()
+            console.log(tenantInfoForm.getFieldsValue())
             setTenantInfo(tenantInfoForm.getFieldsValue());
         }
         setCurrent(current + 1);
@@ -97,7 +98,7 @@ const TenantForm = () => {
 
     const steps = [
         {
-            title: '租户详情',
+            title: t('Tenant.basicInfo'),
             content:
                 <Form
                     layout={'inline'}
@@ -162,6 +163,7 @@ const TenantForm = () => {
                             name={['adminUserId']}
                             key="adminUserId"
                         >
+                            <Input hidden/>
                         </Form.Item>
                         <Form.Item
                             label={t('Tenant.adminUser')}
@@ -259,20 +261,29 @@ const TenantForm = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col className={'form-item-col'} span={12}>
+
+                    <Col className={'form-item-col'} span={24} style={{
+                        paddingTop: '1rem',
+                    }}>
                         <Form.Item
                             label={t('Common.remark')}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 22}}
                             name="remark"
                             key="remark"
                             colon={false}
                         >
-                            <TextArea className="remark" placeholder={t('Common.remark')} showCount maxLength={500}/>
+                            <TextArea className="remark"
+                                      style={{
+                                          height: '10rem',
+                                      }}
+                                      placeholder={t('Common.remark')} showCount maxLength={500}/>
                         </Form.Item>
                     </Col>
                 </Form>
         },
         {
-            title: 'Second',
+            title: t('Tenant.space'),
             content: 'Second-content',
         },
         {

@@ -109,10 +109,10 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
             <Row gutter={24} className={'main-container'}>
                 <Col span={6} className={'tree-container organization-tree'}>
                     <div className='tree-info'>
-                        <Tree
+                        <Tree.DirectoryTree
                             defaultExpandParent={true}
-                            showLine
                             blockNode
+                            showIcon={false}
                             motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}

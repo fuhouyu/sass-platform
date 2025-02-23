@@ -39,4 +39,14 @@ public class TenantSpace extends BaseEntity {
      * 桶名
      */
     private String bucketName;
+
+    /**
+     * 存储容量
+     */
+    private Long capacity;
+
+    /**
+     * acl控制权限
+     */
+    private String acl;
 }

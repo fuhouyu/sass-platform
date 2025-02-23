@@ -94,7 +94,10 @@ const ZhCN = {
         permissions: '租户权限',
         permissionsPlaceholder: '请选择租户权限',
         adminUser: '管理员',
-        adminUserPlaceholder: '请选择管理员账号'
+        adminUserPlaceholder: '请选择管理员账号',
+        basicInfo: '基本信息',
+        space: '租户空间',
+
     },
     // 菜单
     Menu: {

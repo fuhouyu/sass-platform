@@ -43,4 +43,10 @@ public class TenantSpaceDTO extends BaseDTO {
 
     @Schema(name = "bucketName", description = "存储桶名称")
     private String bucketName;
+
+    @Schema(name = "capacity", description = "容量，单位G")
+    private Long capacity;
+
+    @Schema(name = "acl", description = "存储桶权限")
+    private String acl;
 }
