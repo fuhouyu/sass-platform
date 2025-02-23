@@ -824,7 +824,7 @@ CREATE TABLE resources
     object_key      VARCHAR(255),
     url             VARCHAR(500),
     version         INT          NOT NULL DEFAULT 1,
-    eTag VARCHAR(64) NOT NULL,
+    etag VARCHAR(64) NOT NULL,
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
@@ -844,7 +844,7 @@ COMMENT ON COLUMN resources.mime_type IS '资源的 MIME 类型';
 COMMENT ON COLUMN resources.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN resources.object_key IS '对象存储中的对象名称';
 COMMENT ON COLUMN resources.url IS '资源的访问 URL';
-COMMENT ON COLUMN resources.eTag IS 'eTag';
+COMMENT ON COLUMN resources.etag IS 'eTag';
 COMMENT ON COLUMN resources.version IS '资源的版本号';
 COMMENT ON COLUMN resources.is_public IS '是否允许公开访问';
 COMMENT ON COLUMN resources.create_at IS '创建时间';

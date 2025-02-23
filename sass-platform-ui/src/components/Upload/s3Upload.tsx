@@ -21,26 +21,41 @@ import {ChecksumAlgorithm, S3Client} from "@aws-sdk/client-s3";
 import {Upload as s3Upload} from "@aws-sdk/lib-storage";
 import {resourceApi} from "@/apis/resource.tsx";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
+import {useFileMd5} from "@/hooks/useFileMd5.tsx";
 
 export const S3Upload: React.FC<{
     uploadProps: S3UploadProps,
     children: React.ReactNode
 }> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
 
+    const {calculateMD5} = useFileMd5();
     const uploadFile = async (options: UploadRequestOption) => {
 
         try {
-            const stsTokenResponse = await resourceApi.generateStsToken();
             const {file} = options;
+
             let contentType = 'application/octet-stream';
-            let fileName = stsTokenResponse.objectKey;
+            let fileName = '';
             let fileSize = 0;
             if (file instanceof File) {
                 contentType = file.type;
                 fileName = file.name;
                 fileSize = file.size;
+                const startTime = Date.now(); // 记录开始时间
+                const md5 = await calculateMD5(file);
+                const endTime = Date.now(); // 记录结束时间
+                const totalTime = (endTime - startTime) / 1000; // 计算总耗时
+                console.log('File MD5:', md5);
+                console.log('Total time taken:', totalTime, 's');
+
+                const existsResource = await resourceApi.getResourceByEtag(md5);
+                if (existsResource) {
+                    uploadProps.onUploadSuccess(existsResource.id!);
+                    return;
+                }
             }
 
+            const stsTokenResponse = await resourceApi.generateStsToken();
             const s3Client = new S3Client({
                 region: stsTokenResponse.region,
                 endpoint: stsTokenResponse.endpoint,
@@ -72,7 +87,6 @@ export const S3Upload: React.FC<{
             //     }
             // });
             const response = await upload.done();
-            console.log(response)
             const resourceId = await resourceApi.saveInfoApi({
                 businessName: uploadProps.businessName,
                 eTag: JSON.parse(response.ETag!),

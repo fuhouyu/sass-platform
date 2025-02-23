@@ -34,6 +34,13 @@ class ResourceApi extends DefaultApiImpl<Resource> {
         Promise<StsTemporaryTokenResponse> = (): Promise<StsTemporaryTokenResponse> =>
         request.get(`${this.baseUrl}/sts-token`);
 
+
+    /**
+     * 通过etag 获取资源
+     * @param etag etag
+     */
+    getResourceByEtag: (etag: string) => Promise<Resource> = (etag: string): Promise<Resource> => request.get(`${this.baseUrl}`, {params: {etag}})
+
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseUrlConstant.RESOURCE_API_PREFIX);
