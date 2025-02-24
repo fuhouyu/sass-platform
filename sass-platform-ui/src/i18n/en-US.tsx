@@ -98,6 +98,7 @@ const EnUS = {
         addMember: 'Add User',
         deleteMember: 'Delete User',
         tenantForm: 'Tenant Form',
+        tenantSpace: 'Tenant Space',
     },
     // 租户
     Tenant: {
@@ -279,6 +280,14 @@ const EnUS = {
         isMain: 'Is Main',
         orderInOrganization: 'Order In Organization',
         orderInOrganizationPlaceholder: 'Please Input Order In Organization',
+    },
+    // 资源
+    Resource: {
+        list: 'Resource List',
+        name: 'File Name',
+        size: 'File Size',
+        type: 'File Type',
+        preview: 'Preview'
     }
 }
 

@@ -19,7 +19,9 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
+import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.ResourcePageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
@@ -139,5 +141,18 @@ public class ResourceController {
     @Parameter(name = "etag", description = "etag")
     public BaseResponse<ResourceDTO> getResourceByEtag(@RequestParam("etag") String etag) {
         return ResponseHelper.success(this.resourceService.findResourceByEtag(etag));
+    }
+
+
+    /**
+     * 分页查询资源信息，需要租户空间权限
+     *
+     * @param pageQueryDTO 分页查询dto对象
+     * @return 分页结果
+     */
+    @GetMapping("/page")
+    @Operation(summary = "分页查询资源信息，需要租户空间权限")
+    public BaseResponse<PageResultDTO<ResourceDTO>> listResourceByTenantId(ResourcePageQueryDTO pageQueryDTO) {
+        return ResponseHelper.success(this.resourceService.pageList(pageQueryDTO));
     }
 }

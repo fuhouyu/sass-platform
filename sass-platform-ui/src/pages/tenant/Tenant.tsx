@@ -26,7 +26,6 @@ import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButt
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user";
 import {useTranslation} from "react-i18next";
-import {Role as RoleModel} from "@/model/role";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
@@ -95,7 +94,7 @@ export const Tenant: React.FC = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: "center",
-            render: (_, record: RoleModel) => {
+            render: (_, record: TenantInfo) => {
                 return (<PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
                     <EditButton onClick={() => navigate(`/tenant-form/${record.id}`)}/>

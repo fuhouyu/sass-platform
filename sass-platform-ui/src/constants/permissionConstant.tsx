@@ -39,6 +39,10 @@ class TenantPermissionConstant {
      */
     static readonly DELETE: string = 'tenant:delete';
 
+    /**
+     * 租户空间
+     */
+    static readonly TENANT_SPACE: string = 'tenant:space';
 }
 
 /**
