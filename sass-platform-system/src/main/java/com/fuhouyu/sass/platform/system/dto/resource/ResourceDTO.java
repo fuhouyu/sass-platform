@@ -56,7 +56,7 @@ public class ResourceDTO extends BaseDTO implements Serializable {
             "eTag",
             "etag"
     })
-    private String eTag;
+    private String etag;
 
     @Schema(name = "mimeType", description = "资源类型", requiredMode = Schema.RequiredMode.REQUIRED)
     private String mimeType;

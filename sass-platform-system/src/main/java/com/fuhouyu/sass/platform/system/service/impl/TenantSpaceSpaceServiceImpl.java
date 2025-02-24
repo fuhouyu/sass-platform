@@ -119,6 +119,5 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         tenantSpaces.forEach(tenantSpace -> {
             this.s3Client.deleteBucket(builder -> builder.bucket(tenantSpace.getBucketName()));
         });
-
     }
 }

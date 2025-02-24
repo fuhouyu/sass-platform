@@ -26,7 +26,7 @@ import Layout, {Content, Header} from "antd/es/layout/layout";
 import type {MenuItemType} from "antd/es/menu/interface";
 import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
 import {AccountsBinding} from "@/pages/profile/account/AccountsBinding.tsx";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 
 interface MenuItem extends MenuItemType {
     element: React.ReactNode
@@ -39,7 +39,7 @@ interface MenuItem extends MenuItemType {
 export const UserProfile: React.FC = () => {
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
-
+    const {previewUrl} = useResourcePreview();
     const menuItems: MenuItem[] = [
         {
             key: 'profile',
@@ -90,7 +90,7 @@ export const UserProfile: React.FC = () => {
                         <Tooltip title={t('User.updateAvatar')}>
                             <Avatar
                                 size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                                src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                                src={previewUrl(userinfo.avatar)}
                                 className="avatar"
                             />
                         </Tooltip>

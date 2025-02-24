@@ -131,7 +131,7 @@ const ZhCN = {
         addMember: '新增成员',
         deleteMember: '删除成员',
         tenantForm: '租户表单',
-
+        tenantSpace: '租户空间',
     },
     Account: {
         personal: '个人账号',
@@ -282,6 +282,14 @@ const ZhCN = {
         isMain: '是否主职',
         orderInOrganization: '组织内排序',
         orderInOrganizationPlaceholder: '请输入组织内排序',
+    },
+    // 资源
+    Resource: {
+        list: '资源列表',
+        name: '文件名',
+        size: '文件大小',
+        type: '文件类型',
+        preview: '预览'
     }
 }
 
