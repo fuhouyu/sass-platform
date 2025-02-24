@@ -23,13 +23,18 @@ export function useFileMd5() {
         return new Promise((resolve, reject) => {
             const chunkSize = 2097152; // 每次读取2MB
             const chunks = Math.ceil(file.size / chunkSize);
-            const spark = new SparkMD5.ArrayBuffer();
+            const spark = new SparkMD5();
             const fileReader = new FileReader();
 
             let currentChunk = 0;
 
             fileReader.onload = (e) => {
-                spark.append(e.target?.result); // 添加数据到 MD5 计算
+                const result = e.target?.result;
+                if (result === null || result === undefined) {
+                    reject('File read result is null or undefined');
+                    return;
+                }
+                spark.append(result);
                 currentChunk++;
 
                 if (currentChunk < chunks) {
