@@ -17,11 +17,11 @@
 
 import {request} from "@/utils";
 import {Userinfo} from "@/model/user";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi";
 
 
-const baseUserUrl = BaseUrlConstant.USER_API_PREFIX;
+const baseUserUrl = BaseApiUrlConstant.USER_API_PREFIX;
 
 class UserApi extends DefaultApiImpl<Userinfo> {
 

@@ -16,14 +16,14 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {request} from "@/utils";
 import {DictType} from "@/model/dictType";
 
 class DictTypeApi extends DefaultApiImpl<DictType> {
 
     constructor() {
-        super(BaseUrlConstant.DICT_TYPE_API_PREFIX);
+        super(BaseApiUrlConstant.DICT_TYPE_API_PREFIX);
     }
 
     /**

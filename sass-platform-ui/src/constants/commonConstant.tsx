@@ -14,43 +14,24 @@
  * limitations under the License.
  */
 
-
 /**
- * localStore语言key
+ * 公共常量
  */
-export const LANGUAGE_KEY: string = 'site_language';
+export class CommonConstant {
 
-/**
- * 登录页
- */
-export const BASE_LOGIN_URL: string = '/login';
+    /**
+     * localStore语言key
+     */
+    static readonly LANGUAGE_KEY: string = 'site_language';
 
-/**
- * 门户页
- */
-export const BASE_PORTAL_URL: string = '/portal';
+    /**
+     * 中文
+     */
+    static readonly ZH_CN_LANGUAGE = 'zh_cn';
 
-/**
- * 第三方登录的回调地址
- */
-export const BASE_REDIRECT_URL: string = '/redirect';
+    /**
+     * 英文
+     */
+    static readonly EN_LANGUAGE = 'en';
+}
 
-/**
- * 首页
- */
-export const BASE_HOME_URL: string = '/home';
-
-/**
- * 个人资料
- */
-export const BASE_USER_PROFILE_URL: string = '/profile';
-
-/**
- * 中文
- */
-export const ZH_CN_LANGUAGE = 'zh_cn';
-
-/**
- * 英文
- */
-export const EN_LANGUAGE = 'en';

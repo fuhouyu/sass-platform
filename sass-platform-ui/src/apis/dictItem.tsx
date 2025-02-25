@@ -17,13 +17,13 @@
 
 import {DefaultApiImpl} from "@/apis/baseApi";
 import {DictItem} from "@/model/dictItem";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {request} from "@/utils";
 
 class DictItemApi extends DefaultApiImpl<DictItem> {
 
     constructor() {
-        super(BaseUrlConstant.DICT_ITEM_API_PREFIX);
+        super(BaseApiUrlConstant.DICT_ITEM_API_PREFIX);
     }
 
     /**

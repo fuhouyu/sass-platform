@@ -17,7 +17,7 @@
 
 import {DefaultApiImpl} from "@/apis/baseApi";
 import {Role} from "@/model/role";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {request} from "@/utils";
 
 /**
@@ -26,7 +26,7 @@ import {request} from "@/utils";
 class RoleApi extends DefaultApiImpl<Role> {
 
     constructor() {
-        super(BaseUrlConstant.ROLE_API_PREFIX);
+        super(BaseApiUrlConstant.ROLE_API_PREFIX);
     }
 
     /**

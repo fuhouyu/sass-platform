@@ -21,8 +21,8 @@ import {useState} from 'react';
 import i18n from 'i18next';
 import {IconFont} from '@/components';
 import {useLocaleStore} from "@/store";
-import {EN_LANGUAGE, ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 import type {ItemType} from "antd/es/menu/interface";
+import {CommonConstant} from "@/constants/commonConstant.tsx";
 
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);
@@ -40,7 +40,7 @@ const useLanguageSwitcher = (className?: string) => {
 
     const languageItems: MenuProps['items'] = [
         {
-            key: ZH_CN_LANGUAGE,
+            key: CommonConstant.ZH_CN_LANGUAGE,
             label: (
                 <span>
                     简体中文
@@ -48,7 +48,7 @@ const useLanguageSwitcher = (className?: string) => {
             )
         },
         {
-            key: EN_LANGUAGE,
+            key: CommonConstant.EN_LANGUAGE,
             label: (
                 <span>
                     English

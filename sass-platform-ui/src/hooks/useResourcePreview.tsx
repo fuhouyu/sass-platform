@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 export function useResourcePreview() {
 
     const previewUrl = (resourceId?: string): string | undefined => {
         if (resourceId) {
-            return `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${resourceId}`
+            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${resourceId}`
         }
         return undefined;
     }

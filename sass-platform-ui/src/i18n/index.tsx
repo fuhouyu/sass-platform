@@ -17,8 +17,8 @@
 import i18n from "i18next";
 import {initReactI18next} from "react-i18next";
 import {ZhCN} from "@/i18n/zh-CN";
-import {LANGUAGE_KEY, ZH_CN_LANGUAGE} from "@/constants/commonConstant";
 import {EnUS} from "@/i18n/en-US";
+import {CommonConstant} from "@/constants/commonConstant";
 
 i18n
     // 将 i18n 实例传递给 react-i18next
@@ -34,8 +34,8 @@ i18n
                 translation: ZhCN
             },
         },
-        fallbackLng: ZH_CN_LANGUAGE,
-        lng: localStorage.getItem(LANGUAGE_KEY) ?? ZH_CN_LANGUAGE,
+        fallbackLng: CommonConstant.ZH_CN_LANGUAGE,
+        lng: localStorage.getItem(CommonConstant.LANGUAGE_KEY) ?? CommonConstant.ZH_CN_LANGUAGE,
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         }

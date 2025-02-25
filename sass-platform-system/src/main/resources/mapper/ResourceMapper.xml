@@ -183,9 +183,7 @@
         <include refid="QueryColumns"/>
                 FROM
         <include refid="TableName"/> r
-        <if test="pageQuery.tenantId != null">
-            WHERE r.owner_tenant_id = #{pageQuery.tenantId}
-        </if>
+
     </select>
 
     <select id="queryByEtag" resultMap="BaseResultMap">

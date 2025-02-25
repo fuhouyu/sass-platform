@@ -15,12 +15,12 @@
  */
 
 import {TenantInfo} from "@/model/tenant";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi";
 import {request} from "@/utils";
 
 
-const baseTenantUrl = BaseUrlConstant.TENANT_API_PREFIX;
+const baseTenantUrl = BaseApiUrlConstant.TENANT_API_PREFIX;
 
 class TenantApi extends DefaultApiImpl<TenantInfo> {
 

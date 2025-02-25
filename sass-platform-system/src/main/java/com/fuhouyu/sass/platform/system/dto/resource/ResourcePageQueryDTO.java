@@ -38,6 +38,4 @@ public class ResourcePageQueryDTO extends PageQueryDTO {
     @Serial
     private static final long serialVersionUID = 8971293667152375871L;
 
-    @Schema(name = "tenantId", description = "租户id")
-    private Long tenantId;
 }

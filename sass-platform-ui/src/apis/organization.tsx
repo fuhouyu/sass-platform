@@ -17,13 +17,13 @@
 
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
 import {Organization} from "@/model/organization.tsx";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {request} from "@/utils";
 
 class OrganizationApi extends DefaultApiImpl<Organization> {
 
     constructor() {
-        super(BaseUrlConstant.ORGANIZATION_API_PREFIX);
+        super(BaseApiUrlConstant.ORGANIZATION_API_PREFIX);
     }
 
     /**

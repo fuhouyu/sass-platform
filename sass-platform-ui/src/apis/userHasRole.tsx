@@ -16,7 +16,7 @@
 
 
 import {request} from "@/utils";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 class UserHasRole {
 
@@ -42,4 +42,4 @@ class UserHasRole {
         request.post(`${this.baseUrl}/${userId}`, roleIds);
 }
 
-export const userHasRoleApi = new UserHasRole(BaseUrlConstant.USER_HAS_ROLE_API_PREFIX);
+export const userHasRoleApi = new UserHasRole(BaseApiUrlConstant.USER_HAS_ROLE_API_PREFIX);

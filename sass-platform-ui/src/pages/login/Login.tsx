@@ -23,11 +23,11 @@ import useAuth from "@/hooks/useAuth";
 import {IconFont, WeLinkLogin} from "@/components";
 import {useTranslation} from "react-i18next";
 import {router} from "@/routes/routers";
-import {BASE_PORTAL_URL} from "@/constants/commonConstant";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
 import {useUserStore} from "@/store";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 /**
  * 登录组件
@@ -58,7 +58,7 @@ export const Login: React.FC = () => {
         try {
             await fetchLogin(loginData);
             setLoginButtonLoading(false)
-            await router.navigate(BASE_PORTAL_URL, {state: location.state});
+            await router.navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
             setLoginButtonLoading(false);
         } catch (err) {
             setLoginButtonLoading(false);
