@@ -17,13 +17,13 @@
 
 import {request} from "@/utils";
 import {Menu} from "@/model/menu";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi";
 
 
 class PermissionApi extends DefaultApiImpl<Menu> {
     constructor() {
-        super(BaseUrlConstant.PERMISSION_API_PREFIX);
+        super(BaseApiUrlConstant.PERMISSION_API_PREFIX);
     }
 
     /**

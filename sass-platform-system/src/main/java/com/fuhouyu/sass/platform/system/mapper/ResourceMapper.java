@@ -16,8 +16,11 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.dto.resource.ResourcePageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Resources;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +41,13 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      */
     @TenantQuery
     Resources queryByEtag(@Param("etag") String etag);
+
+    /**
+     * 批量查询
+     *
+     * @param pageQuery 分页查询对象
+     * @return 批量查询
+     */
+    @TenantQuery
+    List<Resources> queryList(@Param("pageQuery") ResourcePageQueryDTO pageQuery);
 }

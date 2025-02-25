@@ -18,7 +18,7 @@
 /**
  * api常量
  */
-export class BaseUrlConstant {
+export class BaseApiUrlConstant {
 
     /**
      * 版本
@@ -28,66 +28,101 @@ export class BaseUrlConstant {
     /**
      * 用户api
      */
-    static readonly USER_API_PREFIX = `${BaseUrlConstant.VERSION}/user`;
+    static readonly USER_API_PREFIX = `${BaseApiUrlConstant.VERSION}/user`;
 
     /**
      *认证api
      */
-    static readonly AUTHENTICATION_API_PREFIX = `${BaseUrlConstant.VERSION}/auth`;
+    static readonly AUTHENTICATION_API_PREFIX = `${BaseApiUrlConstant.VERSION}/auth`;
 
     /**
      * 权限api
      */
-    static readonly PERMISSION_API_PREFIX = `${BaseUrlConstant.VERSION}/permission`;
+    static readonly PERMISSION_API_PREFIX = `${BaseApiUrlConstant.VERSION}/permission`;
 
     /**
      * 租户api
      */
-    static readonly TENANT_API_PREFIX = `${BaseUrlConstant.VERSION}/tenant`;
+    static readonly TENANT_API_PREFIX = `${BaseApiUrlConstant.VERSION}/tenant`;
 
 
     /**
      * 角色api
      */
-    static readonly ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/role`;
+    static readonly ROLE_API_PREFIX = `${BaseApiUrlConstant.VERSION}/role`;
 
     /**
      * 字典类型api
      */
-    static readonly DICT_TYPE_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-type`;
+    static readonly DICT_TYPE_API_PREFIX = `${BaseApiUrlConstant.VERSION}/dict-type`;
 
     /**
      * 字典项api
      */
-    static readonly DICT_ITEM_API_PREFIX = `${BaseUrlConstant.VERSION}/dict-item`;
+    static readonly DICT_ITEM_API_PREFIX = `${BaseApiUrlConstant.VERSION}/dict-item`;
 
     /**
      * 账号api接口
      */
-    static readonly ACCOUNT_API_PREFIX = `${BaseUrlConstant.VERSION}/account`;
+    static readonly ACCOUNT_API_PREFIX = `${BaseApiUrlConstant.VERSION}/account`;
 
     /**
      * 组织api接口
      */
-    static readonly ORGANIZATION_API_PREFIX = `${BaseUrlConstant.VERSION}/organization`;
+    static readonly ORGANIZATION_API_PREFIX = `${BaseApiUrlConstant.VERSION}/organization`;
 
     /**
      * 用户角色api接口
      */
-    static readonly USER_HAS_ROLE_API_PREFIX = `${BaseUrlConstant.VERSION}/user-role`;
+    static readonly USER_HAS_ROLE_API_PREFIX = `${BaseApiUrlConstant.VERSION}/user-role`;
 
     /**
      * 用户职务api接口
      */
-    static readonly USER_POSITION_API_PREFIX = `${BaseUrlConstant.VERSION}/user-position`;
+    static readonly USER_POSITION_API_PREFIX = `${BaseApiUrlConstant.VERSION}/user-position`;
 
     /**
      * 资源api接口
      */
-    static readonly RESOURCE_API_PREFIX = `${BaseUrlConstant.VERSION}/resource`;
+    static readonly RESOURCE_API_PREFIX = `${BaseApiUrlConstant.VERSION}/resource`;
 
     /**
      * 租户空间api接口
      */
-    static readonly TENANT_SPACE_PREFIX = `${BaseUrlConstant.VERSION}/tenant-space`
+    static readonly TENANT_SPACE_PREFIX = `${BaseApiUrlConstant.VERSION}/tenant-space`
+}
+
+/**
+ * url 常量
+ */
+export class BaseUrlConstant {
+    /**
+     * 登录页
+     */
+    static readonly LOGIN_URL: string = '/login';
+
+    /**
+     * 门户页
+     */
+    static readonly PORTAL_URL: string = '/portal';
+
+    /**
+     * 第三方登录的回调地址
+     */
+    static readonly REDIRECT_URL: string = '/redirect';
+
+    /**
+     * 首页
+     */
+    static readonly HOME_URL: string = '/home';
+
+    /**
+     * 个人资料
+     */
+    static readonly USER_PROFILE_URL: string = '/profile';
+
+    /**
+     * 租户空间
+     */
+    static readonly TENANT_SPACE_URL: string = '/tenant-space';
 }

@@ -124,6 +124,7 @@ const EnUS = {
         space: 'Tenant Space',
         bucketName: 'Space Name',
         bucketNamePlaceholder: 'Please input Space Name',
+        enterSpace: 'Click to Enter tenant space',
         bucketNameExistsErrorMessage: 'Space Name is exists',
         spaceAcl: 'Space Acl',
         spaceAclPlaceholder: 'Please choose Space Acl',

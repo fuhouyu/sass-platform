@@ -100,6 +100,7 @@ const ZhCN = {
         bucketName: '空间名称',
         bucketNamePlaceholder: '请输入空间名称',
         bucketNameExistsErrorMessage: '空间名称已存在',
+        enterSpace: '点击进入租户空间',
         spaceAcl: '空间权限',
         spaceAclPlaceholder: '请选择空间权限',
         capacity: '容量',

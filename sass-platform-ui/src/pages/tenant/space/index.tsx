@@ -16,7 +16,7 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Space, TableColumnsType} from "antd";
+import {Button, Card, Space, TableColumnsType} from "antd";
 import {IconFont, PageList} from "@/components";
 import {useTranslation} from "react-i18next";
 import {PageQuery, PageResult} from "@/model/pageQuery";
@@ -26,6 +26,7 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
 import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
+import {UploadOutlined} from "@ant-design/icons";
 
 const TenantSpace: React.FC = () => {
 
@@ -129,49 +130,59 @@ const TenantSpace: React.FC = () => {
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
 
     return (<>
-        <PageList
-            tableProps={{
-                tableName: t('Resource.list'),
-                columns: columns,
-                pageData: pageResult,
-                pageQuery: pageQuery,
-                setPageQuery: setPageQuery,
-                rowSelection: rowSelection,
-                tableComponents: [
-                    <>
-                        {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
-                        {/*                  permissionStr={TenantPermissionConstant.ADD}>*/}
-                        {/*    <AddButton onClick={() => navigate('/tenant-form')}/>*/}
-                        {/*</PermissionButton>*/}
-                        {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
-                        {/*                  permissionStr={TenantPermissionConstant.DELETE}>*/}
-                        {/*    <Popconfirm*/}
-                        {/*        title={t('Button.delete')}*/}
-                        {/*        description={t('Button.deleteConfirm')}*/}
-                        {/*        okText={t('Common.yes')}*/}
-                        {/*        cancelText={t('Common.no')}*/}
-                        {/*        onConfirm={async () => {*/}
-                        {/*            await tenantApi.deleteInfoApi(rowKeys as string[]);*/}
-                        {/*            await pageRequest();*/}
-                        {/*        }}*/}
-                        {/*    >*/}
-                        {/*        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>*/}
-                        {/*    </Popconfirm>*/}
-                        {/*</PermissionButton>*/}
-                    </>
-                ]
-            }}
-            // headerSearchProps={{
-            //     components: [
-            //         <><label htmlFor="tenantName">{t('Tenant.name')}</label>
-            //             <Input placeholder={t('Tenant.namePlaceholder')} id={'tenantName'} onChange={(e) => {
-            //                 setTenantQuery({tenantName: e.target.value})
-            //             }}/>
-            //         </>
-            //     ],
-            //     onSearchClick: () => setPageQuery({...pageQuery, ...tenantQuery})
-            // }}
-        />
+        <Card>
+            <div className={'tenant-space-header'}>
+                <div>
+                    <IconFont type={'i-cunchu'}/>
+                </div>
+                <div className={'space-button'}>
+                    <Button type="primary" icon={<UploadOutlined/>}> 上传文件</Button>
+                </div>
+            </div>
+            <PageList
+                tableProps={{
+                    tableName: t('Resource.list'),
+                    columns: columns,
+                    pageData: pageResult,
+                    pageQuery: pageQuery,
+                    setPageQuery: setPageQuery,
+                    rowSelection: rowSelection,
+                    tableComponents: [
+                        <>
+                            {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
+                            {/*                  permissionStr={TenantPermissionConstant.ADD}>*/}
+                            {/*    <AddButton onClick={() => navigate('/tenant-form')}/>*/}
+                            {/*</PermissionButton>*/}
+                            {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
+                            {/*                  permissionStr={TenantPermissionConstant.DELETE}>*/}
+                            {/*    <Popconfirm*/}
+                            {/*        title={t('Button.delete')}*/}
+                            {/*        description={t('Button.deleteConfirm')}*/}
+                            {/*        okText={t('Common.yes')}*/}
+                            {/*        cancelText={t('Common.no')}*/}
+                            {/*        onConfirm={async () => {*/}
+                            {/*            await tenantApi.deleteInfoApi(rowKeys as string[]);*/}
+                            {/*            await pageRequest();*/}
+                            {/*        }}*/}
+                            {/*    >*/}
+                            {/*        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>*/}
+                            {/*    </Popconfirm>*/}
+                            {/*</PermissionButton>*/}
+                        </>
+                    ]
+                }}
+                // headerSearchProps={{
+                //     components: [
+                //         <><label htmlFor="tenantName">{t('Tenant.name')}</label>
+                //             <Input placeholder={t('Tenant.namePlaceholder')} id={'tenantName'} onChange={(e) => {
+                //                 setTenantQuery({tenantName: e.target.value})
+                //             }}/>
+                //         </>
+                //     ],
+                //     onSearchClick: () => setPageQuery({...pageQuery, ...tenantQuery})
+                // }}
+            />
+        </Card>
 
         <div>
             {picViewUrl && (

@@ -18,19 +18,19 @@ import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {router} from "@/routes/routers.tsx";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant.tsx";
 import Layout, {Content} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
 import './index.scss'
 import {Bread} from "@/components";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 export const LayoutMain = () => {
     const accessToken = useAuth();
     const pathname = useLocation().pathname;
     useEffect(() => {
         if (!accessToken) {
-            router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+            router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
         }
     }, [accessToken, pathname]);
     return (

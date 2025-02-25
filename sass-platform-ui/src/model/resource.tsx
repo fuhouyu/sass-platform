@@ -67,6 +67,11 @@ export interface Resource {
     id?: string;
 
     /**
+     * 父级id
+     */
+    parentId?: string;
+
+    /**
      * 业务名称
      */
     businessName: string;
@@ -110,4 +115,9 @@ export interface Resource {
      * 是否公开
      */
     isPublic: boolean;
+
+    /**
+     * 是否目录
+     */
+    isDirectory: boolean;
 }

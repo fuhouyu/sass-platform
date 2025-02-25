@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// useTokenRefresh.ts
+
 import {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {message} from 'antd';
 import {getAccessToken, getRefreshToken, removeToken} from "@/utils";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {AccountType} from "@/model/account.tsx";
 import {useUserStore} from "@/store";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 const useAuth = () => {
     const navigate = useNavigate();
@@ -29,14 +29,14 @@ const useAuth = () => {
     const token = getAccessToken();
     const {fetchLogin} = useUserStore(state => state);
     useEffect(() => {
-        if (pathname.includes(BASE_LOGIN_URL)) {
+        if (pathname.includes(BaseUrlConstant.LOGIN_URL)) {
             return;
         }
         if (!token) {
             const refreshToken = getRefreshToken();
             if (!refreshToken) {
                 message.warning("当前用户登录状态已失效").then();
-                navigate(BASE_LOGIN_URL, {state: {from: pathname}});
+                navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
                 return;
             }
 
@@ -47,10 +47,10 @@ const useAuth = () => {
                 })
                 .catch(() => {
                     removeToken();
-                    navigate(BASE_LOGIN_URL, {state: {from: pathname}});
+                    navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
                 })
         }
-    }, [navigate, pathname, token]);
+    }, [fetchLogin, navigate, pathname, token]);
     return getAccessToken();
 };
 

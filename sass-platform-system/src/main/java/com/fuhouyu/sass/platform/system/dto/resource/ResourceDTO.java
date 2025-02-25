@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -44,10 +46,14 @@ public class ResourceDTO extends BaseDTO implements Serializable {
     @Schema(name = "id", description = "资源id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
+    @Schema(name = "parentId", description = "父资源id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long parentId;
+
     @Schema(name = "name", description = "资源名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotEmpty(message = "名称未输入")
     private String name;
 
-    @Schema(name = "size", description = "资源大小", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "size", description = "资源大小", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long size;
 
     @Schema(name = "eTag", description = "资源etag", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -56,24 +62,27 @@ public class ResourceDTO extends BaseDTO implements Serializable {
             "eTag",
             "etag"
     })
+    @NotEmpty(message = "etag未输入")
     private String etag;
 
-    @Schema(name = "mimeType", description = "资源类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "mimeType", description = "资源类型", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String mimeType;
 
     @Schema(name = "objectKey", description = "对象key", requiredMode = Schema.RequiredMode.REQUIRED)
     private String objectKey;
 
-    @Schema(name = "url", description = "资源url", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String url;
-
-    @Schema(name = "version", description = "版本号", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "version", description = "版本号", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer version;
 
     @Schema(name = "isPublic", description = "是否公开", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否公开未选择")
     private Boolean isPublic;
 
-    @Schema(name = "ownerTenantId", description = "租户id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "isDirectory", description = "是否是目录", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "是否目录未选择")
+    private Boolean isDirectory;
+
+    @Schema(name = "ownerTenantId", description = "租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long ownerTenantId;
 
 }

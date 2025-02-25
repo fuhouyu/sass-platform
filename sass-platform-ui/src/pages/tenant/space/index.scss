@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
+.ant-card-body {
+  padding: 0 !important;
+}
+
+.tenant-space-header {
+  display: flex;
+  height: 4.25rem;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 0.25rem;
+  padding: 0 1rem;
+}
+
 .preview-img-container {
   display: flex;
   position: fixed;

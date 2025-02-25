@@ -15,7 +15,7 @@
  */
 
 
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {Account} from "@/model/account.tsx";
 import {request} from "@/utils";
 
@@ -23,7 +23,7 @@ class AccountApi {
     baseUrl: string;
 
     constructor() {
-        this.baseUrl = BaseUrlConstant.ACCOUNT_API_PREFIX;
+        this.baseUrl = BaseApiUrlConstant.ACCOUNT_API_PREFIX;
     }
 
     /**

@@ -16,7 +16,7 @@
 
 
 import {request} from "@/utils";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {Resource, StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
 
@@ -43,4 +43,4 @@ class ResourceApi extends DefaultApiImpl<Resource> {
 
 }
 
-export const resourceApi: ResourceApi = new ResourceApi(BaseUrlConstant.RESOURCE_API_PREFIX);
+export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

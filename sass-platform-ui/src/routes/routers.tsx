@@ -21,19 +21,14 @@ import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Home} from "@/pages/home/Home";
 import {UserProfile} from "@/pages/profile";
 import Login from "@/pages/login";
-import {
-    BASE_HOME_URL,
-    BASE_LOGIN_URL,
-    BASE_PORTAL_URL,
-    BASE_REDIRECT_URL,
-    BASE_USER_PROFILE_URL
-} from "@/constants/commonConstant";
+
 import MainPortal from "@/pages/portal";
 import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
 import {LoaderFunction} from "@remix-run/router/utils.ts";
 import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 export type RouterType = {
     id: string;
@@ -67,13 +62,13 @@ export const commonRouter: RouterType[] = [
             {
                 id: 'home',
                 title: 'Home',
-                path: BASE_HOME_URL,
+                path: BaseUrlConstant.HOME_URL,
                 element: <Home/>
             },
             {
                 id: 'profile',
                 title: 'profile',
-                path: BASE_USER_PROFILE_URL,
+                path: BaseUrlConstant.USER_PROFILE_URL,
                 element: <UserProfile/>,
             }
         ]
@@ -81,19 +76,19 @@ export const commonRouter: RouterType[] = [
     {
         id: 'login',
         title: 'login',
-        path: BASE_LOGIN_URL,
+        path: BaseUrlConstant.LOGIN_URL,
         element: <Login/>,
     },
     {
         id: 'portal',
         title: 'portal',
-        path: BASE_PORTAL_URL,
+        path: BaseUrlConstant.PORTAL_URL,
         element: <MainPortal/>,
     },
     {
         id: 'redirect',
         title: 'redirect',
-        path: BASE_REDIRECT_URL,
+        path: BaseUrlConstant.REDIRECT_URL,
         element: <PostThirdPartyRedirect/>,
 
     },

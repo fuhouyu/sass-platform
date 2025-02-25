@@ -16,12 +16,12 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
-import {BASE_LOGIN_URL} from "@/constants/commonConstant";
 import {router} from "@/routes/routers";
 import {message} from "antd";
 import {UserBind, UserToken} from "@/model/authentication.tsx";
 import {authenticationApi} from "@/apis/authentication.tsx";
 import {AccountType} from "@/model/account.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 
 const request: AxiosInstance = axios.create({
@@ -65,7 +65,7 @@ request.interceptors.response.use(async function (response) {
             }) as UserToken;
             if (!res) {
                 removeToken();
-                router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+                router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
                 return;
             }
             storeToken(res);
@@ -73,13 +73,13 @@ request.interceptors.response.use(async function (response) {
             return;
         }
         removeToken();
-        router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+        router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
         return
     }
     if (response.data.code === 403) {
         removeToken();
         const pathname = router.state.location.pathname;
-        router.navigate(BASE_LOGIN_URL, {state: {from: pathname}}).then();
+        router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
         return
     }
     // 如果是1001，表示用户需要绑定

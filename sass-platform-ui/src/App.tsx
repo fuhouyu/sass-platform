@@ -23,17 +23,17 @@ import '@/i18n/index'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
 import {ConfigProvider} from "antd";
 import {useLocaleStore} from "@/store";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 import {Locale} from "antd/es/locale";
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
+import {CommonConstant} from "./constants/commonConstant";
 
 export const App: React.FC = () => {
     const initialize = useRoutes();
     const language = useLocaleStore(state => state.language);
     const [antdLocale, setAntdLocale] = useState<Locale>();
     useEffect(() => {
-        setAntdLocale(language === ZH_CN_LANGUAGE ? zhCN : enUS);
+        setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
     }, [language])
     if (!initialize) {
         return <PageLoading/>;

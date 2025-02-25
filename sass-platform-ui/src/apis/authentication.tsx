@@ -16,16 +16,16 @@
 
 import {request} from "@/utils";
 import {ThirdPartyBindAuthentication, UserAuthentication, UserBind, UserToken} from "@/model/authentication";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
-const baseAuthUrl = BaseUrlConstant.AUTHENTICATION_API_PREFIX
+const baseAuthUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX
 
 
 class AuthenticationApi {
     baseUrl: string;
 
     constructor() {
-        this.baseUrl = BaseUrlConstant.AUTHENTICATION_API_PREFIX;
+        this.baseUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX;
     }
 
     /**

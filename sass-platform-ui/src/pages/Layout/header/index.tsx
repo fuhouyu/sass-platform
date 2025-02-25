@@ -21,13 +21,12 @@ import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Card, Divider, Dropdown, Flex, MenuProps, Modal, Space} from "antd";
+import {Avatar, Button, Card, Divider, Dropdown, Flex, MenuProps, Modal, Space, Tooltip} from "antd";
 import {LogoutOutlined, UserOutlined} from "@ant-design/icons";
 import {tenantApi} from "@/apis/tenant.tsx";
-import {BASE_LOGIN_URL, BASE_USER_PROFILE_URL} from "@/constants/commonConstant.tsx";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant, BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 export const LayoutHeader = () => {
     const {t} = useTranslation();
@@ -61,7 +60,7 @@ export const LayoutHeader = () => {
             label: t('Menu.profile'),
             icon: <UserOutlined/>,
             onClick: () => {
-                navigate(BASE_USER_PROFILE_URL);
+                navigate(BaseUrlConstant.USER_PROFILE_URL);
             }
         },
         {
@@ -70,7 +69,7 @@ export const LayoutHeader = () => {
             icon: <LogoutOutlined/>,
             onClick: async () => {
                 await fetchLogout();
-                navigate(BASE_LOGIN_URL);
+                navigate(BaseUrlConstant.LOGIN_URL);
             },
         },
     ];
@@ -90,9 +89,14 @@ export const LayoutHeader = () => {
         <>
             <Header className="layout-header">
                 <div className={'header-title-container'}>
-                    <h2 className="platform-title">
-                        {tenant?.tenantName}
-                    </h2>
+                    <Tooltip className="platform-title" title={t('Tenant.enterSpace')} placement={'right'}>
+                        <Button type={'link'} onClick={() => navigate(BaseUrlConstant.TENANT_SPACE_URL)}>
+                            <h2>
+                                {tenant?.tenantName}
+                            </h2>
+                        </Button>
+                    </Tooltip>
+
                     <Divider className={'header-title-divider'} type="vertical"/>
                 </div>
 
@@ -104,7 +108,7 @@ export const LayoutHeader = () => {
                         <Dropdown menu={{items: dropDownMenus}}>
                             <Space>
                                 <Avatar size={24}
-                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
+                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
                                 />
                                 <span>{userinfo.realName}</span>
                             </Space>

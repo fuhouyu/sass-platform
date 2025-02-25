@@ -16,7 +16,7 @@
 
 import {UserPosition} from "@/model/user.tsx";
 import {request} from "@/utils";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 class UserPositionApi {
 
@@ -45,4 +45,4 @@ class UserPositionApi {
 /**
  * 用户职务api
  */
-export const userPositionApi = new UserPositionApi(BaseUrlConstant.USER_POSITION_API_PREFIX)
+export const userPositionApi = new UserPositionApi(BaseApiUrlConstant.USER_POSITION_API_PREFIX)

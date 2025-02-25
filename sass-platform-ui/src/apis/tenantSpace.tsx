@@ -15,7 +15,7 @@
  */
 
 
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {request} from "@/utils";
 import {TenantSpace} from "@/model/tenant.tsx";
 
@@ -40,4 +40,4 @@ class TenantSpaceApi {
 }
 
 
-export const tenantSpaceApi = new TenantSpaceApi(BaseUrlConstant.TENANT_SPACE_PREFIX);
+export const tenantSpaceApi = new TenantSpaceApi(BaseApiUrlConstant.TENANT_SPACE_PREFIX);

@@ -41,6 +41,11 @@ public class Resources extends BaseEntity {
     private Long id;
 
     /**
+     * 父级id
+     */
+    private Long parentId;
+
+    /**
      * 资源名称
      */
     private String name;
@@ -53,7 +58,7 @@ public class Resources extends BaseEntity {
     /**
      * eTag
      */
-    private String eTag;
+    private String etag;
 
     /**
      * 资源类型
@@ -64,11 +69,6 @@ public class Resources extends BaseEntity {
      * 对象key
      */
     private String objectKey;
-
-    /**
-     * 资源url
-     */
-    private String url;
 
     /**
      * 版本号
@@ -84,4 +84,9 @@ public class Resources extends BaseEntity {
      * 租户id
      */
     private Long ownerTenantId;
+
+    /**
+     * 是否是目录
+     */
+    private Boolean isDirectory;
 }

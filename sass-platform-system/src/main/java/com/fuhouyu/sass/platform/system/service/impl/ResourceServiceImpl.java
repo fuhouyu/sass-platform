@@ -53,6 +53,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -93,6 +94,7 @@ public class ResourceServiceImpl implements ResourceService {
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
+        entity.setParentId(Optional.ofNullable(dto.getParentId()).orElse(-1L));
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.resourceMapper.insert(entity);
         return id;
@@ -179,19 +181,15 @@ public class ResourceServiceImpl implements ResourceService {
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
         String bucketName = tenantSpaceDTO.getBucketName();
         String newObjectKey = resourceDTO.getObjectKey().replace(TMP_DIR, resourceDTO.getBusinessName());
+        // 复制资源
         this.s3Client.copyObject(builder -> {
             builder.sourceBucket(bucketName);
             builder.destinationBucket(bucketName);
             builder.sourceKey(resourceDTO.getObjectKey());
             builder.destinationKey(newObjectKey);
         });
-        long id = this.snowflake.nextId();
-        Resources entity = RESOURCES_ASSEMBLER.toEntity(resourceDTO);
-        entity.setOwnerTenantId(tenantId);
-        entity.setId(id);
-        entity.setObjectKey(newObjectKey);
-        this.resourceMapper.insert(entity);
-        return id;
+        resourceDTO.setObjectKey(newObjectKey);
+        return this.save(resourceDTO);
     }
 
     @Override
