@@ -445,7 +445,6 @@ VALUES (4, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenan
         false, now(), 'admin', now(), 'admin');
 
 
-
 -- 组织管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
@@ -837,14 +836,15 @@ VALUES (1, 'platform-bucket', 1, 'private', now(), 'admin', now(), 'admin');
 DROP TABLE IF EXISTS resources;
 CREATE TABLE resources
 (
-    id              BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
+    parent_id    BIGINT       NOT NULL DEFAULT -1,
     name            VARCHAR(255) NOT NULL,
     size            BIGINT       NOT NULL DEFAULT 0,
     mime_type       VARCHAR(100),
-    object_key      VARCHAR(255),
-    url             VARCHAR(500),
+    object_key   VARCHAR(255) NOT NULL,
     version         INT          NOT NULL DEFAULT 1,
-    etag VARCHAR(64) NOT NULL,
+    etag         VARCHAR(64)  NOT NULL,
+    is_directory BOOLEAN      NOT NULL DEFAULT FALSE,
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
@@ -854,17 +854,17 @@ CREATE TABLE resources
     update_by       VARCHAR(32)  NOT NULL,
     UNIQUE (owner_tenant_id, object_key)
 );
-
-
+CREATE INDEX idx_resources_parent_id ON resources (parent_id);
+COMMENT ON INDEX idx_resources_parent_id IS '资源表父级id索引';
 COMMENT ON TABLE resources IS '存储各种类型的资源信息';
 COMMENT ON COLUMN resources.id IS '资源唯一标识';
+COMMENT ON COLUMN resources.parent_id IS '父级id';
 COMMENT ON COLUMN resources.name IS '资源名称';
 COMMENT ON COLUMN resources.size IS '资源大小（字节）';
 COMMENT ON COLUMN resources.mime_type IS '资源的 MIME 类型';
 COMMENT ON COLUMN resources.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN resources.object_key IS '对象存储中的对象名称';
-COMMENT ON COLUMN resources.url IS '资源的访问 URL';
-COMMENT ON COLUMN resources.etag IS 'eTag';
+COMMENT ON COLUMN resources.etag IS 'etag';
 COMMENT ON COLUMN resources.version IS '资源的版本号';
 COMMENT ON COLUMN resources.is_public IS '是否允许公开访问';
 COMMENT ON COLUMN resources.create_at IS '创建时间';

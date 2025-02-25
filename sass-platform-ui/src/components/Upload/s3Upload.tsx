@@ -45,7 +45,6 @@ export const S3Upload: React.FC<{
                 const md5 = await calculateMD5(file);
                 const endTime = Date.now(); // 记录结束时间
                 const totalTime = (endTime - startTime) / 1000; // 计算总耗时
-                console.log('File MD5:', md5);
                 console.log('Total time taken:', totalTime, 's');
 
                 const existsResource = await resourceApi.getResourceByEtag(md5);
@@ -94,6 +93,7 @@ export const S3Upload: React.FC<{
                 size: fileSize,
                 mimeType: contentType,
                 isPublic: true,
+                isDirectory: false,
                 version: 1,
                 objectKey: stsTokenResponse.objectKey,
             });

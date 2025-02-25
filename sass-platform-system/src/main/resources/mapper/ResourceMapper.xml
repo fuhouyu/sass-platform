@@ -18,14 +18,15 @@
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.ResourceMapper">
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Resources" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
         <result column="name" property="name"/>
         <result column="size" property="size"/>
         <result column="mime_type" property="mimeType"/>
-        <result column="eTag" property="eTag"/>
+        <result column="etag" property="etag"/>
         <result column="object_key" property="objectKey"/>
-        <result column="url" property="url"/>
         <result column="version" property="version"/>
         <result column="is_public" property="isPublic"/>
+        <result column="is_directory" property="isDirectory"/>
         <result column="owner_tenant_id" property="ownerTenantId"/>
     </resultMap>
 
@@ -35,15 +36,16 @@
 
     <sql id="InsertColumns">
         id,
+        parent_id,
         name,
         size,
         mime_type,
         object_key,
-        url,
-        eTag,
+        etag,
         version,
         is_deleted,
         is_public,
+        is_directory,
         owner_tenant_id,
         create_at,
         update_at,
@@ -54,15 +56,16 @@
 
     <sql id="QueryColumns">
         r.id,
+        r.parent_id,
         r.name,
         r.size,
         r.mime_type,
         r.object_key,
-        r.url,
-        r.eTag,
+        r.etag,
         r.version,
         r.is_deleted,
         r.is_public,
+        r.is_directory,
         r.owner_tenant_id,
         r.create_at,
         r.update_at,
@@ -79,15 +82,16 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
+            #{parentId},
             #{name},
             #{size},
             #{mimeType},
             #{objectKey},
-            #{url},
-            #{eTag},
+            #{etag},
             #{version},
             #{isDeleted},
             #{isPublic},
+            #{isDirectory},
             #{ownerTenantId},
             #{createAt},
             #{updateAt},
@@ -106,15 +110,16 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
+                #{entity.parentId},
                 #{entity.name},
                 #{entity.size},
                 #{entity.mimeType},
                 #{entity.objectKey},
-                #{entity.url},
-                #{entity.eTag},
+                #{entity.etag},
                 #{entity.version},
                 #{entity.isDeleted},
                 #{entity.isPublic},
+                #{entity.isDirectory},
                 #{entity.ownerTenantId},
                 #{entity.createAt},
                 #{entity.updateAt},
@@ -183,7 +188,9 @@
         <include refid="QueryColumns"/>
                 FROM
         <include refid="TableName"/> r
-
+        <if test="pageQuery.parentId != null">
+            parent_id = #{pageQuery.parentId}
+        </if>
     </select>
 
     <select id="queryByEtag" resultMap="BaseResultMap">

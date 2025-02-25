@@ -88,23 +88,6 @@ export const Userinfo = () => {
                                 loading={buttonLoading}>{t('User.updateUserinfo')}</Button>
                     </Form.Item>
                 </Form>
-
-                {/*<div>*/}
-                {/*    <Flex*/}
-                {/*        vertical*/}
-                {/*        align={'center'}*/}
-                {/*        gap={10}*/}
-                {/*    >*/}
-                {/*        <Avatar*/}
-                {/*            size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}*/}
-                {/*            src={"https://oss.fuhouyu.com/2.jpeg"}*/}
-                {/*        />*/}
-                {/*        <Upload>*/}
-                {/*            <Button icon={<UploadOutlined/>}>{t('Common.updateAvatar')}</Button>*/}
-                {/*        </Upload>*/}
-                {/*    </Flex>*/}
-
-                {/*</div>*/}
             </Flex>
         </>
     )
