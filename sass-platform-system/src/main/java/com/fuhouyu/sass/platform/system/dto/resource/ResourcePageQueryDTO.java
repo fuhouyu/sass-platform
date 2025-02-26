@@ -38,6 +38,6 @@ public class ResourcePageQueryDTO extends PageQueryDTO {
     @Serial
     private static final long serialVersionUID = 8971293667152375871L;
 
-    @Schema(name = "parentId", description = "父级id")
-    private Long parentId;
+    @Schema(name = "prefix", description = "前缀")
+    private String prefix;
 }

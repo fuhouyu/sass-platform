@@ -188,9 +188,14 @@
         <include refid="QueryColumns"/>
                 FROM
         <include refid="TableName"/> r
-        <if test="pageQuery.parentId != null">
-            parent_id = #{pageQuery.parentId}
-        </if>
+        <where>
+            <if test="pageQuery.prefix != null and pageQuery.prefix != ''">
+                r.object_key LIKE CONCAT(#{pageQuery.prefix}, '%')
+            </if>
+            <if test="pageQuery.prefix == null or pageQuery.prefix == ''">
+              AND r.parent_id = -1
+            </if>
+        </where>
     </select>
 
     <select id="queryByEtag" resultMap="BaseResultMap">
@@ -199,5 +204,13 @@
         FROM
         <include refid="TableName"/> r
         WHERE r.etag = #{etag}
+    </select>
+
+    <select id="queryByObjectKey" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> r
+        WHERE r.object_key = #{objectKey}
     </select>
 </mapper>

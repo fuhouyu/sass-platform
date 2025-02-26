@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.dto.resource;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,6 +38,5 @@ public class SaveResourceDTO extends ResourceDTO {
     private static final long serialVersionUID = 8917239667152376512L;
 
     @Schema(name = "businessName", description = "业务名称")
-    @NotEmpty(message = "业务未填写")
     private String businessName;
 }
