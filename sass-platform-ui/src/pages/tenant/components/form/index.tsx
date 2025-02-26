@@ -16,7 +16,6 @@
 
 import {Button, Card, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
 import React, {Key, useCallback, useEffect, useState} from "react";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {FormTree, OrganizationUserModal} from "@/components";
 import {Menu} from "@/model/menu.tsx";
@@ -30,6 +29,7 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
+import {CommonConstant} from "@/constants/commonConstant";
 
 const TenantForm = () => {
     const [current, setCurrent] = useState(0);
@@ -152,7 +152,7 @@ const TenantForm = () => {
                     clearOnDestroy={true}
                     name="tenant-form"
                     form={tenantInfoForm}
-                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
                     wrapperCol={{span: 15}}
                     autoComplete="off"
                     initialValues={{
@@ -336,7 +336,7 @@ const TenantForm = () => {
                     clearOnDestroy={true}
                     name="space-form"
                     form={tenantSpaceForm}
-                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
                     wrapperCol={{span: 15, offset: 2}}
                     autoComplete="off"
                     initialValues={{

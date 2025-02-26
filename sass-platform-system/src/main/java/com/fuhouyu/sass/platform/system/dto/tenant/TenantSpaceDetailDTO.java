@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.resource;
+package com.fuhouyu.sass.platform.system.dto.tenant;
 
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,20 +23,20 @@ import java.io.Serial;
 
 /**
  * <p>
- * 资源查询dto对象
+ * 租户空间详情dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/3 22:32
+ * @since 2025/2/26 21:32
  */
-@Schema(name = "ResourcePageQueryDTO", description = "资源查询dto对象")
+@Schema(name = "TenantSpaceDetailDTO", description = "租户空间详情dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ResourcePageQueryDTO extends PageQueryDTO {
+public class TenantSpaceDetailDTO extends TenantSpaceDTO {
 
     @Serial
-    private static final long serialVersionUID = 8971293667152375871L;
+    private static final long serialVersionUID = -641235481235489123L;
 
-    @Schema(name = "prefix", description = "前缀")
-    private String prefix;
+    @Schema(name = "usedCapacity", description = "已使用容量")
+    private Long usedCapacity;
 }

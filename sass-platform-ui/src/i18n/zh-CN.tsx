@@ -41,6 +41,8 @@ const ZhCN = {
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
         updateAvatar: '更新头像',
+        uploadFile: '上传文件',
+        uploadFolder: '上传文件夹',
     },
     // button
     Button: {

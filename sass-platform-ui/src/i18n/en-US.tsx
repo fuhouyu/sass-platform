@@ -41,6 +41,8 @@ const EnUS = {
         expandOrCollapse: 'Expand/Collapse',
         pageLoading: 'Page Loading....',
         updateAvatar: 'Update Avatar',
+        uploadFile: 'Upload File',
+        uploadFolder: 'Upload Folder',
     },
     // button
     Button: {

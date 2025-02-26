@@ -74,7 +74,7 @@ export interface Resource {
     /**
      * 业务名称
      */
-    businessName: string;
+    businessName?: string | undefined | null;
 
     /**
      * eTag

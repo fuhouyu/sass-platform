@@ -45,7 +45,8 @@ import {AnyObject} from "antd/es/_util/type";
 import {PermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton";
 import {useLocaleStore} from "@/store";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
+import {CommonConstant} from "@/constants/commonConstant";
+
 
 /**
  * 设置树数据
@@ -445,7 +446,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 label={t('Permission.name')}
-                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
+                                labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 10}}
                                 name="permissionName"
                                 key="permissionName"
                                 colon={false}
@@ -505,7 +506,7 @@ export const Permission: React.FC = () => {
                         <Col span={12}>
                             <Form.Item
                                 label={t('Common.displayOrder')}
-                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
+                                labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 10}}
                                 name="displayOrder"
                                 key="displayOrder"
                                 colon={false}
@@ -525,7 +526,7 @@ export const Permission: React.FC = () => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
+                                labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 9}}
                                 label={t('Common.status')}
                                 name="isEnabled"
                                 key="isEnabled"
@@ -545,7 +546,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
+                                        labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 10}}
                                         label={t('Permission.isFrame')}
                                         name="isFrame"
                                         key="isFrame"
@@ -560,7 +561,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
+                                        labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 9}}
                                         label={t('Permission.routePath')}
                                         name="routePath"
                                         key="routePath"
@@ -595,7 +596,7 @@ export const Permission: React.FC = () => {
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
+                                        labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 10}}
                                         label={t('Permission.componentPath')}
                                         name="componentPath"
                                         key="componentPath"
@@ -615,7 +616,7 @@ export const Permission: React.FC = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item
-                                        labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
+                                        labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 9}}
                                         label={t('Permission.routeParams')}
                                         name="urlParams"
                                         key="urlParams"
@@ -635,7 +636,7 @@ export const Permission: React.FC = () => {
                                 <Row gutter={24}>
                                     <Col span={12}>
                                         <Form.Item
-                                            labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 10}}
+                                            labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 10}}
                                             label={t('Permission.icon')}
                                             name="icon"
                                             key="icon"
@@ -646,7 +647,7 @@ export const Permission: React.FC = () => {
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
-                                            labelCol={{span: language == ZH_CN_LANGUAGE ? 6 : 9}}
+                                            labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 6 : 9}}
                                             label={t('Permission.displayStatus')}
                                             name="isVisible"
                                             key="isVisible"

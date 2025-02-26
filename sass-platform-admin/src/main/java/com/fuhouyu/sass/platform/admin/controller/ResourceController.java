@@ -105,7 +105,7 @@ public class ResourceController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "修改资源详情")
-    public BaseResponse<Void> editResourceinfo(
+    public BaseResponse<Void> editResourceInfo(
             @PathVariable("id") Long id,
             @Valid @RequestBody ResourceDTO resourceDTO) {
         resourceDTO.setId(id);

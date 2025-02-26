@@ -38,14 +38,23 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.Delete;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.sts.model.AssumeRoleResponse;
 import software.amazon.awssdk.services.sts.model.Credentials;
+import software.amazon.awssdk.utils.BinaryUtils;
+import software.amazon.awssdk.utils.Md5Utils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -88,7 +97,6 @@ public class ResourceServiceImpl implements ResourceService {
     private final S3Properties s3Properties;
 
 
-
     @Override
     public Long save(ResourceDTO dto) {
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
@@ -112,7 +120,40 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public int removeByIds(Collection<Long> ids) {
-        return this.resourceMapper.deleteByIds(ids);
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(ContextHolderStrategy.getContext().getUser().getTenantId());
+        List<Resources> resources = this.resourceMapper.queryByIds(ids);
+        if (CollectionUtils.isEmpty(resources)) {
+            return 0;
+        }
+        List<ObjectIdentifier> objectIdentifiers = resources.stream().map(resource ->
+                ObjectIdentifier.builder()
+                        .key(resource.getObjectKey())
+                        .eTag(resource.getEtag())
+                        .build()
+        ).toList();
+        Delete deleteObjects = Delete.builder()
+                .objects(objectIdentifiers)
+                .quiet(true)
+                .build();
+        DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
+                .bucket(tenantSpaceDTO.getBucketName())
+                .overrideConfiguration(builder -> builder.putHeader("Content-Md5", this.calculateContentMd5(deleteObjects)))
+                .delete(deleteObjects)
+                .build();
+        this.s3Client.deleteObjects(deleteObjectsRequest);
+        return this.resourceMapper.deleteByIds(resources.stream().map(Resources::getId).toList());
+    }
+
+    @SneakyThrows
+    private String calculateContentMd5(Delete delete) {
+        // 将 Delete 对象转换为 XML 字符串
+        String xml = delete.toBuilder().build().toString();
+
+        // 计算 MD5 哈希值
+        byte[] md5Hash = Md5Utils.computeMD5Hash(RequestBody.fromString(xml).contentStreamProvider().newStream());
+
+        // 将 MD5 哈希值转换为 Base64 编码的字符串
+        return BinaryUtils.toBase64(md5Hash);
     }
 
     @Override
@@ -180,7 +221,10 @@ public class ResourceServiceImpl implements ResourceService {
         Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
         String bucketName = tenantSpaceDTO.getBucketName();
-        String newObjectKey = resourceDTO.getObjectKey().replace(TMP_DIR, resourceDTO.getBusinessName());
+        String businessName = Optional.ofNullable(resourceDTO.getBusinessName()).orElse("");
+        businessName = businessName.endsWith("/") ? businessName.substring(0, businessName.length() - 1) : businessName;
+        String newObjectKey = resourceDTO.getObjectKey().replace(TMP_DIR, businessName);
+        Long parentId = this.createDirectory(businessName, resourceDTO.getIsPublic());
         // 复制资源
         this.s3Client.copyObject(builder -> {
             builder.sourceBucket(bucketName);
@@ -188,6 +232,7 @@ public class ResourceServiceImpl implements ResourceService {
             builder.sourceKey(resourceDTO.getObjectKey());
             builder.destinationKey(newObjectKey);
         });
+        resourceDTO.setParentId(parentId);
         resourceDTO.setObjectKey(newObjectKey);
         return this.save(resourceDTO);
     }
@@ -254,4 +299,59 @@ public class ResourceServiceImpl implements ResourceService {
         response.setHeader(HttpHeaders.CONTENT_LANGUAGE, objectResponse.contentLanguage());
     }
 
+
+    /**
+     * 创建目录
+     *
+     * @param businessName 业务名
+     * @param isPublic     是否公开
+     * @return 父级id
+     */
+    private Long createDirectory(String businessName, boolean isPublic) {
+        if (StringUtils.isAllBlank(businessName)) {
+            return -1L;
+        }
+        String[] split = businessName.split("/");
+        Long parentId = -1L;
+        for (String name : split) {
+            String objectKey = businessName.substring(0, businessName.indexOf(name)) + name;
+            parentId = this.doCreateDirectory(name, objectKey, isPublic, parentId);
+        }
+        return parentId;
+    }
+
+    /**
+     * 创建目录资源
+     *
+     * @param name      名称
+     * @param objectKey objectKey
+     * @param isPublic  是否公开
+     * @param parentId  父级id
+     * @return 父级id
+     */
+    private Long doCreateDirectory(String name,
+                                   String objectKey,
+                                   Boolean isPublic,
+                                   Long parentId) {
+        Resources resources = this.resourceMapper.queryByObjectKey(objectKey);
+        if (Objects.nonNull(resources)) {
+            return resources.getId();
+        }
+        resources = new Resources();
+        long id = snowflake.nextId();
+        resources.setId(id);
+        resources.setParentId(parentId);
+        resources.setName(name);
+        resources.setSize(0L);
+        resources.setEtag("");
+        resources.setMimeType("");
+        resources.setObjectKey(objectKey);
+        resources.setVersion(1);
+        resources.setIsPublic(isPublic);
+        resources.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        resources.setIsDirectory(true);
+        this.resourceMapper.insert(resources);
+        return id;
+
+    }
 }

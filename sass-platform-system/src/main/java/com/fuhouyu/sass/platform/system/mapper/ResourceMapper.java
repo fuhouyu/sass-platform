@@ -50,4 +50,13 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      */
     @TenantQuery
     List<Resources> queryList(@Param("pageQuery") ResourcePageQueryDTO pageQuery);
+
+    /**
+     * 通过对象key查询
+     *
+     * @param objectKey 对象key
+     * @return 资源
+     */
+    @TenantQuery
+    Resources queryByObjectKey(@Param("objectKey") String objectKey);
 }

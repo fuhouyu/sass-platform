@@ -21,16 +21,12 @@ import {ChecksumAlgorithm, S3Client} from "@aws-sdk/client-s3";
 import {Upload as s3Upload} from "@aws-sdk/lib-storage";
 import {resourceApi} from "@/apis/resource.tsx";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
-import {useFileMd5} from "@/hooks/useFileMd5.tsx";
 
 export const S3Upload: React.FC<{
     uploadProps: S3UploadProps,
     children: React.ReactNode
 }> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
-
-    const {calculateMD5} = useFileMd5();
     const uploadFile = async (options: UploadRequestOption) => {
-
         try {
             const {file} = options;
 
@@ -41,17 +37,17 @@ export const S3Upload: React.FC<{
                 contentType = file.type;
                 fileName = file.name;
                 fileSize = file.size;
-                const startTime = Date.now(); // 记录开始时间
-                const md5 = await calculateMD5(file);
-                const endTime = Date.now(); // 记录结束时间
-                const totalTime = (endTime - startTime) / 1000; // 计算总耗时
-                console.log('Total time taken:', totalTime, 's');
-
-                const existsResource = await resourceApi.getResourceByEtag(md5);
-                if (existsResource) {
-                    uploadProps.onUploadSuccess(existsResource.id!);
-                    return;
-                }
+                // const startTime = Date.now(); // 记录开始时间
+                // const md5 = await calculateMD5(file);
+                // const endTime = Date.now(); // 记录结束时间
+                // const totalTime = (endTime - startTime) / 1000; // 计算总耗时
+                // console.log('Total time taken:', totalTime, 's');
+                //
+                // const existsResource = await resourceApi.getResourceByEtag(md5);
+                // if (existsResource) {
+                //     uploadProps.onUploadSuccess?.(existsResource.id!);
+                //     return;
+                // }
             }
 
             const stsTokenResponse = await resourceApi.generateStsToken();
@@ -97,7 +93,7 @@ export const S3Upload: React.FC<{
                 version: 1,
                 objectKey: stsTokenResponse.objectKey,
             });
-            uploadProps.onUploadSuccess(resourceId);
+            uploadProps.onUploadSuccess?.(resourceId);
         } catch (e) {
             console.log(e);
             message.error('文件上传失败');

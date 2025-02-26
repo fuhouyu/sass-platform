@@ -24,7 +24,7 @@ export interface S3UploadProps extends UploadProps {
     /**
      * 业务名称
      */
-    businessName: string;
+    businessName?: string | undefined | null;
 
     /**
      * 是否是公共访问资源
@@ -35,5 +35,5 @@ export interface S3UploadProps extends UploadProps {
      * 上传成功回调
      * @param resourceId 资源id
      */
-    onUploadSuccess: (resourceId: string) => void;
+    onUploadSuccess?: (resourceId: string) => void;
 }

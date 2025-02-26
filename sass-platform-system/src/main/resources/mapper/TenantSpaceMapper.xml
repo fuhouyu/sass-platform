@@ -19,9 +19,13 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantSpace" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="tenant_id" property="tenantId"/>
         <result column="bucket_name" property="bucketName"/>
-
+        <result column="capacity" property="capacity"/>
+        <result column="acl" property="acl"/>
     </resultMap>
 
+    <resultMap id="BaseResultDetailMap" type="com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO" extends="BaseResultMap">
+        <result column="usedCapacity" property="usedCapacity"/>
+    </resultMap>
     <sql id="TableName">
         tenant_space
     </sql>
@@ -147,5 +151,18 @@
     <select id="countTenantSpaceByName" resultType="int">
         SELECT COUNT(1) FROM <include refid="TableName"/>
         WHERE bucket_name = #{spaceName}
+    </select>
+
+    <select id="queryDetailById" resultMap="BaseResultDetailMap">
+        SELECT
+        <include refid="QueryColumns"/>,
+        sum(r.size) as usedCapacity
+        FROM
+        <include refid="TableName"/> ts
+        LEFT JOIN resources r ON ts.tenant_id = r.owner_tenant_id
+        WHERE tenant_id = #{tenantId}
+        GROUP BY
+        <include refid="QueryColumns"/>
+
     </select>
 </mapper>

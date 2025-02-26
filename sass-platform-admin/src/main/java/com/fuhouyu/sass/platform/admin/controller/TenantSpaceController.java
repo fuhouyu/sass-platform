@@ -17,7 +17,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -70,6 +72,18 @@ public class TenantSpaceController {
     @Operation(summary = "通过租户id获取租户空间")
     public BaseResponse<TenantSpaceDTO> getTenantSpaceByTenantId(@PathVariable("tenantId") Long tenantId) {
         return ResponseHelper.success(this.tenantSpaceService.findByTenantId(tenantId));
+    }
+
+
+    /**
+     * 获取当前用户下的租户空间
+     *
+     * @return 租户空间信息
+     */
+    @GetMapping("/me")
+    @Operation(summary = "获取当前用户下的租户空间")
+    public BaseResponse<TenantSpaceDetailDTO> getTenantSpaceFormMe() {
+        return ResponseHelper.success(this.tenantSpaceService.findDetailByTenantId(ContextHolderStrategy.getContext().getUser().getTenantId()));
     }
 
 }

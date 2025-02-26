@@ -43,7 +43,7 @@ import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
-import {ZH_CN_LANGUAGE} from "@/constants/commonConstant.tsx";
+import {CommonConstant} from "@/constants/commonConstant.tsx";
 
 /**
  * 字典类型
@@ -276,7 +276,7 @@ export const DictType = () => {
                 <Form<DictTypeModel>
                     name="modal-form"
                     form={form}
-                    labelCol={{span: language == ZH_CN_LANGUAGE ? 4 : 7}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
