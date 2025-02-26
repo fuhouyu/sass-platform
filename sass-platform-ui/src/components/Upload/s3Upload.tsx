@@ -27,11 +27,6 @@ export const S3Upload: React.FC<{
     children: React.ReactNode
 }> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
     const uploadFile = async (options: UploadRequestOption) => {
-
-        if (uploadProps.directory) {
-            console.log(options)
-            return
-        }
         try {
             const {file} = options;
 

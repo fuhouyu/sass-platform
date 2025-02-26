@@ -37,6 +37,12 @@ class TenantSpaceApi {
      * @param tenantId 租户id
      */
     getTenantSpaceByTenantId: (tenantId: string) => Promise<TenantSpace> = (tenantId: string): Promise<TenantSpace> => request.get(`${this._baseUrl}/${tenantId}`);
+
+    /**
+     * 获取当前登录用户租户空间
+     */
+    getTenantSpaceForMe: () => Promise<TenantSpace> = (): Promise<TenantSpace> => request.get(`${this._baseUrl}/me`);
+
 }
 
 

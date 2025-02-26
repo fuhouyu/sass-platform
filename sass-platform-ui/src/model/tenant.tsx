@@ -72,4 +72,9 @@ export interface TenantSpace extends BaseModel {
      * 容量
      */
     capacity: number;
+
+    /**
+     * 已用容量
+     */
+    usedCapacity: number;
 }

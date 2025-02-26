@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
 
 import java.util.Collection;
 
@@ -77,4 +78,12 @@ public interface TenantSpaceService {
      * @param tenantIds 租户ids
      */
     void removeSpaceByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 通过租户id查询详情dto对象
+     *
+     * @param tenantId 租户id
+     * @return 租户空间详情dto对象
+     */
+    TenantSpaceDetailDTO findDetailByTenantId(Long tenantId);
 }

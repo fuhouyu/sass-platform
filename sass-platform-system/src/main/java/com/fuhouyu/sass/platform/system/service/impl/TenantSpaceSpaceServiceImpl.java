@@ -20,6 +20,7 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.platform.system.assembler.TenantSpaceAssembler;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantSpace;
 import com.fuhouyu.sass.platform.system.mapper.TenantSpaceMapper;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
@@ -119,5 +120,10 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         tenantSpaces.forEach(tenantSpace -> {
             this.s3Client.deleteBucket(builder -> builder.bucket(tenantSpace.getBucketName()));
         });
+    }
+
+    @Override
+    public TenantSpaceDetailDTO findDetailByTenantId(Long tenantId) {
+        return this.tenantSpaceMapper.queryDetailById(tenantId);
     }
 }

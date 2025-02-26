@@ -43,6 +43,8 @@ import qs from 'query-string';
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {RcFile} from "antd/es/upload";
+import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
+import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 
 
 const TenantSpace: React.FC = () => {
@@ -183,13 +185,21 @@ const TenantSpace: React.FC = () => {
 
 
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
+    const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
 
     /**
      * 查询资源
      */
     const queryResource = useCallback(async () => {
         setPageResult(await resourceApi.pageInfoListApi(pageQuery));
-    }, [pageQuery])
+    }, [pageQuery]);
+
+    /**
+     * 查询租户空间
+     */
+    const queryTenantSpaceInfo = useCallback(async () => {
+        setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
+    }, [])
 
     /**
      * 处理面包屑
@@ -219,9 +229,10 @@ const TenantSpace: React.FC = () => {
 
     useEffect(() => {
         queryResource().then();
+        queryTenantSpaceInfo().then();
         const query = qs.stringify(pageQuery);
         navigate(`${BaseUrlConstant.TENANT_SPACE_URL}?${query}`)
-    }, [navigate, pageQuery, queryResource])
+    }, [navigate, pageQuery, queryResource, queryTenantSpaceInfo])
 
 
     /**
@@ -234,7 +245,6 @@ const TenantSpace: React.FC = () => {
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
     const uploadFolderHandle = (fileList: RcFile[]) => {
         console.log(fileList)
-
     }
 
     const uploadButtonItems: MenuProps = {
@@ -288,11 +298,11 @@ const TenantSpace: React.FC = () => {
                 <Flex gap={8}>
                     <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
                     <Flex vertical justify={'center'} className={'space-bucket-info'}>
-                        <h2>platform-bucket</h2>
+                        <h2>{tenantSpace?.bucketName}</h2>
                         <Space>
-                            <span>创建时间：2025-01-10</span>
-                            <span>Access: Private</span>
-                            <span>4.5 MiB / 1.0 TiB - {pageResult?.total} Objects</span>
+                            <span>创建时间：{tenantSpace?.createAt}</span>
+                            <span>Access: {tenantSpace?.acl}</span>
+                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {pageResult?.total} Objects</span>
                         </Space>
                     </Flex>
                 </Flex>

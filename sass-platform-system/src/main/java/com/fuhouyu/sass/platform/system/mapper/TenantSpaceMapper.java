@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantSpace;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +36,12 @@ public interface TenantSpaceMapper extends BaseMapper<Long, TenantSpace> {
      * @return count数
      */
     int countTenantSpaceByName(@Param("spaceName") String spaceName);
+
+    /**
+     * 通过租户id查询详情
+     *
+     * @param tenantId 租户id
+     * @return 租户空间详情
+     */
+    TenantSpaceDetailDTO queryDetailById(@Param("tenantId") Long tenantId);
 }
