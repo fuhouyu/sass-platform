@@ -299,9 +299,9 @@ const TenantSpace: React.FC = () => {
                     <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
                     <Flex vertical justify={'center'} className={'space-bucket-info'}>
                         <h2>{tenantSpace?.bucketName}</h2>
-                        <Space>
-                            <span>创建时间：{tenantSpace?.createAt}</span>
-                            <span>Access: {tenantSpace?.acl}</span>
+                        <Space size={24}>
+                            <span>创建时间：<strong>{tenantSpace?.createAt}</strong></span>
+                            <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
                             <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {pageResult?.total} Objects</span>
                         </Space>
                     </Flex>

@@ -156,7 +156,7 @@
     <select id="queryDetailById" resultMap="BaseResultDetailMap">
         SELECT
         <include refid="QueryColumns"/>,
-        sum(r.size)
+        sum(r.size) as usedCapacity
         FROM
         <include refid="TableName"/> ts
         LEFT JOIN resources r ON ts.tenant_id = r.owner_tenant_id
