@@ -254,7 +254,7 @@ const TenantSpace: React.FC = () => {
                     <S3Upload
                         uploadProps={{
                             isPublic: false,
-                            businessName: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
+                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
                             onUploadSuccess: queryResource
                         }
                         }
@@ -271,15 +271,8 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             directory: true,
                             isPublic: false,
-                            businessName: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
+                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
                             onUploadSuccess: queryResource,
-                            // beforeUpload: (file, fileList) => {
-                            //     uploadFolderHandle(fileList);
-                            //     return false; // 阻止默认上传行为
-                            // }
-                            onChange: (info) => {
-                                console.log(info)
-                            }
                         }
                         }
                     >
@@ -325,7 +318,7 @@ const TenantSpace: React.FC = () => {
                 </Flex>
             </div>
 
-            <div>
+            <div className={'tenant-space-content'}>
                 <PageList
                     tableProps={{
                         // tableName: t('Resource.list'),

@@ -21,6 +21,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,9 +32,9 @@ import java.io.Serializable;
  * @since 2025/2/22 20:03
  */
 @Data
-@Schema(name = "StsTemporaryTokenDTO", description = "s3 sts 临时token")
+@Schema(name = "StsTemporaryTokenResponseDTO", description = "s3 sts 临时token响应")
 @Builder
-public class StsTemporaryTokenDTO implements Serializable {
+public class StsTemporaryTokenResponseDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 154123678635141238L;
@@ -50,9 +51,6 @@ public class StsTemporaryTokenDTO implements Serializable {
     @Schema(name = "bucketName", description = "桶名")
     private String bucketName;
 
-    @Schema(name = "objectKey", description = "对象key")
-    private String objectKey;
-
     @Schema(name = "region", description = "region")
     private String region;
 
@@ -61,4 +59,7 @@ public class StsTemporaryTokenDTO implements Serializable {
 
     @Schema(name = "enabledPathStyle", description = "是否使用path style")
     private Boolean enabledPathStyle;
+
+    @Schema(name = "objectsMap", description = "对象map")
+    private Map<String, String> objectsMap;
 }

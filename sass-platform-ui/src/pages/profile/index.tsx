@@ -78,7 +78,7 @@ export const UserProfile: React.FC = () => {
 
                     <S3Upload
                         uploadProps={{
-                            businessName: 'user-avatar',
+                            prefix: 'user-avatar',
                             isPublic: true,
                             beforeUpload,
                             onUploadSuccess: async (resourceId) => {

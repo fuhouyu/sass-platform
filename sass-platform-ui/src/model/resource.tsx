@@ -15,6 +15,20 @@
  */
 
 
+export interface StsTemporaryTokenRequest {
+
+    /**
+     * 前缀名称
+     */
+    prefix?: string | undefined;
+
+    /**
+     * 文件名称集合
+     */
+    fileNames: string[];
+
+}
+
 export interface StsTemporaryTokenResponse {
 
     /**
@@ -40,7 +54,7 @@ export interface StsTemporaryTokenResponse {
     /**
      * key
      */
-    objectKey: string;
+    objectsMap: Record<string, string>;
 
     /**
      * endpoint

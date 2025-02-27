@@ -16,27 +16,28 @@
 package com.fuhouyu.sass.platform.system.dto.resource;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
- * 保存资源的dto对象
+ * 临时token生成的请求
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/22 23:07
+ * @since 2025/2/27 20:27
  */
 @Data
-@Schema(name = "SaveResourceDTO", description = "保存资源的dto对象")
-@EqualsAndHashCode(callSuper = true)
-public class SaveResourceDTO extends ResourceDTO {
+@Schema(name = "StsTemporaryTokenRequestDTO", description = "临时token生成的请求类")
+public class StsTemporaryTokenRequestDTO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 8917239667152376512L;
+    @Schema(name = "prefix", description = "前缀名称")
+    private String prefix;
 
-    @Schema(name = "businessName", description = "业务名称")
-    private String businessName;
+    @Schema(name = "fileNames", description = "文件名称集合")
+    @NotEmpty(message = "文件名称未输入")
+    private List<String> fileNames;
 }

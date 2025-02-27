@@ -36,6 +36,13 @@
 
 }
 
+.tenant-space-content .title-line {
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 6px;
+  background-color: rgb(252, 252, 253) !important;
+}
+
 .preview-img-container {
   display: flex;
   position: fixed;
@@ -55,12 +62,6 @@
   object-fit: contain;
 }
 
-.title-line {
-  width: 100%;
-  border: 1px solid gray;
-  border-radius: 6px;
-  background-color: rgb(252, 252, 253) !important;
-}
 
 .back-button {
   border-radius: 0.375rem;
