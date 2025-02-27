@@ -22,9 +22,9 @@ import {UploadProps} from "antd/lib";
  */
 export interface S3UploadProps extends UploadProps {
     /**
-     * 业务名称
+     * 前缀
      */
-    businessName?: string | undefined | null;
+    prefix?: string;
 
     /**
      * 是否是公共访问资源

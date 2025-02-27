@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -44,18 +44,10 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
 
     /**
      * 生成sts临时token
-     *
+     * @param requestDTO 请求dto对象
      * @return sts临时token
      */
-    StsTemporaryTokenDTO generateToken();
-
-    /**
-     * 保存资源详情
-     *
-     * @param resourceDTO 资源dto对象
-     * @return 资源id
-     */
-    Long saveResource(SaveResourceDTO resourceDTO);
+    StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO);
 
     /**
      * 根据etag查询资源

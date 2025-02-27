@@ -42,7 +42,6 @@ import {useLocation, useNavigate} from "react-router-dom";
 import qs from 'query-string';
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DeleteButton} from "@/components/Button/commonButton";
-import {RcFile} from "antd/es/upload";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 
@@ -176,12 +175,14 @@ const TenantSpace: React.FC = () => {
         if (!prefix) {
             return breadcrumbItems;
         }
-        breadcrumbItems.push({
-            title: prefix,
-            onClick: () => handleBreadcrumb(prefix)
+        prefix.split("/").forEach(p => {
+            breadcrumbItems.push({
+                title: p,
+                onClick: () => handleBreadcrumb(p),
+            })
         })
         return breadcrumbItems
-    }
+    };
 
 
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
@@ -215,15 +216,18 @@ const TenantSpace: React.FC = () => {
             setBreadcrumb(breadcrumbItems?.slice(0, 1));
             return
         }
-        const index = breadcrumbItems?.findIndex((item => item.title === prefix)) ?? -1;
-        if (index !== -1) {
-            setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
-            return
-        }
-        setBreadcrumb([...breadcrumbItems ?? [], {
-            title: prefix,
-            onClick: () => handleBreadcrumb(prefix),
-        }])
+        prefix.split("/").forEach(p => {
+            const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
+            if (index !== -1) {
+                setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
+                return
+            }
+            setBreadcrumb([...breadcrumbItems ?? [], {
+                title: p,
+                onClick: () => handleBreadcrumb(p),
+            }])
+        })
+
     }, [breadcrumbItems, pageQuery])
 
 
@@ -243,9 +247,6 @@ const TenantSpace: React.FC = () => {
     };
 
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
-    const uploadFolderHandle = (fileList: RcFile[]) => {
-        console.log(fileList)
-    }
 
     const uploadButtonItems: MenuProps = {
         items: [
@@ -254,7 +255,7 @@ const TenantSpace: React.FC = () => {
                     <S3Upload
                         uploadProps={{
                             isPublic: false,
-                            businessName: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
+                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
                             onUploadSuccess: queryResource
                         }
                         }
@@ -271,15 +272,8 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             directory: true,
                             isPublic: false,
-                            businessName: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
+                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
                             onUploadSuccess: queryResource,
-                            // beforeUpload: (file, fileList) => {
-                            //     uploadFolderHandle(fileList);
-                            //     return false; // 阻止默认上传行为
-                            // }
-                            onChange: (info) => {
-                                console.log(info)
-                            }
                         }
                         }
                     >
@@ -325,7 +319,7 @@ const TenantSpace: React.FC = () => {
                 </Flex>
             </div>
 
-            <div>
+            <div className={'tenant-space-content'}>
                 <PageList
                     tableProps={{
                         // tableName: t('Resource.list'),

@@ -213,4 +213,16 @@
         <include refid="TableName"/> r
         WHERE r.object_key = #{objectKey}
     </select>
+
+    <select id="queryByPrefixList" resultMap="BaseResultMap">
+        SELECT
+        DISTINCT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> r
+        WHERE
+        <foreach collection="prefixList" item="prefix" separator=" OR " >
+            r.object_key  LIKE CONCAT(#{prefix}, '%')
+        </foreach>
+    </select>
 </mapper>

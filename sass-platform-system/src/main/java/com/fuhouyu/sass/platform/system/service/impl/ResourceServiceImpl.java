@@ -27,8 +27,8 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.entity.Resources;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
@@ -57,12 +57,11 @@ import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -82,7 +81,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    private static final String TMP_DIR = "tmp";
+    private static final String TMP_DIR = "tmp/";
 
     private final S3Client s3Client;
 
@@ -99,10 +98,26 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long save(ResourceDTO dto) {
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
+        String bucketName = tenantSpaceDTO.getBucketName();
+        String oldObject = dto.getObjectKey();
+        String newObjectKey = oldObject.replace(TMP_DIR, "");
+        Long parentId = this.createDirectory(this.getParentPath(newObjectKey), dto.getIsPublic());
+        // 复制资源
+        this.s3Client.copyObject(builder -> {
+            builder.sourceBucket(bucketName);
+            builder.destinationBucket(bucketName);
+            builder.sourceKey(oldObject);
+            builder.destinationKey(newObjectKey);
+        });
+        // 删除临时资源
+        this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
-        entity.setParentId(Optional.ofNullable(dto.getParentId()).orElse(-1L));
+        entity.setObjectKey(newObjectKey);
+        entity.setParentId(parentId);
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.resourceMapper.insert(entity);
         return id;
@@ -125,6 +140,13 @@ public class ResourceServiceImpl implements ResourceService {
         if (CollectionUtils.isEmpty(resources)) {
             return 0;
         }
+        List<String> directoryPrefixList = resources.stream().filter(Resources::getIsDirectory)
+                .map(Resources::getObjectKey)
+                .toList();
+        if (!CollectionUtils.isEmpty(directoryPrefixList)) {
+            // 查询出所有的关联文件信息
+            resources.addAll(this.resourceMapper.queryByPrefixList(directoryPrefixList));
+        }
         List<ObjectIdentifier> objectIdentifiers = resources.stream().map(resource ->
                 ObjectIdentifier.builder()
                         .key(resource.getObjectKey())
@@ -142,18 +164,6 @@ public class ResourceServiceImpl implements ResourceService {
                 .build();
         this.s3Client.deleteObjects(deleteObjectsRequest);
         return this.resourceMapper.deleteByIds(resources.stream().map(Resources::getId).toList());
-    }
-
-    @SneakyThrows
-    private String calculateContentMd5(Delete delete) {
-        // 将 Delete 对象转换为 XML 字符串
-        String xml = delete.toBuilder().build().toString();
-
-        // 计算 MD5 哈希值
-        byte[] md5Hash = Md5Utils.computeMD5Hash(RequestBody.fromString(xml).contentStreamProvider().newStream());
-
-        // 将 MD5 哈希值转换为 Base64 编码的字符串
-        return BinaryUtils.toBase64(md5Hash);
     }
 
     @Override
@@ -196,45 +206,31 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public StsTemporaryTokenDTO generateToken() {
+    public StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO) {
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(ContextHolderStrategy.getContext().getUser().getTenantId());
+        List<String> fileNames = requestDTO.getFileNames();
+        Map<String, String> objectsMap = new HashMap<>(fileNames.size());
+        String prefix = requestDTO.getPrefix();
+        for (String fileName : fileNames) {
+            String parentPath = this.getParentPath(fileName);
+            String parentPrefix = Objects.isNull(parentPath) ? prefix : (Objects.isNull(prefix) ? parentPath : prefix + "/" + parentPath);
+            objectsMap.put(fileName, this.generateKey(parentPrefix));
+        }
         // 只允许上传到指定的对象中
-        String objectKey = this.generateKey();
         AssumeRoleResponse assumeRoleResponse = this.stsOperation.generateStsToken(tenantSpaceDTO.getBucketName(),
-                objectKey,
+                objectsMap.values(),
                 StsActionEnum.PutObject);
         Credentials credentials = assumeRoleResponse.credentials();
-        return StsTemporaryTokenDTO.builder()
+        return StsTemporaryTokenResponseDTO.builder()
                 .accessKeyId(credentials.accessKeyId())
                 .secretAccessKey(credentials.secretAccessKey())
                 .stsToken(credentials.sessionToken())
                 .bucketName(tenantSpaceDTO.getBucketName())
-                .objectKey(objectKey)
+                .objectsMap(objectsMap)
                 .enabledPathStyle(s3Properties.getPathStyleEnabled())
                 .endpoint(s3Properties.getEndpoint())
                 .region(s3Properties.getRegion().id())
                 .build();
-    }
-
-    @Override
-    public Long saveResource(SaveResourceDTO resourceDTO) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
-        String bucketName = tenantSpaceDTO.getBucketName();
-        String businessName = Optional.ofNullable(resourceDTO.getBusinessName()).orElse("");
-        businessName = businessName.endsWith("/") ? businessName.substring(0, businessName.length() - 1) : businessName;
-        String newObjectKey = resourceDTO.getObjectKey().replace(TMP_DIR, businessName);
-        Long parentId = this.createDirectory(businessName, resourceDTO.getIsPublic());
-        // 复制资源
-        this.s3Client.copyObject(builder -> {
-            builder.sourceBucket(bucketName);
-            builder.destinationBucket(bucketName);
-            builder.sourceKey(resourceDTO.getObjectKey());
-            builder.destinationKey(newObjectKey);
-        });
-        resourceDTO.setParentId(parentId);
-        resourceDTO.setObjectKey(newObjectKey);
-        return this.save(resourceDTO);
     }
 
     @Override
@@ -264,15 +260,32 @@ public class ResourceServiceImpl implements ResourceService {
         return resources;
     }
 
+
+    /**
+     * 获取父级路径
+     *
+     * @param objectKey objectKey
+     * @return 父级路径
+     */
+    private String getParentPath(String objectKey) {
+        Path path = Paths.get(objectKey);
+        Path parentPath = path.getParent();
+        return Objects.isNull(parentPath) ? null : parentPath.toString();
+    }
+
     /**
      * 生成随机的objectKey
      *
+     * @param prefix 前缀
      * @return objectKey
      */
-    private String generateKey() {
+    private String generateKey(String prefix) {
         String datetime = LocalDate.now().format(DATETIME_FORMAT);
         String randomString = RandomUtil.randomString(5);
-        return String.format("%s/%s-%s", TMP_DIR, datetime, randomString);
+        if (Objects.isNull(prefix)) {
+            return String.format("%s%s-%s", TMP_DIR, datetime, randomString);
+        }
+        return String.format("%s%s/%s-%s", TMP_DIR, prefix, datetime, randomString);
     }
 
 
@@ -303,18 +316,18 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * 创建目录
      *
-     * @param businessName 业务名
-     * @param isPublic     是否公开
+     * @param parentPathName 父级路径名
+     * @param isPublic       是否公开
      * @return 父级id
      */
-    private Long createDirectory(String businessName, boolean isPublic) {
-        if (StringUtils.isAllBlank(businessName)) {
+    private Long createDirectory(String parentPathName, boolean isPublic) {
+        if (StringUtils.isAllBlank(parentPathName)) {
             return -1L;
         }
-        String[] split = businessName.split("/");
+        String[] split = parentPathName.split("/");
         Long parentId = -1L;
         for (String name : split) {
-            String objectKey = businessName.substring(0, businessName.indexOf(name)) + name;
+            String objectKey = parentPathName.substring(0, parentPathName.indexOf(name)) + name;
             parentId = this.doCreateDirectory(name, objectKey, isPublic, parentId);
         }
         return parentId;
@@ -329,7 +342,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param parentId  父级id
      * @return 父级id
      */
-    private Long doCreateDirectory(String name,
+    private synchronized Long doCreateDirectory(String name,
                                    String objectKey,
                                    Boolean isPublic,
                                    Long parentId) {
@@ -353,5 +366,12 @@ public class ResourceServiceImpl implements ResourceService {
         this.resourceMapper.insert(resources);
         return id;
 
+    }
+
+    @SneakyThrows
+    private String calculateContentMd5(Delete delete) {
+        String xml = delete.toBuilder().build().toString();
+        byte[] md5Hash = Md5Utils.computeMD5Hash(RequestBody.fromString(xml).contentStreamProvider().newStream());
+        return BinaryUtils.toBase64(md5Hash);
     }
 }

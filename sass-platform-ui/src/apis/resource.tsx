@@ -17,7 +17,7 @@
 
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {Resource, StsTemporaryTokenResponse} from "@/model/resource.tsx";
+import {Resource, StsTemporaryTokenRequest, StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
 
 class ResourceApi extends DefaultApiImpl<Resource> {
@@ -30,9 +30,9 @@ class ResourceApi extends DefaultApiImpl<Resource> {
     /**
      *生成临时的stsToken
      */
-    generateStsToken: () =>
-        Promise<StsTemporaryTokenResponse> = (): Promise<StsTemporaryTokenResponse> =>
-        request.get(`${this.baseUrl}/sts-token`);
+    generateStsToken: (stsTokenRequest: StsTemporaryTokenRequest) =>
+        Promise<StsTemporaryTokenResponse> = (stsTokenRequest: StsTemporaryTokenRequest): Promise<StsTemporaryTokenResponse> =>
+        request.post(`${this.baseUrl}/sts-token`, stsTokenRequest);
 
 
     /**

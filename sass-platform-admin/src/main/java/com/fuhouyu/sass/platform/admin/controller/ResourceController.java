@@ -22,8 +22,8 @@ import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourcePageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.SaveResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,12 +59,13 @@ public class ResourceController {
 
     /**
      * 生成stsToken
+     * @param requestDTO 生成请求的dto对象
      * @return stsToken
      */
-    @GetMapping("/sts-token")
+    @PostMapping("/sts-token")
     @Operation(summary = "生成临时的stsToken")
-    public BaseResponse<StsTemporaryTokenDTO> generateStsToken() {
-        return ResponseHelper.success(this.resourceService.generateToken());
+    public BaseResponse<StsTemporaryTokenResponseDTO> generateStsToken(@Valid @RequestBody StsTemporaryTokenRequestDTO requestDTO) {
+        return ResponseHelper.success(this.resourceService.generateToken(requestDTO));
     }
 
 
@@ -92,8 +93,8 @@ public class ResourceController {
      */
     @Operation(summary = "保存资源信息")
     @PostMapping
-    public BaseResponse<Long> saveResource(@RequestBody @Validated({ValidGroups.SaveGroup.class}) SaveResourceDTO resourceDTO) {
-        return ResponseHelper.success(this.resourceService.saveResource(resourceDTO));
+    public BaseResponse<Long> saveResource(@RequestBody @Validated({ValidGroups.SaveGroup.class}) ResourceDTO resourceDTO) {
+        return ResponseHelper.success(this.resourceService.save(resourceDTO));
     }
 
     /**
