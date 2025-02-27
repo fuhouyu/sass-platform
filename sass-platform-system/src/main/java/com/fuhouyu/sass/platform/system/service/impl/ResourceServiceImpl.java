@@ -111,6 +111,8 @@ public class ResourceServiceImpl implements ResourceService {
             builder.sourceKey(oldObject);
             builder.destinationKey(newObjectKey);
         });
+        // 删除临时资源
+        this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
@@ -137,6 +139,13 @@ public class ResourceServiceImpl implements ResourceService {
         List<Resources> resources = this.resourceMapper.queryByIds(ids);
         if (CollectionUtils.isEmpty(resources)) {
             return 0;
+        }
+        List<String> directoryPrefixList = resources.stream().filter(Resources::getIsDirectory)
+                .map(Resources::getObjectKey)
+                .toList();
+        if (!CollectionUtils.isEmpty(directoryPrefixList)) {
+            // 查询出所有的关联文件信息
+            resources.addAll(this.resourceMapper.queryByPrefixList(directoryPrefixList));
         }
         List<ObjectIdentifier> objectIdentifiers = resources.stream().map(resource ->
                 ObjectIdentifier.builder()
@@ -333,7 +342,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param parentId  父级id
      * @return 父级id
      */
-    private Long doCreateDirectory(String name,
+    private synchronized Long doCreateDirectory(String name,
                                    String objectKey,
                                    Boolean isPublic,
                                    Long parentId) {

@@ -104,6 +104,8 @@ export const S3Upload: React.FC<{
         } catch (e) {
             console.log(e);
             message.error('文件上传失败');
+        } finally {
+            setUploadFiles([]);
         }
     }, [doFileUpload, generateStsToken, uploadFiles])
 

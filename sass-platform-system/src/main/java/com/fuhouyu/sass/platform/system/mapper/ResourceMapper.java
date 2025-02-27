@@ -20,6 +20,7 @@ import com.fuhouyu.sass.platform.system.dto.resource.ResourcePageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Resources;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,4 +60,12 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      */
     @TenantQuery
     Resources queryByObjectKey(@Param("objectKey") String objectKey);
+
+    /**
+     * 查询出所有的匹配前缀
+     *
+     * @param prefixList 前缀集合
+     * @return 资源集合
+     */
+    List<Resources> queryByPrefixList(@Param("prefixList") Collection<String> prefixList);
 }
