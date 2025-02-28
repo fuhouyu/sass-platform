@@ -29,12 +29,16 @@ const useAuth = () => {
     const token = getAccessToken();
     const {fetchLogin} = useUserStore(state => state);
     useEffect(() => {
-        if (pathname.includes(BaseUrlConstant.LOGIN_URL)) {
-            return;
-        }
+        // if (pathname.includes(BaseUrlConstant.LOGIN_URL)) {
+        //     return;
+        // }
+        const isLoginUrl = pathname.includes(BaseUrlConstant.LOGIN_URL);
         if (!token) {
             const refreshToken = getRefreshToken();
             if (!refreshToken) {
+                if (isLoginUrl) {
+                    return;
+                }
                 message.warning("当前用户登录状态已失效").then();
                 navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
                 return;
@@ -43,7 +47,7 @@ const useAuth = () => {
             // 通过刷新令牌更新token
             fetchLogin({identify: refreshToken, accountType: AccountType.REFRESH_TOKEN})
                 .then(() => {
-                    navigate(pathname);
+                    navigate(isLoginUrl ? '/' : pathname);
                 })
                 .catch(() => {
                     removeToken();
