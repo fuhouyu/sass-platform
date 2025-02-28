@@ -31,3 +31,23 @@
 .ant-layout-sider-has-trigger {
   padding: 0;
 }
+
+.upload-container {
+  width: 25rem;
+  margin: 0 1.875rem;
+}
+
+.upload-content {
+  margin: 0 1.875rem 2rem 1.875rem;
+  padding: 0.9375rem 0.3125rem;
+  border-bottom: 1px solid rgb(226, 226, 226);
+}
+
+.upload-headItem {
+  font-size: 14px;
+  font-weight: bold;
+  width: 270px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
