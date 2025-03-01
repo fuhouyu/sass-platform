@@ -178,32 +178,22 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void previewResource(Long id, HttpServletRequest request,
-                                HttpServletResponse response) {
+    public void previewResource(Long id, HttpServletRequest request, HttpServletResponse response) {
         Resources resources = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
-
-        try (ServletOutputStream outputStream = response.getOutputStream();
-             ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.s3Client.getObject(builder ->
-                     builder.bucket(tenantSpaceDTO.getBucketName()).key(resources.getObjectKey())
-             )) {
-            // 设置必要的 HTTP 头部
-            this.setHttpResponseHeader(responseResponseInputStream.response(), response, resources.getName());
-
-            // 8KB 缓冲区
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = responseResponseInputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            LoggerUtil.info(log, "资源下载成功: bucket={}, key={}, size={}",
+        ResponseInputStream<GetObjectResponse> responseInputStream = this.s3Client.getObject(builder ->
+                builder.bucket(tenantSpaceDTO.getBucketName()).key(resources.getObjectKey()));
+        try {
+            this.doFileDownload(request, response, responseInputStream);
+            LoggerUtil.info(log, "资源下载成功: bucket={}, key={}, range={}-{}, size={}",
                     tenantSpaceDTO.getBucketName(),
-                    resources.getObjectKey(),
-                    responseResponseInputStream.response().contentLength());
+                    resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
         } catch (IOException e) {
             // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
+            LoggerUtil.error(log, "资源下载失败: bucket={}, key={}", tenantSpaceDTO.getBucketName(), resources.getObjectKey(), e);
         }
     }
+
 
     @Override
     public StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO) {
@@ -294,14 +284,11 @@ public class ResourceServiceImpl implements ResourceService {
      *
      * @param objectResponse object响应
      * @param response       响应
-     * @param resourceName   资源名称
      */
     private void setHttpResponseHeader(GetObjectResponse objectResponse,
-                                       HttpServletResponse response,
-                                       String resourceName) {
+                                       HttpServletResponse response) {
         response.setHeader(HttpHeaders.CONTENT_TYPE, objectResponse.contentType());
         response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(objectResponse.contentLength()));
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + resourceName);
         response.setHeader(HttpHeaders.CACHE_CONTROL, objectResponse.cacheControl());
         response.setHeader(HttpHeaders.EXPIRES, objectResponse.expiresString());
         response.setHeader(HttpHeaders.ETAG, objectResponse.eTag());
@@ -310,6 +297,8 @@ public class ResourceServiceImpl implements ResourceService {
         response.setHeader(HttpHeaders.CONTENT_RANGE, objectResponse.contentRange());
         response.setHeader(HttpHeaders.CONTENT_ENCODING, objectResponse.contentEncoding());
         response.setHeader(HttpHeaders.CONTENT_LANGUAGE, objectResponse.contentLanguage());
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
+                String.format("%s,%s,%s,%s", HttpHeaders.ACCEPT_RANGES, HttpHeaders.CONTENT_LENGTH, HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_RANGE));
     }
 
 
@@ -343,9 +332,9 @@ public class ResourceServiceImpl implements ResourceService {
      * @return 父级id
      */
     private synchronized Long doCreateDirectory(String name,
-                                   String objectKey,
-                                   Boolean isPublic,
-                                   Long parentId) {
+                                                String objectKey,
+                                                Boolean isPublic,
+                                                Long parentId) {
         Resources resources = this.resourceMapper.queryByObjectKey(objectKey);
         if (Objects.nonNull(resources)) {
             return resources.getId();
@@ -374,4 +363,67 @@ public class ResourceServiceImpl implements ResourceService {
         byte[] md5Hash = Md5Utils.computeMD5Hash(RequestBody.fromString(xml).contentStreamProvider().newStream());
         return BinaryUtils.toBase64(md5Hash);
     }
+
+    /**
+     * 解析请求中的ranges，并设置响应头
+     *
+     * @param request  请求
+     * @param fileSize 文件大小
+     * @param response 响应
+     * @return ranges
+     */
+    private long[] parseRequestRanges(HttpServletRequest request,
+                                      HttpServletResponse response,
+                                      long fileSize) {
+        String rangeHeader = request.getHeader(HttpHeaders.RANGE);
+        if (Objects.isNull(rangeHeader)) {
+            return new long[]{0, fileSize - 1};
+        }
+        String[] range = rangeHeader.substring("bytes=".length()).split("-");
+        long rangeStart = Long.parseLong(range[0]);
+        long rangeEnd = range.length > 1 ? Long.parseLong(range[1]) : fileSize - 1;
+        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        return new long[]{rangeStart, rangeEnd};
+    }
+
+
+    /**
+     * 文件下载
+     *
+     * @param request                     请求
+     * @param response                    响应
+     * @param responseResponseInputStream oss资源流
+     * @throws IOException io异常
+     */
+    private void doFileDownload(HttpServletRequest request,
+                                HttpServletResponse response,
+                                ResponseInputStream<GetObjectResponse> responseResponseInputStream) throws IOException {
+        long fileSize = responseResponseInputStream.response().contentLength();
+        long[] ranges = this.parseRequestRanges(request, response, fileSize);
+        try (ServletOutputStream outputStream = response.getOutputStream();
+             responseResponseInputStream) {
+            long start = ranges[0];
+            long end = ranges[1];
+            // 确保范围有效
+            if (start < 0 || end >= fileSize || start > end) {
+                response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+                // 告诉客户端有效的范围
+                response.setHeader("Content-Range", "bytes */" + fileSize);
+                LoggerUtil.error(log, "无效的 Range 请求 start: {} end: {} ", start, end);
+                return;
+            }
+            setHttpResponseHeader(responseResponseInputStream.response(), response);
+            long contentLength = end - start + 1;
+            response.setContentLength((int) contentLength);
+            long ignored = responseResponseInputStream.skip(start);
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = responseResponseInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+    }
 }
+
+
