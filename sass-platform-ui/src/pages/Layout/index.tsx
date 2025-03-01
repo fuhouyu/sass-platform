@@ -51,7 +51,7 @@ export const LayoutMain = () => {
                         className={'upload-container'}
                         trigger={'click'}
                         icon={<CloudUploadOutlined/>}>
-                        <Card title={t('Common.uploadFile')} className={'upload-container'}>
+                        <Card title={t('Resource.uploadFile')} className={'upload-container'}>
                             {uploadFiles.map(uploadFile => {
                                 return (
                                     <>
