@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useState} from "react";
+import React, {Key, useState} from "react";
 import {Organization as OrganizationModal} from "@/model/organization.tsx";
-import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {
@@ -44,22 +43,17 @@ import TextArea from "antd/es/input/TextArea";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {usePageList} from "@/hooks/usePageList";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams";
 
 
 export const Organization = () => {
     const [treeSelectData, setTreeSelectData] = useState<OrganizationModal[]>([]);
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-        parentId: '-1',
-        sortColumn: 'display_order',
-        isAsc: true,
-    });
-
     const {t} = useTranslation();
     const buttonPermissions = useButton(OrganizationPermissionConstant.List);
-    const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
-    const [pageData, setPageData] = useState<PageResult<OrganizationModal>>({} as PageResult<OrganizationModal>);
+    const {refreshPageList} = usePageList(organizationApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -127,30 +121,6 @@ export const Organization = () => {
 
 
     /**
-     * 表单搜索
-     * @param tableSearch 表单搜索
-     */
-    const tableSearch = (tableSearch: { [key: string]: unknown }) => {
-        setPageQuery({
-            ...pageQuery,
-            ...search,
-            ...tableSearch
-        });
-    }
-
-    /**
-     * 右侧列表
-     */
-    useEffect(() => {
-        const pageOrganization = async () => {
-            const organizationPageResult = await organizationApi.pageInfoListApi(pageQuery);
-            setPageData(organizationPageResult);
-        }
-        pageOrganization().then();
-    }, [pageQuery]);
-
-
-    /**
      * 树被点击时的事件
      * @param selectedKeys 当前选中的key
      * @param node 选中的树节点
@@ -161,7 +131,7 @@ export const Organization = () => {
         }
         setFormParentOrganization(node);
         // 这里只会有一条
-        setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
+        updateSearchParams({...organizationQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
 
@@ -210,10 +180,9 @@ export const Organization = () => {
         try {
             setIsModalButtonLoading(true);
             await (updateId ? organizationApi.editInfoApi(updateId, values) : organizationApi.saveInfoApi(values));
-            const res = await organizationApi.pageInfoListApi(pageQuery);
+            await refreshPageList();
             const parentId = values.parentId;
             await onLoadData({key: parentId});
-            setPageData(res);
             setIsModalOpen(false);
             message.success(t('Common.success')).then()
         } finally {
@@ -244,20 +213,20 @@ export const Organization = () => {
                         <SearchHeader
                             components={[
                                 <><label htmlFor="organizationName">{t('Organization.name')}</label>
-                                    <Input placeholder={t('Organization.namePlaceholder')} id={'organizationName'}
-                                           onChange={(e) => setSearch({organizationName: e.target.value})}/>
+                                    <Input
+                                        allowClear
+                                        defaultValue={organizationQuery.organizationName}
+                                        placeholder={t('Organization.namePlaceholder')} id={'organizationName'}
+                                        onChange={(e) => setOrganizationQuery({organizationName: e.target.value})}/>
                                 </>,
                             ]}
-                            onSearchClick={() => {
-                                setPageQuery({...pageQuery, ...search})
-                            }}
+                            onSearchClick={() => updateSearchParams(organizationQuery)}
                         />
                         <Table<OrganizationModal>
                             tableName={t('Organization.list')}
                             columns={columns}
                             rowSelection={rowSelection}
-                            setPageQuery={tableSearch}
-                            pageData={pageData}
+                            pageApi={organizationApi.pageInfoListApi}
                             scroll={{x: 1500}}
                             tableComponents={[
                                 <>
@@ -279,7 +248,7 @@ export const Organization = () => {
                                             cancelText={t('Common.no')}
                                             onConfirm={async () => {
                                                 await organizationApi.deleteInfoApi(rowKeys as string[]).then();
-                                                setPageQuery({...pageQuery});
+                                                await refreshPageList()
                                                 await onLoadData({key: formParentOrganization.id});
                                             }}
                                         >

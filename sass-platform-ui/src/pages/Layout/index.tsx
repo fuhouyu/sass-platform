@@ -28,11 +28,13 @@ import FloatButtonGroup from "antd/es/float-button/FloatButtonGroup";
 import {CloudUploadOutlined} from "@ant-design/icons";
 import {Card, Progress} from "antd";
 import {useUploadStore} from "@/store/modules/upload.tsx";
+import {useTranslation} from "react-i18next";
 
 export const LayoutMain = () => {
     const accessToken = useAuth();
     const pathname = useLocation().pathname;
     const uploadFiles = useUploadStore(state => state.uploadFiles);
+    const {t} = useTranslation();
     useEffect(() => {
         if (!accessToken) {
             router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
@@ -49,7 +51,7 @@ export const LayoutMain = () => {
                         className={'upload-container'}
                         trigger={'click'}
                         icon={<CloudUploadOutlined/>}>
-                        <Card title={'上传文件'} className={'upload-container'}>
+                        <Card title={t('Common.uploadFile')} className={'upload-container'}>
                             {uploadFiles.map(uploadFile => {
                                 return (
                                     <>

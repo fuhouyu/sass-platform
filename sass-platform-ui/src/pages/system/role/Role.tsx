@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useState} from "react";
+import React, {Key, useState} from "react";
 import './index.scss'
 import {
     Button,
@@ -31,7 +31,6 @@ import {
 } from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
-import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
@@ -43,6 +42,8 @@ import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -113,13 +114,14 @@ export const Role: React.FC = () => {
         }
     ];
 
+    const {refreshPageList} = usePageList(roleApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [roleQuery, setRoleQuery] = useState<{ [key: string]: unknown }>({});
-    const [pageResult, setPageResult] = useState<PageResult<RoleModel>>();
+    const [roleQuery, setRoleQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
     const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
@@ -155,38 +157,14 @@ export const Role: React.FC = () => {
         try {
             await (updateId ? roleApi.editInfoApi(updateId, role) : roleApi.saveInfoApi(role));
             message.success(t('Common.success')).then()
-            await pageRequest();
+            await refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
         }
     }
 
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-        sortColumn: 'display_order',
-        isAsc: true,
-    });
 
-
-    useEffect(() => {
-        roleApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<RoleModel>) => {
-                setPageResult({...res});
-            });
-    }, [pageQuery])
-
-    /**
-     * 分页查询请求
-     */
-    const pageRequest = async () => {
-        const res = await roleApi.pageInfoListApi(pageQuery);
-        setPageResult({...res});
-    }
 
     /**
      * table列选择
@@ -201,9 +179,7 @@ export const Role: React.FC = () => {
                 tableProps={{
                     tableName: t('Role.list'),
                     columns: columns,
-                    pageData: pageResult,
-                    pageQuery: pageQuery,
-                    setPageQuery: setPageQuery,
+                    pageApi: roleApi.pageInfoListApi,
                     rowSelection: rowSelection,
                     tableComponents: [
                         <>
@@ -220,7 +196,7 @@ export const Role: React.FC = () => {
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
                                         await roleApi.deleteInfoApi(rowKeys as string[]);
-                                        await pageRequest();
+                                        await refreshPageList();
                                     }}
                                 >
                                     <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -233,7 +209,8 @@ export const Role: React.FC = () => {
                     components: [
                         <><label htmlFor="roleCode">{t('Role.code')}</label>
                             <Input
-                                allowClear={true}
+                                allowClear
+                                defaultValue={roleQuery.roleCode}
                                 placeholder={t('Role.codePlaceholder')}
                                 id={'roleCode'}
                                 onChange={(e) => {
@@ -243,18 +220,20 @@ export const Role: React.FC = () => {
                         <>
                             <span>{t('Common.status')}</span>
                             <Select
-                                allowClear={true}
+                                defaultValue={roleQuery.isEnabled}
+                                allowClear
                                 key={'isEnabled'}
                                 placeholder={t('Common.statusPlaceholder')}
                                 onChange={(value) => roleQuery['isEnabled'] = value}
                                 options={[
-                                    {value: true, label: <span>{t('Common.enabled')}</span>},
-                                    {value: false, label: <span>{t('Common.disabled')}</span>}
+                                    {value: 'true', label: <span>{t('Common.enabled')}</span>},
+                                    {value: 'false', label: <span>{t('Common.disabled')}</span>}
                                 ]}
                             />
                         </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...roleQuery})
+                    onSearchClick: () => updateSearchParams(roleQuery),
+
                 }}
             />
 

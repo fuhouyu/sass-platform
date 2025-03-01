@@ -40,7 +40,6 @@ import './index.scss'
 import {FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
 import {useLocation, useNavigate} from "react-router-dom";
 import qs from 'query-string';
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
@@ -56,14 +55,6 @@ const TenantSpace: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const urlQueryParams = qs.parse(location.search) as PageQuery;
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        ...urlQueryParams,
-        pageNum: 1,
-        pageSize: 10,
-    });
 
 
     const columns: TableColumnsType = [
@@ -192,8 +183,8 @@ const TenantSpace: React.FC = () => {
      * 查询资源
      */
     const queryResource = useCallback(async () => {
-        setPageResult(await resourceApi.pageInfoListApi(pageQuery));
-    }, [pageQuery]);
+        setPageResult(await resourceApi.pageInfoListApi(urlQueryParams));
+    }, [urlQueryParams]);
 
     /**
      * 查询租户空间
@@ -207,36 +198,35 @@ const TenantSpace: React.FC = () => {
      * @param record 记录
      */
     const handleBreadcrumb = useCallback((prefix?: string | undefined) => {
-        let urlPrefix = prefix;
-        if (prefix) {
-            urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
-        }
-        setPageQuery({...pageQuery, prefix: urlPrefix});
-        if (!prefix) {
-            setBreadcrumb(breadcrumbItems?.slice(0, 1));
-            return
-        }
-        prefix.split("/").forEach(p => {
-            const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
-            if (index !== -1) {
-                setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
-                return
-            }
-            setBreadcrumb([...breadcrumbItems ?? [], {
-                title: p,
-                onClick: () => handleBreadcrumb(p),
-            }])
-        })
+        // let urlPrefix = prefix;
+        // if (prefix) {
+        //     urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+        // }
+        // setPageQuery({...pageQuery, prefix: urlPrefix});
+        // navigate(`${BaseUrlConstant.TENANT_SPACE_URL}?prefix=${urlPrefix}`);
+        // if (!prefix) {
+        //     setBreadcrumb(breadcrumbItems?.slice(0, 1));
+        //     return
+        // }
+        // prefix.split("/").forEach(p => {
+        //     const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
+        //     if (index !== -1) {
+        //         setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
+        //         return
+        //     }
+        //     setBreadcrumb([...breadcrumbItems ?? [], {
+        //         title: p,
+        //         onClick: () => handleBreadcrumb(p),
+        //     }])
+        // })
 
-    }, [breadcrumbItems, pageQuery])
+    }, [breadcrumbItems])
 
 
     useEffect(() => {
         queryResource().then();
         queryTenantSpaceInfo().then();
-        const query = qs.stringify(pageQuery);
-        navigate(`${BaseUrlConstant.TENANT_SPACE_URL}?${query}`)
-    }, [navigate, pageQuery, queryResource, queryTenantSpaceInfo])
+    }, [navigate, queryResource, queryTenantSpaceInfo])
 
 
     /**
@@ -324,8 +314,8 @@ const TenantSpace: React.FC = () => {
                     tableProps={{
                         columns: columns,
                         pageData: pageResult,
-                        pageQuery: pageQuery,
-                        setPageQuery: setPageQuery,
+                        // pageQuery: pageQuery,
+                        // setPageQuery: setPageQuery,
                         rowSelection: rowSelection,
                         tableComponents: [
                             <>

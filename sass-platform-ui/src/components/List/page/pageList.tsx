@@ -21,15 +21,13 @@ import SearchHeader from "@components/List/header/searchHeader";
 import Table from "@components/List/table/table";
 
 const PageList = (props: PageListProps) => {
-    const {headerSearchProps, setPageQuery, tableProps} = props
-
+    const {headerSearchProps, tableProps} = props
 
     return (
         <>
             {headerSearchProps && <SearchHeader
                 {...headerSearchProps}/>}
             <Table
-                setPageQuery={setPageQuery}
                 {...tableProps}/>
         </>
     );

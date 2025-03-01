@@ -76,8 +76,10 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
     }, [pageQuery]);
 
     useEffect(() => {
-        pageQueryCallback().then();
-    }, [pageQueryCallback])
+        if (isModalOpen) {
+            pageQueryCallback().then();
+        }
+    }, [isModalOpen, pageQueryCallback])
 
     /**
      * 关闭组织用户modal

@@ -28,23 +28,16 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
     tableName?: string;
 
     /**
-     * 分页数据
+     * 分页查询api
+     * @param pageQuery 查询参数
      */
-    pageData?: PageResult<RecordType>;
+    pageApi: (pageQuery: PageQuery) => Promise<PageResult<RecordType>>
 
-    /**
-     * 查询参数
-     */
-    pageQuery?: PageQuery
-
-    /**
-     * 设置分页查询
-     */
-    setPageQuery?: (pageQuery: PageQuery) => void;
     /**
      * 行主键
      */
     rowKey?: string;
+
     /**
      * 组件数组
      */

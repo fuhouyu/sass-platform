@@ -19,6 +19,10 @@ import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/in
 import './index.scss'
 import {InfoCircleFilled} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
+import {useLocation} from "react-router-dom";
+import {useEffect} from "react";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 /**
  * 处理_转换为驼峰
@@ -30,8 +34,15 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 };
 
 const Table = <T extends object>(tableProps: TableProps<T>) => {
-    const {pageQuery, setPageQuery, tableName, pageData, tableComponents} = tableProps;
+    const {pageApi, tableName, tableComponents} = tableProps;
     const {t} = useTranslation();
+    const {pageDataList, refreshPageList} = usePageList<T>(pageApi);
+    const location = useLocation();
+    const {updateSearchParams} = useRouteSearchParams();
+
+    useEffect(() => {
+        refreshPageList().then();
+    }, [refreshPageList, location.key])
 
     /**
      * change 事件
@@ -40,21 +51,18 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
      * @param sorters 排序
      */
     const onChange: AntdTableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
-        if (!setPageQuery) {
-            return
-        }
         const sorter = Array.isArray(sorters) ? sorters[0] : sorters;
         let isAsc = true;
         if (sorter.order) {
             isAsc = sorter.order.toLowerCase() === 'ascend';
         }
-        setPageQuery({
-            ...pageQuery,
+        const pageQuery = {
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
             sortColumn: camelToSnake(sorter?.field?.toLocaleString()),
             isAsc: isAsc,
-        });
+        }
+        updateSearchParams(pageQuery)
     };
 
     return (
@@ -85,12 +93,12 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     // style={{tableLayout: 'fixed'}}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
-                    dataSource={pageData?.list}
+                    dataSource={pageDataList?.list}
                     pagination={{
-                        total: pageData?.total,
+                        total: pageDataList?.total,
                         hideOnSinglePage: false,
                         showSizeChanger: true,
-                        defaultPageSize: pageData?.pageSize ?? 10,
+                        defaultPageSize: pageDataList?.pageSize ?? 10,
                     }}
                     showSorterTooltip={{target: 'sorter-icon'}}
                 />
