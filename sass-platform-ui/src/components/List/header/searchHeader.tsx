@@ -28,6 +28,7 @@ const SearchHeader = (searchComponentProps: SearchComponentProps) => {
     const {components, onSearchClick} = searchComponentProps;
     const [buttonLoading, setButtonLoading] = useState<boolean>(false);
     const {t} = useTranslation()
+
     return (
         <div className="search-header">
             <div className='search-components'>

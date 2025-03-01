@@ -15,13 +15,12 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Input, Popconfirm, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {tenantApi} from "@/apis/tenant";
-import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user";
@@ -31,6 +30,8 @@ import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {useNavigate} from "react-router-dom";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {usePageList} from "@/hooks/usePageList.tsx";
 
 /**
  * 租户组件
@@ -104,37 +105,12 @@ export const Tenant: React.FC = () => {
     ];
 
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
-    const [tenantQuery, setTenantQuery] = useState<{ [key: string]: unknown }>({});
-    const [pageResult, setPageResult] = useState<PageResult<TenantInfo>>();
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+
+    const [tenantQuery, setTenantQuery] = useState<Record<string, string>>({...querySearchParams()});
     const {findDictItemName} = useDictItem(["TENANT_TYPE"]);
     const navigate = useNavigate();
-
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-    });
-
-    /**
-     * 分页查询结果
-     */
-    useEffect(() => {
-        tenantApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<TenantInfo>) => {
-                setPageResult({...res});
-            });
-    }, [pageQuery])
-
-    /**
-     * 分页查询请求
-     */
-    const pageRequest = async () => {
-        const res = await tenantApi.pageInfoListApi(pageQuery);
-        setPageResult({...res});
-    }
-
+    const {refreshPageList} = usePageList<TenantInfo>(tenantApi.pageInfoListApi);
 
     /**
      * table列选择
@@ -149,9 +125,7 @@ export const Tenant: React.FC = () => {
             tableProps={{
                 tableName: t('Tenant.list'),
                 columns: columns,
-                pageData: pageResult,
-                pageQuery: pageQuery,
-                setPageQuery: setPageQuery,
+                pageApi: tenantApi.pageInfoListApi,
                 rowSelection: rowSelection,
                 tableComponents: [
                     <>
@@ -168,7 +142,7 @@ export const Tenant: React.FC = () => {
                                 cancelText={t('Common.no')}
                                 onConfirm={async () => {
                                     await tenantApi.deleteInfoApi(rowKeys as string[]);
-                                    await pageRequest();
+                                    await refreshPageList();
                                 }}
                             >
                                 <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -180,12 +154,15 @@ export const Tenant: React.FC = () => {
             headerSearchProps={{
                 components: [
                     <><label htmlFor="tenantName">{t('Tenant.name')}</label>
-                        <Input placeholder={t('Tenant.namePlaceholder')} id={'tenantName'} onChange={(e) => {
+                        <Input defaultValue={tenantQuery.tenantName}
+                               allowClear
+                               placeholder={t('Tenant.namePlaceholder')}
+                               id={'tenantName'} onChange={(e) => {
                             setTenantQuery({tenantName: e.target.value})
                         }}/>
                     </>
                 ],
-                onSearchClick: () => setPageQuery({...pageQuery, ...tenantQuery})
+                onSearchClick: () => updateSearchParams({...tenantQuery}),
             }}
         />
     </>)

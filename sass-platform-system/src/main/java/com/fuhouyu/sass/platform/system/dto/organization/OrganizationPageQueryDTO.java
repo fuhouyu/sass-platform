@@ -38,4 +38,10 @@ public class OrganizationPageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "organizationName", description = "组织名称模糊查询")
     private String organizationName;
+
+    public OrganizationPageQueryDTO() {
+        this.parentId = -1L;
+        this.setSortColumn("display_order");
+        this.setIsAsc(true);
+    }
 }

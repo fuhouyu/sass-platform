@@ -22,6 +22,8 @@ import {resourceApi} from "@/apis/resource.tsx";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
 import {RcFile} from "antd/es/upload";
 import {StsTemporaryTokenResponse} from "@/model/resource.tsx";
+import {useUploadStore} from "@/store/modules/upload.tsx";
+import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 
 export const S3Upload: React.FC<{
     uploadProps: S3UploadProps,
@@ -29,6 +31,7 @@ export const S3Upload: React.FC<{
 }> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
 
     const [uploadFiles, setUploadFiles] = React.useState<RcFile[]>([]);
+    const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
 
     /**
      * 生成sts的Token
@@ -60,6 +63,13 @@ export const S3Upload: React.FC<{
     const doFileUpload = useCallback(async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath];
+        storeUploadFiles({
+            id: file.uid,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            progress: 0
+        });
         const upload = new s3Upload({
             client: s3Client,
             params: {
@@ -69,6 +79,20 @@ export const S3Upload: React.FC<{
                 ContentType: file.type,
                 ChecksumAlgorithm: ChecksumAlgorithm.CRC32,
             },
+        });
+        upload.on("httpUploadProgress", (progress: Progress) => {
+            const {loaded, total} = progress;
+            let percentage = 100;
+            if (loaded && total) {
+                percentage = Math.round((loaded / total) * 100);
+            }
+            storeUploadFiles({
+                id: file.uid,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                progress: percentage
+            });
         });
         const response = await upload.done();
         const resourceId = await resourceApi.saveInfoApi({
@@ -82,24 +106,15 @@ export const S3Upload: React.FC<{
             version: 1,
             objectKey: objectKey,
         });
+
         uploadProps.onUploadSuccess?.(resourceId);
         message.success(`${file.name} 上传成功`);
-    }, [uploadProps])
+    }, [storeUploadFiles, uploadProps])
 
     const fileUploadHandle = useCallback(async () => {
         try {
             // 批量上传
             const {stsTokenResponse, s3Client} = await generateStsToken();
-            // 监听上传进度
-            // upload.on("httpUploadProgress", (progress) => {
-            //     const {loaded, total} = progress;
-            //     if (loaded && total) {
-            //         const percentage = Math.round((loaded / total) * 100);
-            //         setProgress(percentage);
-            //     } else {
-            //         setProgress(100);
-            //     }
-            // });
             uploadFiles.forEach((uploadFile) => doFileUpload(s3Client, stsTokenResponse, uploadFile))
         } catch (e) {
             console.log(e);

@@ -38,7 +38,6 @@ import {Menu} from "@/model/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
-import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {AnyObject} from "antd/es/_util/type";
@@ -46,6 +45,8 @@ import {PermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams";
+import {usePageList} from "@/hooks/usePageList.tsx";
 
 
 /**
@@ -82,22 +83,18 @@ const mainPermission: Menu = {
 export const Permission: React.FC = () => {
 
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-        parentId: '-1',
-        sortColumn: 'display_order',
-        isAsc: true,
-    });
 
     const {t} = useTranslation();
     const buttonPermissions = useButton(PermissionConstant.List);
-    const [search, setSearch] = useState<{ [key: string]: unknown; }>({});
-    const [pageData, setPageData] = useState<PageResult<Menu>>({} as PageResult<Menu>);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const {refreshPageList} = usePageList(permissionApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const [permissionQuery, setPermissionQuery] = useState<Record<string, string>>({
+        ...querySearchParams()
+    });
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentPermission, setFormParentPermission] = useState<Menu>({});
     const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
@@ -148,7 +145,6 @@ export const Permission: React.FC = () => {
             }
         }
     ];
-
     /**
      * table列选择
      */
@@ -159,17 +155,6 @@ export const Permission: React.FC = () => {
         }),
     };
 
-    /**
-     * 表单搜索
-     * @param tableSearch 表单搜索
-     */
-    const tableSearch = (tableSearch: { [key: string]: unknown }) => {
-        setPageQuery({
-            ...pageQuery,
-            ...search,
-            ...tableSearch
-        });
-    }
 
     /**
      * 左侧菜单树
@@ -185,17 +170,6 @@ export const Permission: React.FC = () => {
             });
     }, [t]);
 
-    /**
-     * 右侧列表
-     */
-    useEffect(() => {
-        permissionApi.pageInfoListApi(pageQuery)
-            .then((res) => {
-                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
-                setPageData(res);
-            })
-    }, [pageQuery, t]);
-
 
     /**
      * 树被点击时的事件
@@ -208,7 +182,7 @@ export const Permission: React.FC = () => {
         }
         setFormParentPermission(node);
         // 这里只会有一条
-        setPageQuery({...pageQuery, parentId: selectedKeys[0].toLocaleString()})
+        updateSearchParams({...permissionQuery, parentId: selectedKeys[0].toLocaleString()})
     }
 
     /**
@@ -284,11 +258,11 @@ export const Permission: React.FC = () => {
             setIsModalButtonLoading(true);
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
-            const res = await permissionApi.pageInfoListApi(pageQuery);
+            await refreshPageList((res) => {
+                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`));
+            });
             const parentId = values.parentId;
             await onLoadData({key: parentId ?? '-1'});
-            res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`))
-            setPageData(res);
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
@@ -322,20 +296,20 @@ export const Permission: React.FC = () => {
                     <SearchHeader
                         components={[
                             <><label htmlFor="permissionName">{t('Permission.name')}</label>
-                                <Input placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
-                                       onChange={(e) => setSearch({permissionName: e.target.value})}/>
+                                <Input
+                                    defaultValue={permissionQuery.permissionName}
+                                    allowClear
+                                    placeholder={t('Permission.namePlaceholder')} id={'permissionName'}
+                                    onChange={(e) => setPermissionQuery({permissionName: e.target.value})}/>
                             </>,
                         ]}
-                        onSearchClick={() => {
-                            setPageQuery({...pageQuery, ...search})
-                        }}
+                        onSearchClick={() => updateSearchParams(permissionQuery)}
                     />
                     <Table<Menu>
                         tableName={t('Permission.list')}
                         columns={columns}
                         rowSelection={rowSelection}
-                        setPageQuery={tableSearch}
-                        pageData={pageData}
+                        pageApi={permissionApi.pageInfoListApi}
                         scroll={{x: 1500}}
                         tableComponents={[
                             <>
@@ -352,7 +326,7 @@ export const Permission: React.FC = () => {
                                         cancelText={t('Common.no')}
                                         onConfirm={async () => {
                                             permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                            setPageQuery({...pageQuery});
+                                            await refreshPageList();
                                             await permissionTreeSelect();
                                         }}
                                     >

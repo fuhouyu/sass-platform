@@ -38,4 +38,10 @@ public class PermissionPageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "permissionName", description = "权限名称筛选")
     private String permissionName;
+
+    public PermissionPageQueryDTO() {
+        this.parentId = -1L;
+        this.setSortColumn("display_order");
+        this.setIsAsc(true);
+    }
 }

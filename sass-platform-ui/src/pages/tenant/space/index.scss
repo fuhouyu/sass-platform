@@ -85,3 +85,21 @@
 .ant-breadcrumb-link:hover {
   text-decoration: underline;
 }
+
+.tenant-space-content .ant-table-row {
+  cursor: pointer;
+}
+
+.file-actions-list {
+  background-color: #F8F8F8;
+
+  .ant-list-items {
+    padding-left: 1rem;
+  }
+}
+
+.file-detail-container {
+  padding: 0 1.375rem;
+  margin: 1rem 0 0.625rem 0;
+  font-size: 0.875rem;
+}

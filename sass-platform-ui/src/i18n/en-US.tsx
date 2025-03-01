@@ -41,8 +41,6 @@ const EnUS = {
         expandOrCollapse: 'Expand/Collapse',
         pageLoading: 'Page Loading....',
         updateAvatar: 'Update Avatar',
-        uploadFile: 'Upload File',
-        uploadFolder: 'Upload Folder',
     },
     // button
     Button: {
@@ -287,10 +285,14 @@ const EnUS = {
     // 资源
     Resource: {
         list: 'Resource List',
+        info: 'Resource Info',
         name: 'File Name',
         size: 'File Size',
         type: 'File Type',
-        preview: 'Preview'
+        preview: 'Preview',
+        download: 'Download',
+        uploadFile: 'Upload File',
+        uploadFolder: 'Upload Folder',
     }
 }
 

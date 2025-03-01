@@ -21,8 +21,11 @@ import {
     BreadcrumbProps,
     Button,
     Card,
+    Divider,
+    Drawer,
     Dropdown,
     Flex,
+    List,
     MenuProps,
     Popconfirm,
     Space,
@@ -30,43 +33,30 @@ import {
 } from "antd";
 import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
-import {PageQuery, PageResult} from "@/model/pageQuery";
-import {Resource} from "@/model/resource.tsx";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user.tsx";
 import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
-import {FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
-import {useLocation, useNavigate} from "react-router-dom";
-import qs from 'query-string';
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {Resource} from "@/model/resource.tsx";
 
 
 const TenantSpace: React.FC = () => {
 
     const {t} = useTranslation();
 
-    const [pageResult, setPageResult] = useState<PageResult<Resource>>();
+    const {pageResult, refreshPageList} = usePageList(resourceApi.pageInfoListApi);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const {previewUrl} = useResourcePreview();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const urlQueryParams = qs.parse(location.search) as PageQuery;
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        ...urlQueryParams,
-        pageNum: 1,
-        pageSize: 10,
-    });
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
 
 
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<Resource> = [
         {
             title: t('Resource.name'),
             dataIndex: 'name',
@@ -74,8 +64,7 @@ const TenantSpace: React.FC = () => {
             render: (_, record) => {
                 if (record.isDirectory) {
                     return <Button type={'link'} onClick={() => {
-                        // setPageQuery({...pageQuery, parentId: record.id})
-                        handleBreadcrumb(record.objectKey)
+                        breadcrumbClick(record.objectKey)
                     }}>
                         <Space size={4}>
                             <IconFont type={'i-dir'}/>
@@ -148,37 +137,37 @@ const TenantSpace: React.FC = () => {
                 return <span>{record.updateBy}</span>
             }
         },
-        {
-            title: t('Common.action'),
-            dataIndex: 'action',
-            align: "center",
-            render: (_, record) => {
-                if (record.isDirectory) {
-                    return
-                }
-                return <Button
-                    onClick={() => setPicViewUrl(previewUrl(record.id))}
-                    icon={<IconFont type="i-yulan"/>}>
-                    {t('Resource.preview')}
-                </Button>
-            }
-        }
+        // {
+        //     title: t('Common.action'),
+        //     dataIndex: 'action',
+        //     align: "center",
+        //     render: (_, record) => {
+        //         if (record.isDirectory) {
+        //             return
+        //         }
+        //         return <Button
+        //             onClick={() => setPicViewUrl(previewUrl(record.id))}
+        //             icon={<IconFont type="i-yulan"/>}>
+        //             {t('Resource.preview')}
+        //         </Button>
+        //     }
+        // }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
         const breadcrumbItems = [
             {
                 title: '根目录',
-                onClick: () => handleBreadcrumb(undefined),
+                onClick: () => breadcrumbClick(undefined),
             }];
-        const prefix: string = urlQueryParams.prefix as string;
+        const prefix: string = querySearchParams()['prefix'];
         if (!prefix) {
             return breadcrumbItems;
         }
         prefix.split("/").forEach(p => {
             breadcrumbItems.push({
                 title: p,
-                onClick: () => handleBreadcrumb(p),
+                onClick: () => breadcrumbClick(p),
             })
         })
         return breadcrumbItems
@@ -188,34 +177,26 @@ const TenantSpace: React.FC = () => {
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
     const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
 
-    /**
-     * 查询资源
-     */
-    const queryResource = useCallback(async () => {
-        setPageResult(await resourceApi.pageInfoListApi(pageQuery));
-    }, [pageQuery]);
 
     /**
      * 查询租户空间
      */
     const queryTenantSpaceInfo = useCallback(async () => {
         setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
-    }, [])
+    }, []);
 
-    /**
-     * 处理面包屑
-     * @param record 记录
-     */
-    const handleBreadcrumb = useCallback((prefix?: string | undefined) => {
+
+    const breadcrumbClick = (prefix?: string) => {
         let urlPrefix = prefix;
         if (prefix) {
             urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
         }
-        setPageQuery({...pageQuery, prefix: urlPrefix});
         if (!prefix) {
             setBreadcrumb(breadcrumbItems?.slice(0, 1));
+            updateSearchParams({prefix: urlPrefix})
             return
         }
+        updateSearchParams({prefix: urlPrefix})
         prefix.split("/").forEach(p => {
             const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
             if (index !== -1) {
@@ -224,29 +205,36 @@ const TenantSpace: React.FC = () => {
             }
             setBreadcrumb([...breadcrumbItems ?? [], {
                 title: p,
-                onClick: () => handleBreadcrumb(p),
+                onClick: () => breadcrumbClick(p),
             }])
         })
-
-    }, [breadcrumbItems, pageQuery])
+    }
 
 
     useEffect(() => {
-        queryResource().then();
         queryTenantSpaceInfo().then();
-        const query = qs.stringify(pageQuery);
-        navigate(`${BaseUrlConstant.TENANT_SPACE_URL}?${query}`)
-    }, [navigate, pageQuery, queryResource, queryTenantSpaceInfo])
+    }, [queryTenantSpaceInfo])
 
 
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Userinfo> = {
+    const rowSelection: TableRowSelection<Resource> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
+    const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
+    const [selectFile, setSelectFile] = useState<Resource>();
+    const onTableRowClick = (record: Resource) => {
+        if (record.isDirectory) {
+            breadcrumbClick(record.objectKey)
+            return
+        }
+        setShowFileDetail(true);
+        setSelectFile(record);
+    }
+
 
     const uploadButtonItems: MenuProps = {
         items: [
@@ -256,11 +244,11 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource
+                            onUploadSuccess: async () => await refreshPageList(),
                         }
                         }
                     >
-                        {t('Common.uploadFile')}
+                        {t('Resource.uploadFile')}
                     </S3Upload>
                 ),
                 key: 'upload-file',
@@ -273,11 +261,11 @@ const TenantSpace: React.FC = () => {
                             directory: true,
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource,
+                            onUploadSuccess: async () => await refreshPageList(),
                         }
                         }
                     >
-                        {t('Common.uploadFolder')}
+                        {t('Resource.uploadFolder')}
                     </S3Upload>
                 ),
                 key: 'upload-folder',
@@ -285,6 +273,15 @@ const TenantSpace: React.FC = () => {
             }
         ]
     }
+
+    const fileActions = [
+        {icon: <DownloadOutlined/>, text: t('Resource.download')},
+        {
+            icon: <EyeOutlined/>,
+            text: t('Resource.preview'),
+            onClick: () => selectFile && setPicViewUrl(previewUrl(selectFile.id))
+        },
+    ];
 
     return (<>
         <Card>
@@ -308,25 +305,25 @@ const TenantSpace: React.FC = () => {
                         cancelText={t('Common.no')}
                         onConfirm={async () => {
                             await resourceApi.deleteInfoApi(rowKeys as string[]);
-                            await queryResource();
+                            await refreshPageList();
                         }}
                     >
                         <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                     </Popconfirm>
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
-                        上传文件
+                        {t('Resource.uploadFile')}
                     </Dropdown.Button>
                 </Flex>
             </div>
 
             <div className={'tenant-space-content'}>
-                <PageList
+                <PageList<Resource>
                     tableProps={{
-                        // tableName: t('Resource.list'),
+                        onRow: (record) => ({
+                            onClick: () => onTableRowClick(record),
+                        }),
                         columns: columns,
-                        pageData: pageResult,
-                        pageQuery: pageQuery,
-                        setPageQuery: setPageQuery,
+                        pageApi: resourceApi.pageInfoListApi,
                         rowSelection: rowSelection,
                         tableComponents: [
                             <>
@@ -335,42 +332,47 @@ const TenantSpace: React.FC = () => {
                                             onClick={breadcrumbItems && breadcrumbItems[breadcrumbItems.length - 2]?.onClick}
                                     ><LeftOutlined/></Button>
                                     <Breadcrumb className={'space-bucket-breadcrumb'} items={breadcrumbItems}/>
-
-
                                 </Flex>
-                                {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
-                                {/*                  permissionStr={TenantPermissionConstant.ADD}>*/}
-                                {/*    <AddButton onClick={() => navigate('/tenant-form')}/>*/}
-                                {/*</PermissionButton>*/}
-                                {/*<PermissionButton buttonPermissions={buttonPermissions}*/}
-                                {/*                  permissionStr={TenantPermissionConstant.DELETE}>*/}
-                                {/*    <Popconfirm*/}
-                                {/*        title={t('Button.delete')}*/}
-                                {/*        description={t('Button.deleteConfirm')}*/}
-                                {/*        okText={t('Common.yes')}*/}
-                                {/*        cancelText={t('Common.no')}*/}
-                                {/*        onConfirm={async () => {*/}
-                                {/*            await tenantApi.deleteInfoApi(rowKeys as string[]);*/}
-                                {/*            await pageRequest();*/}
-                                {/*        }}*/}
-                                {/*    >*/}
-                                {/*        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>*/}
-                                {/*    </Popconfirm>*/}
-                                {/*</PermissionButton>*/}
                             </>
                         ]
                     }}
-                    // headerSearchProps={{
-                    //     components: [
-                    //         <><label htmlFor="tenantName">{t('Tenant.name')}</label>
-                    //             <Input placeholder={t('Tenant.namePlaceholder')} id={'tenantName'} onChange={(e) => {
-                    //                 setTenantQuery({tenantName: e.target.value})
-                    //             }}/>
-                    //         </>
-                    //     ],
-                    //     onSearchClick: () => setPageQuery({...pageQuery, ...tenantQuery})
-                    // }}
                 />
+                <Drawer
+                    title={selectFile?.name}
+                    placement="right"
+                    closable={false}
+                    onClose={() => setShowFileDetail(false)}
+                    open={showFileDetail}
+                >
+                    <List
+                        className={'file-actions-list'}
+                        header={<span><strong>Actions: </strong></span>}
+                        bordered
+                        dataSource={fileActions}
+                        renderItem={(item) => (
+                            <List.Item onClick={item.onClick}>
+                                {item.icon} {item.text}
+                            </List.Item>
+                        )}
+                    />
+                    <h3>{t('Resource.info')}</h3>
+                    <Divider/>
+                    <div className={'file-detail-container'}>
+                        <strong>{t('Resource.name')}: </strong>
+                        <br/>
+                        <span>{selectFile?.name}</span>
+                    </div>
+                    <div className={'file-detail-container'}>
+                        <strong>{t('Resource.size')}: </strong>
+                        <br/>
+                        <span>{selectFile?.size}</span>
+                    </div>
+                    <div className={'file-detail-container'}>
+                        <strong>Etag: </strong>
+                        <br/>
+                        <span>{selectFile?.eTag}</span>
+                    </div>
+                </Drawer>
             </div>
         </Card>
 
@@ -387,6 +389,7 @@ const TenantSpace: React.FC = () => {
                 </div>
             )}
         </div>
+
     </>)
 }
 

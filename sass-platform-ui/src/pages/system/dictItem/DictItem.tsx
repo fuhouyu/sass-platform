@@ -32,18 +32,19 @@ import {
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useState} from "react";
-import {PageQuery, PageResult} from "@/model/pageQuery";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
 import {DictType} from "@/model/dictType";
-import {dictTypeApi} from "@/apis/dictType";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {dictTypeApi} from '@/apis/dictType';
 
 /**
  * 字典项
@@ -118,10 +119,13 @@ export const DictItem = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [pageResult, setPageResult] = useState<PageResult<DictItemModel>>();
     const [dictTypeList, setDictTypeList] = useState<DictType[]>([]);
     const params = useParams();
-    const [dictItemQuery, setDictItemQuery] = useState<{ [key: string]: unknown }>({});
+    const navigate = useNavigate();
+    const [dictTypeCode, setDictTypeCode] = useState<string>(params.dictCode!);
+    const {refreshPageList} = usePageList(dictItemApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const [dictItemQuery, setDictItemQuery] = useState<Record<string, string>>({...querySearchParams()});
     const initForm: DictItemModel = {
         displayOrder: 1,
         isEnabled: true,
@@ -129,6 +133,15 @@ export const DictItem = () => {
         ...params
     }
     const [formInitValues, setFormInitValues] = useState<DictItemModel>(initForm);
+
+    useEffect(() => {
+
+        // 分页字典类型列表
+        dictTypeApi.getList()
+            .then((res: DictType[]) => {
+                setDictTypeList(res);
+            });
+    }, []);
 
     /**
      * 打开模态组
@@ -155,47 +168,11 @@ export const DictItem = () => {
         try {
             await (updateId ? dictItemApi.editInfoApi(updateId, dictItem) : dictItemApi.saveInfoApi(dictItem));
             message.success(t('Common.success')).then()
-            await pageRequest();
+            await refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
         }
-    }
-
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-        ...params,
-        sortColumn: 'display_order',
-        isAsc: true,
-    });
-
-
-    useEffect(() => {
-        // 分页字典类型列表
-        dictTypeApi.getList()
-            .then((res: DictType[]) => {
-                setDictTypeList(res);
-            });
-    }, []);
-
-    useEffect(() => {
-        //  分页查询
-        dictItemApi.pageInfoListApi({...pageQuery})
-            .then((res: PageResult<DictItemModel>) => {
-                setPageResult({...res});
-            });
-    }, [pageQuery]);
-
-    /**
-     * 分页查询请求
-     */
-    const pageRequest = async () => {
-        const res = await dictItemApi.pageInfoListApi(pageQuery);
-        setPageResult({...res});
     }
 
     /**
@@ -214,9 +191,7 @@ export const DictItem = () => {
                 tableProps={{
                     tableName: t('DictItem.list'),
                     columns: columns,
-                    pageData: pageResult,
-                    pageQuery: pageQuery,
-                    setPageQuery: setPageQuery,
+                    pageApi: dictItemApi.pageInfoListApi,
                     rowSelection: rowSelection,
                     tableComponents: [
                         <>
@@ -234,7 +209,7 @@ export const DictItem = () => {
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
                                         dictItemApi.deleteInfoApi(rowKeys as string[]).then();
-                                        await pageRequest()
+                                        await refreshPageList()
                                     }}
                                 >
                                     <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -249,11 +224,10 @@ export const DictItem = () => {
                         <>
                             <span>{t('DictType.name')}</span>
                             <Select
-                                allowClear={true}
                                 key={'dictCode'}
                                 defaultValue={params.dictCode}
                                 placeholder={t('DictType.namePlaceholder')}
-                                onChange={(value) => dictItemQuery['dictCode'] = value}
+                                onChange={(value) => setDictTypeCode(value)}
                                 options={dictTypeList.map(dictItem => {
                                     return {value: dictItem.dictCode, label: <span>{dictItem.dictName}</span>}
                                 })}
@@ -261,7 +235,8 @@ export const DictItem = () => {
                         </>,
                         <><label htmlFor="dictItemCode">{t('DictItem.code')}</label>
                             <Input
-                                allowClear={true}
+                                allowClear
+                                defaultValue={dictItemQuery.dictItemCode}
                                 placeholder={t('DictItem.codePlaceholder')}
                                 id={'dictItemCode'}
                                 onChange={(e) => {
@@ -271,18 +246,22 @@ export const DictItem = () => {
                         <>
                             <span>{t('Common.status')}</span>
                             <Select
-                                allowClear={true}
+                                allowClear
+                                defaultValue={dictItemQuery.isEnabled}
                                 key={'isEnabled'}
                                 placeholder={t('Common.statusPlaceholder')}
                                 onChange={(value) => dictItemQuery['isEnabled'] = value}
                                 options={[
-                                    {value: true, label: <span>{t('Common.enabled')}</span>},
-                                    {value: false, label: <span>{t('Common.disabled')}</span>}
+                                    {value: 'true', label: <span>{t('Common.enabled')}</span>},
+                                    {value: 'false', label: <span>{t('Common.disabled')}</span>}
                                 ]}
                             />
                         </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...dictItemQuery})
+                    onSearchClick: () => {
+                        const queryString = new URLSearchParams(dictItemQuery).toString();
+                        navigate(`/system/dict-item/${dictTypeCode}?${queryString}`);
+                    }
                 }}
             />
 

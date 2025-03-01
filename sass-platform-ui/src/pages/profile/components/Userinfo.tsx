@@ -41,10 +41,10 @@ export const Userinfo = () => {
             await fetchEditUserinfo(updateValues);
             form.setFieldsValue({...updateValues});
             setButtonLoading(false);
-            await message.success('修改成功')
+            await message.success(t('Common.success'))
         } catch {
             setButtonLoading(false);
-            await message.error('用户修改失败');
+            await message.error(t('Common.failed'));
         }
     }
 

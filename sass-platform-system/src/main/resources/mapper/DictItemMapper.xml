@@ -188,6 +188,9 @@
             <if test="pageQuery.dictCode != null and pageQuery.dictCode != ''">
                 di.dict_code = #{pageQuery.dictCode}
             </if>
+            <if test="pageQuery.itemCode != null and pageQuery.itemCode != ''">
+                AND di.item_code = #{pageQuery.itemCode}
+            </if>
             <if test="pageQuery.isEnabled != null">
                 AND di.is_enabled = #{pageQuery.isEnabled}
             </if>

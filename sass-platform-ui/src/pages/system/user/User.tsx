@@ -15,7 +15,7 @@
  */
 
 
-import React, {Key, useCallback, useEffect, useState} from "react";
+import React, {Key, useState} from "react";
 import {
     Button,
     Card,
@@ -41,7 +41,6 @@ import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
 import {userApi} from "@/apis/user";
-import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
@@ -60,6 +59,8 @@ import {OrganizationUserModal} from "@components/Organization/OrganizationUserMo
 import {userPositionApi} from "@/apis/userPosition.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 
 export const User: React.FC = () => {
@@ -158,11 +159,6 @@ export const User: React.FC = () => {
             }
         }
     ];
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-    });
-
     const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -170,11 +166,12 @@ export const User: React.FC = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [userHasRoleForm] = Form.useForm();
-    const [userQuery, setUserQuery] = useState<{ [key: string]: unknown }>({});
+    const {refreshPageList} = usePageList(userApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const [userQuery, setUserQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
     const {organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
-    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
     const language = useLocaleStore((state) => state.language);
     const [userHasRole, setUserHasRole] = useState<{
@@ -269,7 +266,7 @@ export const User: React.FC = () => {
         try {
             await (updateUserId ? userApi.editInfoApi(updateUserId, userDetail) : userApi.saveInfoApi(userDetail));
             message.success(t('Common.success')).then();
-            await pageQueryCallback();
+            await refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
@@ -303,7 +300,7 @@ export const User: React.FC = () => {
         try {
             await userPositionApi.saveUserPosition(userPosition);
             message.success(t('Common.success')).then();
-            await pageQueryCallback();
+            await refreshPageList();
             setIsOrganizationUserModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
@@ -311,9 +308,6 @@ export const User: React.FC = () => {
 
     }
 
-    const pageQueryCallback = useCallback(async () => {
-        setPageResult(await userApi.pageInfoListApi(pageQuery));
-    }, [pageQuery]);
 
     /**
      * 用户列选择
@@ -331,11 +325,6 @@ export const User: React.FC = () => {
             form.setFieldValue('realName', selectedRows[0].realName)
         },
     }
-
-    useEffect(() => {
-        pageQueryCallback().then();
-    }, [pageQueryCallback])
-
 
     /**
      * table列选择
@@ -367,7 +356,7 @@ export const User: React.FC = () => {
                     return
                 }
                 await userPositionApi.deleteUserPosition(organizationId, selectUserIds as string[]);
-                await pageQueryCallback();
+                await refreshPageList();
             }
         },
     ].filter(item => organizationButtonPermissions.some(permission => permission?.permissionCode === item?.key));
@@ -392,7 +381,7 @@ export const User: React.FC = () => {
                                 setFormInitValues({
                                     userPosition: {organizationId: selectedKeys[0] as string}
                                 });
-                                setPageQuery({...pageQuery, ...userQuery, organizationId: selectedKeys[0] as number});
+                                updateSearchParams({organizationId: selectedKeys[0] as number});
                             }}
                         />
                     </div>
@@ -403,9 +392,7 @@ export const User: React.FC = () => {
                             tableName: t('User.list'),
                             columns: columns,
                             scroll: {x: 1500},
-                            pageData: pageResult,
-                            pageQuery: pageQuery,
-                            setPageQuery: setPageQuery,
+                            pageApi: userApi.pageInfoListApi,
                             rowSelection: rowSelection,
                             tableComponents: [
                                 <>
@@ -432,7 +419,7 @@ export const User: React.FC = () => {
                                             cancelText={t('Common.no')}
                                             onConfirm={async () => {
                                                 await userApi.deleteInfoApi(selectUserIds as string[]);
-                                                await pageQueryCallback();
+                                                await refreshPageList();
                                             }}
                                         >
                                             <DeleteButton
@@ -446,7 +433,10 @@ export const User: React.FC = () => {
                         headerSearchProps={{
                             components: [
                                 <><label htmlFor="username">{t('User.username')}</label>
-                                    <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
+                                    <Input
+                                        allowClear
+                                        defaultValue={userQuery.username}
+                                        placeholder={t('User.usernamePlaceholder')} id={'username'}
                                            onChange={(e) => {
                                                setUserQuery({username: e.target.value})
                                            }}/>
@@ -455,6 +445,8 @@ export const User: React.FC = () => {
                                     <span>{t('User.gender')}</span>
                                     <Select
                                         key={'gender'}
+                                        allowClear
+                                        defaultValue={userQuery.gender}
                                         placeholder={t('User.genderPlaceholder')}
                                         onChange={(value) => userQuery['gender'] = value}
                                         options={[
@@ -464,7 +456,7 @@ export const User: React.FC = () => {
                                     />
                                 </>
                             ],
-                            onSearchClick: () => setPageQuery({...pageQuery, ...userQuery})
+                            onSearchClick: () => updateSearchParams(userQuery)
                         }}
                     />
                 </Splitter.Panel>

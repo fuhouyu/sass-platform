@@ -24,10 +24,17 @@ import {LayoutMenu} from "@/pages/Layout/menu";
 import './index.scss'
 import {Bread} from "@/components";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import FloatButtonGroup from "antd/es/float-button/FloatButtonGroup";
+import {CloudUploadOutlined} from "@ant-design/icons";
+import {Card, Progress} from "antd";
+import {useUploadStore} from "@/store/modules/upload.tsx";
+import {useTranslation} from "react-i18next";
 
 export const LayoutMain = () => {
     const accessToken = useAuth();
     const pathname = useLocation().pathname;
+    const uploadFiles = useUploadStore(state => state.uploadFiles);
+    const {t} = useTranslation();
     useEffect(() => {
         if (!accessToken) {
             router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
@@ -39,6 +46,25 @@ export const LayoutMain = () => {
             <Content>
                 <Layout>
                     <LayoutMenu/>
+                    {uploadFiles.length > 0 ? <FloatButtonGroup
+                        badge={{count: uploadFiles.length}}
+                        className={'upload-container'}
+                        trigger={'click'}
+                        icon={<CloudUploadOutlined/>}>
+                        <Card title={t('Common.uploadFile')} className={'upload-container'}>
+                            {uploadFiles.map(uploadFile => {
+                                return (
+                                    <>
+                                        <div className={'upload-content'}>
+                                            <span className={'upload-headItem'}>{uploadFile.name}</span>
+                                            <Progress percent={uploadFile.progress}/>
+                                        </div>
+                                    </>
+                                )
+                            })}
+                        </Card>
+                    </FloatButtonGroup> : null}
+
                     <Content className="layout-content">
                         <Bread/>
                         <Outlet/>

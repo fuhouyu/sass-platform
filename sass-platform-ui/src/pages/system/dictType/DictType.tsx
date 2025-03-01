@@ -31,8 +31,7 @@ import {
     Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useEffect, useState} from "react";
-import {PageQuery, PageResult} from "@/model/pageQuery";
+import React, {useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
@@ -44,6 +43,8 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {usePageList} from '@/hooks/usePageList';
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 /**
  * 字典类型
@@ -128,8 +129,9 @@ export const DictType = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [dictTypeQuery, setDictTypeQuery] = useState<{ [key: string]: unknown }>({});
-    const [pageResult, setPageResult] = useState<PageResult<DictTypeModel>>();
+    const {refreshPageList} = usePageList(dictTypeApi.pageInfoListApi);
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const [dictTypeQuery, setDictTypeQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [formInitValues, setFormInitValues] = useState<DictTypeModel>(initForm);
     const language = useLocaleStore((state) => state.language);
     /**
@@ -157,36 +159,13 @@ export const DictType = () => {
         try {
             await (updateId ? dictTypeApi.editInfoApi(updateId, dictType) : dictTypeApi.saveInfoApi(dictType));
             message.success(t('Common.success')).then()
-            await pageRequest();
+            await refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
         }
     }
 
-    /**
-     * 分页查询
-     */
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
-        pageNum: 1,
-        pageSize: 10,
-    });
-
-
-    useEffect(() => {
-        dictTypeApi.pageInfoListApi(pageQuery)
-            .then((res: PageResult<DictTypeModel>) => {
-                setPageResult({...res});
-            });
-    }, [pageQuery])
-
-    /**
-     * 分页查询请求
-     */
-    const pageRequest = async () => {
-        const res = await dictTypeApi.pageInfoListApi(pageQuery);
-        setPageResult({...res});
-    }
 
     /**
      * table列选择
@@ -204,9 +183,7 @@ export const DictType = () => {
                 tableProps={{
                     tableName: t('DictType.list'),
                     columns: columns,
-                    pageData: pageResult,
-                    pageQuery: pageQuery,
-                    setPageQuery: setPageQuery,
+                    pageApi: dictTypeApi.pageInfoListApi,
                     rowSelection: rowSelection,
                     tableComponents: [
                         <>
@@ -223,7 +200,7 @@ export const DictType = () => {
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
                                         dictTypeApi.deleteInfoApi(rowKeys as string[]).then();
-                                        await pageRequest()
+                                        await refreshPageList()
                                     }}
                                 >
                                     <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -236,7 +213,8 @@ export const DictType = () => {
                     components: [
                         <><label htmlFor="dictTypeCode">{t('DictType.code')}</label>
                             <Input
-                                allowClear={true}
+                                allowClear
+                                defaultValue={dictTypeQuery.dictTypeCode}
                                 placeholder={t('DictType.codePlaceholder')}
                                 id={'dictTypeCode'}
                                 onChange={(e) => {
@@ -246,18 +224,19 @@ export const DictType = () => {
                         <>
                             <span>{t('Common.status')}</span>
                             <Select
-                                allowClear={true}
+                                allowClear
+                                defaultValue={dictTypeQuery.isEnabled}
                                 key={'isEnabled'}
                                 placeholder={t('Common.statusPlaceholder')}
                                 onChange={(value) => dictTypeQuery['isEnabled'] = value}
                                 options={[
-                                    {value: true, label: <span>{t('Common.enabled')}</span>},
-                                    {value: false, label: <span>{t('Common.disabled')}</span>}
+                                    {value: 'true', label: <span>{t('Common.enabled')}</span>},
+                                    {value: 'false', label: <span>{t('Common.disabled')}</span>}
                                 ]}
                             />
                         </>
                     ],
-                    onSearchClick: () => setPageQuery({...pageQuery, ...dictTypeQuery})
+                    onSearchClick: () => updateSearchParams(dictTypeQuery)
                 }}
             />
 

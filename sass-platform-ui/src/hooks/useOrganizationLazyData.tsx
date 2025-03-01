@@ -53,7 +53,7 @@ export function useOrganizationLazyData(): {
     const [organizationLazyData, setOrganizationLazyData] = useState<OrganizationModal[]>([]);
 
     useEffect(() => {
-        // 先查询出一级菜单
+        // 先查询出一级
         const initOrganization = async () => {
             const organizations = await organizationApi.getOrganizationListApi();
             setOrganizationLazyData(organizations);
