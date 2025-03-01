@@ -190,7 +190,7 @@
         <include refid="TableName"/> r
         <where>
             <if test="pageQuery.prefix != null and pageQuery.prefix != ''">
-                r.parent_id = (SELECT id FROM <include refid="TableName"/> WHERE object_key = #{pageQuery.prefix})
+                r.parent_id = (SELECT id FROM <include refid="TableName"/> WHERE CONCAT(object_key, '/') = #{pageQuery.prefix})
             </if>
             <if test="pageQuery.prefix == null or pageQuery.prefix == ''">
               AND r.parent_id = -1

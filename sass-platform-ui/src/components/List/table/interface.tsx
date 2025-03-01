@@ -34,6 +34,11 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
     pageApi: (pageQuery: PageQuery) => Promise<PageResult<RecordType>>
 
     /**
+     * 初始化分页查询参数
+     */
+    initPageQueryParams?: Record<string, string>;
+
+    /**
      * 行主键
      */
     rowKey?: string;

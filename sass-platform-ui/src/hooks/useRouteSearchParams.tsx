@@ -24,9 +24,7 @@ const useRouteSearchParams = () => {
      * @param newParams 新的路径参数值
      */
     const updateSearchParams = (newParams: Record<string, string | number | boolean | undefined | null>) => {
-
         const updatedParams = new URLSearchParams(searchParams);
-
         // 遍历 newParams，更新或删除参数
         Object.entries(newParams).forEach(([key, value]) => {
             if (value === null || value === undefined || value === "") {

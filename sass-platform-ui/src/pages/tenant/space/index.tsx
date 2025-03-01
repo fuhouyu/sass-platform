@@ -30,31 +30,27 @@ import {
 } from "antd";
 import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
-import {PageQuery, PageResult} from "@/model/pageQuery";
-import {Resource} from "@/model/resource.tsx";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
 import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
 import {FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
-import {useLocation, useNavigate} from "react-router-dom";
-import qs from 'query-string';
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
+import {usePageList} from "@/hooks/usePageList.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 
 const TenantSpace: React.FC = () => {
 
     const {t} = useTranslation();
 
-    const [pageResult, setPageResult] = useState<PageResult<Resource>>();
+    const {pageResult, refreshPageList} = usePageList(resourceApi.pageInfoListApi);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const {previewUrl} = useResourcePreview();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const urlQueryParams = qs.parse(location.search) as PageQuery;
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
 
 
     const columns: TableColumnsType = [
@@ -65,8 +61,7 @@ const TenantSpace: React.FC = () => {
             render: (_, record) => {
                 if (record.isDirectory) {
                     return <Button type={'link'} onClick={() => {
-                        // setPageQuery({...pageQuery, parentId: record.id})
-                        handleBreadcrumb(record.objectKey)
+                        breadcrumbClick(record.objectKey)
                     }}>
                         <Space size={4}>
                             <IconFont type={'i-dir'}/>
@@ -160,16 +155,16 @@ const TenantSpace: React.FC = () => {
         const breadcrumbItems = [
             {
                 title: '根目录',
-                onClick: () => handleBreadcrumb(undefined),
+                onClick: () => breadcrumbClick(undefined),
             }];
-        const prefix: string = urlQueryParams.prefix as string;
+        const prefix: string = querySearchParams()['prefix'];
         if (!prefix) {
             return breadcrumbItems;
         }
         prefix.split("/").forEach(p => {
             breadcrumbItems.push({
                 title: p,
-                onClick: () => handleBreadcrumb(p),
+                onClick: () => breadcrumbClick(p),
             })
         })
         return breadcrumbItems
@@ -179,54 +174,43 @@ const TenantSpace: React.FC = () => {
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
     const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
 
-    /**
-     * 查询资源
-     */
-    const queryResource = useCallback(async () => {
-        setPageResult(await resourceApi.pageInfoListApi(urlQueryParams));
-    }, [urlQueryParams]);
 
     /**
      * 查询租户空间
      */
     const queryTenantSpaceInfo = useCallback(async () => {
         setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
-    }, [])
+    }, []);
 
-    /**
-     * 处理面包屑
-     * @param record 记录
-     */
-    const handleBreadcrumb = useCallback((prefix?: string | undefined) => {
-        // let urlPrefix = prefix;
-        // if (prefix) {
-        //     urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
-        // }
-        // setPageQuery({...pageQuery, prefix: urlPrefix});
-        // navigate(`${BaseUrlConstant.TENANT_SPACE_URL}?prefix=${urlPrefix}`);
-        // if (!prefix) {
-        //     setBreadcrumb(breadcrumbItems?.slice(0, 1));
-        //     return
-        // }
-        // prefix.split("/").forEach(p => {
-        //     const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
-        //     if (index !== -1) {
-        //         setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
-        //         return
-        //     }
-        //     setBreadcrumb([...breadcrumbItems ?? [], {
-        //         title: p,
-        //         onClick: () => handleBreadcrumb(p),
-        //     }])
-        // })
 
-    }, [breadcrumbItems])
+    const breadcrumbClick = (prefix?: string) => {
+        let urlPrefix = prefix;
+        if (prefix) {
+            urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+        }
+        if (!prefix) {
+            setBreadcrumb(breadcrumbItems?.slice(0, 1));
+            updateSearchParams({prefix: urlPrefix})
+            return
+        }
+        updateSearchParams({prefix: urlPrefix})
+        prefix.split("/").forEach(p => {
+            const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
+            if (index !== -1) {
+                setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
+                return
+            }
+            setBreadcrumb([...breadcrumbItems ?? [], {
+                title: p,
+                onClick: () => breadcrumbClick(p),
+            }])
+        })
+    }
 
 
     useEffect(() => {
-        queryResource().then();
         queryTenantSpaceInfo().then();
-    }, [navigate, queryResource, queryTenantSpaceInfo])
+    }, [queryTenantSpaceInfo])
 
 
     /**
@@ -246,7 +230,7 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource
+                            onUploadSuccess: async () => await refreshPageList(),
                         }
                         }
                     >
@@ -263,7 +247,7 @@ const TenantSpace: React.FC = () => {
                             directory: true,
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource,
+                            onUploadSuccess: async () => await refreshPageList(),
                         }
                         }
                     >
@@ -298,7 +282,7 @@ const TenantSpace: React.FC = () => {
                         cancelText={t('Common.no')}
                         onConfirm={async () => {
                             await resourceApi.deleteInfoApi(rowKeys as string[]);
-                            await queryResource();
+                            await refreshPageList();
                         }}
                     >
                         <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
@@ -313,9 +297,7 @@ const TenantSpace: React.FC = () => {
                 <PageList
                     tableProps={{
                         columns: columns,
-                        pageData: pageResult,
-                        // pageQuery: pageQuery,
-                        // setPageQuery: setPageQuery,
+                        pageApi: resourceApi.pageInfoListApi,
                         rowSelection: rowSelection,
                         tableComponents: [
                             <>
@@ -324,8 +306,6 @@ const TenantSpace: React.FC = () => {
                                             onClick={breadcrumbItems && breadcrumbItems[breadcrumbItems.length - 2]?.onClick}
                                     ><LeftOutlined/></Button>
                                     <Breadcrumb className={'space-bucket-breadcrumb'} items={breadcrumbItems}/>
-
-
                                 </Flex>
                             </>
                         ]

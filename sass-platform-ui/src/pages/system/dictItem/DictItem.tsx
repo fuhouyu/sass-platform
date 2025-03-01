@@ -38,7 +38,7 @@ import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
 import {DictType} from "@/model/dictType";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
@@ -121,6 +121,8 @@ export const DictItem = () => {
     const [form] = Form.useForm();
     const [dictTypeList, setDictTypeList] = useState<DictType[]>([]);
     const params = useParams();
+    const navigate = useNavigate();
+    const [dictTypeCode, setDictTypeCode] = useState<string>(params.dictCode!);
     const {refreshPageList} = usePageList(dictItemApi.pageInfoListApi);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [dictItemQuery, setDictItemQuery] = useState<Record<string, string>>({...querySearchParams()});
@@ -133,7 +135,7 @@ export const DictItem = () => {
     const [formInitValues, setFormInitValues] = useState<DictItemModel>(initForm);
 
     useEffect(() => {
-        console.log(params)
+
         // 分页字典类型列表
         dictTypeApi.getList()
             .then((res: DictType[]) => {
@@ -222,11 +224,10 @@ export const DictItem = () => {
                         <>
                             <span>{t('DictType.name')}</span>
                             <Select
-                                allowClear
                                 key={'dictCode'}
                                 defaultValue={params.dictCode}
                                 placeholder={t('DictType.namePlaceholder')}
-                                onChange={(value) => dictItemQuery['dictCode'] = value}
+                                onChange={(value) => setDictTypeCode(value)}
                                 options={dictTypeList.map(dictItem => {
                                     return {value: dictItem.dictCode, label: <span>{dictItem.dictName}</span>}
                                 })}
@@ -257,7 +258,10 @@ export const DictItem = () => {
                             />
                         </>
                     ],
-                    onSearchClick: () => updateSearchParams(dictItemQuery)
+                    onSearchClick: () => {
+                        const queryString = new URLSearchParams(dictItemQuery).toString();
+                        navigate(`/system/dict-item/${dictTypeCode}?${queryString}`);
+                    }
                 }}
             />
 

@@ -38,4 +38,9 @@ public class DictTypePageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "isEnabled", description = "启禁用状态")
     private Boolean isEnabled;
+
+    public DictTypePageQueryDTO() {
+        this.setSortColumn("display_order");
+        this.setIsAsc(true);
+    }
 }

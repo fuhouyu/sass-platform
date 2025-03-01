@@ -19,10 +19,10 @@ import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/in
 import './index.scss'
 import {InfoCircleFilled} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {useLocation} from "react-router-dom";
 
 /**
  * 处理_转换为驼峰
@@ -36,9 +36,9 @@ const camelToSnake = (str: string | undefined): string | undefined => {
 const Table = <T extends object>(tableProps: TableProps<T>) => {
     const {pageApi, tableName, tableComponents} = tableProps;
     const {t} = useTranslation();
-    const {pageDataList, refreshPageList} = usePageList<T>(pageApi);
-    const location = useLocation();
+    const {pageResult, refreshPageList} = usePageList<T>(pageApi);
     const {updateSearchParams} = useRouteSearchParams();
+    const location = useLocation();
 
     useEffect(() => {
         refreshPageList().then();
@@ -93,12 +93,12 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     // style={{tableLayout: 'fixed'}}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
-                    dataSource={pageDataList?.list}
+                    dataSource={pageResult?.list}
                     pagination={{
-                        total: pageDataList?.total,
+                        total: pageResult?.total,
                         hideOnSinglePage: false,
                         showSizeChanger: true,
-                        defaultPageSize: pageDataList?.pageSize ?? 10,
+                        defaultPageSize: pageResult?.pageSize ?? 10,
                     }}
                     showSorterTooltip={{target: 'sorter-icon'}}
                 />

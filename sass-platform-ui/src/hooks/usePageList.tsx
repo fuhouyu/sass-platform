@@ -17,7 +17,7 @@
 
 import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
 import {useCallback, useState} from "react";
-import {useSearchParams} from "react-router-dom";
+import {useParams, useSearchParams} from "react-router-dom";
 
 const initPageQuery: PageQuery = {
     pageNum: 1,
@@ -26,23 +26,24 @@ const initPageQuery: PageQuery = {
 
 export function usePageList<T>(pageQueryApi: (pageQuery: PageQuery) => Promise<PageResult<T>>) {
 
-    const [pageDataList, setPageDataList] = useState<PageResult<T>>({} as PageResult<T>);
+    const [pageResult, setPageResult] = useState<PageResult<T>>({} as PageResult<T>);
     const [searchParams] = useSearchParams();
+    const params = useParams<Record<string, string>>();
 
     /**
      * 刷新页面
      */
     const refreshPageList = useCallback(async (dataCallback?: (pageData: PageResult<T>) => void) => {
         const currentParams = Object.fromEntries(searchParams.entries());
-        const mergedParams = {...initPageQuery, ...currentParams};
+        const mergedParams = {...initPageQuery, ...currentParams, ...params};
         const res = await pageQueryApi(mergedParams);
         dataCallback?.(res);
-        setPageDataList(res)
+        setPageResult(res)
     }, [pageQueryApi, searchParams]);
 
 
     return {
-        pageDataList,
+        pageResult,
         refreshPageList
     }
 }
