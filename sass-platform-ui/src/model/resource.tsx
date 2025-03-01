@@ -15,6 +15,8 @@
  */
 
 
+import {BaseModel} from "@/model/base.tsx";
+
 export interface StsTemporaryTokenRequest {
 
     /**
@@ -73,7 +75,7 @@ export interface StsTemporaryTokenResponse {
 }
 
 
-export interface Resource {
+export interface Resource extends BaseModel {
 
     /**
      * id

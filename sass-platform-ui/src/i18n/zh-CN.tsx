@@ -41,8 +41,6 @@ const ZhCN = {
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
         updateAvatar: '更新头像',
-        uploadFile: '上传文件',
-        uploadFolder: '上传文件夹',
     },
     // button
     Button: {
@@ -289,10 +287,14 @@ const ZhCN = {
     // 资源
     Resource: {
         list: '资源列表',
+        info: '资源详情',
         name: '文件名',
         size: '文件大小',
         type: '文件类型',
-        preview: '预览'
+        preview: '预览',
+        download: '下载',
+        uploadFile: '上传文件',
+        uploadFolder: '上传文件夹',
     }
 }
 

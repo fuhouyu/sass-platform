@@ -23,11 +23,11 @@ import {TableProps} from "@components/List/table/interface";
 /**
  * 分页属性
  */
-export interface PageListProps {
+export interface PageListProps<T> {
     /**
      * table 属性
      */
-    tableProps: TableProps;
+    tableProps: TableProps<T>;
     /**
      * 头搜索组件
      */

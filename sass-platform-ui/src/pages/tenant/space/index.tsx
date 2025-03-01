@@ -21,8 +21,11 @@ import {
     BreadcrumbProps,
     Button,
     Card,
+    Divider,
+    Drawer,
     Dropdown,
     Flex,
+    List,
     MenuProps,
     Popconfirm,
     Space,
@@ -32,15 +35,15 @@ import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user.tsx";
 import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
-import {FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
+import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {Resource} from "@/model/resource.tsx";
 
 
 const TenantSpace: React.FC = () => {
@@ -53,7 +56,7 @@ const TenantSpace: React.FC = () => {
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
 
 
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<Resource> = [
         {
             title: t('Resource.name'),
             dataIndex: 'name',
@@ -134,21 +137,21 @@ const TenantSpace: React.FC = () => {
                 return <span>{record.updateBy}</span>
             }
         },
-        {
-            title: t('Common.action'),
-            dataIndex: 'action',
-            align: "center",
-            render: (_, record) => {
-                if (record.isDirectory) {
-                    return
-                }
-                return <Button
-                    onClick={() => setPicViewUrl(previewUrl(record.id))}
-                    icon={<IconFont type="i-yulan"/>}>
-                    {t('Resource.preview')}
-                </Button>
-            }
-        }
+        // {
+        //     title: t('Common.action'),
+        //     dataIndex: 'action',
+        //     align: "center",
+        //     render: (_, record) => {
+        //         if (record.isDirectory) {
+        //             return
+        //         }
+        //         return <Button
+        //             onClick={() => setPicViewUrl(previewUrl(record.id))}
+        //             icon={<IconFont type="i-yulan"/>}>
+        //             {t('Resource.preview')}
+        //         </Button>
+        //     }
+        // }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
@@ -216,11 +219,22 @@ const TenantSpace: React.FC = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Userinfo> = {
+    const rowSelection: TableRowSelection<Resource> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
+    const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
+    const [selectFile, setSelectFile] = useState<Resource>();
+    const onTableRowClick = (record: Resource) => {
+        if (record.isDirectory) {
+            breadcrumbClick(record.objectKey)
+            return
+        }
+        setShowFileDetail(true);
+        setSelectFile(record);
+    }
+
 
     const uploadButtonItems: MenuProps = {
         items: [
@@ -234,7 +248,7 @@ const TenantSpace: React.FC = () => {
                         }
                         }
                     >
-                        {t('Common.uploadFile')}
+                        {t('Resource.uploadFile')}
                     </S3Upload>
                 ),
                 key: 'upload-file',
@@ -251,7 +265,7 @@ const TenantSpace: React.FC = () => {
                         }
                         }
                     >
-                        {t('Common.uploadFolder')}
+                        {t('Resource.uploadFolder')}
                     </S3Upload>
                 ),
                 key: 'upload-folder',
@@ -259,6 +273,15 @@ const TenantSpace: React.FC = () => {
             }
         ]
     }
+
+    const fileActions = [
+        {icon: <DownloadOutlined/>, text: t('Resource.download')},
+        {
+            icon: <EyeOutlined/>,
+            text: t('Resource.preview'),
+            onClick: () => selectFile && setPicViewUrl(previewUrl(selectFile.id))
+        },
+    ];
 
     return (<>
         <Card>
@@ -288,14 +311,17 @@ const TenantSpace: React.FC = () => {
                         <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
                     </Popconfirm>
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
-                        {t('Common.uploadFile')}
+                        {t('Resource.uploadFile')}
                     </Dropdown.Button>
                 </Flex>
             </div>
 
             <div className={'tenant-space-content'}>
-                <PageList
+                <PageList<Resource>
                     tableProps={{
+                        onRow: (record) => ({
+                            onClick: () => onTableRowClick(record),
+                        }),
                         columns: columns,
                         pageApi: resourceApi.pageInfoListApi,
                         rowSelection: rowSelection,
@@ -311,6 +337,42 @@ const TenantSpace: React.FC = () => {
                         ]
                     }}
                 />
+                <Drawer
+                    title={selectFile?.name}
+                    placement="right"
+                    closable={false}
+                    onClose={() => setShowFileDetail(false)}
+                    open={showFileDetail}
+                >
+                    <List
+                        className={'file-actions-list'}
+                        header={<span><strong>Actions: </strong></span>}
+                        bordered
+                        dataSource={fileActions}
+                        renderItem={(item) => (
+                            <List.Item onClick={item.onClick}>
+                                {item.icon} {item.text}
+                            </List.Item>
+                        )}
+                    />
+                    <h3>{t('Resource.info')}</h3>
+                    <Divider/>
+                    <div className={'file-detail-container'}>
+                        <strong>{t('Resource.name')}: </strong>
+                        <br/>
+                        <span>{selectFile?.name}</span>
+                    </div>
+                    <div className={'file-detail-container'}>
+                        <strong>{t('Resource.size')}: </strong>
+                        <br/>
+                        <span>{selectFile?.size}</span>
+                    </div>
+                    <div className={'file-detail-container'}>
+                        <strong>Etag: </strong>
+                        <br/>
+                        <span>{selectFile?.eTag}</span>
+                    </div>
+                </Drawer>
             </div>
         </Card>
 
@@ -327,6 +389,7 @@ const TenantSpace: React.FC = () => {
                 </div>
             )}
         </div>
+
     </>)
 }
 

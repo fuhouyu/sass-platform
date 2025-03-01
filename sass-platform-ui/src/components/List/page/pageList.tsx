@@ -20,14 +20,14 @@ import {PageListProps} from "@components/List/page/interface";
 import SearchHeader from "@components/List/header/searchHeader";
 import Table from "@components/List/table/table";
 
-const PageList = (props: PageListProps) => {
+const PageList = <T extends object>(props: PageListProps<T>) => {
     const {headerSearchProps, tableProps} = props
 
     return (
         <>
             {headerSearchProps && <SearchHeader
                 {...headerSearchProps}/>}
-            <Table
+            <Table<T>
                 {...tableProps}/>
         </>
     );
