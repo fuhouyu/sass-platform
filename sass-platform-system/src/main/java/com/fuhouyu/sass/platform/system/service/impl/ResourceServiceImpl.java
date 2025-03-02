@@ -42,6 +42,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -57,6 +58,8 @@ import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -178,22 +181,30 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void previewResource(Long id, HttpServletRequest request, HttpServletResponse response) {
+    public void downloadFile(Long id,
+                             boolean isPreview,
+                             HttpServletRequest request, HttpServletResponse response) {
         Resources resources = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
         ResponseInputStream<GetObjectResponse> responseInputStream = this.s3Client.getObject(builder ->
                 builder.bucket(tenantSpaceDTO.getBucketName()).key(resources.getObjectKey()));
+        if (isPreview) {
+            response.setHeader(HttpHeaders.CONTENT_TYPE, responseInputStream.response().contentType());
+        } else {
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+        }
         try {
             this.doFileDownload(request, response, responseInputStream);
-            LoggerUtil.info(log, "资源下载成功: bucket={}, key={}, range={}-{}, size={}",
+            LoggerUtil.info(log, "资源预览成功: bucket={}, key={}, range={}-{}, size={}",
                     tenantSpaceDTO.getBucketName(),
                     resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
         } catch (IOException e) {
             // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
-            LoggerUtil.error(log, "资源下载失败: bucket={}, key={}", tenantSpaceDTO.getBucketName(), resources.getObjectKey(), e);
+            LoggerUtil.error(log, "资源预览失败: bucket={}, key={}", tenantSpaceDTO.getBucketName(), resources.getObjectKey(), e);
         }
     }
-
 
     @Override
     public StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO) {
@@ -227,6 +238,7 @@ public class ResourceServiceImpl implements ResourceService {
     public ResourceDTO findResourceByEtag(String etag) {
         return RESOURCES_ASSEMBLER.toDTO(this.resourceMapper.queryByEtag(etag));
     }
+
 
     /**
      * 检查资源权限
@@ -287,7 +299,6 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private void setHttpResponseHeader(GetObjectResponse objectResponse,
                                        HttpServletResponse response) {
-        response.setHeader(HttpHeaders.CONTENT_TYPE, objectResponse.contentType());
         response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(objectResponse.contentLength()));
         response.setHeader(HttpHeaders.CACHE_CONTROL, objectResponse.cacheControl());
         response.setHeader(HttpHeaders.EXPIRES, objectResponse.expiresString());

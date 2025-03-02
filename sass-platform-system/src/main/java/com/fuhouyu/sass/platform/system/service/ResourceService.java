@@ -35,12 +35,14 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 预览资源
      *
      * @param id       资源id
+     * @param isPreview 是否为预览
      * @param request  请求对象
      * @param response 响应对象
      */
-    void previewResource(Long id,
-                         HttpServletRequest request,
-                         HttpServletResponse response);
+    void downloadFile(Long id,
+                      boolean isPreview,
+                      HttpServletRequest request,
+                      HttpServletResponse response);
 
     /**
      * 生成sts临时token
@@ -56,4 +58,5 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @return 资源对象
      */
     ResourceDTO findResourceByEtag(String etag);
+
 }

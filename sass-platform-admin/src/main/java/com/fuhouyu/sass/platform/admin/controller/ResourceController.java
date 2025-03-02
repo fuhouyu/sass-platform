@@ -79,10 +79,27 @@ public class ResourceController {
     @GetMapping("/preview/{id}")
     @Operation(summary = "读取资源文件")
     @NoAuth
-    public void readFile(@PathVariable("id") Long id,
+    public void preview(@PathVariable("id") Long id,
                          HttpServletRequest request,
                          HttpServletResponse response) {
-        this.resourceService.previewResource(id, request, response);
+        this.resourceService.downloadFile(id, true, request, response);
+    }
+
+
+    /**
+     * 下载文件
+     *
+     * @param id       资源id
+     * @param request  请求
+     * @param response 响应
+     */
+    @GetMapping("/download/{id}")
+    @Operation(summary = "下载资源文件")
+    @NoAuth
+    public void downloadFile(@PathVariable("id") Long id,
+                             HttpServletRequest request,
+                             HttpServletResponse response) {
+        this.resourceService.downloadFile(id, false, request, response);
     }
 
     /**
