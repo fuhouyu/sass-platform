@@ -23,6 +23,11 @@ export interface ResourceViewProps {
     id: string;
 
     /**
+     * mimeType
+     */
+    mimeType: string;
+
+    /**
      * 资源类型
      */
     type: string;

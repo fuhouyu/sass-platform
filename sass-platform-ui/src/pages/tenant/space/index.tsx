@@ -202,7 +202,6 @@ const TenantSpace: React.FC = () => {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
-    const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<Resource>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
@@ -215,6 +214,13 @@ const TenantSpace: React.FC = () => {
         setSelectFile(record);
     }
 
+    /**
+     * 查询资源
+     */
+    const queryResource = useCallback(async () => {
+        await refreshPageList();
+    }, [refreshPageList]);
+
 
     const uploadButtonItems: MenuProps = {
         items: [
@@ -224,7 +230,7 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: async () => await refreshPageList(),
+                            onUploadSuccess: queryResource,
                         }
                         }
                     >
@@ -241,7 +247,7 @@ const TenantSpace: React.FC = () => {
                             directory: true,
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: async () => await refreshPageList(),
+                            onUploadSuccess: queryResource,
                         }
                         }
                     >
@@ -358,6 +364,7 @@ const TenantSpace: React.FC = () => {
 
         <Modal
             className={'preview-modal'}
+            destroyOnClose
             open={previewModal}
             footer={null}
             width={'100%'}
@@ -365,6 +372,7 @@ const TenantSpace: React.FC = () => {
             onCancel={() => setPreviewModal(false)}
         >
             <ResourceView
+                mimeType={selectFile?.mimeType ?? ''}
                 id={selectFile?.id ?? ''}
                 type={parseResourceType(selectFile?.mimeType ?? '').type}
                 mode={'VIEW'}/>

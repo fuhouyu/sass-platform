@@ -202,7 +202,6 @@ public class ResourceServiceImpl implements ResourceService {
                     resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
         } catch (IOException e) {
             // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
-            LoggerUtil.error(log, "资源预览失败: bucket={}, key={}", tenantSpaceDTO.getBucketName(), resources.getObjectKey(), e);
         }
     }
 
@@ -309,7 +308,6 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private void setHttpResponseHeader(GetObjectResponse objectResponse,
                                        HttpServletResponse response) {
-        response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(objectResponse.contentLength()));
         response.setHeader(HttpHeaders.CACHE_CONTROL, objectResponse.cacheControl());
         response.setHeader(HttpHeaders.EXPIRES, objectResponse.expiresString());
         response.setHeader(HttpHeaders.ETAG, objectResponse.eTag());
@@ -421,21 +419,20 @@ public class ResourceServiceImpl implements ResourceService {
                                 ResponseInputStream<GetObjectResponse> responseResponseInputStream) throws IOException {
         long fileSize = responseResponseInputStream.response().contentLength();
         long[] ranges = this.parseRequestRanges(request, response, fileSize);
+        setHttpResponseHeader(responseResponseInputStream.response(), response);
+        response.setContentLengthLong(fileSize);
+        long start = ranges[0];
+        long end = ranges[1];
         try (ServletOutputStream outputStream = response.getOutputStream();
              responseResponseInputStream) {
-            long start = ranges[0];
-            long end = ranges[1];
+            response.setHeader(HttpHeaders.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, fileSize));
             // 确保范围有效
             if (start < 0 || end >= fileSize || start > end) {
                 response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                 // 告诉客户端有效的范围
-                response.setHeader("Content-Range", "bytes */" + fileSize);
                 LoggerUtil.error(log, "无效的 Range 请求 start: {} end: {} ", start, end);
                 return;
             }
-            setHttpResponseHeader(responseResponseInputStream.response(), response);
-            long contentLength = end - start + 1;
-            response.setContentLength((int) contentLength);
             long ignored = responseResponseInputStream.skip(start);
             byte[] buffer = new byte[8192];
             int bytesRead;

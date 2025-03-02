@@ -38,7 +38,7 @@ export function usePageList<T>(pageQueryApi: (pageQuery: PageQuery) => Promise<P
         const mergedParams = {...initPageQuery, ...currentParams, ...params};
         const res = await pageQueryApi(mergedParams);
         dataCallback?.(res);
-        setPageResult(res)
+        setPageResult({...res})
     }, [pageQueryApi, searchParams]);
 
 

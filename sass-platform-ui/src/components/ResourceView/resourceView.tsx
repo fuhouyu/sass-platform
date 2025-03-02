@@ -20,6 +20,7 @@ import {OfficeView} from "@components/ResourceView/officeView.tsx";
 import {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {ImageView} from "@components/ResourceView/ImageView.tsx";
 import "./index.scss"
+import VideoView from "./videoView";
 
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
@@ -29,6 +30,8 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
             return <OfficeView {...resourceView}/>;
         case ResourceTypeEnum.IMAGE:
             return <ImageView {...resourceView}/>
+        case ResourceTypeEnum.VIDEO:
+            return <VideoView {...resourceView}/>
         default:
             return <div>未知类型</div>
     }
