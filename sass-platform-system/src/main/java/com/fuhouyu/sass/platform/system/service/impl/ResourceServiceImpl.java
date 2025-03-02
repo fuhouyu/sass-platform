@@ -240,6 +240,16 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
 
+    @Override
+    public ResourceDTO checkResourceExists(Long id) {
+        Resources resources = this.resourceMapper.queryById(id);
+        if (Objects.isNull(resources)) {
+            LoggerUtil.warn(log, "资源不存在或不属于当前租户, id: {}", id);
+            throw new ServiceException(ResponseStatusEnum.NOT_FOUND);
+        }
+        return RESOURCES_ASSEMBLER.toDTO(resources);
+    }
+
     /**
      * 检查资源权限
      *

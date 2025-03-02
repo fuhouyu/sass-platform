@@ -66,6 +66,10 @@
             <groupId>com.fuhouyu</groupId>
             <artifactId>base-framework-s3-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.onlyoffice</groupId>
+            <artifactId>docs-integration-sdk</artifactId>
+        </dependency>
     </dependencies>
 
 

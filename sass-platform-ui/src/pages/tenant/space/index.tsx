@@ -27,6 +27,7 @@ import {
     Flex,
     List,
     MenuProps,
+    Modal,
     Popconfirm,
     Space,
     TableColumnsType
@@ -35,7 +36,6 @@ import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
 import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -44,6 +44,8 @@ import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
+import {ResourceView} from "@components/ResourceView/resourceView.tsx";
+import useResourceType from "@/hooks/useResourceType.tsx";
 
 
 const TenantSpace: React.FC = () => {
@@ -52,7 +54,7 @@ const TenantSpace: React.FC = () => {
 
     const {pageResult, refreshPageList} = usePageList(resourceApi.pageInfoListApi);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
-    const {previewUrl} = useResourcePreview();
+    const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
 
 
@@ -72,17 +74,9 @@ const TenantSpace: React.FC = () => {
                         </Space>
                     </Button>
                 }
-                let type = 'i-weizhi';
-                switch (record.mimeType) {
-                    case 'image/jpeg':
-                        type = 'i-tupian';
-                        break;
-                    case 'application/zip':
-                        type = 'i-zip';
-                        break;
-                }
+                const resource = parseResourceType(record.mimeType);
                 return <Space size={4}>
-                    <IconFont type={type}/>
+                    {resource.icon}
                     {record.name}
                 </Space>
             }
@@ -137,21 +131,6 @@ const TenantSpace: React.FC = () => {
                 return <span>{record.updateBy}</span>
             }
         },
-        // {
-        //     title: t('Common.action'),
-        //     dataIndex: 'action',
-        //     align: "center",
-        //     render: (_, record) => {
-        //         if (record.isDirectory) {
-        //             return
-        //         }
-        //         return <Button
-        //             onClick={() => setPicViewUrl(previewUrl(record.id))}
-        //             icon={<IconFont type="i-yulan"/>}>
-        //             {t('Resource.preview')}
-        //         </Button>
-        //     }
-        // }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
@@ -226,6 +205,7 @@ const TenantSpace: React.FC = () => {
     const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<Resource>();
+    const [previewModal, setPreviewModal] = useState<boolean>(false);
     const onTableRowClick = (record: Resource) => {
         if (record.isDirectory) {
             breadcrumbClick(record.objectKey)
@@ -279,7 +259,7 @@ const TenantSpace: React.FC = () => {
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
-            onClick: () => selectFile && setPicViewUrl(previewUrl(selectFile.id))
+            onClick: () => selectFile && setPreviewModal(true),
         },
     ];
 
@@ -376,19 +356,19 @@ const TenantSpace: React.FC = () => {
             </div>
         </Card>
 
-        <div>
-            {picViewUrl && (
-                <div className={'preview-img-container'}
-                     onClick={() => setPicViewUrl(undefined)}
-                >
-                    <img
-                        className={'preview-img'}
-                        src={picViewUrl}
-                        alt="预览图片"
-                    />
-                </div>
-            )}
-        </div>
+        <Modal
+            className={'preview-modal'}
+            open={previewModal}
+            footer={null}
+            width={'100%'}
+            closable
+            onCancel={() => setPreviewModal(false)}
+        >
+            <ResourceView
+                id={selectFile?.id ?? ''}
+                type={parseResourceType(selectFile?.mimeType ?? '').type}
+                mode={'VIEW'}/>
+        </Modal>
 
     </>)
 }
