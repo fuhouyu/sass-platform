@@ -39,7 +39,7 @@ interface MenuItem extends MenuItemType {
 export const UserProfile: React.FC = () => {
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
-    const {previewUrl} = useResourceAction();
+    const {preview} = useResourceAction();
     const menuItems: MenuItem[] = [
         {
             key: 'profile',
@@ -90,7 +90,7 @@ export const UserProfile: React.FC = () => {
                         <Tooltip title={t('User.updateAvatar')}>
                             <Avatar
                                 size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                                src={previewUrl(userinfo.avatar)}
+                                src={preview(userinfo.avatar)}
                                 className="avatar"
                             />
                         </Tooltip>
