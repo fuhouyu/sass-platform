@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import {ResourceViewProps} from "@components/ResourceView/interface.tsx";
-import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
-
-export const ImageView = (resourceProps: ResourceViewProps) => {
-    const {previewUrl} = useResourcePreview();
+export const ImageView = ({viewUrl}: { viewUrl?: string }) => {
     return (<img
         width={'100%'}
         className={'resource-preview'}
-        src={previewUrl(resourceProps.id)}
+        src={viewUrl}
         alt="Preview Image"
     />)
 }

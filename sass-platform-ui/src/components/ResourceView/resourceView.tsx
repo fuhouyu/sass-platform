@@ -18,21 +18,34 @@ import React from "react"
 import {ResourceViewProps} from "./interface"
 import {OfficeView} from "@components/ResourceView/officeView.tsx";
 import {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
-import {ImageView} from "@components/ResourceView/ImageView.tsx";
+import {ImageView} from "@components/ResourceView/imageView.tsx";
 import "./index.scss"
 import VideoView from "./videoView";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {useTranslation} from "react-i18next";
 
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
-
+    const {preview} = useResourceAction();
+    const {t} = useTranslation();
+    const viewUrl = preview(resourceView.id);
     switch (resourceView.type) {
         case ResourceTypeEnum.OFFICE:
             return <OfficeView {...resourceView}/>;
         case ResourceTypeEnum.IMAGE:
-            return <ImageView {...resourceView}/>
+            return <ImageView viewUrl={viewUrl}/>
         case ResourceTypeEnum.VIDEO:
-            return <VideoView {...resourceView}/>
+            return <VideoView options={{
+                autoplay: true,
+                controls: true,
+                sources: [
+                    {
+                        src: viewUrl,
+                        type: 'video/mp4'
+                    }
+                ]
+            }}/>
         default:
-            return <div>未知类型</div>
+            return <div>{t('Resource.unknownType')}</div>
     }
 }

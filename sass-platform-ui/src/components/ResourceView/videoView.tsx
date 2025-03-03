@@ -17,45 +17,41 @@
 import React, {useEffect, useRef} from "react";
 import videojs from "video.js";
 import Player from "video.js/dist/types/player";
-import {ResourceViewProps} from "@components/ResourceView/interface.tsx";
-import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
+import {AnyObject} from "antd/es/_util/type";
+import 'video.js/dist/video-js.css';
+import './index.scss';
+import {Flex} from "antd";
 
 
-const VideoView: React.FC<ResourceViewProps> = (resourceViewProps: ResourceViewProps) => {
+const VideoView = ({options}: { options: AnyObject }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<Player | null>(null); // 明确类型为 Player | null
-    const {previewUrl} = useResourcePreview();
 
     useEffect(() => {
-        const playerUrl = previewUrl(resourceViewProps.id);
-        console.log(resourceViewProps)
-        if (videoRef.current) {
-            // 初始化 Video.js 播放器
-            playerRef.current = videojs(videoRef.current, {
-                autoplay: true,
-                controls: true,
-                sources: [{
-                    src: playerUrl,
-                    type: 'video/mp4',
-                }],
-            });
-        }
+        if (!playerRef.current) {
+            const videoElement = document.createElement("video-js");
 
-        // 组件卸载时销毁播放器
-        return () => {
-            if (playerRef.current) {
-                playerRef.current.dispose();
-            }
-        };
-    }, []);
+            videoElement.classList.add('vjs-big-play-centered');
+            videoRef?.current?.appendChild(videoElement);
+
+            playerRef.current = videojs(videoElement, options, () => {
+                videojs.log('player is ready');
+            });
+
+        } else {
+            const player = playerRef.current;
+            player.autoplay(options.autoplay);
+            player.src(options.sources);
+        }
+    }, [options]);
 
     return (
-        <div>
-            <h1>React Video.js Example</h1>
-            <div data-vjs-player="">
-                <video ref={videoRef} className="video-js vjs-big-play-centered"/>
-            </div>
-        </div>
+        <Flex justify={"center"} align={"center"} className={'video-view'}>
+            <video
+                ref={videoRef}
+                className=" video-js  video-view vjs-big-play-centered"
+            />
+        </Flex>
     );
 };
 

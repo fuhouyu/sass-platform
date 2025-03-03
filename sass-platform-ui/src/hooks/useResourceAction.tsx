@@ -16,13 +16,21 @@
 
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
-export function useResourcePreview() {
+export function useResourceAction() {
 
-    const previewUrl = (resourceId?: string): string | undefined => {
+    const preview = (resourceId?: string): string | undefined => {
         if (resourceId) {
             return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${resourceId}`
         }
         return undefined;
     }
-    return {previewUrl}
+
+    const download = (resourceId?: string): string => {
+        if (resourceId) {
+            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/download/${resourceId}`
+        }
+        return "#";
+    }
+
+    return {preview, download}
 }

@@ -46,6 +46,7 @@ import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import useResourceType from "@/hooks/useResourceType.tsx";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 
 const TenantSpace: React.FC = () => {
@@ -56,6 +57,7 @@ const TenantSpace: React.FC = () => {
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const {download} = useResourceAction();
 
 
     const columns: TableColumnsType<Resource> = [
@@ -261,7 +263,10 @@ const TenantSpace: React.FC = () => {
     }
 
     const fileActions = [
-        {icon: <DownloadOutlined/>, text: t('Resource.download')},
+        {
+            icon: <DownloadOutlined/>, text: t('Resource.download'),
+            onClick: () => selectFile && window.open(download(selectFile.id))
+        },
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
@@ -277,7 +282,7 @@ const TenantSpace: React.FC = () => {
                     <Flex vertical justify={'center'} className={'space-bucket-info'}>
                         <h2>{tenantSpace?.bucketName}</h2>
                         <Space size={24}>
-                            <span>创建时间：<strong>{tenantSpace?.createAt}</strong></span>
+                            <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
                             <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {pageResult?.total} Objects</span>
                         </Space>

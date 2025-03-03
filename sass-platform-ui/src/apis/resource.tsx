@@ -41,6 +41,7 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      */
     getResourceByEtag: (etag: string) => Promise<Resource> = (etag: string): Promise<Resource> => request.get(`${this.baseUrl}`, {params: {etag}})
 
+    downloadFile: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/download/${id}`)
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);
