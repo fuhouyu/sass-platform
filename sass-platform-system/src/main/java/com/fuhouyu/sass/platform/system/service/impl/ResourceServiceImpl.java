@@ -86,6 +86,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final String TMP_DIR = "tmp/";
 
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+
     private final S3Client s3Client;
 
     private final SnowflakeIdWorker snowflake;
@@ -186,8 +188,17 @@ public class ResourceServiceImpl implements ResourceService {
                              HttpServletRequest request, HttpServletResponse response) {
         Resources resources = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
-        ResponseInputStream<GetObjectResponse> responseInputStream = this.s3Client.getObject(builder ->
-                builder.bucket(tenantSpaceDTO.getBucketName()).key(resources.getObjectKey()));
+        String rangeHeader = request.getHeader(HttpHeaders.RANGE);
+        int status = Objects.isNull(rangeHeader) ?
+                HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
+        response.setStatus(status);
+        ResponseInputStream<GetObjectResponse> responseInputStream = this.s3Client.getObject(builder -> {
+            builder.bucket(tenantSpaceDTO.getBucketName())
+                    .key(resources.getObjectKey());
+            if (Objects.nonNull(rangeHeader)) {
+                builder.range(rangeHeader);
+            }
+        });
         if (isPreview) {
             response.setHeader(HttpHeaders.CONTENT_TYPE, responseInputStream.response().contentType());
         } else {
@@ -197,9 +208,9 @@ public class ResourceServiceImpl implements ResourceService {
         }
         try {
             this.doFileDownload(request, response, responseInputStream);
-            LoggerUtil.info(log, "资源预览成功: bucket={}, key={}, range={}-{}, size={}",
-                    tenantSpaceDTO.getBucketName(),
-                    resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
+//            LoggerUtil.info(log, "资源预览成功: bucket={}, key={}, range={}-{}, size={}",
+//                    tenantSpaceDTO.getBucketName(),
+//                    resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
         } catch (IOException e) {
             // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
         }
@@ -308,6 +319,8 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private void setHttpResponseHeader(GetObjectResponse objectResponse,
                                        HttpServletResponse response) {
+        response.setContentLengthLong(objectResponse.contentLength());
+        response.setHeader(HttpHeaders.CONTENT_RANGE, objectResponse.contentRange());
         response.setHeader(HttpHeaders.CACHE_CONTROL, objectResponse.cacheControl());
         response.setHeader(HttpHeaders.EXPIRES, objectResponse.expiresString());
         response.setHeader(HttpHeaders.ETAG, objectResponse.eTag());
@@ -383,28 +396,6 @@ public class ResourceServiceImpl implements ResourceService {
         return BinaryUtils.toBase64(md5Hash);
     }
 
-    /**
-     * 解析请求中的ranges，并设置响应头
-     *
-     * @param request  请求
-     * @param fileSize 文件大小
-     * @param response 响应
-     * @return ranges
-     */
-    private long[] parseRequestRanges(HttpServletRequest request,
-                                      HttpServletResponse response,
-                                      long fileSize) {
-        String rangeHeader = request.getHeader(HttpHeaders.RANGE);
-        if (Objects.isNull(rangeHeader)) {
-            return new long[]{0, fileSize - 1};
-        }
-        String[] range = rangeHeader.substring("bytes=".length()).split("-");
-        long rangeStart = Long.parseLong(range[0]);
-        long rangeEnd = range.length > 1 ? Long.parseLong(range[1]) : fileSize - 1;
-        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-        return new long[]{rangeStart, rangeEnd};
-    }
-
 
     /**
      * 文件下载
@@ -417,24 +408,10 @@ public class ResourceServiceImpl implements ResourceService {
     private void doFileDownload(HttpServletRequest request,
                                 HttpServletResponse response,
                                 ResponseInputStream<GetObjectResponse> responseResponseInputStream) throws IOException {
-        long fileSize = responseResponseInputStream.response().contentLength();
-        long[] ranges = this.parseRequestRanges(request, response, fileSize);
         setHttpResponseHeader(responseResponseInputStream.response(), response);
-        response.setContentLengthLong(fileSize);
-        long start = ranges[0];
-        long end = ranges[1];
         try (ServletOutputStream outputStream = response.getOutputStream();
              responseResponseInputStream) {
-            response.setHeader(HttpHeaders.CONTENT_RANGE, String.format("bytes %s-%s/%s", start, end, fileSize));
-            // 确保范围有效
-            if (start < 0 || end >= fileSize || start > end) {
-                response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-                // 告诉客户端有效的范围
-                LoggerUtil.error(log, "无效的 Range 请求 start: {} end: {} ", start, end);
-                return;
-            }
-            long ignored = responseResponseInputStream.skip(start);
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int bytesRead;
             while ((bytesRead = responseResponseInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
