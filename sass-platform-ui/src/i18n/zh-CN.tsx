@@ -295,6 +295,8 @@ const ZhCN = {
         download: '下载',
         uploadFile: '上传文件',
         uploadFolder: '上传文件夹',
+        unknownType: '未知类型',
+
     }
 }
 

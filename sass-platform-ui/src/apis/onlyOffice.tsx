@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
+import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {OnlyOffice as OnlyOfficeModal} from '@/model/office.tsx'
 
-export function useResourcePreview() {
+class OnlyOffice {
+    private readonly _baseUrl: string;
 
-    const previewUrl = (resourceId?: string): string | undefined => {
-        if (resourceId) {
-            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${resourceId}`
-        }
-        return undefined;
+    constructor(baseUrl: string) {
+        this._baseUrl = baseUrl;
     }
-    return {previewUrl}
+
+    /**
+     * office 视图
+     * @param id 主键id
+     * @param mode mode
+     */
+    view: ({id, mode}: { id: string, mode: 'VIEW' | 'EDIT' }) => Promise<OnlyOfficeModal> = ({id, mode}: {
+        id: string,
+        mode: 'VIEW' | 'EDIT'
+    }): Promise<OnlyOfficeModal> =>
+        request.get(`${this._baseUrl}/${id}`, {params: {mode}});
+
 }
+
+export const onlyOfficeApi: OnlyOffice = new OnlyOffice(BaseApiUrlConstant.OFFICE_API_URL);

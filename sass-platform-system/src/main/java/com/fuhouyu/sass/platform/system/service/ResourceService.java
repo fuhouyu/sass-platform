@@ -59,4 +59,12 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      */
     ResourceDTO findResourceByEtag(String etag);
 
+    /**
+     * 查询当前的资源是否存在，不存在抛出异常
+     *
+     * @param id 主键id
+     * @return 资源对象
+     */
+    ResourceDTO checkResourceExists(Long id);
+
 }

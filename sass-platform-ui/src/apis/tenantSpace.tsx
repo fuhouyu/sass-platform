@@ -46,4 +46,4 @@ class TenantSpaceApi {
 }
 
 
-export const tenantSpaceApi = new TenantSpaceApi(BaseApiUrlConstant.TENANT_SPACE_PREFIX);
+export const tenantSpaceApi = new TenantSpaceApi(BaseApiUrlConstant.TENANT_SPACE_API_PREFIX);

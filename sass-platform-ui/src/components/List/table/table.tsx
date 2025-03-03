@@ -22,7 +22,7 @@ import {useTranslation} from "react-i18next";
 import {useEffect} from "react";
 import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {useLocation} from "react-router-dom";
+import {useLocation, useSearchParams} from "react-router-dom";
 
 /**
  * 处理_转换为驼峰
@@ -37,7 +37,8 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     const {pageApi, tableName, tableComponents} = tableProps;
     const {t} = useTranslation();
     const {pageResult, refreshPageList} = usePageList<T>(pageApi);
-    const {updateSearchParams} = useRouteSearchParams();
+    const [searchParams] = useSearchParams();
+    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
 
     useEffect(() => {
@@ -95,6 +96,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     onChange={onChange}
                     dataSource={pageResult?.list}
                     pagination={{
+                        defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
                         total: pageResult?.total,
                         hideOnSinglePage: false,
                         showSizeChanger: true,

@@ -26,7 +26,7 @@ import Layout, {Content, Header} from "antd/es/layout/layout";
 import type {MenuItemType} from "antd/es/menu/interface";
 import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
 import {AccountsBinding} from "@/pages/profile/account/AccountsBinding.tsx";
-import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 interface MenuItem extends MenuItemType {
     element: React.ReactNode
@@ -39,7 +39,7 @@ interface MenuItem extends MenuItemType {
 export const UserProfile: React.FC = () => {
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
-    const {previewUrl} = useResourcePreview();
+    const {previewUrl} = useResourceAction();
     const menuItems: MenuItem[] = [
         {
             key: 'profile',

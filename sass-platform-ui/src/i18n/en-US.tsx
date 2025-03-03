@@ -293,6 +293,7 @@ const EnUS = {
         download: 'Download',
         uploadFile: 'Upload File',
         uploadFolder: 'Upload Folder',
+        unknownType: 'Unknow Type',
     }
 }
 

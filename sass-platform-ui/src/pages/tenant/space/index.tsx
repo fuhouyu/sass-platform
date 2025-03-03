@@ -27,6 +27,7 @@ import {
     Flex,
     List,
     MenuProps,
+    Modal,
     Popconfirm,
     Space,
     TableColumnsType
@@ -35,7 +36,6 @@ import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {useResourcePreview} from "@/hooks/useResourcePreview.tsx";
 import './index.scss'
 import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -44,6 +44,9 @@ import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
+import {ResourceView} from "@components/ResourceView/resourceView.tsx";
+import useResourceType from "@/hooks/useResourceType.tsx";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 
 const TenantSpace: React.FC = () => {
@@ -52,8 +55,9 @@ const TenantSpace: React.FC = () => {
 
     const {pageResult, refreshPageList} = usePageList(resourceApi.pageInfoListApi);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
-    const {previewUrl} = useResourcePreview();
+    const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const {download} = useResourceAction();
 
 
     const columns: TableColumnsType<Resource> = [
@@ -72,17 +76,9 @@ const TenantSpace: React.FC = () => {
                         </Space>
                     </Button>
                 }
-                let type = 'i-weizhi';
-                switch (record.mimeType) {
-                    case 'image/jpeg':
-                        type = 'i-tupian';
-                        break;
-                    case 'application/zip':
-                        type = 'i-zip';
-                        break;
-                }
+                const resource = parseResourceType(record.mimeType);
                 return <Space size={4}>
-                    <IconFont type={type}/>
+                    {resource.icon}
                     {record.name}
                 </Space>
             }
@@ -137,21 +133,6 @@ const TenantSpace: React.FC = () => {
                 return <span>{record.updateBy}</span>
             }
         },
-        // {
-        //     title: t('Common.action'),
-        //     dataIndex: 'action',
-        //     align: "center",
-        //     render: (_, record) => {
-        //         if (record.isDirectory) {
-        //             return
-        //         }
-        //         return <Button
-        //             onClick={() => setPicViewUrl(previewUrl(record.id))}
-        //             icon={<IconFont type="i-yulan"/>}>
-        //             {t('Resource.preview')}
-        //         </Button>
-        //     }
-        // }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
@@ -223,9 +204,9 @@ const TenantSpace: React.FC = () => {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
-    const [picViewUrl, setPicViewUrl] = useState<string | undefined>(undefined);
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<Resource>();
+    const [previewModal, setPreviewModal] = useState<boolean>(false);
     const onTableRowClick = (record: Resource) => {
         if (record.isDirectory) {
             breadcrumbClick(record.objectKey)
@@ -234,6 +215,13 @@ const TenantSpace: React.FC = () => {
         setShowFileDetail(true);
         setSelectFile(record);
     }
+
+    /**
+     * 查询资源
+     */
+    const queryResource = useCallback(async () => {
+        await refreshPageList();
+    }, [refreshPageList]);
 
 
     const uploadButtonItems: MenuProps = {
@@ -244,7 +232,7 @@ const TenantSpace: React.FC = () => {
                         uploadProps={{
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: async () => await refreshPageList(),
+                            onUploadSuccess: queryResource,
                         }
                         }
                     >
@@ -261,7 +249,7 @@ const TenantSpace: React.FC = () => {
                             directory: true,
                             isPublic: false,
                             prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: async () => await refreshPageList(),
+                            onUploadSuccess: queryResource,
                         }
                         }
                     >
@@ -275,11 +263,14 @@ const TenantSpace: React.FC = () => {
     }
 
     const fileActions = [
-        {icon: <DownloadOutlined/>, text: t('Resource.download')},
+        {
+            icon: <DownloadOutlined/>, text: t('Resource.download'),
+            onClick: () => selectFile && window.open(download(selectFile.id))
+        },
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
-            onClick: () => selectFile && setPicViewUrl(previewUrl(selectFile.id))
+            onClick: () => selectFile && setPreviewModal(true),
         },
     ];
 
@@ -291,7 +282,7 @@ const TenantSpace: React.FC = () => {
                     <Flex vertical justify={'center'} className={'space-bucket-info'}>
                         <h2>{tenantSpace?.bucketName}</h2>
                         <Space size={24}>
-                            <span>创建时间：<strong>{tenantSpace?.createAt}</strong></span>
+                            <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
                             <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {pageResult?.total} Objects</span>
                         </Space>
@@ -376,19 +367,21 @@ const TenantSpace: React.FC = () => {
             </div>
         </Card>
 
-        <div>
-            {picViewUrl && (
-                <div className={'preview-img-container'}
-                     onClick={() => setPicViewUrl(undefined)}
-                >
-                    <img
-                        className={'preview-img'}
-                        src={picViewUrl}
-                        alt="预览图片"
-                    />
-                </div>
-            )}
-        </div>
+        <Modal
+            className={'preview-modal'}
+            destroyOnClose
+            open={previewModal}
+            footer={null}
+            width={'100%'}
+            closable
+            onCancel={() => setPreviewModal(false)}
+        >
+            <ResourceView
+                mimeType={selectFile?.mimeType ?? ''}
+                id={selectFile?.id ?? ''}
+                type={parseResourceType(selectFile?.mimeType ?? '').type}
+                mode={'VIEW'}/>
+        </Modal>
 
     </>)
 }
