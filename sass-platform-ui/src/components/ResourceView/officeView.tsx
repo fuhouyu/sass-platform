@@ -20,6 +20,7 @@ import React, {useCallback, useEffect} from "react";
 import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
 import {OnlyOffice} from "@/model/office.tsx";
 import {useUserStore} from "@/store";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 function onLoadComponentError(errorCode: number, errorDescription: string) {
     switch (errorCode) {
@@ -40,6 +41,7 @@ function onLoadComponentError(errorCode: number, errorDescription: string) {
 export const OfficeView = (resourceView: ResourceViewProps) => {
     const userinfo = useUserStore(state => state.userinfo);
     const [officeView, setOfficeView] = React.useState<OnlyOffice>({} as OnlyOffice)
+    const {preview} = useResourceAction();
 
     const initOfficeView = useCallback(async () => {
         const onlyOffice: OnlyOffice = await onlyOfficeApi.view({...resourceView});
@@ -63,6 +65,7 @@ export const OfficeView = (resourceView: ResourceViewProps) => {
                     user: {
                         id: userinfo?.id,
                         name: userinfo?.realName,
+                        image: preview(userinfo.avatar)
                     }
                 }
             }}
