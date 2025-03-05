@@ -28,11 +28,9 @@ const VideoView = ({options}: { options: AnyObject }) => {
     const playerRef = useRef<Player | null>(null); // 明确类型为 Player | null
 
     useEffect(() => {
+        const videoElement = document.getElementById('video-js') as Element;
         if (!playerRef.current) {
-            const videoElement = document.createElement("video-js");
 
-            videoElement.classList.add('vjs-big-play-centered');
-            videoRef?.current?.appendChild(videoElement);
 
             playerRef.current = videojs(videoElement, options, () => {
                 videojs.log('player is ready');
@@ -43,11 +41,21 @@ const VideoView = ({options}: { options: AnyObject }) => {
             player.autoplay(options.autoplay);
             player.src(options.sources);
         }
+        return () => {
+
+            if (videoElement) {
+                videoElement.parentNode?.removeChild(videoElement);
+
+            }
+
+
+        }
     }, [options]);
 
     return (
         <Flex justify={"center"} align={"center"} className={'video-view'}>
             <video
+                id={'video-js'}
                 ref={videoRef}
                 className=" video-js  video-view vjs-big-play-centered"
             />
