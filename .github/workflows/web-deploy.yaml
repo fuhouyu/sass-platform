@@ -30,12 +30,15 @@ jobs:
         with:
           fetch-depth: 0
       - name: Npm build
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
         env:
           VITE_CLOUDFLARE_SITE_KEY: '${{ secrets.CLOUDFLARE_SITE_KEY }}'
           VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
         run: |
           cd sass-platform-ui
-          npm install && npm run build
+          pnpm install && pnpm run build
       - name: Scp dist File
         uses: appleboy/scp-action@v0.1.7
         with:
