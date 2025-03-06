@@ -13,6 +13,11 @@ jobs:
   publish-dist:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Sass Platform repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -24,18 +29,13 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-
-      - name: Checkout Sass Platform repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        run: cd sass-platform-ui
 
       - name: pnpm build
         env:
           VITE_CLOUDFLARE_SITE_KEY: '${{ secrets.CLOUDFLARE_SITE_KEY }}'
           VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
         run: |
-          cd sass-platform-ui
           pnpm install && pnpm run build
 
       - name: Scp dist File
