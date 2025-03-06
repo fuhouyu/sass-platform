@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-import React, {Key, useState} from "react";
+import React, {Key, useRef, useState} from "react";
 import {Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Splitter,
-    TableColumnsType,
-    Tree,
-    TreeSelect
-} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Splitter, TableColumnsType, Tree, TreeSelect} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
 import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
@@ -43,15 +31,15 @@ import TextArea from "antd/es/input/TextArea";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
-import {usePageList} from "@/hooks/usePageList";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
+import {TableRefType} from "@/components/List/table/interface";
 
 
 export const Organization = () => {
     const [treeSelectData, setTreeSelectData] = useState<OrganizationModal[]>([]);
     const {t} = useTranslation();
     const buttonPermissions = useButton(OrganizationPermissionConstant.List);
-    const {refreshPageList} = usePageList(organizationApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<OrganizationModal>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
@@ -180,7 +168,7 @@ export const Organization = () => {
         try {
             setIsModalButtonLoading(true);
             await (updateId ? organizationApi.editInfoApi(updateId, values) : organizationApi.saveInfoApi(values));
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList();
             const parentId = values.parentId;
             await onLoadData({key: parentId});
             setIsModalOpen(false);
@@ -223,6 +211,7 @@ export const Organization = () => {
                             onSearchClick={() => updateSearchParams(organizationQuery)}
                         />
                         <Table<OrganizationModal>
+                            tableRef={tableRef}
                             tableName={t('Organization.list')}
                             columns={columns}
                             rowSelection={rowSelection}
@@ -241,19 +230,25 @@ export const Organization = () => {
                                     </PermissionButton>
                                     <PermissionButton buttonPermissions={buttonPermissions}
                                                       permissionStr={OrganizationPermissionConstant.DELETE}>
-                                        <Popconfirm
-                                            title={t('Button.delete')}
-                                            description={t('Button.deleteConfirm')}
-                                            okText={t('Common.yes')}
-                                            cancelText={t('Common.no')}
-                                            onConfirm={async () => {
+                                        {/*<Popconfirm*/}
+                                        {/*    title={t('Button.delete')}*/}
+                                        {/*    description={t('Button.deleteConfirm')}*/}
+                                        {/*    okText={t('Common.yes')}*/}
+                                        {/*    cancelText={t('Common.no')}*/}
+                                        {/*    onConfirm={async () => {*/}
+                                        {/*        await organizationApi.deleteInfoApi(rowKeys as string[]).then();*/}
+                                        {/*        await tableRef?.current?.refreshPageList();*/}
+                                        {/*        await onLoadData({key: formParentOrganization.id});*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        <DeleteButton
+                                            onClick={async () => {
                                                 await organizationApi.deleteInfoApi(rowKeys as string[]).then();
-                                                await refreshPageList()
+                                                await tableRef?.current?.refreshPageList();
                                                 await onLoadData({key: formParentOrganization.id});
                                             }}
-                                        >
-                                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                        </Popconfirm>
+                                            disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        {/*</Popconfirm>*/}
                                     </PermissionButton>
                                 </>
                             ]}

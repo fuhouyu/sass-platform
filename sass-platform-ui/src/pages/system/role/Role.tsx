@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-import React, {Key, useState} from "react";
+import React, {Key, useRef, useState} from "react";
 import './index.scss'
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    TableColumnsType,
-    Tag,
-    Tooltip
-} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -42,8 +30,8 @@ import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
-import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {TableRefType} from "@/components/List/table/interface";
 
 export const Role: React.FC = () => {
     const {t} = useTranslation();
@@ -114,7 +102,7 @@ export const Role: React.FC = () => {
         }
     ];
 
-    const {refreshPageList} = usePageList(roleApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<RoleModel>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
@@ -157,7 +145,7 @@ export const Role: React.FC = () => {
         try {
             await (updateId ? roleApi.editInfoApi(updateId, role) : roleApi.saveInfoApi(role));
             message.success(t('Common.success')).then()
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
@@ -177,6 +165,7 @@ export const Role: React.FC = () => {
         <>
             <PageList
                 tableProps={{
+                    tableRef: tableRef,
                     tableName: t('Role.list'),
                     columns: columns,
                     pageApi: roleApi.pageInfoListApi,
@@ -189,18 +178,23 @@ export const Role: React.FC = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={RolePermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <Popconfirm
-                                    title={t('Button.delete')}
-                                    description={t('Button.deleteConfirm')}
-                                    okText={t('Common.yes')}
-                                    cancelText={t('Common.no')}
-                                    onConfirm={async () => {
+                                {/*<Popconfirm*/}
+                                {/*    title={t('Button.delete')}*/}
+                                {/*    description={t('Button.deleteConfirm')}*/}
+                                {/*    okText={t('Common.yes')}*/}
+                                {/*    cancelText={t('Common.no')}*/}
+                                {/*    onConfirm={async () => {*/}
+                                {/*        await roleApi.deleteInfoApi(rowKeys as string[]);*/}
+                                {/*        await tableRef?.current?.refreshPageList();*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                <DeleteButton
+                                    onClick={async () => {
                                         await roleApi.deleteInfoApi(rowKeys as string[]);
-                                        await refreshPageList();
+                                        await tableRef?.current?.refreshPageList();
                                     }}
-                                >
-                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                </Popconfirm>
+                                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                {/*</Popconfirm>*/}
                             </PermissionButton>
                         </>
                     ]

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import {Space, Table as AntdTable, TableProps as AntdTableProps} from "antd";
-import {TableProps} from "@components/List/table/interface";
+import {RefreshPageProps, TableProps} from "@components/List/table/interface";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
 import {InfoCircleFilled} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {useEffect} from "react";
-import {usePageList} from "@/hooks/usePageList.tsx";
+import {useCallback, useEffect, useImperativeHandle, useState} from "react";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {useLocation, useSearchParams} from "react-router-dom";
+import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
 
 /**
  * 处理_转换为驼峰
@@ -33,13 +33,38 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
+const initPageQuery: PageQuery = {
+    pageNum: 1,
+    pageSize: 10
+}
+
+
 const Table = <T extends object>(tableProps: TableProps<T>) => {
-    const {pageApi, tableName, tableComponents} = tableProps;
+    const {pageApi, tableName, tableRef, tableComponents} = tableProps;
     const {t} = useTranslation();
-    const {pageResult, refreshPageList} = usePageList<T>(pageApi);
+    const [pageResult, setPageResult] = useState<PageResult<T>>()
     const [searchParams] = useSearchParams();
-    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
+
+
+    /**
+     * 刷新页面
+     */
+    const refreshPageList = useCallback(async (refreshProps?: RefreshPageProps<T>) => {
+        const currentParams = Object.fromEntries(searchParams.entries());
+        const mergedParams = {...initPageQuery, ...currentParams, ...refreshProps?.pageQuery};
+        const res = await pageApi(mergedParams);
+        refreshProps?.dataCallback?.(res);
+        setPageResult({...res})
+    }, [pageApi, searchParams]);
+
+    useImperativeHandle(tableRef, () => ({
+        refreshPageList: async (refreshProps?: RefreshPageProps<T>) => {
+            await refreshPageList(refreshProps);
+        },
+        pageResult: pageResult,
+    }));
 
     useEffect(() => {
         refreshPageList().then();

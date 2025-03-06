@@ -10,7 +10,7 @@ on:
 permissions: read-all
 
 jobs:
-  ci:
+  publish-dist:
     runs-on: ubuntu-latest
     steps:
       - name: Use Node.js
@@ -30,6 +30,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Npm build
+        env:
+          VITE_CLOUDFLARE_SITE_KEY: '${{ secrets.CLOUDFLARE_SITE_KEY }}'
+          VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
         run: |
           cd sass-platform-ui
           npm install && npm run build

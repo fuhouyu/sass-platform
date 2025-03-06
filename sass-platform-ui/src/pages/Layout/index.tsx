@@ -54,12 +54,10 @@ export const LayoutMain = () => {
                         <Card title={t('Resource.uploadFile')} className={'upload-container'}>
                             {uploadFiles.map(uploadFile => {
                                 return (
-                                    <>
-                                        <div className={'upload-content'}>
+                                    <div className={'upload-content'} key={uploadFile.id}>
                                             <span className={'upload-headItem'}>{uploadFile.name}</span>
                                             <Progress percent={uploadFile.progress}/>
                                         </div>
-                                    </>
                                 )
                             })}
                         </Card>

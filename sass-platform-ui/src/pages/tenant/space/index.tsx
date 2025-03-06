@@ -15,7 +15,7 @@
  */
 
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
     Breadcrumb,
     BreadcrumbProps,
@@ -28,7 +28,6 @@ import {
     List,
     MenuProps,
     Modal,
-    Popconfirm,
     Space,
     TableColumnsType
 } from "antd";
@@ -41,19 +40,19 @@ import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutli
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
-import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import useResourceType from "@/hooks/useResourceType.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {TableRefType} from "@/components/List/table/interface";
 
 
 const TenantSpace: React.FC = () => {
 
     const {t} = useTranslation();
 
-    const {pageResult, refreshPageList} = usePageList(resourceApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<Resource>>(null);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
@@ -220,8 +219,8 @@ const TenantSpace: React.FC = () => {
      * 查询资源
      */
     const queryResource = useCallback(async () => {
-        await refreshPageList();
-    }, [refreshPageList]);
+        await tableRef?.current?.refreshPageList();
+    }, []);
 
 
     const uploadButtonItems: MenuProps = {
@@ -284,23 +283,30 @@ const TenantSpace: React.FC = () => {
                         <Space size={24}>
                             <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {pageResult?.total} Objects</span>
+                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB -
+                                {tableRef?.current?.pageResult?.total} Objects
+                            </span>
                         </Space>
                     </Flex>
                 </Flex>
                 <Flex gap={8}>
-                    <Popconfirm
-                        title={t('Button.delete')}
-                        description={t('Button.deleteConfirm')}
-                        okText={t('Common.yes')}
-                        cancelText={t('Common.no')}
-                        onConfirm={async () => {
+                    {/*<Popconfirm*/}
+                    {/*    title={t('Button.delete')}*/}
+                    {/*    description={t('Button.deleteConfirm')}*/}
+                    {/*    okText={t('Common.yes')}*/}
+                    {/*    cancelText={t('Common.no')}*/}
+                    {/*    onConfirm={async () => {*/}
+                    {/*        await resourceApi.deleteInfoApi(rowKeys as string[]);*/}
+                    {/*        await tableRef?.current?.refreshPageList();*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    <DeleteButton
+                        onClick={async () => {
                             await resourceApi.deleteInfoApi(rowKeys as string[]);
-                            await refreshPageList();
+                            await tableRef?.current?.refreshPageList();
                         }}
-                    >
-                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                    </Popconfirm>
+                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                    {/*</Popconfirm>*/}
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
                         {t('Resource.uploadFile')}
                     </Dropdown.Button>
@@ -310,6 +316,7 @@ const TenantSpace: React.FC = () => {
             <div className={'tenant-space-content'}>
                 <PageList<Resource>
                     tableProps={{
+                        tableRef: tableRef,
                         onRow: (record) => ({
                             onClick: () => onTableRowClick(record),
                         }),

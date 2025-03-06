@@ -291,6 +291,8 @@ const EnUS = {
         type: 'File Type',
         preview: 'Preview',
         download: 'Download',
+        uploadSuccess: 'Upload Success',
+        uploadError: 'Upload Error',
         uploadFile: 'Upload File',
         uploadFolder: 'Upload Folder',
         unknownType: 'Unknow Type',

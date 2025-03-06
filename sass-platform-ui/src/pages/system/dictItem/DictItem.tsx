@@ -17,21 +17,9 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictItem as DictItemModel} from "@/model/dictItem";
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    TableColumnsType,
-    Tag,
-    Tooltip
-} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
@@ -42,9 +30,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
-import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {dictTypeApi} from '@/apis/dictType';
+import {TableRefType} from '@/components/List/table/interface';
 
 /**
  * 字典项
@@ -123,8 +111,8 @@ export const DictItem = () => {
     const params = useParams();
     const navigate = useNavigate();
     const [dictTypeCode, setDictTypeCode] = useState<string>(params.dictCode!);
-    const {refreshPageList} = usePageList(dictItemApi.pageInfoListApi);
-    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+    const tableRef = useRef<TableRefType<DictItemModel>>(null);
+    const {querySearchParams} = useRouteSearchParams();
     const [dictItemQuery, setDictItemQuery] = useState<Record<string, string>>({...querySearchParams()});
     const initForm: DictItemModel = {
         displayOrder: 1,
@@ -159,7 +147,7 @@ export const DictItem = () => {
     }
 
     /**
-     * 处理角色表单
+     * 处理表单
      */
     const handleForm = async () => {
         await form.validateFields();
@@ -168,7 +156,9 @@ export const DictItem = () => {
         try {
             await (updateId ? dictItemApi.editInfoApi(updateId, dictItem) : dictItemApi.saveInfoApi(dictItem));
             message.success(t('Common.success')).then()
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList({
+                pageQuery: params
+            });
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
@@ -189,9 +179,12 @@ export const DictItem = () => {
         <>
             <PageList
                 tableProps={{
+                    tableRef: tableRef,
                     tableName: t('DictItem.list'),
                     columns: columns,
-                    pageApi: dictItemApi.pageInfoListApi,
+                    pageApi: (pageQuery) => {
+                        return dictItemApi.pageInfoListApi({...pageQuery, ...params});
+                    },
                     rowSelection: rowSelection,
                     tableComponents: [
                         <>
@@ -202,18 +195,27 @@ export const DictItem = () => {
 
                             <PermissionButton permissionStr={DictItemPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <Popconfirm
-                                    title={t('Button.delete')}
-                                    description={t('Button.deleteConfirm')}
-                                    okText={t('Common.yes')}
-                                    cancelText={t('Common.no')}
-                                    onConfirm={async () => {
+                                {/*<Popconfirm*/}
+                                {/*    title={t('Button.delete')}*/}
+                                {/*    description={t('Button.deleteConfirm')}*/}
+                                {/*    okText={t('Common.yes')}*/}
+                                {/*    cancelText={t('Common.no')}*/}
+                                {/*    onConfirm={async () => {*/}
+                                {/*        dictItemApi.deleteInfoApi(rowKeys as string[]).then();*/}
+                                {/*        await tableRef?.current?.refreshPageList({*/}
+                                {/*            pageQuery: params*/}
+                                {/*        });*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                <DeleteButton
+                                    onClick={async () => {
                                         dictItemApi.deleteInfoApi(rowKeys as string[]).then();
-                                        await refreshPageList()
+                                        await tableRef?.current?.refreshPageList({
+                                            pageQuery: params
+                                        });
                                     }}
-                                >
-                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                </Popconfirm>
+                                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                {/*</Popconfirm>*/}
                             </PermissionButton>
 
                         </>

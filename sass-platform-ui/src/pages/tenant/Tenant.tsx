@@ -15,8 +15,8 @@
  */
 
 
-import React, {useState} from "react";
-import {Input, Popconfirm, TableColumnsType, Tag} from "antd";
+import React, {useRef, useState} from "react";
+import {Input, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -31,7 +31,7 @@ import {CheckCircleOutlined} from "@ant-design/icons";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {useNavigate} from "react-router-dom";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {usePageList} from "@/hooks/usePageList.tsx";
+import {TableRefType} from "@components/List/table/interface.tsx";
 
 /**
  * 租户组件
@@ -40,6 +40,7 @@ import {usePageList} from "@/hooks/usePageList.tsx";
 export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
+    const tableRef = useRef<TableRefType<TenantInfo>>(null);
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -110,7 +111,7 @@ export const Tenant: React.FC = () => {
     const [tenantQuery, setTenantQuery] = useState<Record<string, string>>({...querySearchParams()});
     const {findDictItemName} = useDictItem(["TENANT_TYPE"]);
     const navigate = useNavigate();
-    const {refreshPageList} = usePageList<TenantInfo>(tenantApi.pageInfoListApi);
+
 
     /**
      * table列选择
@@ -123,6 +124,7 @@ export const Tenant: React.FC = () => {
     return (<>
         <PageList
             tableProps={{
+                tableRef: tableRef,
                 tableName: t('Tenant.list'),
                 columns: columns,
                 pageApi: tenantApi.pageInfoListApi,
@@ -135,18 +137,23 @@ export const Tenant: React.FC = () => {
                         </PermissionButton>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
-                            <Popconfirm
-                                title={t('Button.delete')}
-                                description={t('Button.deleteConfirm')}
-                                okText={t('Common.yes')}
-                                cancelText={t('Common.no')}
-                                onConfirm={async () => {
-                                    await tenantApi.deleteInfoApi(rowKeys as string[]);
-                                    await refreshPageList();
-                                }}
-                            >
-                                <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                            </Popconfirm>
+                            {/*<Popconfirm*/}
+                            {/*    title={t('Button.delete')}*/}
+                            {/*    description={t('Button.deleteConfirm')}*/}
+                            {/*    okText={t('Common.yes')}*/}
+                            {/*    cancelText={t('Common.no')}*/}
+                            {/*    onConfirm={async () => {*/}
+                            {/*        await tenantApi.deleteInfoApi(rowKeys as string[]);*/}
+                            {/*        await tableRef?.current?.refreshPageList();*/}
+                            {/*    }}*/}
+                            {/*>*/}
+                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}
+                                          onClick={async () => {
+                                              await tenantApi.deleteInfoApi(rowKeys as string[]);
+                                              await tableRef?.current?.refreshPageList();
+                                          }}
+                            />
+                            {/*</Popconfirm>*/}
                         </PermissionButton>
                     </>
                 ]
