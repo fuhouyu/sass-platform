@@ -27,15 +27,16 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
+          cache-dependency-path: sass-platform-ui/package-lock.json
           node-version: 20
           cache: 'pnpm'
-        run: cd sass-platform-ui
 
       - name: pnpm build
         env:
           VITE_CLOUDFLARE_SITE_KEY: '${{ secrets.CLOUDFLARE_SITE_KEY }}'
           VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
         run: |
+          cd sass-platform-ui
           pnpm install && pnpm run build
 
       - name: Scp dist File
