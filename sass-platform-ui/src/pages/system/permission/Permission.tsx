@@ -15,7 +15,7 @@
  */
 
 
-import React, {Key, useEffect, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {DownOutlined} from "@ant-design/icons";
 import {
     Button,
@@ -24,7 +24,6 @@ import {
     Input,
     InputNumber,
     message,
-    Popconfirm,
     Radio,
     Row,
     Splitter,
@@ -46,7 +45,7 @@ import {useButton} from "@/hooks/useButton";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
-import {usePageList} from "@/hooks/usePageList.tsx";
+import {TableRefType} from "@components/List/table/interface.tsx";
 
 
 /**
@@ -90,7 +89,7 @@ export const Permission: React.FC = () => {
     const [updateId, setUpdateId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const {refreshPageList} = usePageList(permissionApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<Menu>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [permissionQuery, setPermissionQuery] = useState<Record<string, string>>({
         ...querySearchParams()
@@ -258,8 +257,11 @@ export const Permission: React.FC = () => {
             setIsModalButtonLoading(true);
             await (updateId ? permissionApi.editInfoApi(updateId, values) : permissionApi.saveInfoApi(values));
             message.success(t('Common.success')).then()
-            await refreshPageList((res) => {
-                res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`));
+
+            await tableRef?.current?.refreshPageList({
+                dataCallback: (res) => {
+                    res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`));
+                }
             });
             const parentId = values.parentId;
             await onLoadData({key: parentId ?? '-1'});
@@ -306,6 +308,7 @@ export const Permission: React.FC = () => {
                         onSearchClick={() => updateSearchParams(permissionQuery)}
                     />
                     <Table<Menu>
+                        tableRef={tableRef}
                         tableName={t('Permission.list')}
                         columns={columns}
                         rowSelection={rowSelection}
@@ -319,19 +322,25 @@ export const Permission: React.FC = () => {
                                 </PermissionButton>
                                 <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={PermissionConstant.DELETE}>
-                                    <Popconfirm
-                                        title={t('Button.delete')}
-                                        description={t('Button.deleteConfirm')}
-                                        okText={t('Common.yes')}
-                                        cancelText={t('Common.no')}
-                                        onConfirm={async () => {
+                                    {/*<Popconfirm*/}
+                                    {/*    title={t('Button.delete')}*/}
+                                    {/*    description={t('Button.deleteConfirm')}*/}
+                                    {/*    okText={t('Common.yes')}*/}
+                                    {/*    cancelText={t('Common.no')}*/}
+                                    {/*    onConfirm={async () => {*/}
+                                    {/*        permissionApi.deleteInfoApi(rowKeys as string[]).then();*/}
+                                    {/*        await tableRef?.current?.refreshPageList();*/}
+                                    {/*        await permissionTreeSelect();*/}
+                                    {/*    }}*/}
+                                    {/*>*/}
+                                    <DeleteButton
+                                        onClick={async () => {
                                             permissionApi.deleteInfoApi(rowKeys as string[]).then();
-                                            await refreshPageList();
+                                            await tableRef?.current?.refreshPageList();
                                             await permissionTreeSelect();
                                         }}
-                                    >
-                                        <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                    </Popconfirm>
+                                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                    {/*</Popconfirm>*/}
                                 </PermissionButton>
                             </>
                         ]}
@@ -645,7 +654,7 @@ export const Permission: React.FC = () => {
 
             </Modal>
         </>
-    )
+    );
 
 }
 

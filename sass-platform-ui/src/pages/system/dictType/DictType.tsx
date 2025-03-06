@@ -17,34 +17,22 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictType as DictTypeModel} from "@/model/dictType";
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    TableColumnsType,
-    Tag,
-    Tooltip
-} from "antd";
+import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
 import TextArea from "antd/es/input/TextArea";
 import {Menu} from "@/model/menu";
-import {Link} from "react-router-dom";
 import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
-import {usePageList} from '@/hooks/usePageList';
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {TableRefType} from '@/components/List/table/interface';
+import {Link} from 'react-router-dom';
 
 /**
  * 字典类型
@@ -129,7 +117,7 @@ export const DictType = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const {refreshPageList} = usePageList(dictTypeApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<DictTypeModel>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [dictTypeQuery, setDictTypeQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [formInitValues, setFormInitValues] = useState<DictTypeModel>(initForm);
@@ -150,7 +138,7 @@ export const DictType = () => {
     }
 
     /**
-     * 处理角色表单
+     * 处理表单
      */
     const handleForm = async () => {
         await form.validateFields();
@@ -159,7 +147,7 @@ export const DictType = () => {
         try {
             await (updateId ? dictTypeApi.editInfoApi(updateId, dictType) : dictTypeApi.saveInfoApi(dictType));
             message.success(t('Common.success')).then()
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false)
@@ -181,6 +169,7 @@ export const DictType = () => {
         <>
             <PageList
                 tableProps={{
+                    tableRef: tableRef,
                     tableName: t('DictType.list'),
                     columns: columns,
                     pageApi: dictTypeApi.pageInfoListApi,
@@ -193,18 +182,23 @@ export const DictType = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={DictTypePermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                <Popconfirm
-                                    title={t('Button.delete')}
-                                    description={t('Button.deleteConfirm')}
-                                    okText={t('Common.yes')}
-                                    cancelText={t('Common.no')}
-                                    onConfirm={async () => {
+                                {/*<Popconfirm*/}
+                                {/*    title={t('Button.delete')}*/}
+                                {/*    description={t('Button.deleteConfirm')}*/}
+                                {/*    okText={t('Common.yes')}*/}
+                                {/*    cancelText={t('Common.no')}*/}
+                                {/*    onConfirm={async () => {*/}
+                                {/*        dictTypeApi.deleteInfoApi(rowKeys as string[]).then();*/}
+                                {/*        await tableRef?.current?.refreshPageList();*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                <DeleteButton
+                                    onClick={async () => {
                                         dictTypeApi.deleteInfoApi(rowKeys as string[]).then();
-                                        await refreshPageList()
+                                        await tableRef?.current?.refreshPageList();
                                     }}
-                                >
-                                    <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                </Popconfirm>
+                                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                {/*</Popconfirm>*/}
                             </PermissionButton>
                         </>
                     ]

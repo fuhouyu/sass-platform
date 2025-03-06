@@ -24,12 +24,14 @@ import {RcFile} from "antd/es/upload";
 import {StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
+import {useTranslation} from "react-i18next";
 
 export const S3Upload: React.FC<{
     uploadProps: S3UploadProps,
     children: React.ReactNode
 }> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
 
+    const {t} = useTranslation();
     const [uploadFiles, setUploadFiles] = React.useState<RcFile[]>([]);
     const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
 
@@ -108,8 +110,9 @@ export const S3Upload: React.FC<{
         });
 
         uploadProps.onUploadSuccess?.(resourceId);
-        message.success(`${file.name} 上传成功`);
-    }, [storeUploadFiles, uploadProps])
+        const success = `${file.name} ${t('Resource.uploadSuccess')}`;
+        message.success(success);
+    }, [storeUploadFiles, t, uploadProps])
 
     const fileUploadHandle = useCallback(async () => {
         try {

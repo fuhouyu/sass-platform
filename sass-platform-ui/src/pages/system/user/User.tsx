@@ -15,7 +15,7 @@
  */
 
 
-import React, {Key, useState} from "react";
+import React, {Key, useRef, useState} from "react";
 import {
     Button,
     Card,
@@ -26,7 +26,6 @@ import {
     InputNumber,
     MenuProps,
     message,
-    Popconfirm,
     Radio,
     Row,
     Select,
@@ -59,8 +58,8 @@ import {OrganizationUserModal} from "@components/Organization/OrganizationUserMo
 import {userPositionApi} from "@/apis/userPosition.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
-import {usePageList} from "@/hooks/usePageList.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {TableRefType} from "@components/List/table/interface.tsx";
 
 
 export const User: React.FC = () => {
@@ -166,7 +165,7 @@ export const User: React.FC = () => {
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [userHasRoleForm] = Form.useForm();
-    const {refreshPageList} = usePageList(userApi.pageInfoListApi);
+    const tableRef = useRef<TableRefType<Userinfo>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [userQuery, setUserQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
@@ -266,7 +265,7 @@ export const User: React.FC = () => {
         try {
             await (updateUserId ? userApi.editInfoApi(updateUserId, userDetail) : userApi.saveInfoApi(userDetail));
             message.success(t('Common.success')).then();
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList();
             setIsModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
@@ -300,7 +299,7 @@ export const User: React.FC = () => {
         try {
             await userPositionApi.saveUserPosition(userPosition);
             message.success(t('Common.success')).then();
-            await refreshPageList();
+            await tableRef?.current?.refreshPageList();
             setIsOrganizationUserModalOpen(false);
         } finally {
             setIsModalButtonLoading(false);
@@ -356,7 +355,7 @@ export const User: React.FC = () => {
                     return
                 }
                 await userPositionApi.deleteUserPosition(organizationId, selectUserIds as string[]);
-                await refreshPageList();
+                await tableRef?.current?.refreshPageList();
             }
         },
     ].filter(item => organizationButtonPermissions.some(permission => permission?.permissionCode === item?.key));
@@ -389,6 +388,7 @@ export const User: React.FC = () => {
                 <Splitter.Panel>
                     <PageList
                         tableProps={{
+                            tableRef: tableRef,
                             tableName: t('User.list'),
                             columns: columns,
                             scroll: {x: 1500},
@@ -412,19 +412,23 @@ export const User: React.FC = () => {
                                     </PermissionButton>
                                     <PermissionButton permissionStr={UserPermissionConstant.DELETE}
                                                       buttonPermissions={buttonPermissions}>
-                                        <Popconfirm
-                                            title={t('Button.delete')}
-                                            description={t('Button.deleteConfirm')}
-                                            okText={t('Common.yes')}
-                                            cancelText={t('Common.no')}
-                                            onConfirm={async () => {
+                                        {/*<Popconfirm*/}
+                                        {/*    title={t('Button.delete')}*/}
+                                        {/*    description={t('Button.deleteConfirm')}*/}
+                                        {/*    okText={t('Common.yes')}*/}
+                                        {/*    cancelText={t('Common.no')}*/}
+                                        {/*    onConfirm={async () => {*/}
+                                        {/*        await userApi.deleteInfoApi(selectUserIds as string[]);*/}
+                                        {/*        await tableRef?.current?.refreshPageList();*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        <DeleteButton
+                                            onClick={async () => {
                                                 await userApi.deleteInfoApi(selectUserIds as string[]);
-                                                await refreshPageList();
+                                                await tableRef?.current?.refreshPageList();
                                             }}
-                                        >
-                                            <DeleteButton
-                                                disabled={selectUserIds.length === 0}/>
-                                        </Popconfirm>
+                                            disabled={selectUserIds.length === 0}/>
+                                        {/*</Popconfirm>*/}
                                     </PermissionButton>
 
                                 </>
@@ -437,9 +441,9 @@ export const User: React.FC = () => {
                                         allowClear
                                         defaultValue={userQuery.username}
                                         placeholder={t('User.usernamePlaceholder')} id={'username'}
-                                           onChange={(e) => {
-                                               setUserQuery({username: e.target.value})
-                                           }}/>
+                                        onChange={(e) => {
+                                            setUserQuery({username: e.target.value})
+                                        }}/>
                                 </>,
                                 <>
                                     <span>{t('User.gender')}</span>

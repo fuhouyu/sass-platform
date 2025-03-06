@@ -14,14 +14,31 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, {Ref} from "react";
 import {TableProps as AntdTableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AnyObject} from "antd/es/_util/type";
 
+export type TableRefType<T> = {
+    /**
+     * 刷新列表
+     */
+    refreshPageList: (refreshProps?: RefreshPageProps<T>) => Promise<void>;
+
+    /**
+     * 列表
+     */
+    pageResult: PageResult<T> | undefined
+
+};
+
 
 // 搜索组件的主接口
 export interface TableProps<RecordType = AnyObject> extends AntdTableProps<RecordType> {
+    /**
+     * ref
+     */
+    tableRef?: Ref<TableRefType<RecordType>> | undefined
     /**
      * 名称
      */
@@ -47,5 +64,18 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
      * 组件数组
      */
     tableComponents?: React.ReactNode[];
+}
 
+export interface RefreshPageProps<T> {
+
+    /**
+     * 处理pageData
+     * @param pageData pageData
+     */
+    dataCallback?: (pageData: PageResult<T>) => void
+
+    /**
+     * 分页查询对象
+     */
+    pageQuery?: Record<string, string | undefined>;
 }
