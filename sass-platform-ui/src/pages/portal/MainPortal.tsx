@@ -19,10 +19,9 @@ import useTenant from "@/hooks/useTenant";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
 import {tenantApi} from "@/apis/tenant";
-import {useLocation} from "react-router-dom";
-import {router} from "@/routes/routers";
+import {useLocation, useNavigate} from "react-router-dom";
 import {parseRoutes} from "@/hooks/useRoutes.tsx";
-import {useUserStore} from "@/store";
+import {useRouterStore, useUserStore} from "@/store";
 
 
 /**
@@ -35,7 +34,8 @@ export const MainPortal = () => {
     const [chooseTenant, setChooseTenant] = useState<string>();
     const location = useLocation();
     const {fetchUserMenus} = useUserStore(state => state);
-
+    const router = useRouterStore(state => state.router);
+    const navigate = useNavigate();
     const confirm = async () => {
         if (!chooseTenant) {
             return
@@ -44,10 +44,10 @@ export const MainPortal = () => {
         const fromRouter = location.state?.from;
         const from = (fromRouter && fromRouter.endsWith('login')) ? '/' : fromRouter || '/';
         const userMenus = await fetchUserMenus();
-        if (router.routes[0]?.children) {
+        if (router?.routes[0]?.children) {
             router.routes[0].children.push(...parseRoutes(userMenus));
         }
-        router.navigate(from).then()
+        navigate(from);
     }
 
 

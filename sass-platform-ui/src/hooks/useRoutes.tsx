@@ -15,12 +15,11 @@
  */
 
 import {NotFound} from "../pages/error/notfound/NotFound.tsx";
-import {lazy, Suspense, useEffect, useState} from "react";
-import {PageLoading} from "@/components";
+import {lazy, useEffect, useState} from "react";
 import {Menu} from "@/model/menu.tsx";
-import {router, RouterType} from "@/routes/routers.tsx";
 import {getAccessToken} from "@/utils";
 import {useUserStore} from "@/store";
+import {DataRouteObject} from "react-router-dom";
 
 
 const modules = import.meta.glob('../pages/**/index.tsx');
@@ -33,13 +32,11 @@ const lazyElement = (path: string) => {
     // @ts-expect-error
     const Component = lazy(module);
     return (
-        <Suspense fallback={<PageLoading/>}>
             <Component/>
-        </Suspense>
     );
 };
 
-export const parseRoutes = (menuProps: Menu[]): RouterType[] => {
+export const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
 
     if (menuProps === undefined || menuProps.length === 0) {
         return [];
@@ -47,7 +44,6 @@ export const parseRoutes = (menuProps: Menu[]): RouterType[] => {
     return menuProps.map((item) => {
         return {
             id: item.id!,
-            title: item.permissionName ?? '',
             path: item.routePath ?? '',
             children: item.children ? parseRoutes(item.children) : [],
             element: item.componentPath && lazyElement(item.componentPath),
@@ -61,23 +57,27 @@ export const parseRoutes = (menuProps: Menu[]): RouterType[] => {
 export const useRoutes = () => {
     const {fetchUserMenus} = useUserStore();
     const [initialized, setInitialized] = useState(false);
+    const [dynamicRoutes, setRoutes] = useState<DataRouteObject[]>([]);
+
     useEffect(() => {
         const accessToken = getAccessToken();
         if (!accessToken) {
             setInitialized(true);
             return;
         }
+
         const initializeRoutes = async () => {
-            if (initialized) return; // 避免重复调用
+            if (initialized) return; // Avoid duplicate calls
 
             const userMenus = await fetchUserMenus();
-            if (router.routes[0]?.children) {
-                router.routes[0].children.push(...parseRoutes(userMenus));
-            }
+            const newRoutes = parseRoutes(userMenus); // Parse new routes
+            setRoutes(newRoutes); // Update routes
+
             setInitialized(true);
         };
+
         initializeRoutes().then();
     }, [fetchUserMenus, initialized]);
 
-    return initialized;
+    return {initialized, dynamicRoutes};
 }

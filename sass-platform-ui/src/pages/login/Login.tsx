@@ -22,7 +22,6 @@ import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
 import {IconFont, WeLinkLogin} from "@/components";
 import {useTranslation} from "react-i18next";
-import {router} from "@/routes/routers";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
@@ -58,8 +57,8 @@ export const Login: React.FC = () => {
         try {
             await fetchLogin(loginData);
             setLoginButtonLoading(false)
-            await router.navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
             setLoginButtonLoading(false);
+            navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
         } catch (err) {
             setLoginButtonLoading(false);
             setTurnstileToken(undefined);

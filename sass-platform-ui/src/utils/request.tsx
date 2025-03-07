@@ -16,12 +16,12 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
-import {router} from "@/routes/routers";
 import {message} from "antd";
 import {UserBind, UserToken} from "@/model/authentication.tsx";
 import {authenticationApi} from "@/apis/authentication.tsx";
 import {AccountType} from "@/model/account.tsx";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {useRouterStore} from "@/store";
 
 
 const request: AxiosInstance = axios.create({
@@ -53,9 +53,10 @@ request.interceptors.response.use(async function (response) {
         // 如果 isSuccess 为 true，返回 data 数据
         return response.data.data;
     }
+    const pathname = window.location.pathname;
+    console.log(pathname)
     // 如果 isSuccess 为 false，抛出异常
     if (response.data.code === 402) {
-        const pathname = router.state.location.pathname;
         const refreshToken = getRefreshToken();
         if (refreshToken) {
             // 刷新token
@@ -65,7 +66,7 @@ request.interceptors.response.use(async function (response) {
             }) as UserToken;
             if (!res) {
                 removeToken();
-                router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
+                useRouterStore.getState().router?.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
                 return;
             }
             storeToken(res);
@@ -73,13 +74,12 @@ request.interceptors.response.use(async function (response) {
             return;
         }
         removeToken();
-        router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
+        useRouterStore.getState().router?.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
         return
     }
     if (response.data.code === 403) {
         removeToken();
-        const pathname = router.state.location.pathname;
-        router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
+        useRouterStore.getState().router?.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
         return
     }
     // 如果是1001，表示用户需要绑定
