@@ -29,7 +29,7 @@ export const PageLoading = () => {
 
     const content = <div style={contentStyle}/>;
     return (
-        <Spin delay={1000} tip={t('Common.pageLoading')} fullscreen={true} size="large" className="page-loading">
+        <Spin tip={t('Common.pageLoading')} fullscreen={true} size="large" className="page-loading">
             {content}
         </Spin>
     )

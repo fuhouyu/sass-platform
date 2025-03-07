@@ -15,9 +15,8 @@
  */
 
 import useAuth from "@/hooks/useAuth.tsx";
-import {Outlet, useLocation} from "react-router-dom";
-import {useEffect} from "react";
-import {router} from "@/routes/routers.tsx";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import React, {useEffect} from "react";
 import Layout, {Content} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
@@ -35,11 +34,14 @@ export const LayoutMain = () => {
     const pathname = useLocation().pathname;
     const uploadFiles = useUploadStore(state => state.uploadFiles);
     const {t} = useTranslation();
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (!accessToken) {
-            router.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();
+            navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
         }
-    }, [accessToken, pathname]);
+    }, [accessToken, navigate, pathname]);
+
     return (
         <Layout className={'layout-container'}>
             <LayoutHeader/>

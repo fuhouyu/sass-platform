@@ -16,28 +16,48 @@
 
 
 import React, {useEffect, useState} from "react";
-import {RouterProvider} from "react-router-dom";
-import {router} from "@/routes/routers";
-import {PageLoading} from "@components/PageLoading/pageLoading";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {commonRoutes} from "@/routes/routes.tsx";
 import '@/i18n/index'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
 import {ConfigProvider} from "antd";
-import {useLocaleStore} from "@/store";
+import {useLocaleStore, useRouterStore} from "@/store";
 import {Locale} from "antd/es/locale";
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import {CommonConstant} from "./constants/commonConstant";
+import {PageLoading} from "./components";
 
 export const App: React.FC = () => {
-    const initialize = useRoutes();
+    // 假设 useRoutes 是一个自定义钩子，返回路由是否加载完成
+    const {initialized, dynamicRoutes} = useRoutes();
     const language = useLocaleStore(state => state.language);
     const [antdLocale, setAntdLocale] = useState<Locale>();
+    const [isLoading, setIsLoading] = useState(true);
+    const {router, storeRouter} = useRouterStore(state => state);
+
+    useEffect(() => {
+        if (initialized) {
+            const rootRoutes = [...commonRoutes];
+            rootRoutes[0].children = dynamicRoutes;
+            const updatedRouter = createBrowserRouter(rootRoutes);
+            setIsLoading(false);
+            storeRouter(updatedRouter)
+
+        }
+    }, [initialized, dynamicRoutes, storeRouter]);
+
+
     useEffect(() => {
         setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
-    }, [language])
-    if (!initialize) {
+    }, [language]);
+
+    if (isLoading) {
         return <PageLoading/>;
     }
+
+
+    // 路由加载完成后，渲染页面
     return (
         <ConfigProvider
             locale={antdLocale}
@@ -46,10 +66,10 @@ export const App: React.FC = () => {
                     Tree: {
                         titleHeight: 32,
                     },
-                }
+                },
             }}
         >
-            <RouterProvider router={router} fallbackElement={<PageLoading/>}/>
+            <RouterProvider router={router!}/>
         </ConfigProvider>
     );
 };

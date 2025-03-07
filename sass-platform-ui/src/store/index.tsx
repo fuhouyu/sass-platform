@@ -16,6 +16,7 @@
 
 import {useDictStore} from "./modules/dict";
 import {useLocaleStore} from "./modules/locale";
+import {useRouterStore} from "./modules/router";
 import {useUserStore} from "./modules/user";
 
 
@@ -23,4 +24,5 @@ export {
     useUserStore,
     useDictStore,
     useLocaleStore,
+    useRouterStore,
 }

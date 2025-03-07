@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {createBrowserRouter, createHashRouter, LoaderFunction} from "react-router-dom";
-import React from "react";
+import {DataRouteObject} from "react-router-dom";
 import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Home} from "@/pages/home/Home";
 import {UserProfile} from "@/pages/profile";
 import Login from "@/pages/login";
-import {Router} from '@remix-run/router';
 import MainPortal from "@/pages/portal";
 import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
 import {getAccessToken} from "@/utils";
@@ -28,27 +26,16 @@ import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
-export type RouterType = {
-    id: string;
-    title: string,
-    path: string,
-    element: React.ReactNode | null | undefined,
-    component?: React.ReactNode,
-    children?: RouterType[];
-    loader?: LoaderFunction | boolean;
-}
-
 
 /**
  * 公共路由
  */
-export const commonRouter: RouterType[] = [
+export const commonRoutes: DataRouteObject[] = [
 
     {
         id: 'layout',
-        title: 'layout',
         path: '/',
-        element: <LayoutMain/>,
+        Component: LayoutMain,
         loader: async () => {
             const accessToken = getAccessToken();
             if (!accessToken) {
@@ -59,51 +46,41 @@ export const commonRouter: RouterType[] = [
         children: [
             {
                 id: 'home',
-                title: 'Home',
                 path: BaseUrlConstant.HOME_URL,
-                element: <Home/>
+                Component: Home
             },
             {
                 id: 'profile',
-                title: 'profile',
                 path: BaseUrlConstant.USER_PROFILE_URL,
-                element: <UserProfile/>,
+                Component: UserProfile,
             }
         ]
     },
     {
         id: 'login',
-        title: 'login',
         path: BaseUrlConstant.LOGIN_URL,
-        element: <Login/>,
+        Component: Login,
     },
     {
         id: 'portal',
-        title: 'portal',
         path: BaseUrlConstant.PORTAL_URL,
-        element: <MainPortal/>,
+        Component: MainPortal,
     },
     {
         id: 'redirect',
-        title: 'redirect',
         path: BaseUrlConstant.REDIRECT_URL,
-        element: <PostThirdPartyRedirect/>,
+        Component: PostThirdPartyRedirect,
 
     },
     {
         id: 'account-bind',
-        title: '账号绑定',
         path: '/account-bind',
-        element: <AccountBind/>
+        Component: AccountBind
     },
     {
         id: '404',
-        title: '404',
         path: '/*',
-        element: <NotFound/>,
+        Component: NotFound,
     }
 
 ]
-export const router: Router =
-    import.meta.env.VITE_ROUTE_TYPE === 'HASH' ? createHashRouter(commonRouter) : createBrowserRouter(commonRouter);
-

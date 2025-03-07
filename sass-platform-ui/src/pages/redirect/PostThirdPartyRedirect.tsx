@@ -15,10 +15,9 @@
  */
 
 
-import {useLocation, useSearchParams} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import React, {useCallback, useEffect, useState} from "react";
 import {AccountType} from "@/model/account.tsx";
-import {router} from "@/routes/routers.tsx";
 import {Button, Form, Input, message, Modal, Spin} from "antd";
 import {accountApi} from "@/apis/account.tsx";
 import {useTranslation} from "react-i18next";
@@ -37,7 +36,7 @@ export const PostThirdPartyRedirect = () => {
     const [userForm] = Form.useForm<ThirdPartyBindAuthentication>();
     const [temporaryToken, setTemporaryToken] = useState<string>('');
     const {fetchLogin, fetchLoginAndBind} = useUserStore();
-
+    const navigate = useNavigate();
     /**
      * 用户登录
      */
@@ -45,7 +44,7 @@ export const PostThirdPartyRedirect = () => {
         fetchLogin({accountType: accountType as AccountType, identify: code}).then(async (res) => {
             // 如果登录成功直接跳转
             if (!('userBindToken' in res)) {
-                router.navigate(BaseUrlConstant.PORTAL_URL, {state: location.state}).then();
+                navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
                 return
             }
             setTemporaryToken(res.userBindToken);
@@ -54,9 +53,9 @@ export const PostThirdPartyRedirect = () => {
 
         }).catch((err) => {
             message.error(err.message).then()
-            router.navigate(BaseUrlConstant.LOGIN_URL, {state: location.state}).then();
+            navigate(BaseUrlConstant.LOGIN_URL, {state: location.state});
         });
-    }, [location.state, fetchLogin]);
+    }, [fetchLogin, navigate, location.state]);
 
     /**
      * 登录表单
@@ -69,9 +68,9 @@ export const PostThirdPartyRedirect = () => {
         try {
             await fetchLoginAndBind(userBindAuthentication);
         } catch {
-            router.navigate(BaseUrlConstant.LOGIN_URL, {state: location.state}).then();
+            navigate(BaseUrlConstant.LOGIN_URL, {state: location.state});
         }
-        router.navigate(BaseUrlConstant.PORTAL_URL, {state: location.state}).then();
+        navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
     }
 
     /**
@@ -81,7 +80,7 @@ export const PostThirdPartyRedirect = () => {
      */
     const bindAccount = useCallback(async (accountType: string, code: string) => {
         await accountApi.bindThirdPartyAccount(accountType, code);
-        router.navigate(BaseUrlConstant.USER_PROFILE_URL).then();
+        navigate(BaseUrlConstant.USER_PROFILE_URL);
     }, []);
 
 
@@ -91,7 +90,7 @@ export const PostThirdPartyRedirect = () => {
         const accountType = searchParams.get('accountType')!;
         if (!code || !accountType) {
             message.error(t('Common.paramsError')).then();
-            router.navigate(BaseUrlConstant.LOGIN_URL).then();
+            navigate(BaseUrlConstant.LOGIN_URL);
             return;
         }
         if (redirectType == 'bind') {
@@ -118,7 +117,7 @@ export const PostThirdPartyRedirect = () => {
                 closable
                 onCancel={() => {
                     setBindModal(false);
-                    router.navigate(BaseUrlConstant.LOGIN_URL).then();
+                    navigate(BaseUrlConstant.LOGIN_URL);
                 }}
                 onClose={() => setBindModal(false)}
                 className={'account-bind-modal'}
