@@ -4,9 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - develop
-  pull_request_target:
-    branches: [ develop ]
+      - feature/v1.0.0
 permissions: read-all
 
 jobs:
