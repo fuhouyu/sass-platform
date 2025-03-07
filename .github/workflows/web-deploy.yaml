@@ -27,7 +27,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          cache-dependency-path: sass-platform-ui/package-lock.json
+          cache-dependency-path: '**/package-lock.json'
           node-version: 20
           cache: 'pnpm'
 
