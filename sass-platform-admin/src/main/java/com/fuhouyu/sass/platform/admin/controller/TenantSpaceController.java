@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +71,7 @@ public class TenantSpaceController {
      */
     @GetMapping("/{tenantId}")
     @Operation(summary = "通过租户id获取租户空间")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:query', 'tenant-space:query')")
     public BaseResponse<TenantSpaceDTO> getTenantSpaceByTenantId(@PathVariable("tenantId") Long tenantId) {
         return ResponseHelper.success(this.tenantSpaceService.findByTenantId(tenantId));
     }

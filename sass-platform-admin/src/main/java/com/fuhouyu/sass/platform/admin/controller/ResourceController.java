@@ -34,6 +34,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,22 +115,6 @@ public class ResourceController {
         return ResponseHelper.success(this.resourceService.save(resourceDTO));
     }
 
-    /**
-     * 修改当前资源的详情
-     *
-     * @param resourceDTO 资源dto对象
-     * @param id          主键id
-     * @return restResult
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "修改资源详情")
-    public BaseResponse<Void> editResourceInfo(
-            @PathVariable("id") Long id,
-            @Valid @RequestBody ResourceDTO resourceDTO) {
-        resourceDTO.setId(id);
-        this.resourceService.edit(resourceDTO);
-        return ResponseHelper.success();
-    }
 
     /**
      * 通过资源id删除资源
@@ -139,6 +124,7 @@ public class ResourceController {
      */
     @Operation(summary = "通过资源id删除资源")
     @DeleteMapping
+    @PreAuthorize("@auth.hasAnyPermission('tenant-space:delete')")
     public BaseResponse<Void> removeResourceList(
             @RequestBody
             @Size(min = 1, message = "需要删除的资源不能为空")
@@ -170,6 +156,7 @@ public class ResourceController {
      */
     @GetMapping("/page")
     @Operation(summary = "分页查询资源信息，需要租户空间权限")
+    @PreAuthorize("@auth.hasAnyPermission('tenant-space:resource-list')")
     public BaseResponse<PageResultDTO<ResourceDTO>> listResourceByTenantId(ResourcePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.resourceService.pageList(pageQueryDTO));
     }

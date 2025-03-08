@@ -83,6 +83,7 @@ const EnUS = {
     Menu: {
         main: 'Permission List',
         home: 'Home',
+        resourceList: 'Resource List',
         query: 'Detail',
         add: 'Add',
         edit: 'Edit',

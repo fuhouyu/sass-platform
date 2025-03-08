@@ -121,6 +121,7 @@ const ZhCN = {
     Menu: {
         main: '权限列表',
         home: '主页',
+        resourceList: '资源列表',
         query: '详情',
         add: '新增',
         edit: '修改',

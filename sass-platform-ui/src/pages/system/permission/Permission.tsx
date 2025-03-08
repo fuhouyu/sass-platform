@@ -106,6 +106,7 @@ export const Permission: React.FC = () => {
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
             align: 'center',
+            render: (permissionName: string) => t(`Menu.${permissionName}`)
         },
         {
             title: t('Permission.code'),

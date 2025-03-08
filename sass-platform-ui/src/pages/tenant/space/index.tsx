@@ -310,8 +310,7 @@ const TenantSpace: React.FC = () => {
                         <Space size={24}>
                             <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB -
-                                {tableRef?.current?.pageResult?.total} Objects
+                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {tableRef?.current?.pageResult?.total} Objects
                             </span>
                         </Space>
                     </Flex>
