@@ -64,7 +64,7 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
         const client_id = import.meta.env.VITE_WELINK_CLIENT_ID;
         const response_type = "code";
         const scope = "snsapi_login";
-        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LGOIN_REDIRECT_URI + `?redirectType=${redirectType}` + "&accountType=WELINK");
+        const redirect_uri = encodeURIComponent(import.meta.env.VITE_LOGIN_REDIRECT_URI + `?redirectType=${redirectType}` + "&accountType=WELINK");
 
         window.location.href = serverUrl + "?"
             + "client_id" + "=" + client_id + "&"
@@ -97,7 +97,7 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
                 window.wlQrcodeLogin({
                     id: "qrcode-frame", // 放置二维码的容器 ID
                     state: state,
-                    redirect_uri: import.meta.env.VITE_LGOIN_REDIRECT_URI,
+                    redirect_uri: import.meta.env.VITE_LOGIN_REDIRECT_URI,
                     client_id: import.meta.env.VITE_WELINK_CLIENT_ID,
                     response_type: "code",
                     scope: "snsapi_login",
