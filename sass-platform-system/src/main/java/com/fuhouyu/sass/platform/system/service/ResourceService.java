@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.ResourceSignedUrlDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,10 +35,10 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
     /**
      * 预览资源
      *
-     * @param id       资源id
+     * @param id        资源id
      * @param isPreview 是否为预览
-     * @param request  请求对象
-     * @param response 响应对象
+     * @param request   请求对象
+     * @param response  响应对象
      */
     void downloadFile(Long id,
                       boolean isPreview,
@@ -45,7 +46,17 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
                       HttpServletResponse response);
 
     /**
+     * 下载资源
+     *
+     * @param id                   资源id
+     * @param resourceSignedUrlDTO 资源签名的dto
+     */
+    void downloadFile(Long id,
+                      ResourceSignedUrlDTO resourceSignedUrlDTO);
+
+    /**
      * 生成sts临时token
+     *
      * @param requestDTO 请求dto对象
      * @return sts临时token
      */
@@ -66,5 +77,14 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @return 资源对象
      */
     ResourceDTO checkResourceExists(Long id);
+
+
+    /**
+     * 生成资源签名的url
+     *
+     * @param id 主键id
+     * @return 签名的url
+     */
+    String generateSignedUrl(Long id);
 
 }

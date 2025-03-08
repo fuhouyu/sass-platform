@@ -23,11 +23,11 @@ CREATE TABLE tenant_info
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
     remark         VARCHAR(256),
-    icon           VARCHAR(256),
+    icon BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
-    start_time     TIMESTAMP,
-    end_time       TIMESTAMP,
+    start_date DATE,
+    end_date   DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
     create_at      TIMESTAMP             NOT NULL,
@@ -48,8 +48,8 @@ COMMENT ON COLUMN tenant_info.remark IS '描述';
 COMMENT ON COLUMN tenant_info.icon IS '租户图标';
 COMMENT ON COLUMN tenant_info.contact_person IS '联系人';
 COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
-COMMENT ON COLUMN tenant_info.start_time IS '开始时间';
-COMMENT ON COLUMN tenant_info.end_time IS '结束时间';
+COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
+COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.create_at IS '创建时间';
@@ -428,20 +428,28 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
 VALUES (14, 1, 'delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
--- 租户表单
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (3, -1, 'tenantForm', 'tenant:form', 5, '', 'tenant-form', 'tenant/components/form', '', false, 'MENU', false,
-        false, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-
 -- 租户空间
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (4, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
-        false, true, true, 1,
+VALUES (3, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
+        false, false, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (31, 3, 'query', 'tenant-space:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (32, 3, 'resourceList', 'tenant-space:resource-list', 2, '', '', '', '', false, 'BUTTON', false, true, true,
+        true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
+VALUES (33, 3, 'delete', 'tenant-space:delete', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 
@@ -521,8 +529,6 @@ VALUES (1, 1, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 26, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 27, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 234, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 251, now(), 'admin');
@@ -584,6 +590,12 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 266, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 3, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 31, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 32, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 33, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

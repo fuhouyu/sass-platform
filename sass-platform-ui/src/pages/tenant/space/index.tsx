@@ -28,15 +28,24 @@ import {
     List,
     MenuProps,
     Modal,
+    Popconfirm,
     Space,
-    TableColumnsType
+    TableColumnsType,
+    Tag
 } from "antd";
 import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
-import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
+import {
+    DownloadOutlined,
+    EyeOutlined,
+    FolderOutlined,
+    LeftOutlined,
+    LockOutlined,
+    UploadOutlined
+} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
@@ -111,6 +120,24 @@ const TenantSpace: React.FC = () => {
             }
         },
         {
+            title: t('Resource.isPublic'),
+            dataIndex: 'isPublic',
+            align: "center",
+            render: (_, record: Resource) => {
+                if (record.isDirectory) {
+                    return <div>-</div>;
+                }
+                return record.isPublic ?
+                    <Tag icon={<EyeOutlined/>} color="success">
+                        {t('Resource.public')}
+                    </Tag>
+                    :
+                    <Tag icon={<LockOutlined/>} color="warning">
+                        {t('Resource.private')}
+                    </Tag>;
+            }
+        },
+        {
             title: t('Common.updateAt'),
             dataIndex: 'updateAt',
             align: "center",
@@ -137,7 +164,7 @@ const TenantSpace: React.FC = () => {
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
         const breadcrumbItems = [
             {
-                title: '根目录',
+                title: t('Resource.rootPath'),
                 onClick: () => breadcrumbClick(undefined),
             }];
         const prefix: string = querySearchParams()['prefix'];
@@ -264,12 +291,13 @@ const TenantSpace: React.FC = () => {
     const fileActions = [
         {
             icon: <DownloadOutlined/>, text: t('Resource.download'),
-            onClick: () => selectFile && window.open(download(selectFile.id))
+            onClick: async () => selectFile && window.open(await download(selectFile.id))
         },
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
-            onClick: () => selectFile && setPreviewModal(true),
+            onClick: () => selectFile &&
+                setPreviewModal(true),
         },
     ];
 
@@ -283,30 +311,25 @@ const TenantSpace: React.FC = () => {
                         <Space size={24}>
                             <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB -
-                                {tableRef?.current?.pageResult?.total} Objects
+                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {tableRef?.current?.pageResult?.total} Objects
                             </span>
                         </Space>
                     </Flex>
                 </Flex>
                 <Flex gap={8}>
-                    {/*<Popconfirm*/}
-                    {/*    title={t('Button.delete')}*/}
-                    {/*    description={t('Button.deleteConfirm')}*/}
-                    {/*    okText={t('Common.yes')}*/}
-                    {/*    cancelText={t('Common.no')}*/}
-                    {/*    onConfirm={async () => {*/}
-                    {/*        await resourceApi.deleteInfoApi(rowKeys as string[]);*/}
-                    {/*        await tableRef?.current?.refreshPageList();*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    <DeleteButton
-                        onClick={async () => {
+                    <Popconfirm
+                        title={t('Button.delete')}
+                        description={t('Button.deleteConfirm')}
+                        okText={t('Common.yes')}
+                        cancelText={t('Common.no')}
+                        onConfirm={async () => {
                             await resourceApi.deleteInfoApi(rowKeys as string[]);
                             await tableRef?.current?.refreshPageList();
                         }}
-                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                    {/*</Popconfirm>*/}
+                    >
+                        <DeleteButton
+                            disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                    </Popconfirm>
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
                         {t('Resource.uploadFile')}
                     </Dropdown.Button>

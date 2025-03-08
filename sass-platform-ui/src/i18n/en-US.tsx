@@ -41,6 +41,8 @@ const EnUS = {
         expandOrCollapse: 'Expand/Collapse',
         pageLoading: 'Page Loading....',
         updateAvatar: 'Update Avatar',
+        pageNotfound: 'Page Notfound',
+        backHome: 'Back Home'
     },
     // button
     Button: {
@@ -81,6 +83,7 @@ const EnUS = {
     Menu: {
         main: 'Permission List',
         home: 'Home',
+        resourceList: 'Resource List',
         query: 'Detail',
         add: 'Add',
         edit: 'Edit',
@@ -99,6 +102,7 @@ const EnUS = {
         deleteMember: 'Delete User',
         tenantForm: 'Tenant Form',
         tenantSpace: 'Tenant Space',
+        updateIcon: 'On click update icon',
     },
     // 租户
     Tenant: {
@@ -166,6 +170,9 @@ const EnUS = {
         routeParams: 'Route Params',
         routeParamsPlaceholder: 'Please input Route Params',
         displayStatus: 'Display Status',
+        startAndEndDate: 'Start and End Date',
+        startDatePlaceholder: 'Please select the start date',
+        endDatePlaceholder: 'Please select the end date',
     },
     Account: {
         personal: 'Personal account',
@@ -296,6 +303,9 @@ const EnUS = {
         uploadFile: 'Upload File',
         uploadFolder: 'Upload Folder',
         unknownType: 'Unknow Type',
+        rootPath: 'Root Path',
+        public: 'Public',
+        private: 'Private'
     }
 }
 

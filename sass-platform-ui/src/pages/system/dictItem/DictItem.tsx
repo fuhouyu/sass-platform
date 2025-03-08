@@ -17,7 +17,19 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictItem as DictItemModel} from "@/model/dictItem";
-import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Select,
+    TableColumnsType,
+    Tag,
+    Tooltip
+} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -195,27 +207,21 @@ export const DictItem = () => {
 
                             <PermissionButton permissionStr={DictItemPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                {/*<Popconfirm*/}
-                                {/*    title={t('Button.delete')}*/}
-                                {/*    description={t('Button.deleteConfirm')}*/}
-                                {/*    okText={t('Common.yes')}*/}
-                                {/*    cancelText={t('Common.no')}*/}
-                                {/*    onConfirm={async () => {*/}
-                                {/*        dictItemApi.deleteInfoApi(rowKeys as string[]).then();*/}
-                                {/*        await tableRef?.current?.refreshPageList({*/}
-                                {/*            pageQuery: params*/}
-                                {/*        });*/}
-                                {/*    }}*/}
-                                {/*>*/}
-                                <DeleteButton
-                                    onClick={async () => {
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
                                         dictItemApi.deleteInfoApi(rowKeys as string[]).then();
                                         await tableRef?.current?.refreshPageList({
                                             pageQuery: params
                                         });
                                     }}
+                                >
+                                <DeleteButton
                                     disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                {/*</Popconfirm>*/}
+                                </Popconfirm>
                             </PermissionButton>
 
                         </>

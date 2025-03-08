@@ -26,6 +26,7 @@ import {
     InputNumber,
     MenuProps,
     message,
+    Popconfirm,
     Radio,
     Row,
     Select,
@@ -412,23 +413,19 @@ export const User: React.FC = () => {
                                     </PermissionButton>
                                     <PermissionButton permissionStr={UserPermissionConstant.DELETE}
                                                       buttonPermissions={buttonPermissions}>
-                                        {/*<Popconfirm*/}
-                                        {/*    title={t('Button.delete')}*/}
-                                        {/*    description={t('Button.deleteConfirm')}*/}
-                                        {/*    okText={t('Common.yes')}*/}
-                                        {/*    cancelText={t('Common.no')}*/}
-                                        {/*    onConfirm={async () => {*/}
-                                        {/*        await userApi.deleteInfoApi(selectUserIds as string[]);*/}
-                                        {/*        await tableRef?.current?.refreshPageList();*/}
-                                        {/*    }}*/}
-                                        {/*>*/}
-                                        <DeleteButton
-                                            onClick={async () => {
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                            onConfirm={async () => {
                                                 await userApi.deleteInfoApi(selectUserIds as string[]);
                                                 await tableRef?.current?.refreshPageList();
                                             }}
+                                        >
+                                        <DeleteButton
                                             disabled={selectUserIds.length === 0}/>
-                                        {/*</Popconfirm>*/}
+                                        </Popconfirm>
                                     </PermissionButton>
 
                                 </>

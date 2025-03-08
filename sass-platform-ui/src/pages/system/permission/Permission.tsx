@@ -24,6 +24,7 @@ import {
     Input,
     InputNumber,
     message,
+    Popconfirm,
     Radio,
     Row,
     Splitter,
@@ -105,6 +106,7 @@ export const Permission: React.FC = () => {
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
             align: 'center',
+            render: (permissionName: string) => t(`Menu.${permissionName}`)
         },
         {
             title: t('Permission.code'),
@@ -322,25 +324,20 @@ export const Permission: React.FC = () => {
                                 </PermissionButton>
                                 <PermissionButton buttonPermissions={buttonPermissions}
                                                   permissionStr={PermissionConstant.DELETE}>
-                                    {/*<Popconfirm*/}
-                                    {/*    title={t('Button.delete')}*/}
-                                    {/*    description={t('Button.deleteConfirm')}*/}
-                                    {/*    okText={t('Common.yes')}*/}
-                                    {/*    cancelText={t('Common.no')}*/}
-                                    {/*    onConfirm={async () => {*/}
-                                    {/*        permissionApi.deleteInfoApi(rowKeys as string[]).then();*/}
-                                    {/*        await tableRef?.current?.refreshPageList();*/}
-                                    {/*        await permissionTreeSelect();*/}
-                                    {/*    }}*/}
-                                    {/*>*/}
-                                    <DeleteButton
-                                        onClick={async () => {
+                                    <Popconfirm
+                                        title={t('Button.delete')}
+                                        description={t('Button.deleteConfirm')}
+                                        okText={t('Common.yes')}
+                                        cancelText={t('Common.no')}
+                                        onConfirm={async () => {
                                             permissionApi.deleteInfoApi(rowKeys as string[]).then();
                                             await tableRef?.current?.refreshPageList();
                                             await permissionTreeSelect();
                                         }}
+                                    >
+                                    <DeleteButton
                                         disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                    {/*</Popconfirm>*/}
+                                    </Popconfirm>
                                 </PermissionButton>
                             </>
                         ]}

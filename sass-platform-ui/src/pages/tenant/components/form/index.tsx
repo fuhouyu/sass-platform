@@ -14,67 +14,84 @@
  * limitations under the License.
  */
 
-import {Button, Card, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
+import {
+    Avatar,
+    Button,
+    Col,
+    DatePicker,
+    Flex,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Radio,
+    Select,
+    Space,
+    Steps,
+    Tooltip
+} from "antd";
 import React, {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.tsx";
-import {FormTree, OrganizationUserModal} from "@/components";
+import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
 import {Menu} from "@/model/menu.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {useTranslation} from "react-i18next";
 import {TenantInfo, TenantSpace} from "@/model/tenant.tsx";
 import {useLocaleStore} from "@/store";
 import './index.scss'
-import {permissionApi} from "@/apis/permission.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
-import {useNavigate, useParams} from "react-router-dom";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {CommonConstant} from "@/constants/commonConstant";
+import {TenantFormProps} from "@/pages/tenant/components/form/interface.ts";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import dayjs, {Dayjs} from 'dayjs';
 
-const TenantForm = () => {
+interface _TenantForm extends TenantInfo {
+    dateRange?: Dayjs[] | null[]
+}
+
+const DATE_FORMAT = 'YYYY-MM-DD';
+
+const TenantForm = (tenantFormProps: TenantFormProps) => {
+    const {tenantId, callback, permissionTreeData} = tenantFormProps;
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
-    const [tenantInfoForm] = Form.useForm<TenantInfo>();
+    const [tenantInfoForm] = Form.useForm<_TenantForm>();
     const [tenantSpaceForm] = Form.useForm<TenantSpace>();
-    const [tenantInfo, setTenantInfo] = useState<TenantInfo | undefined>(undefined);
+    const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
-    const [treeSelectData, setTreeSelectData] = useState<Menu[] | undefined>(undefined);
     const language = useLocaleStore((state) => state.language);
-    const [tenantId, setTenantId] = useState<string>();
-    const params = useParams();
-    const navigate = useNavigate();
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
+    const {preview} = useResourceAction();
 
     /**
      * 查询租户
      */
     const queryTenant = useCallback(async () => {
-        const tenantId = params.tenantId
         if (tenantId === undefined) {
             return
         }
-        setTenantId(tenantId);
         const res = await tenantApi.getInfoByIdApi(tenantId);
+        setPermissionIds(res.permissionIds ?? []);
         tenantInfoForm.setFieldsValue({...res});
         setTenantInfo(res);
-    }, [params.tenantId, tenantInfoForm]);
+    }, [tenantId, tenantInfoForm]);
 
-    /**
-     * 查询权限树
-     */
-    const queryPermissionTreeData = useCallback(async () => {
-        setTreeSelectData(await permissionApi.getPermissionTreeSelect());
-    }, [])
 
     useEffect(() => {
-        queryPermissionTreeData().then();
         if (tenantInfo === undefined) {
             queryTenant().then();
         } else {
-            tenantInfoForm.setFieldsValue({...tenantInfo});
+            const {startDate, endDate} = tenantInfo;
+            const dateRange = [
+                startDate ? dayjs(startDate) : null,
+                endDate ? dayjs(endDate) : null,
+            ];
+            tenantInfoForm.setFieldsValue({...tenantInfo, dateRange});
         }
-    }, [queryPermissionTreeData, queryTenant, tenantInfo, tenantInfoForm])
+    }, [queryTenant, tenantInfo, tenantInfoForm])
 
 
     useEffect(() => {
@@ -100,18 +117,16 @@ const TenantForm = () => {
      * 处理租户
      */
     const handleTenant = async () => {
-        try {
-            await tenantSpaceForm.validateFields();
-
-            const tenant = tenantInfo!
-            tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
-            tenant.permissionIds = permissionIds;
-            await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
-            message.success(t('Common.success'));
-            navigate('/tenant')
-        } catch {
-            await message.success(t('Common.failed'));
-        }
+        await tenantSpaceForm.validateFields();
+        const tenant = tenantInfo!
+        const [startDate, endDate] = tenant.dateRange ?? [];
+        tenant.startDate = startDate?.format(DATE_FORMAT);
+        tenant.endDate = endDate?.format(DATE_FORMAT)
+        tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
+        tenant.permissionIds = permissionIds;
+        await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
+        message.success(t('Common.success'));
+        callback()
     }
 
     /**
@@ -141,7 +156,6 @@ const TenantForm = () => {
         tenantInfoForm.setFieldsValue({...tenantInfo})
     };
 
-
     const steps = [
         {
             title: t('Tenant.basicInfo'),
@@ -152,13 +166,45 @@ const TenantForm = () => {
                     clearOnDestroy={true}
                     name="tenant-form"
                     form={tenantInfoForm}
-                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
-                    wrapperCol={{span: 15}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 5 : 7}}
+                    wrapperCol={{span: 18}}
                     autoComplete="off"
                     initialValues={{
                         isEnabled: true,
                     }}
                 >
+                    <Col className={'form-item-col'}
+                         span={24}>
+                        <Flex align={"center"} justify={'center'}>
+                            <Form.Item
+                                name="icon"
+                                key="icon"
+                                colon={false}
+                                required={true}
+                                hasFeedback
+                            >
+                                <S3Upload
+                                    uploadProps={{
+                                        prefix: 'user-avatar',
+                                        isPublic: true,
+                                        onUploadSuccess: async (resourceId) => {
+                                            setTenantInfo({...tenantInfo, icon: resourceId})
+                                            message.success(t('Common.success'));
+                                        },
+                                    }}
+                                >
+                                    <Tooltip
+                                        className={'cursor-point'}
+                                        title={t('Tenant.updateIcon')}>
+                                        <Avatar
+                                            size={100}
+                                            src={preview(tenantInfo?.icon)}
+                                        />
+                                    </Tooltip>
+                                </S3Upload>
+                            </Form.Item>
+                        </Flex>
+                    </Col>
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
                             label={t('Tenant.name')}
@@ -266,6 +312,7 @@ const TenantForm = () => {
                             name='isEnabled'
                             key="isEnabled"
                             colon={false}
+                            required
                             hasFeedback
                         >
                             <Radio.Group>
@@ -300,13 +347,28 @@ const TenantForm = () => {
                                         setPermissionIds(checked.checked);
                                     },
                                     titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
-                                    treeData: treeSelectData,
+                                    treeData: permissionTreeData,
+
                                 }}
                                 onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
                             />
                         </Form.Item>
                     </Col>
 
+                    <Col className={'form-item-col'} span={12}>
+                        <Form.Item
+                            name="dateRange"
+                            label={t('Tenant.startAndEndDate')}
+                            colon={false}
+                            hasFeedback={true}
+                        >
+                            <DatePicker.RangePicker
+                                placeholder={[t('Tenant.startDatePlaceholder'), t('Tenant.endDatePlaceholder')]}
+                                disabledDate={(current) => current && current < dayjs().subtract(1, 'day')}
+                                format="YYYY-MM-DD"
+                            />
+                        </Form.Item>
+                    </Col>
 
                     <Col className={'form-item-col'} span={24} style={{
                         paddingTop: '1rem',
@@ -419,9 +481,7 @@ const TenantForm = () => {
     return (
         <>
             <Steps current={current} items={items}/>
-            <Card className={'tenant-content'}>
-                <div>{steps[current].content}</div>
-            </Card>
+            <div className={'tenant-content'}>{steps[current].content}</div>
             <div className={'step-action'}>
                 {current > 0 && (
                     <Button style={{margin: '0 8px'}} onClick={() => prev()}>

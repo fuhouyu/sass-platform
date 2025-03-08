@@ -18,7 +18,19 @@ import React, {Key, useRef, useState} from "react";
 import {Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
-import {Button, Form, Input, InputNumber, message, Radio, Splitter, TableColumnsType, Tree, TreeSelect} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Splitter,
+    TableColumnsType,
+    Tree,
+    TreeSelect
+} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
 import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
@@ -230,25 +242,15 @@ export const Organization = () => {
                                     </PermissionButton>
                                     <PermissionButton buttonPermissions={buttonPermissions}
                                                       permissionStr={OrganizationPermissionConstant.DELETE}>
-                                        {/*<Popconfirm*/}
-                                        {/*    title={t('Button.delete')}*/}
-                                        {/*    description={t('Button.deleteConfirm')}*/}
-                                        {/*    okText={t('Common.yes')}*/}
-                                        {/*    cancelText={t('Common.no')}*/}
-                                        {/*    onConfirm={async () => {*/}
-                                        {/*        await organizationApi.deleteInfoApi(rowKeys as string[]).then();*/}
-                                        {/*        await tableRef?.current?.refreshPageList();*/}
-                                        {/*        await onLoadData({key: formParentOrganization.id});*/}
-                                        {/*    }}*/}
-                                        {/*>*/}
+                                        <Popconfirm
+                                            title={t('Button.delete')}
+                                            description={t('Button.deleteConfirm')}
+                                            okText={t('Common.yes')}
+                                            cancelText={t('Common.no')}
+                                        >
                                         <DeleteButton
-                                            onClick={async () => {
-                                                await organizationApi.deleteInfoApi(rowKeys as string[]).then();
-                                                await tableRef?.current?.refreshPageList();
-                                                await onLoadData({key: formParentOrganization.id});
-                                            }}
                                             disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                        {/*</Popconfirm>*/}
+                                        </Popconfirm>
                                     </PermissionButton>
                                 </>
                             ]}

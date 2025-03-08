@@ -41,6 +41,8 @@ const ZhCN = {
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
         updateAvatar: '更新头像',
+        pageNotfound: '页面不存在',
+        backHome: '回到首页'
     },
     // button
     Button: {
@@ -109,11 +111,17 @@ const ZhCN = {
         publicReadAcl: '公开读',
         publicWriteAcl: '公开读写',
         authenticationRead: '认证读',
+        updateIcon: '点击更新Icon',
+        startAndEndDate: '起止日期',
+        startDatePlaceholder: '请选择开始日期',
+        endDatePlaceholder: '请选择结束日期',
+
     },
     // 菜单
     Menu: {
         main: '权限列表',
         home: '主页',
+        resourceList: '资源列表',
         query: '详情',
         add: '新增',
         edit: '修改',
@@ -298,7 +306,9 @@ const ZhCN = {
         uploadFile: '上传文件',
         uploadFolder: '上传文件夹',
         unknownType: '未知类型',
-
+        rootPath: '根目录',
+        public: '公开',
+        private: '私有'
     }
 }
 

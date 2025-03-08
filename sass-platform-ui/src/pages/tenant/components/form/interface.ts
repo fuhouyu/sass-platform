@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import "normalize.css"
-import '@ant-design/v5-patch-for-react-19';
-import {App} from "@/App";
 
-import {App as AntdApp} from 'antd';
+import {Menu} from "@/model/menu.tsx";
+
+/**
+ * 租户表单属性
+ */
+export interface TenantFormProps {
+
+    /**
+     * 租户id
+     */
+    tenantId?: string | undefined;
+
+    /**
+     * 权限树数据
+     */
+    permissionTreeData?: Menu[] | undefined;
+
+    /**
+     * 表单处理后的回调
+     */
+    callback: () => void;
 
 
-createRoot(document.getElementById('root')!).render(
-    <>
-        <AntdApp className={'app-container'}>
-            <App/>
-        </AntdApp>
-    </>
-)
+}

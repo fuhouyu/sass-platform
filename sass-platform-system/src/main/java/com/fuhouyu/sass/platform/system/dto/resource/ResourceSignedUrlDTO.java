@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.dto.resource;
 
-import {createRoot} from 'react-dom/client'
-import './index.scss'
-import "normalize.css"
-import '@ant-design/v5-patch-for-react-19';
-import {App} from "@/App";
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
-import {App as AntdApp} from 'antd';
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 资源签名参数dto
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/3/8 23:42
+ */
+@Schema(name = "ResourceSignedUrlDTO", description = "资源签名参数")
+@Data
+public class ResourceSignedUrlDTO implements Serializable {
 
 
-createRoot(document.getElementById('root')!).render(
-    <>
-        <AntdApp className={'app-container'}>
-            <App/>
-        </AntdApp>
-    </>
-)
+    @Schema(name = "signature", description = "签名参数")
+    private String signature;
+
+    @Schema(name = "expires", description = "过期时间")
+    private Long expires;
+}

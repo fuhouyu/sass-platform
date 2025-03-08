@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -77,4 +78,10 @@ public class TenantInfoDTO extends BaseDTO {
     @Schema(name = "permissionIds", description = "权限id集合")
     @NotEmpty(message = "权限未选择")
     private List<Long> permissionIds;
+
+    @Schema(name = "startDate", description = "租户开始日期")
+    private LocalDate startDate;
+
+    @Schema(name = "startDate", description = "租户结束日期")
+    private LocalDate endDate;
 }

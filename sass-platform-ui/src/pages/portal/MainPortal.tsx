@@ -22,6 +22,7 @@ import {tenantApi} from "@/apis/tenant";
 import {useLocation, useNavigate} from "react-router-dom";
 import {parseRoutes} from "@/hooks/useRoutes.tsx";
 import {useRouterStore, useUserStore} from "@/store";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 
 /**
@@ -36,6 +37,7 @@ export const MainPortal = () => {
     const {fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
     const navigate = useNavigate();
+    const {preview} = useResourceAction();
     const confirm = async () => {
         if (!chooseTenant) {
             return
@@ -69,7 +71,7 @@ export const MainPortal = () => {
                                 hoverable
                             >
                                 <Card.Meta
-                                    avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"/>}
+                                    avatar={<Avatar src={preview(tenant.icon)}/>}
                                     title={tenant.tenantName}
                                     description={<p>{tenant.remark}</p>}
                                 />
