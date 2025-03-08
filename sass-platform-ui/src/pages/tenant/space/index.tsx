@@ -291,12 +291,13 @@ const TenantSpace: React.FC = () => {
     const fileActions = [
         {
             icon: <DownloadOutlined/>, text: t('Resource.download'),
-            onClick: () => selectFile && window.open(download(selectFile.id))
+            onClick: async () => selectFile && window.open(await download(selectFile.id))
         },
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
-            onClick: () => selectFile && setPreviewModal(true),
+            onClick: () => selectFile &&
+                setPreviewModal(true),
         },
     ];
 

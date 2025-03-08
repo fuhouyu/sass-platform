@@ -27,6 +27,7 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.ResourceSignedUrlDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
 import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
@@ -57,11 +58,17 @@ import software.amazon.awssdk.services.sts.model.Credentials;
 import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -82,11 +89,22 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
 
+    private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
+
+    /**
+     * 过期时间一个小时
+     */
+    private static final long EXPIRE_TIME = Duration.ofHours(1).getSeconds();
+
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private static final String TMP_DIR = "tmp/";
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    private final HttpServletRequest httpServletRequest;
+
+    private final HttpServletResponse httpServletResponse;
 
     private final S3Client s3Client;
 
@@ -187,18 +205,7 @@ public class ResourceServiceImpl implements ResourceService {
                              boolean isPreview,
                              HttpServletRequest request, HttpServletResponse response) {
         Resources resources = this.checkResourcePermission(id);
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
-        String rangeHeader = request.getHeader(HttpHeaders.RANGE);
-        int status = Objects.isNull(rangeHeader) ?
-                HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
-        response.setStatus(status);
-        ResponseInputStream<GetObjectResponse> responseInputStream = this.s3Client.getObject(builder -> {
-            builder.bucket(tenantSpaceDTO.getBucketName())
-                    .key(resources.getObjectKey());
-            if (Objects.nonNull(rangeHeader)) {
-                builder.range(rangeHeader);
-            }
-        });
+        ResponseInputStream<GetObjectResponse> responseInputStream = this.downloadFileByS3(resources);
         if (isPreview) {
             response.setHeader(HttpHeaders.CONTENT_TYPE, responseInputStream.response().contentType());
         } else {
@@ -207,10 +214,23 @@ public class ResourceServiceImpl implements ResourceService {
                     String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
         }
         try {
-            this.doFileDownload(request, response, responseInputStream);
-//            LoggerUtil.info(log, "资源预览成功: bucket={}, key={}, range={}-{}, size={}",
-//                    tenantSpaceDTO.getBucketName(),
-//                    resources.getObjectKey(), tenantSpaceDTO.getBucketName(), resources.getObjectKey(), resources.getSize());
+            this.doFileDownload(responseInputStream);
+        } catch (IOException e) {
+            // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
+        }
+    }
+
+
+    @Override
+    public void downloadFile(Long id, ResourceSignedUrlDTO resourceSignedUrlDTO) {
+        Resources resources = this.resourceMapper.queryById(id);
+        this.checkSignedUrl(resourceSignedUrlDTO, resources);
+        httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(resources);
+        try {
+            this.doFileDownload(responseResponseInputStream);
         } catch (IOException e) {
             // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
         }
@@ -259,6 +279,23 @@ public class ResourceServiceImpl implements ResourceService {
         }
         return RESOURCES_ASSEMBLER.toDTO(resources);
     }
+
+    @Override
+    public String generateSignedUrl(Long id) {
+        ResourceDTO resourceDTO = this.checkResourceExists(id);
+        long expirationTime = Instant.now().getEpochSecond() + EXPIRE_TIME;
+        String stringToSign = resourceDTO.getObjectKey() + "\n" + expirationTime;
+        String signature = this.generateSignature(stringToSign);
+        String baseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
+        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
+            baseUrl += ":" + httpServletRequest.getServerPort();
+        }
+        return String.format("%s/v1/resource/download/%s?signature=%s&expires=%s", baseUrl,
+                id,
+                signature, expirationTime);
+
+    }
+
 
     /**
      * 检查资源权限
@@ -400,16 +437,12 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * 文件下载
      *
-     * @param request                     请求
-     * @param response                    响应
      * @param responseResponseInputStream oss资源流
      * @throws IOException io异常
      */
-    private void doFileDownload(HttpServletRequest request,
-                                HttpServletResponse response,
-                                ResponseInputStream<GetObjectResponse> responseResponseInputStream) throws IOException {
-        setHttpResponseHeader(responseResponseInputStream.response(), response);
-        try (ServletOutputStream outputStream = response.getOutputStream();
+    private void doFileDownload(ResponseInputStream<GetObjectResponse> responseResponseInputStream) throws IOException {
+        setHttpResponseHeader(responseResponseInputStream.response(), httpServletResponse);
+        try (ServletOutputStream outputStream = httpServletResponse.getOutputStream();
              responseResponseInputStream) {
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int bytesRead;
@@ -417,7 +450,81 @@ public class ResourceServiceImpl implements ResourceService {
                 outputStream.write(buffer, 0, bytesRead);
             }
         }
+    }
 
+    /**
+     * 使用 HMAC-SHA256 计算签名
+     *
+     * @param data 待签名的数据
+     * @return 签名
+     */
+    private String generateSignature(String data) {
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(s3Properties.getSecretKey().getBytes(StandardCharsets.UTF_8), HMAC_SHA256_ALGORITHM);
+            Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
+            mac.init(signingKey);
+            byte[] rawHmac = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(rawHmac);
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            LoggerUtil.error(log, "使用签名: {} 计算数据失败: {}", HMAC_SHA256_ALGORITHM, e.getMessage(), e);
+            throw new IllegalArgumentException("签名计算失败", e);
+        }
+    }
+
+
+    /**
+     * 检查签名url
+     *
+     * @param resourceSignedUrlDTO 资源签名url dto
+     * @param resources            资源文件
+     */
+    private void checkSignedUrl(ResourceSignedUrlDTO resourceSignedUrlDTO,
+                                Resources resources) {
+        if (Objects.isNull(resources)) {
+            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
+                    "当前资源不存在");
+        }
+        if (resources.getIsPublic()) {
+            return;
+        }
+        Long expires = resourceSignedUrlDTO.getExpires();
+        // 检查 URL 是否过期
+        long currentTime = Instant.now().getEpochSecond();
+        if (currentTime > expires) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前url签名已过期");
+        }
+
+        // 重新计算签名
+        String stringToSign = resources.getObjectKey() + "\n" + expires;
+        String expectedSignature = this.generateSignature(stringToSign);
+
+        // 比较签名
+        String originSignedData = resourceSignedUrlDTO.getSignature();
+        if (!Objects.equals(originSignedData, expectedSignature)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前下载url已过期");
+        }
+    }
+
+    /**
+     * 从s3 下载资源
+     *
+     * @param resources 资源文件
+     * @return 从s3下载的资源
+     */
+    private ResponseInputStream<GetObjectResponse> downloadFileByS3(Resources resources) {
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
+        String rangeHeader = httpServletRequest.getHeader(HttpHeaders.RANGE);
+        int status = Objects.isNull(rangeHeader) ?
+                HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
+        httpServletResponse.setStatus(status);
+        return this.s3Client.getObject(builder -> {
+            builder.bucket(tenantSpaceDTO.getBucketName())
+                    .key(resources.getObjectKey());
+            if (Objects.nonNull(rangeHeader)) {
+                builder.range(rangeHeader);
+            }
+        });
     }
 }
 

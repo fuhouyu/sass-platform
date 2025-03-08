@@ -15,6 +15,7 @@
  */
 
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {resourceApi} from "@/apis/resource.tsx";
 
 export function useResourceAction() {
 
@@ -25,9 +26,9 @@ export function useResourceAction() {
         return undefined;
     }
 
-    const download = (resourceId?: string): string => {
+    const download = async (resourceId?: string): Promise<string> => {
         if (resourceId) {
-            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/download/${resourceId}`
+            return await resourceApi.generateSignedUrl(resourceId);
         }
         return "#";
     }

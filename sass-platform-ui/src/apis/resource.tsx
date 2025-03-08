@@ -41,7 +41,17 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      */
     getResourceByEtag: (etag: string) => Promise<Resource> = (etag: string): Promise<Resource> => request.get(`${this.baseUrl}`, {params: {etag}})
 
+    /**
+     * 下载文件
+     * @param id 主键id
+     */
     downloadFile: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/download/${id}`)
+
+    /**
+     * 生成随机的url
+     * @param id 主键id
+     */
+    generateSignedUrl: (id: string) => Promise<string> = (id: string): Promise<string> => request.get(`${this.baseUrl}/generate/signed-url/${id}`)
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

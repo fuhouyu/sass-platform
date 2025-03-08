@@ -20,10 +20,7 @@ import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourcePageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.dto.resource.*;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -91,16 +88,14 @@ public class ResourceController {
      * 下载文件
      *
      * @param id       资源id
-     * @param request  请求
-     * @param response 响应
+     * @param resourceSignedUrlDTO 签名dto对象
      */
     @GetMapping("/download/{id}")
     @Operation(summary = "下载资源文件")
     @NoAuth
     public void downloadFile(@PathVariable("id") Long id,
-                             HttpServletRequest request,
-                             HttpServletResponse response) {
-        this.resourceService.downloadFile(id, false, request, response);
+                             ResourceSignedUrlDTO resourceSignedUrlDTO) {
+        this.resourceService.downloadFile(id, resourceSignedUrlDTO);
     }
 
     /**
@@ -159,5 +154,18 @@ public class ResourceController {
     @PreAuthorize("@auth.hasAnyPermission('tenant-space:resource-list')")
     public BaseResponse<PageResultDTO<ResourceDTO>> listResourceByTenantId(ResourcePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.resourceService.pageList(pageQueryDTO));
+    }
+
+
+    /**
+     * 生成签名url
+     *
+     * @param id 主键id
+     * @return 签名url
+     */
+    @Operation(summary = "生成签名url")
+    @GetMapping("/generate/signed-url/{id}")
+    public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.resourceService.generateSignedUrl(id));
     }
 }
