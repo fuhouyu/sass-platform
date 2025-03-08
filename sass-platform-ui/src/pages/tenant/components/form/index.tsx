@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {Button, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
+import {Avatar, Button, Col, Flex, Form, Input, InputNumber, message, Radio, Select, Space, Steps, Tooltip} from "antd";
 import React, {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.tsx";
-import {FormTree, OrganizationUserModal} from "@/components";
+import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
 import {Menu} from "@/model/menu.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {useTranslation} from "react-i18next";
@@ -29,6 +29,7 @@ import {Userinfo} from "@/model/user.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {CommonConstant} from "@/constants/commonConstant";
 import {TenantFormProps} from "@/pages/tenant/components/form/interface.ts";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 const TenantForm = (tenantFormProps: TenantFormProps) => {
     const {tenantId, callback, permissionTreeData} = tenantFormProps;
@@ -41,6 +42,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const language = useLocaleStore((state) => state.language);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
+    const {preview} = useResourceAction();
 
     /**
      * 查询租户
@@ -143,6 +145,38 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                         isEnabled: true,
                     }}
                 >
+                    <Col className={'form-item-col'}
+                         span={24}>
+                        <Flex align={"center"} justify={'center'}>
+                            <Form.Item
+                                name="icon"
+                                key="icon"
+                                colon={false}
+                                required={true}
+                                hasFeedback
+                            >
+                                <S3Upload
+                                    uploadProps={{
+                                        prefix: 'user-avatar',
+                                        isPublic: true,
+                                        onUploadSuccess: async (resourceId) => {
+                                            setTenantInfo({...tenantInfo, icon: resourceId})
+                                            message.success(t('Common.success'));
+                                        },
+                                    }}
+                                >
+                                    <Tooltip
+                                        className={'cursor-point'}
+                                        title={t('Tenant.updateIcon')}>
+                                        <Avatar
+                                            size={100}
+                                            src={preview(tenantInfo?.icon)}
+                                        />
+                                    </Tooltip>
+                                </S3Upload>
+                            </Form.Item>
+                        </Flex>
+                    </Col>
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
                             label={t('Tenant.name')}

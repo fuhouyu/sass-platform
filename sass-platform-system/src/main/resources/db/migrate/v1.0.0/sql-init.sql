@@ -23,7 +23,7 @@ CREATE TABLE tenant_info
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
     remark         VARCHAR(256),
-    icon           VARCHAR(256),
+    icon BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
     start_time     TIMESTAMP,
@@ -432,7 +432,7 @@ VALUES (14, 1, 'delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', fa
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (4, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
+VALUES (3, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
         false, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
@@ -572,6 +572,8 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 265, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 266, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
+VALUES (1, 3, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

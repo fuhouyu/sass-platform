@@ -111,6 +111,8 @@ const ZhCN = {
         publicReadAcl: '公开读',
         publicWriteAcl: '公开读写',
         authenticationRead: '认证读',
+        updateIcon: '点击更新Icon',
+
     },
     // 菜单
     Menu: {

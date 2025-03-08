@@ -101,6 +101,7 @@ const EnUS = {
         deleteMember: 'Delete User',
         tenantForm: 'Tenant Form',
         tenantSpace: 'Tenant Space',
+        updateIcon: 'On click update icon',
     },
     // 租户
     Tenant: {

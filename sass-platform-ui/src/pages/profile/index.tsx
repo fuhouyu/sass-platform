@@ -87,7 +87,9 @@ export const UserProfile: React.FC = () => {
                             },
                         }}
                     >
-                        <Tooltip title={t('User.updateAvatar')}>
+                        <Tooltip
+                            className={'cursor-point'}
+                            title={t('User.updateAvatar')}>
                             <Avatar
                                 size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
                                 src={preview(userinfo.avatar)}
