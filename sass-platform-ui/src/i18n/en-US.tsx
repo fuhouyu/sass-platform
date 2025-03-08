@@ -41,6 +41,8 @@ const EnUS = {
         expandOrCollapse: 'Expand/Collapse',
         pageLoading: 'Page Loading....',
         updateAvatar: 'Update Avatar',
+        pageNotfound: 'Page Notfound',
+        backHome: 'Back Home'
     },
     // button
     Button: {
@@ -296,6 +298,7 @@ const EnUS = {
         uploadFile: 'Upload File',
         uploadFolder: 'Upload Folder',
         unknownType: 'Unknow Type',
+        rootPath: 'Root Path',
     }
 }
 

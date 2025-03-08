@@ -39,7 +39,7 @@ export const App: React.FC = () => {
     useEffect(() => {
         if (initialized) {
             const rootRoutes = [...commonRoutes];
-            rootRoutes[0].children = dynamicRoutes;
+            rootRoutes[0].children = [...dynamicRoutes, ...(rootRoutes[0].children ?? [])];
             const updatedRouter = createBrowserRouter(rootRoutes);
             setIsLoading(false);
             storeRouter(updatedRouter)

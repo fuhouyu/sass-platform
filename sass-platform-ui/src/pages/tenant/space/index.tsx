@@ -137,7 +137,7 @@ const TenantSpace: React.FC = () => {
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
         const breadcrumbItems = [
             {
-                title: '根目录',
+                title: t('Resource.rootPath'),
                 onClick: () => breadcrumbClick(undefined),
             }];
         const prefix: string = querySearchParams()['prefix'];

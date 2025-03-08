@@ -19,10 +19,12 @@ import {getAccessToken} from "@/utils";
 import {Button, Result} from "antd";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 export const NotFound = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const {t} = useTranslation();
     // 如果用户未登录，跳回登录页
     useEffect(() => {
         const accessToken = getAccessToken();
@@ -37,9 +39,9 @@ export const NotFound = () => {
         <Result
             status="404"
             title="404"
-            subTitle="当前访问的页面不存在"
+            subTitle={t('Common.pageNotfound')}
             extra={<Button type="primary" onClick={backHome}>
-                回到首页
+                {t('Common.backHome')}
             </Button>}
         />
     )

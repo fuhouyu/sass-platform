@@ -41,6 +41,8 @@ const ZhCN = {
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
         updateAvatar: '更新头像',
+        pageNotfound: '页面不存在',
+        backHome: '回到首页'
     },
     // button
     Button: {
@@ -298,7 +300,7 @@ const ZhCN = {
         uploadFile: '上传文件',
         uploadFolder: '上传文件夹',
         unknownType: '未知类型',
-
+        rootPath: '根目录',
     }
 }
 
