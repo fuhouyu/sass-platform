@@ -123,16 +123,19 @@ const TenantSpace: React.FC = () => {
             title: t('Resource.isPublic'),
             dataIndex: 'isPublic',
             align: "center",
-            render: (isPublic: boolean) => (
-                isPublic ?
+            render: (_, record: Resource) => {
+                if (record.isDirectory) {
+                    return <div>-</div>;
+                }
+                return record.isPublic ?
                     <Tag icon={<EyeOutlined/>} color="success">
                         {t('Resource.public')}
                     </Tag>
                     :
                     <Tag icon={<LockOutlined/>} color="warning">
                         {t('Resource.private')}
-                    </Tag>
-            )
+                    </Tag>;
+            }
         },
         {
             title: t('Common.updateAt'),
