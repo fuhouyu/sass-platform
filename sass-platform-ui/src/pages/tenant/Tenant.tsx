@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Input, TableColumnsType, Tag} from "antd";
+import {Input, Popconfirm, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -137,23 +137,19 @@ export const Tenant: React.FC = () => {
                         </PermissionButton>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
-                            {/*<Popconfirm*/}
-                            {/*    title={t('Button.delete')}*/}
-                            {/*    description={t('Button.deleteConfirm')}*/}
-                            {/*    okText={t('Common.yes')}*/}
-                            {/*    cancelText={t('Common.no')}*/}
-                            {/*    onConfirm={async () => {*/}
-                            {/*        await tenantApi.deleteInfoApi(rowKeys as string[]);*/}
-                            {/*        await tableRef?.current?.refreshPageList();*/}
-                            {/*    }}*/}
-                            {/*>*/}
+                            <Popconfirm
+                                title={t('Button.delete')}
+                                description={t('Button.deleteConfirm')}
+                                okText={t('Common.yes')}
+                                cancelText={t('Common.no')}
+                                onConfirm={async () => {
+                                    await tenantApi.deleteInfoApi(rowKeys as string[]);
+                                    await tableRef?.current?.refreshPageList();
+                                }}
+                            >
                             <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}
-                                          onClick={async () => {
-                                              await tenantApi.deleteInfoApi(rowKeys as string[]);
-                                              await tableRef?.current?.refreshPageList();
-                                          }}
                             />
-                            {/*</Popconfirm>*/}
+                            </Popconfirm>
                         </PermissionButton>
                     </>
                 ]

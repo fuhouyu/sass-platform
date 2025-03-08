@@ -20,8 +20,13 @@ import "normalize.css"
 import '@ant-design/v5-patch-for-react-19';
 import {App} from "@/App";
 
+import {App as AntdApp} from 'antd';
+
+
 createRoot(document.getElementById('root')!).render(
     <>
-        <App/>
+        <AntdApp>
+            <App/>
+        </AntdApp>
     </>
 )

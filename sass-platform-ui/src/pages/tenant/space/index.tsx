@@ -28,6 +28,7 @@ import {
     List,
     MenuProps,
     Modal,
+    Popconfirm,
     Space,
     TableColumnsType
 } from "antd";
@@ -290,23 +291,19 @@ const TenantSpace: React.FC = () => {
                     </Flex>
                 </Flex>
                 <Flex gap={8}>
-                    {/*<Popconfirm*/}
-                    {/*    title={t('Button.delete')}*/}
-                    {/*    description={t('Button.deleteConfirm')}*/}
-                    {/*    okText={t('Common.yes')}*/}
-                    {/*    cancelText={t('Common.no')}*/}
-                    {/*    onConfirm={async () => {*/}
-                    {/*        await resourceApi.deleteInfoApi(rowKeys as string[]);*/}
-                    {/*        await tableRef?.current?.refreshPageList();*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    <DeleteButton
-                        onClick={async () => {
+                    <Popconfirm
+                        title={t('Button.delete')}
+                        description={t('Button.deleteConfirm')}
+                        okText={t('Common.yes')}
+                        cancelText={t('Common.no')}
+                        onConfirm={async () => {
                             await resourceApi.deleteInfoApi(rowKeys as string[]);
                             await tableRef?.current?.refreshPageList();
                         }}
+                    >
+                    <DeleteButton
                         disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                    {/*</Popconfirm>*/}
+                    </Popconfirm>
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
                         {t('Resource.uploadFile')}
                     </Dropdown.Button>
