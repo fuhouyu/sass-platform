@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import org.apache.ibatis.annotations.Param;
 
@@ -121,18 +120,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
     @Override
     List<Permissions> queryByIds(@Param("list") Collection<Long> list);
 
-
-    /**
-     * 批量查询
-     *
-     * @param pageQuery 分页查询对象
-     * @param <P>       范围查询的类型
-     * @return 批量查询
-     */
-    @TenantQuery(column = "p.owner_tenant_id")
-    @Override
-    <P extends PageQueryDTO> List<Permissions> queryList(@Param("pageQuery") P pageQuery);
-
     /**
      * 查询租户关联的权限
      *
@@ -142,4 +129,11 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
     @TenantQuery(column = "thp.tenant_id")
     List<Permissions> queryAttachTenantPermissionListByParentId(@Param("parentId") Long parentId);
 
+    /**
+     * 查询当前租户下所有的租权限
+     *
+     * @return 权限集合
+     */
+    @TenantQuery(column = "p.owner_tenant_id")
+    List<Permissions> queryAll();
 }

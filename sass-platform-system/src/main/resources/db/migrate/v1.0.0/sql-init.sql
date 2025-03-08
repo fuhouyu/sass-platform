@@ -428,14 +428,6 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
 VALUES (14, 1, 'delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
--- 租户表单
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, create_at, create_by, update_at, update_by)
-VALUES (3, -1, 'tenantForm', 'tenant:form', 5, '', 'tenant-form', 'tenant/components/form', '', false, 'MENU', false,
-        false, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-
 -- 租户空间
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
@@ -521,8 +513,6 @@ VALUES (1, 1, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 26, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 27, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 234, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 251, now(), 'admin');
@@ -582,8 +572,6 @@ INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 265, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
 VALUES (1, 266, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, create_at, create_by)
-VALUES (1, 3, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

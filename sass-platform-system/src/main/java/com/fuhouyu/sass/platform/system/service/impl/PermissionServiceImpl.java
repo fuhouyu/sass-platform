@@ -24,7 +24,6 @@ import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.entity.Permissions;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
@@ -164,7 +163,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<PermissionTreeDTO> getTreeList() {
-        List<Permissions> permissionsList = this.permissionMapper.queryList(new PermissionPageQueryDTO());
+        List<Permissions> permissionsList = this.permissionMapper.queryAll();
         return TreeConvertUtil.buildTree(PERMISSION_ASSEMBLER.toPermissionInfoTreeDTOList(permissionsList));
     }
 

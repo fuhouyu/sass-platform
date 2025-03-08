@@ -345,4 +345,12 @@
         AND is_deleted = false
         ORDER BY display_order
     </select>
+
+    <select id="queryAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/> p
+        WHERE is_deleted = false
+    </select>
 </mapper>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Button, Card, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
+import {Button, Col, Form, Input, InputNumber, message, Radio, Select, Space, Steps} from "antd";
 import React, {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {FormTree, OrganizationUserModal} from "@/components";
@@ -24,14 +24,14 @@ import {useTranslation} from "react-i18next";
 import {TenantInfo, TenantSpace} from "@/model/tenant.tsx";
 import {useLocaleStore} from "@/store";
 import './index.scss'
-import {permissionApi} from "@/apis/permission.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
-import {useNavigate, useParams} from "react-router-dom";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {CommonConstant} from "@/constants/commonConstant";
+import {TenantFormProps} from "@/pages/tenant/components/form/interface.ts";
 
-const TenantForm = () => {
+const TenantForm = (tenantFormProps: TenantFormProps) => {
+    const {tenantId, callback, permissionTreeData} = tenantFormProps;
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
     const [tenantInfoForm] = Form.useForm<TenantInfo>();
@@ -39,42 +39,30 @@ const TenantForm = () => {
     const [tenantInfo, setTenantInfo] = useState<TenantInfo | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
-    const [treeSelectData, setTreeSelectData] = useState<Menu[] | undefined>(undefined);
     const language = useLocaleStore((state) => state.language);
-    const [tenantId, setTenantId] = useState<string>();
-    const params = useParams();
-    const navigate = useNavigate();
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
 
     /**
      * 查询租户
      */
     const queryTenant = useCallback(async () => {
-        const tenantId = params.tenantId
         if (tenantId === undefined) {
             return
         }
-        setTenantId(tenantId);
         const res = await tenantApi.getInfoByIdApi(tenantId);
+        setPermissionIds(res.permissionIds ?? []);
         tenantInfoForm.setFieldsValue({...res});
         setTenantInfo(res);
-    }, [params.tenantId, tenantInfoForm]);
+    }, [tenantId, tenantInfoForm]);
 
-    /**
-     * 查询权限树
-     */
-    const queryPermissionTreeData = useCallback(async () => {
-        setTreeSelectData(await permissionApi.getPermissionTreeSelect());
-    }, [])
 
     useEffect(() => {
-        queryPermissionTreeData().then();
         if (tenantInfo === undefined) {
             queryTenant().then();
         } else {
             tenantInfoForm.setFieldsValue({...tenantInfo});
         }
-    }, [queryPermissionTreeData, queryTenant, tenantInfo, tenantInfoForm])
+    }, [queryTenant, tenantInfo, tenantInfoForm])
 
 
     useEffect(() => {
@@ -100,18 +88,14 @@ const TenantForm = () => {
      * 处理租户
      */
     const handleTenant = async () => {
-        try {
-            await tenantSpaceForm.validateFields();
+        await tenantSpaceForm.validateFields();
 
-            const tenant = tenantInfo!
-            tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
-            tenant.permissionIds = permissionIds;
-            await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
-            message.success(t('Common.success'));
-            navigate('/tenant')
-        } catch {
-            await message.success(t('Common.failed'));
-        }
+        const tenant = tenantInfo!
+        tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
+        tenant.permissionIds = permissionIds;
+        await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
+        message.success(t('Common.success'));
+        callback()
     }
 
     /**
@@ -152,7 +136,7 @@ const TenantForm = () => {
                     clearOnDestroy={true}
                     name="tenant-form"
                     form={tenantInfoForm}
-                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 5 : 7}}
                     wrapperCol={{span: 15}}
                     autoComplete="off"
                     initialValues={{
@@ -300,7 +284,8 @@ const TenantForm = () => {
                                         setPermissionIds(checked.checked);
                                     },
                                     titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
-                                    treeData: treeSelectData,
+                                    treeData: permissionTreeData,
+
                                 }}
                                 onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
                             />
@@ -419,9 +404,7 @@ const TenantForm = () => {
     return (
         <>
             <Steps current={current} items={items}/>
-            <Card className={'tenant-content'}>
-                <div>{steps[current].content}</div>
-            </Card>
+            <div className={'tenant-content'}>{steps[current].content}</div>
             <div className={'step-action'}>
                 {current > 0 && (
                     <Button style={{margin: '0 8px'}} onClick={() => prev()}>

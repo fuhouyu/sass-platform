@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Input, Popconfirm, TableColumnsType, Tag} from "antd";
+import {Drawer, Input, Popconfirm, TableColumnsType, Tag} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -29,9 +29,11 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {CheckCircleOutlined} from "@ant-design/icons";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
-import {useNavigate} from "react-router-dom";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import TenantForm from "./components/form";
+import {permissionApi} from "@/apis/permission.tsx";
+import {Menu} from "@/model/menu.tsx";
 
 /**
  * 租户组件
@@ -41,6 +43,7 @@ export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
     const tableRef = useRef<TableRefType<TenantInfo>>(null);
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -99,7 +102,7 @@ export const Tenant: React.FC = () => {
             render: (_, record: TenantInfo) => {
                 return (<PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
-                    <EditButton onClick={() => navigate(`/tenant-form/${record.id}`)}/>
+                    <EditButton onClick={() => openDrawer(record.id)}/>
                 </PermissionButton>)
             }
         }
@@ -110,7 +113,8 @@ export const Tenant: React.FC = () => {
 
     const [tenantQuery, setTenantQuery] = useState<Record<string, string>>({...querySearchParams()});
     const {findDictItemName} = useDictItem(["TENANT_TYPE"]);
-    const navigate = useNavigate();
+    const [openTenantDrawer, setOpenTenantDrawer] = useState<boolean>(false);
+    const [permissionTree, setPermissionTree] = useState<Menu[] | undefined>(undefined);
 
 
     /**
@@ -119,6 +123,23 @@ export const Tenant: React.FC = () => {
     const rowSelection: TableRowSelection<Userinfo> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
+
+    /**
+     * 打开租户表单抽屉
+     */
+    const openDrawer = async (tenantId?: string | undefined) => {
+        setUpdateId(tenantId)
+        setOpenTenantDrawer(true);
+        setPermissionTree(await permissionApi.getPermissionTreeSelect());
+    }
+
+    /**
+     * 关闭租户表单抽屉
+     */
+    const closeDrawer = async () => {
+        setOpenTenantDrawer(false);
+        await tableRef.current?.refreshPageList();
+    }
 
 
     return (<>
@@ -133,7 +154,7 @@ export const Tenant: React.FC = () => {
                     <>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.ADD}>
-                            <AddButton onClick={() => navigate('/tenant-form')}/>
+                            <AddButton onClick={() => openDrawer(undefined)}/>
                         </PermissionButton>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
@@ -147,8 +168,8 @@ export const Tenant: React.FC = () => {
                                     await tableRef?.current?.refreshPageList();
                                 }}
                             >
-                            <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}
-                            />
+                                <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}
+                                />
                             </Popconfirm>
                         </PermissionButton>
                     </>
@@ -168,5 +189,18 @@ export const Tenant: React.FC = () => {
                 onSearchClick: () => updateSearchParams({...tenantQuery}),
             }}
         />
+
+        <Drawer title={updateId === undefined ? t('Tenant.add') : t('Tenant.edit')}
+                width={'50%'}
+                destroyOnClose
+                closable
+                maskClosable
+                onClose={closeDrawer}
+                open={openTenantDrawer}>
+            <TenantForm
+                tenantId={updateId}
+                callback={closeDrawer}
+                permissionTreeData={permissionTree}/>
+        </Drawer>
     </>)
 }
