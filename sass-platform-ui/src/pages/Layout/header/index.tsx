@@ -107,59 +107,14 @@ export const LayoutHeader = () => {
                     <Flex justify={'center'} align={'center'}>
                         <Dropdown menu={{items: dropDownMenus}}>
                             <Space>
-                                <Avatar size={24}
-                                        src={userinfo.avatar ? `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}` : ''}
-                                />
+                                {userinfo.avatar && <Avatar size={24}
+                                                            src={`${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}`}
+                                />}
                                 <span>{userinfo.realName}</span>
                             </Space>
                         </Dropdown>
-                        {/*<Space>*/}
-
-
-                        {/*<Image*/}
-                        {/*    className="avatar"*/}
-                        {/*    preview={false}*/}
-                        {/*    fallback="https://oss.fuhouyu.com/2.jpeg"*/}
-                        {/*/>*/}
-                        {/*<DownOutlined/>*/}
-                        {/*</Space>*/}
                     </Flex>
                 </Flex>
-
-                {/*<Row gutter={24} align={"middle"}>*/}
-                {/*    <Col>*/}
-                {/*        <h2 className="platform-title">*/}
-                {/*            {tenant?.tenantName}*/}
-                {/*        </h2>*/}
-                {/*    </Col>*/}
-                {/*    <Col className="user-header">*/}
-                {/*        <Flex>*/}
-                {/*            {LanguageSwitcherButton}*/}
-                {/*        </Flex>*/}
-                {/*        <div className={'header-actions-avatar'}>*/}
-                {/*            /!*       <span className="tenant">*!/*/}
-                {/*            /!*<IconFont type='i-qiehuan' onClick={() => setSwitchTenantModalOpen(true)}/>*!/*/}
-                {/*            /!*</span>*!/*/}
-                {/*            <Dropdown menu={{*/}
-                {/*                items: dropDownMenus,*/}
-                {/*                onClick: onDropDownClick*/}
-                {/*            }}>*/}
-                {/*           <span>*/}
-
-                {/*                <Space>*/}
-                {/*                    {t('Common.welcome')},{userinfo.realName}*/}
-                {/*                    <Image*/}
-                {/*                        className="avatar"*/}
-                {/*                        preview={false}*/}
-                {/*                        fallback="https://oss.fuhouyu.com/2.jpeg"*/}
-                {/*                    />*/}
-                {/*                    <DownOutlined/>*/}
-                {/*                </Space>*/}
-                {/*           </span>*/}
-                {/*            </Dropdown>*/}
-                {/*        </div>*/}
-                {/*    </Col>*/}
-                {/*</Row>*/}
 
             </Header>
             <Modal
