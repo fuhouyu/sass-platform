@@ -300,6 +300,8 @@ const EnUS = {
         uploadFolder: 'Upload Folder',
         unknownType: 'Unknow Type',
         rootPath: 'Root Path',
+        public: 'Public',
+        private: 'Private'
     }
 }
 

@@ -103,7 +103,7 @@ export const S3Upload: React.FC<{
             name: file.name,
             size: file.size,
             mimeType: file.type,
-            isPublic: true,
+            isPublic: uploadProps.isPublic,
             isDirectory: false,
             version: 1,
             objectKey: objectKey,

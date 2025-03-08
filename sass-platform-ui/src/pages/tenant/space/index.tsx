@@ -30,14 +30,22 @@ import {
     Modal,
     Popconfirm,
     Space,
-    TableColumnsType
+    TableColumnsType,
+    Tag
 } from "antd";
 import {IconFont, PageList, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
-import {DownloadOutlined, EyeOutlined, FolderOutlined, LeftOutlined, UploadOutlined} from "@ant-design/icons";
+import {
+    DownloadOutlined,
+    EyeOutlined,
+    FolderOutlined,
+    LeftOutlined,
+    LockOutlined,
+    UploadOutlined
+} from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
 import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
@@ -110,6 +118,21 @@ const TenantSpace: React.FC = () => {
                 }
                 return <span>{record.mimeType}</span>
             }
+        },
+        {
+            title: t('Resource.isPublic'),
+            dataIndex: 'isPublic',
+            align: "center",
+            render: (isPublic: boolean) => (
+                isPublic ?
+                    <Tag icon={<EyeOutlined/>} color="success">
+                        {t('Resource.public')}
+                    </Tag>
+                    :
+                    <Tag icon={<LockOutlined/>} color="warning">
+                        {t('Resource.private')}
+                    </Tag>
+            )
         },
         {
             title: t('Common.updateAt'),
@@ -301,8 +324,8 @@ const TenantSpace: React.FC = () => {
                             await tableRef?.current?.refreshPageList();
                         }}
                     >
-                    <DeleteButton
-                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                        <DeleteButton
+                            disabled={rowKeys === undefined || rowKeys.length === 0}/>
                     </Popconfirm>
                     <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
                         {t('Resource.uploadFile')}
