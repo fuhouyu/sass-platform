@@ -20,6 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serial;
+import java.time.LocalDate;
 
 /**
  * <p>
@@ -87,5 +88,15 @@ public class TenantInfo extends BaseEntity {
      * 状态：true 启用
      */
     private Boolean isEnabled;
+
+    /**
+     * 开始日期
+     */
+    private LocalDate startDate;
+
+    /**
+     * 结束日期
+     */
+    private LocalDate endDate;
 
 }

@@ -44,10 +44,12 @@ export interface TenantInfo extends BaseModel {
     adminUserId?: string;
     // 管理员用户真实姓名
     adminUserRealName?: string;
-    /**
-     * 租户空间
-     */
+    // 租户空间
     tenantSpace?: TenantSpace;
+    // 开始日期
+    startDate?: string;
+    // 结束日期
+    endDate?: string
 }
 
 

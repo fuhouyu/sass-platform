@@ -74,7 +74,7 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
             });
         } catch (BucketAlreadyOwnedByYouException e) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "当前租户空间 [%s] 已存在，请修改后重试");
+                    "当前租户空间 [%s] 已存在，请修改后重试", tenantSpaceDTO.getBucketName());
         }
 
     }

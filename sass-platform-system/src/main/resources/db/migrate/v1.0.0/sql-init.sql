@@ -26,8 +26,8 @@ CREATE TABLE tenant_info
     icon BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
-    start_time     TIMESTAMP,
-    end_time       TIMESTAMP,
+    start_date DATE,
+    end_date   DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
     create_at      TIMESTAMP             NOT NULL,
@@ -48,8 +48,8 @@ COMMENT ON COLUMN tenant_info.remark IS '描述';
 COMMENT ON COLUMN tenant_info.icon IS '租户图标';
 COMMENT ON COLUMN tenant_info.contact_person IS '联系人';
 COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
-COMMENT ON COLUMN tenant_info.start_time IS '开始时间';
-COMMENT ON COLUMN tenant_info.end_time IS '结束时间';
+COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
+COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.create_at IS '创建时间';

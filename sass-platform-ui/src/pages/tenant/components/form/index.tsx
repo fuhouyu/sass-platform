@@ -14,7 +14,22 @@
  * limitations under the License.
  */
 
-import {Avatar, Button, Col, Flex, Form, Input, InputNumber, message, Radio, Select, Space, Steps, Tooltip} from "antd";
+import {
+    Avatar,
+    Button,
+    Col,
+    DatePicker,
+    Flex,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Radio,
+    Select,
+    Space,
+    Steps,
+    Tooltip
+} from "antd";
 import React, {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
@@ -30,14 +45,21 @@ import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import {CommonConstant} from "@/constants/commonConstant";
 import {TenantFormProps} from "@/pages/tenant/components/form/interface.ts";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import dayjs, {Dayjs} from 'dayjs';
+
+interface _TenantForm extends TenantInfo {
+    dateRange?: Dayjs[] | null[]
+}
+
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 const TenantForm = (tenantFormProps: TenantFormProps) => {
     const {tenantId, callback, permissionTreeData} = tenantFormProps;
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
-    const [tenantInfoForm] = Form.useForm<TenantInfo>();
+    const [tenantInfoForm] = Form.useForm<_TenantForm>();
     const [tenantSpaceForm] = Form.useForm<TenantSpace>();
-    const [tenantInfo, setTenantInfo] = useState<TenantInfo | undefined>(undefined);
+    const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
     const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
     const language = useLocaleStore((state) => state.language);
@@ -62,7 +84,12 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
         if (tenantInfo === undefined) {
             queryTenant().then();
         } else {
-            tenantInfoForm.setFieldsValue({...tenantInfo});
+            const {startDate, endDate} = tenantInfo;
+            const dateRange = [
+                startDate ? dayjs(startDate) : null,
+                endDate ? dayjs(endDate) : null,
+            ];
+            tenantInfoForm.setFieldsValue({...tenantInfo, dateRange});
         }
     }, [queryTenant, tenantInfo, tenantInfoForm])
 
@@ -91,8 +118,10 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
      */
     const handleTenant = async () => {
         await tenantSpaceForm.validateFields();
-
         const tenant = tenantInfo!
+        const [startDate, endDate] = tenant.dateRange ?? [];
+        tenant.startDate = startDate?.format(DATE_FORMAT);
+        tenant.endDate = endDate?.format(DATE_FORMAT)
         tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
         tenant.permissionIds = permissionIds;
         await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
@@ -127,7 +156,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
         tenantInfoForm.setFieldsValue({...tenantInfo})
     };
 
-
     const steps = [
         {
             title: t('Tenant.basicInfo'),
@@ -139,7 +167,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                     name="tenant-form"
                     form={tenantInfoForm}
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 5 : 7}}
-                    wrapperCol={{span: 15}}
+                    wrapperCol={{span: 18}}
                     autoComplete="off"
                     initialValues={{
                         isEnabled: true,
@@ -284,6 +312,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                             name='isEnabled'
                             key="isEnabled"
                             colon={false}
+                            required
                             hasFeedback
                         >
                             <Radio.Group>
@@ -326,6 +355,20 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                         </Form.Item>
                     </Col>
 
+                    <Col className={'form-item-col'} span={12}>
+                        <Form.Item
+                            name="dateRange"
+                            label={t('Tenant.startAndEndDate')}
+                            colon={false}
+                            hasFeedback={true}
+                        >
+                            <DatePicker.RangePicker
+                                placeholder={[t('Tenant.startDatePlaceholder'), t('Tenant.endDatePlaceholder')]}
+                                disabledDate={(current) => current && current < dayjs().subtract(1, 'day')}
+                                format="YYYY-MM-DD"
+                            />
+                        </Form.Item>
+                    </Col>
 
                     <Col className={'form-item-col'} span={24} style={{
                         paddingTop: '1rem',

@@ -169,6 +169,9 @@ const EnUS = {
         routeParams: 'Route Params',
         routeParamsPlaceholder: 'Please input Route Params',
         displayStatus: 'Display Status',
+        startAndEndDate: 'Start and End Date',
+        startDatePlaceholder: 'Please select the start date',
+        endDatePlaceholder: 'Please select the end date',
     },
     Account: {
         personal: 'Personal account',

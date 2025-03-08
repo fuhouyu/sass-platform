@@ -112,6 +112,9 @@ const ZhCN = {
         publicWriteAcl: '公开读写',
         authenticationRead: '认证读',
         updateIcon: '点击更新Icon',
+        startAndEndDate: '起止日期',
+        startDatePlaceholder: '请选择开始日期',
+        endDatePlaceholder: '请选择结束日期',
 
     },
     // 菜单
