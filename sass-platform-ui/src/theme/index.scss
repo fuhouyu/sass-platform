@@ -71,3 +71,9 @@ $dark-aside-border: #1C1D1F;
   }
 }
 
+// 登录
+.dark {
+  .login-container, .qrcode-container {
+    background-color: $dark-container-bgc;
+  }
+}
