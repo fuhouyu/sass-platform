@@ -13,3 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+$dark-container-bgc: #161616;
+$dark-menu-bac: #2D2D2D;
+$dark-main-bgc: #303030;
+$dark-main-border: #161616;
+$dark-aside-border: #1C1D1F;
+
+
+.dark {
+  // 页头
+  .layout-header {
+    background-color: $dark-container-bgc;
+    border-bottom: 1px solid $dark-main-bgc;
+
+    .header-title-divider {
+      background-color: $dark-container-bgc;
+    }
+  }
+
+  // 侧边栏
+  .ant-layout-sider-light, .ant-menu-light {
+    background-color: $dark-container-bgc;
+  }
+
+  .layout-main-sider, .ant-layout-sider-light {
+    border-right: $dark-aside-border;
+  }
+}
+
+// main
+.dark {
+  // 表单搜索头
+  .search-header {
+    background-color: $dark-main-bgc;
+  }
+
+  .table-container {
+    background-color: $dark-main-bgc;
+  }
+
+  .tips-container {
+    background-color: $dark-main-bgc;
+    border: 1px solid $dark-aside-border;
+
+  }
+
+  .tree-container, .ant-tree-list {
+    background-color: $dark-main-bgc;
+  }
+
+  .tenant-space-content .title-line {
+    background-color: $dark-container-bgc;
+  }
+
+  .space-bucket-breadcrumb {
+    background-color: $dark-container-bgc;
+  }
+}
+

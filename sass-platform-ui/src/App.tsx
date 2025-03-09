@@ -20,13 +20,14 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {commonRoutes} from "@/routes/routes.tsx";
 import '@/i18n/index'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
-import {ConfigProvider} from "antd";
+import {ConfigProvider, theme} from "antd";
 import {useLocaleStore, useRouterStore} from "@/store";
 import {Locale} from "antd/es/locale";
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import {CommonConstant} from "./constants/commonConstant";
 import {PageLoading} from "./components";
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 export const App: React.FC = () => {
     // 假设 useRoutes 是一个自定义钩子，返回路由是否加载完成
@@ -35,6 +36,7 @@ export const App: React.FC = () => {
     const [antdLocale, setAntdLocale] = useState<Locale>();
     const [isLoading, setIsLoading] = useState(true);
     const {router, storeRouter} = useRouterStore(state => state);
+    const currentTheme = useThemeStore(state => state.theme);
 
     useEffect(() => {
         if (initialized) {
@@ -50,7 +52,7 @@ export const App: React.FC = () => {
 
     useEffect(() => {
         setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
-    }, [language]);
+    }, [currentTheme, language]);
 
     if (isLoading) {
         return <PageLoading/>;
@@ -62,6 +64,10 @@ export const App: React.FC = () => {
         <ConfigProvider
             locale={antdLocale}
             theme={{
+                token: {
+                    colorBgBase: currentTheme === 'dark' ? "#161616" : '#ffffff'
+                },
+                algorithm: currentTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
                 components: {
                     Tree: {
                         titleHeight: 32,

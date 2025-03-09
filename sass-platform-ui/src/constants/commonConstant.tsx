@@ -33,5 +33,10 @@ export class CommonConstant {
      * 英文
      */
     static readonly EN_LANGUAGE = 'en';
+
+    /**
+     * 主题key
+     */
+    static readonly THEME_KEY = 'site_theme';
 }
 
