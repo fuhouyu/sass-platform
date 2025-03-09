@@ -15,31 +15,52 @@
  */
 package com.fuhouyu.sass.platform.system.properties;
 
-import com.fuhouyu.sass.platform.common.constants.ConfigPropertiesConstant;
+import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <p>
- * weLink配置类
+ * 开放平台配置
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/22 18:15
+ * @since 2025/3/9 21:41
  */
-@ConfigurationProperties(prefix = WeLinkPlatformProperties.PREFIX)
 @Data
-public class WeLinkPlatformProperties {
+@ConfigurationProperties(prefix = OpenPlatformProperties.PREFIX)
+public class OpenPlatformProperties {
 
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "welink";
+    public static final String PREFIX = "sass.platform";
 
-    private String clientId;
+    /**
+     * 开放平台配置项
+     */
+    private Map<OpenPlatformTypeEnum, Properties> openPlatform;
 
-    private String clientSecret;
+    public OpenPlatformProperties() {
+        this.openPlatform = new HashMap<>();
+    }
 
-    private String baseUrl;
+    @Data
+    public static class Properties {
 
-    public WeLinkPlatformProperties() {
-        this.baseUrl = "https://open.welink.huaweicloud.com";
+        /**
+         * ak
+         */
+        private String accessKey;
+
+        /**
+         * sk
+         */
+        private String secretKey;
+
+        /**
+         * url
+         */
+        private String baseUrl;
     }
 }

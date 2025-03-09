@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.wechat;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+package com.fuhouyu.sass.platform.system.enums;
 
 /**
  * <p>
- * 微信认证token dto对象
+ * 开放平台类型枚举
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/21 21:23
+ * @since 2025/3/9 21:48
  */
-@Data
-public class WechatAccessTokenDTO {
+public enum OpenPlatformTypeEnum {
 
-    @JsonProperty("access_token")
-    private String accessToken;
 
-    @JsonProperty("expires_in")
-    private Long expiresIn;
+    /**
+     * welink
+     */
+    WELINK,
+
+    /**
+     * 微信小程序
+     */
+    WECHAT_APPLET,
+    ;
 }

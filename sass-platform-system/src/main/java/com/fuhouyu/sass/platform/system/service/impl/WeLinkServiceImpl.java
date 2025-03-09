@@ -20,9 +20,9 @@ import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.dto.welink.WeLinkAccessTokenDTO;
 import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
-import com.fuhouyu.sass.platform.system.properties.WeLinkPlatformProperties;
+import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
+import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,14 +43,23 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class WeLinkServiceImpl implements WeLinkService {
 
     private static final String WE_LINK_ACCESS_TOKEN = "welink:accessToken";
 
+    private static final String TICKET_URL = "/api/auth/v2/tickets/";
+
+    private static final String LOGIN_URL = "/api/auth/v2/userid?code=";
+
     private final CacheService<String, Object> cacheService;
 
-    private final WeLinkPlatformProperties weLinkPlatformProperties;
+    private final OpenPlatformProperties.Properties properties;
+
+    public WeLinkServiceImpl(CacheService<String, Object> cacheService,
+                             OpenPlatformProperties openPlatformProperties) {
+        this.cacheService = cacheService;
+        this.properties = openPlatformProperties.getOpenPlatform().get(OpenPlatformTypeEnum.WELINK);
+    }
 
     @Override
     public String getAccessToken() {
@@ -59,9 +68,9 @@ public class WeLinkServiceImpl implements WeLinkService {
             return accessToken;
         }
         Map<String, String> body = new HashMap<>();
-        body.put("client_id", weLinkPlatformProperties.getClientId());
-        body.put("client_secret", weLinkPlatformProperties.getClientSecret());
-        ResponseEntity<WeLinkAccessTokenDTO> responseEntity = RestClient.create(weLinkPlatformProperties.getBaseUrl() + "/api/auth/v2/tickets/")
+        body.put("client_id", properties.getAccessKey());
+        body.put("client_secret", properties.getSecretKey());
+        ResponseEntity<WeLinkAccessTokenDTO> responseEntity = RestClient.create(properties.getBaseUrl() + TICKET_URL)
                 .post()
                 .body(body)
                 .retrieve()
@@ -79,8 +88,8 @@ public class WeLinkServiceImpl implements WeLinkService {
     @Override
     public WeLinkLoginUserDTO login(String code) {
         String accessToken = this.getAccessToken();
-        ResponseEntity<WeLinkLoginUserDTO> responseEntity = RestClient.create(weLinkPlatformProperties.getBaseUrl()
-                        + "/api/auth/v2/userid?code=" + code)
+        ResponseEntity<WeLinkLoginUserDTO> responseEntity = RestClient.create(properties.getBaseUrl()
+                        + LOGIN_URL + code)
                 .get()
                 .header("x-wlk-Authorization", accessToken)
                 .retrieve()

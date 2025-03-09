@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.enums;
 
 import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.core.security.provider.WeLinkAuthenticationProvider;
+import com.fuhouyu.sass.platform.system.core.security.provider.WechatAppletAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,8 +51,13 @@ public enum AccountTypeEnum {
         public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
             return new WeLinkAuthenticationProvider.WeLinkAuthenticationToken(userLoginDTO.getAccount());
         }
-    }
-    ;
+    },
+    WECHAT_APPLET {
+        @Override
+        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+            return new WechatAppletAuthenticationProvider.WechatAppletAuthenticationToken(userLoginDTO.getAccount());
+        }
+    };
 
     public abstract AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO);
 

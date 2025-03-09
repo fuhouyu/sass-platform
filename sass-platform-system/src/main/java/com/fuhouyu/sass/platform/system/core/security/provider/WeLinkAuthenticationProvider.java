@@ -30,6 +30,7 @@ import com.fuhouyu.sass.platform.system.service.WeLinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -55,6 +56,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RequiredArgsConstructor
 @Component
+@ConditionalOnBean(WeLinkService.class)
 public class WeLinkAuthenticationProvider implements AuthenticationProvider {
 
     private final WeLinkService weLinkService;
