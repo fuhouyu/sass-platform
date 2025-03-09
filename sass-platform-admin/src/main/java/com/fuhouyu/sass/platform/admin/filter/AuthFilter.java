@@ -58,20 +58,37 @@ public class AuthFilter implements ParseHttpRequest {
     @Override
     public User parseUser(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                           @NonNull Object handler) {
-        if (this.checkNoAuth(handler)) {
-            return null;
-        }
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (this.checkNoAuth(handler)) {
+            return this.parseUser(bearerToken, false);
+        }
         if (request.getRequestURI().startsWith("/v3/api-docs")) {
             return null;
         }
+        return this.parseUser(bearerToken, true);
+    }
+
+
+    /**
+     * 解析用户信息
+     *
+     * @param bearerToken token
+     * @return 退出
+     */
+    private UserEntity parseUser(String bearerToken, boolean isThrowException) {
         if (Objects.isNull(bearerToken) || bearerToken.isEmpty()) {
-            throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
+            if (isThrowException) {
+                throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
+            }
+            return null;
         }
         String token = bearerToken.substring(BEARER_TOKEN_HEADER.length()).trim();
         Authentication authentication = this.tokenStore.readAuthentication(token);
         if (Objects.isNull(authentication)) {
-            throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
+            if (isThrowException) {
+                throw new ServiceException(ResponseStatusEnum.TOKEN_EXPIRE);
+            }
+            return null;
         }
         UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));

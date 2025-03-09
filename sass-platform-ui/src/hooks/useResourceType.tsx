@@ -24,7 +24,7 @@ export enum ResourceTypeEnum {
     VIDEO = "video",
     AUDIO = "audio",
     OFFICE = "office",
-    APPLICATION = "application",
+    YAML = "yaml",
 }
 
 export interface ResourceType {
@@ -92,6 +92,11 @@ const useResourceType = () => {
                         return {
                             type: ResourceTypeEnum.OFFICE,
                             icon: <IconFont type={'i-pdf'}/>,
+                        }
+                    case "x-yaml":
+                        return {
+                            type: ResourceTypeEnum.YAML,
+                            icon: <IconFont type={'i-YAML'}/>,
                         }
                     default:
                         return {

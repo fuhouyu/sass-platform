@@ -47,11 +47,22 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      */
     downloadFile: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/download/${id}`)
 
+
+    /**
+     * 文件预览
+     * @param id 主键id
+     */
+    previewFile: (id: string) => Promise<Blob> = (id: string): Promise<Blob> =>
+        request.get(`${this.baseUrl}/preview/${id}`, {
+            responseType: "blob"
+        });
+
     /**
      * 生成随机的url
      * @param id 主键id
      */
-    generateSignedUrl: (id: string) => Promise<string> = (id: string): Promise<string> => request.get(`${this.baseUrl}/generate/signed-url/${id}`)
+    generateSignedUrl: (id: string) => Promise<string> = (id: string): Promise<string> =>
+        request.get(`${this.baseUrl}/generate/signed-url/${id}`)
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

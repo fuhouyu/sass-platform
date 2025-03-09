@@ -77,3 +77,14 @@ $dark-aside-border: #1C1D1F;
     background-color: $dark-container-bgc;
   }
 }
+
+// 租户空间
+.dark {
+  .file-actions-list {
+    background-color: $dark-container-bgc;
+
+    .ant-list-item:hover {
+      background-color: $dark-container-bgc;
+    }
+  }
+}
