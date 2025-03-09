@@ -110,13 +110,12 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 </div>
                 <div className="tips-container">
                     <Space>
-                        <InfoCircleFilled style={{color: 'blue'}} className="pointer"/>
+                        <InfoCircleFilled className="table-tips-icon"/>
                         <span>{t('Common.listTips')}</span>
                     </Space>
                 </div>
                 <AntdTable
                     {...tableProps}
-                    // style={{tableLayout: 'fixed'}}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
                     dataSource={pageResult?.list}
