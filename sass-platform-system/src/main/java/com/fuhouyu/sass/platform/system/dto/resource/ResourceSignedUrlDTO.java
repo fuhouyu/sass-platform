@@ -38,4 +38,7 @@ public class ResourceSignedUrlDTO implements Serializable {
 
     @Schema(name = "expires", description = "过期时间")
     private Long expires;
+
+    @Schema(name = "nonce", description = "随机串")
+    private String nonce;
 }

@@ -15,6 +15,7 @@
  */
 // 主容器
 $dark-container-bgc: #161616;
+$dark-container-border: #303030;
 $dark-menu-bac: #2D2D2D;
 $dark-main-bgc: #303030;
 $dark-main-border: #161616;
@@ -36,7 +37,7 @@ $dark-button-font-hover-color: #2090FF;
   // 页头
   .layout-header {
     background-color: $dark-container-bgc;
-    border-bottom: 1px solid $dark-main-bgc;
+    border-bottom: 1px solid $dark-container-border;
     .header-title-divider {
       background-color: $dark-container-bgc;
     }
@@ -53,6 +54,11 @@ $dark-button-font-hover-color: #2090FF;
 
   .layout-main-sider, .ant-layout-sider-light {
     border-right: $dark-aside-border;
+  }
+
+  .ant-layout-sider-trigger {
+    background: $dark-container-bgc;
+    border-top: 1px solid $dark-container-border;
   }
 }
 

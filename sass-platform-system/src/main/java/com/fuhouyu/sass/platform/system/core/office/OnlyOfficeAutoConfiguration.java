@@ -24,7 +24,6 @@ import com.onlyoffice.manager.settings.DefaultSettingsManager;
 import com.onlyoffice.manager.settings.SettingsManager;
 import com.onlyoffice.manager.url.UrlManager;
 import com.onlyoffice.service.documenteditor.config.ConfigService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -50,6 +49,7 @@ public class OnlyOfficeAutoConfiguration implements InitializingBean {
     private final OnlyOfficeDocumentProperties properties;
 
 
+
     @Bean
     public DefaultSettingsManager settingsManager() {
         return new SettingsManagerImpl(properties);
@@ -61,8 +61,8 @@ public class OnlyOfficeAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    public UrlManager urlManager(SettingsManager settingsManager, HttpServletRequest request) {
-        return new UrlMangerImpl(settingsManager, request);
+    public UrlManager urlManager(SettingsManager settingsManager, ResourceService resourceService) {
+        return new UrlMangerImpl(settingsManager, resourceService);
     }
 
     @Bean
