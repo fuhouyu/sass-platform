@@ -39,7 +39,7 @@ import java.time.LocalDateTime;
 @ToString
 @Schema(name = "UserDTO", description = "用户详情dto对象")
 @EqualsAndHashCode(callSuper = true)
-public class UserDTO extends BaseDTO {
+public class AdminUserDTO extends BaseDTO {
 
     @Serial
     private static final long serialVersionUID = 1238912361L;

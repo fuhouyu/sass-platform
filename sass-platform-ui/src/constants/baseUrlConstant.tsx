@@ -28,7 +28,7 @@ export class BaseApiUrlConstant {
     /**
      * 用户api
      */
-    static readonly USER_API_PREFIX: string = `${BaseApiUrlConstant.VERSION}/user`;
+    static readonly ADMIN_USER_API_PREFIX: string = `${BaseApiUrlConstant.VERSION}/admin-user`;
 
     /**
      *认证api

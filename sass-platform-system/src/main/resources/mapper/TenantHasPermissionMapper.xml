@@ -34,7 +34,7 @@
         created_by
     </sql>
 
-    <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+    <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.entity.AdminUsers">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">

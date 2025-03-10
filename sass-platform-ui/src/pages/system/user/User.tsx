@@ -40,7 +40,7 @@ import {
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
-import {userApi} from "@/apis/user";
+import {userApi} from "@/apis/adminUser.tsx";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";

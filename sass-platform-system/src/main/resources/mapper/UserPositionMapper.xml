@@ -42,7 +42,7 @@
         updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.AdminUsers">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">

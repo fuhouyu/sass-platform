@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class Users extends BaseEntity {
+public class AdminUsers extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1292364198231612311L;

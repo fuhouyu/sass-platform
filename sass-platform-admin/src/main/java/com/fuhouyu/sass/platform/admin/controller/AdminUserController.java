@@ -20,10 +20,10 @@ import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserPageQueryDTO;
-import com.fuhouyu.sass.platform.system.service.UserService;
+import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserPageQueryDTO;
+import com.fuhouyu.sass.platform.system.service.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,14 +48,14 @@ import java.util.Objects;
  * @since 2024/10/4 21:50
  */
 @RestController
-@RequestMapping("/v1/user")
-@Tag(name = "用户 web接口")
+@RequestMapping("/v1/admin-user")
+@Tag(name = "管理员用户 web接口")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class UserController {
+public class AdminUserController {
 
-    private final UserService userService;
+    private final AdminUserService adminUserService;
 
     /**
      * 登录用户的用户详情
@@ -64,9 +64,9 @@ public class UserController {
      */
     @Operation(summary = "当前用户详情")
     @GetMapping("/me")
-    public BaseResponse<UserDetailDTO> userinfo() {
+    public BaseResponse<AdminAdminUserDetailDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
-        UserDetailDTO userDetail = this.userService.findDetailById(userId);
+        AdminAdminUserDetailDTO userDetail = this.adminUserService.findDetailById(userId);
         userDetail.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         return ResponseHelper.success(userDetail);
     }
@@ -80,21 +80,21 @@ public class UserController {
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
     @PreAuthorize("@auth.hasAnyPermission('system:user:query')")
-    public BaseResponse<UserDetailDTO> userDetailById(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.userService.findDetailById(id));
+    public BaseResponse<AdminAdminUserDetailDTO> userDetailById(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.adminUserService.findDetailById(id));
     }
 
     /**
      * 修改当前用户的详情
      *
-     * @param userDTO 用户dto对象
+     * @param adminUserDTO 用户dto对象
      * @return restResult
      */
     @PutMapping
     @Operation(summary = "修改当前的用户详情")
-    public BaseResponse<Void> editUserinfo(@Valid @RequestBody UserDTO userDTO) {
-        userDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
-        this.userService.edit(userDTO);
+    public BaseResponse<Void> editUserinfo(@Valid @RequestBody AdminUserDTO adminUserDTO) {
+        adminUserDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
+        this.adminUserService.edit(adminUserDTO);
         return ResponseHelper.success();
     }
 
@@ -107,8 +107,8 @@ public class UserController {
     @Operation(summary = "保存用户信息")
     @PostMapping
     @PreAuthorize("@auth.hasAnyPermission('system:user:add')")
-    public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) UserDetailDTO userDTO) {
-        return ResponseHelper.success(this.userService.saveUser(userDTO));
+    public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) AdminAdminUserDetailDTO userDTO) {
+        return ResponseHelper.success(this.adminUserService.saveUser(userDTO));
     }
 
     /**
@@ -123,23 +123,23 @@ public class UserController {
     @PreAuthorize("@auth.hasAnyPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Valid @RequestBody UserDetailDTO userDTO) {
+            @Valid @RequestBody AdminAdminUserDetailDTO userDTO) {
         userDTO.setId(id);
-        this.userService.editUser(userDTO);
+        this.adminUserService.editUser(userDTO);
         return ResponseHelper.success();
     }
 
     /**
      * 分页查询用户列表
      *
-     * @param userPageQueryDTO 用户分页查询对象
+     * @param adminUserPageQueryDTO 用户分页查询对象
      * @return 用户列表集合
      */
     @GetMapping("/page")
     @Operation(summary = "获取用户列表")
     @PreAuthorize("@auth.hasAnyPermission('system:user:list')")
-    public BaseResponse<PageResultDTO<UserDTO>> pageList(UserPageQueryDTO userPageQueryDTO) {
-        return ResponseHelper.success(this.userService.pageList(userPageQueryDTO));
+    public BaseResponse<PageResultDTO<AdminUserDTO>> pageList(AdminUserPageQueryDTO adminUserPageQueryDTO) {
+        return ResponseHelper.success(this.adminUserService.pageList(adminUserPageQueryDTO));
     }
 
     /**
@@ -155,7 +155,7 @@ public class UserController {
             @RequestBody
             @Size(min = 1, message = "需要删除的用户不能为空")
             @NotNull(message = "需要删除的用户不能为空") List<Long> ids) {
-        this.userService.removeByIds(ids);
+        this.adminUserService.removeByIds(ids);
         return ResponseHelper.success();
     }
 
@@ -170,7 +170,7 @@ public class UserController {
     @Operation(summary = "校验用户名是否存在，如果存在，则返回true")
     @Parameter(name = "username", description = "用户名称")
     public BaseResponse<Boolean> validUsernameExists(@RequestParam("username") String username) {
-        return ResponseHelper.success(Objects.nonNull(this.userService.findByUsername(username)));
+        return ResponseHelper.success(Objects.nonNull(this.adminUserService.findByUsername(username)));
     }
 
 }

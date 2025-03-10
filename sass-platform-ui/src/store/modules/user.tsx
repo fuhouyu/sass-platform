@@ -17,7 +17,7 @@
 import {Userinfo,} from "@/model/user";
 import {ThirdPartyBindAuthentication, UserAuthentication, UserBind, UserToken} from "@/model/authentication";
 import {Menu} from "@/model/menu";
-import {userApi} from "@/apis/user";
+import {userApi} from "@/apis/adminUser.tsx";
 import {permissionApi} from "@/apis/permission";
 import {removeToken, storeToken} from "@/utils";
 import {authenticationApi} from "@/apis/authentication.tsx";

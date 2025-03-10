@@ -21,9 +21,9 @@ import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi";
 
 
-const baseUserUrl = BaseApiUrlConstant.USER_API_PREFIX;
+const baseUserUrl = BaseApiUrlConstant.ADMIN_USER_API_PREFIX;
 
-class UserApi extends DefaultApiImpl<Userinfo> {
+class AdminUserApi extends DefaultApiImpl<Userinfo> {
 
     constructor() {
         super(baseUserUrl);
@@ -38,4 +38,4 @@ class UserApi extends DefaultApiImpl<Userinfo> {
     }
 }
 
-export const userApi: UserApi = new UserApi()
+export const userApi: AdminUserApi = new AdminUserApi()

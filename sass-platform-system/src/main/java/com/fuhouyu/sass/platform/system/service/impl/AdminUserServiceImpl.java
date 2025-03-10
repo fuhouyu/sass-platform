@@ -21,13 +21,13 @@ import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
-import com.fuhouyu.sass.platform.system.assembler.UsersAssembler;
+import com.fuhouyu.sass.platform.system.assembler.AdminUsersAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
-import com.fuhouyu.sass.platform.system.entity.Users;
-import com.fuhouyu.sass.platform.system.mapper.UserMapper;
+import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.entity.AdminUsers;
+import com.fuhouyu.sass.platform.system.mapper.AdminUserMapper;
 import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,11 +50,11 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class AdminUserServiceImpl implements AdminUserService {
 
-    private static final UsersAssembler USERS_ASSEMBLER = UsersAssembler.INSTANCE;
+    private static final AdminUsersAssembler USERS_ASSEMBLER = AdminUsersAssembler.INSTANCE;
 
-    private final UserMapper userMapper;
+    private final AdminUserMapper adminUserMapper;
 
     private final AccountService accountService;
 
@@ -67,12 +67,12 @@ public class UserServiceImpl implements UserService {
     private final UserHasRoleService userHasRoleService;
 
     @Override
-    public Long save(UserDTO userinfoDTO) {
+    public Long save(AdminUserDTO userinfoDTO) {
         this.validUsernameExists(userinfoDTO.getUsername());
         long id = snowflakeIdWorker.nextId();
-        Users entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
+        AdminUsers entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
         entity.setId(id);
-        this.userMapper.insert(entity);
+        this.adminUserMapper.insert(entity);
         this.tenantHasUserService.save(
                 ContextHolderStrategy.getContext().getUser().getTenantId(),
                 id);
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long saveUser(UserDetailDTO userDTO) {
+    public Long saveUser(AdminAdminUserDetailDTO userDTO) {
         Long id = this.save(userDTO);
         // 保存账号信息
         userDTO.setId(id);
@@ -93,31 +93,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUsername(String username) {
-        return USERS_ASSEMBLER.toDTO(this.userMapper.queryByUsername(username));
+    public AdminUserDTO findByUsername(String username) {
+        return USERS_ASSEMBLER.toDTO(this.adminUserMapper.queryByUsername(username));
     }
 
     @Override
     public void recordLoginSuccess(Long userId) {
-        this.userMapper.recordLoginSuccess(userId,
+        this.adminUserMapper.recordLoginSuccess(userId,
                 ContextHolderStrategy.getContext().getRequest().getRequestIp(),
                 LocalDateTime.now());
     }
 
     @Override
-    public UserDetailDTO findDetailById(Long id) {
-        UserDetailDTO userDetailDTO = this.userMapper.queryDetailById(id);
-        if (Objects.isNull(userDetailDTO)) {
+    public AdminAdminUserDetailDTO findDetailById(Long id) {
+        AdminAdminUserDetailDTO adminUserDetailDTO = this.adminUserMapper.queryDetailById(id);
+        if (Objects.isNull(adminUserDetailDTO)) {
             return null;
         }
         List<Long> roleIds = this.userHasRoleService.findRoleIdsByUserId(id);
-        userDetailDTO.setRoleIds(roleIds);
-        return userDetailDTO;
+        adminUserDetailDTO.setRoleIds(roleIds);
+        return adminUserDetailDTO;
     }
 
     @Override
-    public void editUser(UserDetailDTO userDTO) {
-        this.userMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
+    public void editUser(AdminAdminUserDetailDTO userDTO) {
+        this.adminUserMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
         this.userPositionService.saveUserPosition(userDTO.getId(), userDTO.getUserPosition());
         AccountDTO account = userDTO.getAccount();
         this.userHasRoleService.saveOrUpdateUserRole(userDTO.getId(), userDTO.getRoleIds());
@@ -127,29 +127,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long userId) {
-        Users users = this.userMapper.queryById(userId);
-        UserDTO userDTO = USERS_ASSEMBLER.toDTO(users);
+    public AdminUserDTO findById(Long userId) {
+        AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
+        AdminUserDTO adminUserDTO = USERS_ASSEMBLER.toDTO(adminUsers);
 
         if (Objects.nonNull(ContextHolderStrategy.getContext().getUser())) {
-            userDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+            adminUserDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         }
 
-        return userDTO;
+        return adminUserDTO;
     }
 
     @Override
-    public void edit(UserDTO userinfoDTO) {
-        this.userMapper.update(USERS_ASSEMBLER.toEntity(userinfoDTO));
+    public void edit(AdminUserDTO userinfoDTO) {
+        this.adminUserMapper.update(USERS_ASSEMBLER.toEntity(userinfoDTO));
     }
 
     @Override
-    public void saveBatch(List<UserDTO> dtoList) {
-        List<Users> list = dtoList.stream().map(dto -> {
+    public void saveBatch(List<AdminUserDTO> dtoList) {
+        List<AdminUsers> list = dtoList.stream().map(dto -> {
             dto.setId(snowflakeIdWorker.nextId());
             return USERS_ASSEMBLER.toEntity(dto);
         }).toList();
-        this.userMapper.insertBatch(list);
+        this.adminUserMapper.insertBatch(list);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "不允许操作当前登录账号: %s", user.getUsername());
         }
-        return this.userMapper.deleteById(id);
+        return this.adminUserMapper.deleteById(id);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "不允许操作当前登录账号: %s", user.getUsername());
         }
-        int deleteUserCount = this.userMapper.deleteByIds(ids);
+        int deleteUserCount = this.adminUserMapper.deleteByIds(ids);
         this.accountService.removeByUserIds(ids);
         this.tenantHasUserService.removeByTenantIdAndUserIds(ContextHolderStrategy.getContext().getUser().getTenantId(), ids);
         this.userPositionService.removeByUserIds(ids);
@@ -178,8 +178,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<UserDTO>> getPageResult() {
-        return this.userMapper::queryDetailList;
+    public Function<PageQueryDTO, List<AdminUserDTO>> getPageResult() {
+        return this.adminUserMapper::queryDetailList;
     }
 
     /**
@@ -189,8 +189,8 @@ public class UserServiceImpl implements UserService {
      * @param username 用户名
      */
     private void validUsernameExists(String username) {
-        Users users = this.userMapper.queryByUsername(username);
-        if (Objects.nonNull(users)) {
+        AdminUsers adminUsers = this.adminUserMapper.queryByUsername(username);
+        if (Objects.nonNull(adminUsers)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "%s 用户名已存在", username);
         }
@@ -199,12 +199,12 @@ public class UserServiceImpl implements UserService {
     /**
      * 保存账号列表
      *
-     * @param userDetailDTO 用户详情dto
+     * @param adminUserDetailDTO 用户详情dto
      */
-    private void saveAccounts(UserDetailDTO userDetailDTO) {
-        AccountDTO accountDTO = userDetailDTO.getAccount();
-        accountDTO.setAccount(userDetailDTO.getUsername());
-        accountDTO.setUserId(userDetailDTO.getId());
+    private void saveAccounts(AdminAdminUserDetailDTO adminUserDetailDTO) {
+        AccountDTO accountDTO = adminUserDetailDTO.getAccount();
+        accountDTO.setAccount(adminUserDetailDTO.getUsername());
+        accountDTO.setUserId(adminUserDetailDTO.getId());
         accountDTO.setIsEnabled(true);
         try {
             this.accountService.save(accountDTO);

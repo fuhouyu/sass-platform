@@ -18,22 +18,22 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id             BIGINT PRIMARY KEY    NOT NULL,
-    admin_user_id BIGINT NOT NULL,
+    admin_user_id BIGINT      NOT NULL,
     tenant_code    VARCHAR(64)           NOT NULL,
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
     remark         VARCHAR(256),
-    icon BIGINT,
+    icon          BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
-    start_date DATE,
-    end_date   DATE,
+    start_date    DATE,
+    end_date      DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(64) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(64) NOT NULL,
+    created_at    TIMESTAMP   NOT NULL,
+    created_by    VARCHAR(64) NOT NULL,
+    updated_at    TIMESTAMP   NOT NULL,
+    updated_by    VARCHAR(64) NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -82,9 +82,9 @@ COMMENT ON COLUMN tenant_has_permission.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_has_permission.created_by IS '创建人';
 
 
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS admin_users;
 -- 用户表
-CREATE TABLE users
+CREATE TABLE admin_users
 (
     id         BIGINT PRIMARY KEY NOT NULL,
     username   VARCHAR(64)        NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE users
     nickname   VARCHAR(64),
     email      VARCHAR(64),
     gender     VARCHAR(8),
-    avatar    BIGINT,
+    avatar BIGINT,
     login_date TIMESTAMP,
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN DEFAULT TRUE,
@@ -105,26 +105,26 @@ CREATE TABLE users
 );
 
 
-COMMENT ON TABLE users IS '用户表';
-COMMENT ON COLUMN users.id IS '用户主键id';
-COMMENT ON COLUMN users.username IS '用户名称';
-COMMENT ON COLUMN users.real_name IS '真实姓名';
-COMMENT ON COLUMN users.nickname IS '昵称';
-COMMENT ON COLUMN users.email IS '邮箱地址';
-COMMENT ON COLUMN users.gender IS '性别';
-COMMENT ON COLUMN users.avatar IS '头像资源id';
-COMMENT ON COLUMN users.login_date IS '登录日期';
-COMMENT ON COLUMN users.login_ip IS '登录ip';
-COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
-COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
-COMMENT ON COLUMN users.created_at IS '创建时间';
-COMMENT ON COLUMN users.created_by IS '创建人';
-COMMENT ON COLUMN users.updated_at IS '更新时间';
-COMMENT ON COLUMN users.updated_by IS '更新人';
+COMMENT ON TABLE admin_users IS '用户表';
+COMMENT ON COLUMN admin_users.id IS '用户主键id';
+COMMENT ON COLUMN admin_users.username IS '用户名称';
+COMMENT ON COLUMN admin_users.real_name IS '真实姓名';
+COMMENT ON COLUMN admin_users.nickname IS '昵称';
+COMMENT ON COLUMN admin_users.email IS '邮箱地址';
+COMMENT ON COLUMN admin_users.gender IS '性别';
+COMMENT ON COLUMN admin_users.avatar IS '头像资源id';
+COMMENT ON COLUMN admin_users.login_date IS '登录日期';
+COMMENT ON COLUMN admin_users.login_ip IS '登录ip';
+COMMENT ON COLUMN admin_users.is_enabled IS '是否启用：true 启用';
+COMMENT ON COLUMN admin_users.is_deleted IS '删除标记：false 未删除';
+COMMENT ON COLUMN admin_users.created_at IS '创建时间';
+COMMENT ON COLUMN admin_users.created_by IS '创建人';
+COMMENT ON COLUMN admin_users.updated_at IS '更新时间';
+COMMENT ON COLUMN admin_users.updated_by IS '更新人';
 
-INSERT INTO users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, created_at,
-                  created_by,
-                  updated_at, updated_by)
+INSERT INTO admin_users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, created_at,
+                        created_by,
+                        updated_at, updated_by)
 VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'MALE',
         null, now(), '127.0.0.1', now(), 'admin', now(), 'admin');
 
@@ -132,8 +132,8 @@ DROP TABLE IF EXISTS tenant_has_user;
 -- 租户和用户关系表
 CREATE TABLE tenant_has_user
 (
-    tenant_id BIGINT      NOT NULL,
-    user_id   BIGINT      NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    user_id   BIGINT NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     PRIMARY KEY (tenant_id, user_id)
@@ -160,11 +160,11 @@ CREATE TABLE roles
     is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
-    owner_tenant_id BIGINT NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    owner_tenant_id BIGINT      NOT NULL,
+    created_at      TIMESTAMP   NOT NULL,
+    created_by      VARCHAR(32) NOT NULL,
+    updated_at      TIMESTAMP   NOT NULL,
+    updated_by      VARCHAR(32) NOT NULL,
     UNIQUE (owner_tenant_id, role_code)
 );
 
@@ -191,8 +191,8 @@ VALUES (1, 1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'a
 DROP TABLE IF EXISTS user_has_role;
 CREATE TABLE user_has_role
 (
-    user_id   BIGINT      NOT NULL,
-    role_id   BIGINT      NOT NULL,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     PRIMARY KEY (user_id, role_id)
@@ -603,10 +603,11 @@ CREATE TABLE accounts
 (
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
-    user_id     BIGINT    NOT NULL,
+    user_id    BIGINT      NOT NULL,
     credentials VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
+    user_type  VARCHAR(32) NOT NULL,
     is_enabled                  BOOLEAN DEFAULT true NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
@@ -623,6 +624,7 @@ COMMENT ON COLUMN accounts.account_type IS '账号类型字典项，如密码、
 COMMENT ON COLUMN accounts.user_id IS '所对应的用户id';
 COMMENT ON COLUMN accounts.credentials IS '登录凭证';
 COMMENT ON COLUMN accounts.credentials_expiration_time IS '凭证过期时间，为null则永不过期';
+COMMENT ON COLUMN accounts.user_type IS '账号类型：ADMIN/NORMAL';
 COMMENT ON COLUMN accounts.ref_account_id IS '第三方账号登录时的账号id';
 COMMENT ON COLUMN accounts.is_enabled IS '是否启用该账号登录';
 COMMENT ON COLUMN accounts.created_at IS '创建时间';
@@ -631,9 +633,10 @@ COMMENT ON COLUMN accounts.updated_at IS '更新时间';
 COMMENT ON COLUMN accounts.updated_by IS '更新人';
 
 INSERT INTO accounts(account, account_type, user_id, credentials, credentials_expiration_time, ref_account_id,
+                     user_type,
                      created_at, created_by, updated_at, updated_by)
 VALUES ('admin', 'PASSWORD', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
-        null, null, now(), 'admin', now(), 'admin');
+        null, null, 'ADMIN', now(), 'admin', now(), 'admin');
 
 
 DROP TABLE IF EXISTS dict_type;
@@ -886,3 +889,40 @@ COMMENT ON COLUMN resources.created_at IS '创建时间';
 COMMENT ON COLUMN resources.created_by IS '创建人';
 COMMENT ON COLUMN resources.updated_at IS '更新时间';
 COMMENT ON COLUMN resources.updated_by IS '更新人';
+
+-- 前台用户表（小程序、APP等用户）
+DROP TABLE IF EXISTS users;
+CREATE TABLE users
+(
+    id         BIGINT PRIMARY KEY,
+    nickname   VARCHAR(64),
+    phone      VARCHAR(128),
+    gender     VARCHAR(12) NOT NULL,
+    avatar     VARCHAR(128),
+    email      VARCHAR(128),
+    birthday   DATE,
+    login_date TIMESTAMP,
+    login_ip   VARCHAR(64),
+    is_enabled BOOLEAN     NOT NULL DEFAULT TRUE,
+    is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP   NOT NULL,
+    created_by VARCHAR(32) NOT NULL,
+    updated_at TIMESTAMP   NOT NULL,
+    updated_by VARCHAR(32) NOT NULL
+);
+
+COMMENT ON TABLE users IS '用户表';
+COMMENT ON COLUMN users.id IS '用户主键id';
+COMMENT ON COLUMN users.nickname IS '昵称';
+COMMENT ON COLUMN users.email IS '邮箱地址';
+COMMENT ON COLUMN users.birthday IS '生日';
+COMMENT ON COLUMN users.gender IS '性别';
+COMMENT ON COLUMN users.avatar IS '头像url';
+COMMENT ON COLUMN users.login_date IS '登录日期';
+COMMENT ON COLUMN users.login_ip IS '登录ip';
+COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
+COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
+COMMENT ON COLUMN users.created_at IS '创建时间';
+COMMENT ON COLUMN users.created_by IS '创建人';
+COMMENT ON COLUMN users.updated_at IS '更新时间';
+COMMENT ON COLUMN users.updated_by IS '更新人';

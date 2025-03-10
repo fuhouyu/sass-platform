@@ -35,8 +35,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Schema(name = "UserDetailDTO", description = "用户详情dto对象")
-public class UserDetailDTO extends UserDTO {
+@Schema(name = "UserDetailDTO", description = "管理员用户详情dto对象")
+public class AdminAdminUserDetailDTO extends AdminUserDTO {
 
     @Valid
     @Schema(name = "account", description = "用户账号信息")

@@ -32,8 +32,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@Schema(name = "UserPageQueryDTO", description = "用户查询dto对象")
-public class UserPageQueryDTO extends PageQueryDTO {
+@Schema(name = "UserPageQueryDTO", description = "管理员用户查询dto对象")
+public class AdminUserPageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "username", description = "关键字模糊搜索用户名")
     private String username;

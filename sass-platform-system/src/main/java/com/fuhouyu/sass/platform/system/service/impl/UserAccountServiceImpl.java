@@ -31,13 +31,13 @@ import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.dto.account.UserAccountDetails;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.AdminUserService;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
-import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -65,7 +65,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final AccountService accountService;
 
-    private final UserService userService;
+    private final AdminUserService adminUserService;
 
     private final TokenStore tokenStore;
 
@@ -96,9 +96,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
         userAccountDetails.eraseCredentials();
         if (Objects.isNull(authentication.getDetails())) {
-            UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
+            AdminUserDTO adminUserDTO = this.adminUserService.findById(userAccountDetails.getUserId());
             ((UsernamePasswordAuthenticationToken) authentication)
-                    .setDetails(userDTO);
+                    .setDetails(adminUserDTO);
             // 设置上下文信息
             UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                     UserEntity.class));
@@ -106,7 +106,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             context.setUser(userEntity);
         }
         UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
-        this.userService.recordLoginSuccess(userAccountDetails.getUserId());
+        this.adminUserService.recordLoginSuccess(userAccountDetails.getUserId());
         return userTokenDTO;
     }
 

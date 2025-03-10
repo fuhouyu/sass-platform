@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
@@ -169,7 +169,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         Collection<? extends GrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
 
         Authentication authentication = tokenStore.readAuthentication(userToken);
-        UserDTO userDetailsDTO = (UserDTO) authentication.getDetails();
+        AdminUserDTO userDetailsDTO = (AdminUserDTO) authentication.getDetails();
         userDetailsDTO.setTenantId(id);
 
         OAuth2Token auth2Token = tokenStore.readAuth2Token(userToken);

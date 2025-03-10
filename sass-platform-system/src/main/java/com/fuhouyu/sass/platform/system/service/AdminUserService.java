@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
  * @author fuhouyu
  * @since 2024/10/5 19:17
  */
-public interface UserService extends BaseService<Long, UserDTO> {
+public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
 
     /**
      * 保存用户详情
@@ -34,7 +34,7 @@ public interface UserService extends BaseService<Long, UserDTO> {
      * @param userDTO 用户dto对象
      * @return 主键id
      */
-    Long saveUser(UserDetailDTO userDTO);
+    Long saveUser(AdminAdminUserDetailDTO userDTO);
 
     /**
      * 通过用户名称查询
@@ -42,7 +42,7 @@ public interface UserService extends BaseService<Long, UserDTO> {
      * @param username 用户名
      * @return 用户dto对象
      */
-    UserDTO findByUsername(String username);
+    AdminUserDTO findByUsername(String username);
 
     /**
      * 登录成功后，记录用户的登录信息
@@ -57,12 +57,12 @@ public interface UserService extends BaseService<Long, UserDTO> {
      * @param id 主键id
      * @return 用户详情dto对象
      */
-    UserDetailDTO findDetailById(Long id);
+    AdminAdminUserDetailDTO findDetailById(Long id);
 
     /**
      * 修改用户
      *
      * @param userDTO 用户dto对象
      */
-    void editUser(UserDetailDTO userDTO);
+    void editUser(AdminAdminUserDetailDTO userDTO);
 }
