@@ -92,6 +92,7 @@ export const UserProfile: React.FC = () => {
                             title={t('User.updateAvatar')}>
                             <Avatar
                                 size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
+                                icon={<UserOutlined/>}
                                 src={preview(userinfo.avatar)}
                                 className="avatar"
                             />

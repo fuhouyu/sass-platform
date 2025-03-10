@@ -137,3 +137,11 @@ $dark-button-font-hover-color: #2090FF;
     background: $dark-modal-bac;
   }
 }
+
+// 个人中心
+.dark {
+  .profile-left, .ant-menu-light, .profile-right, .ant-layout-header {
+    background-color: $dark-main-bgc;
+    border-right: 1px solid $dark-main-border;
+  }
+}
