@@ -18,7 +18,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
-import com.fuhouyu.sass.platform.system.dto.office.OnlyOfficeResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
 import com.onlyoffice.manager.url.UrlManager;
 import com.onlyoffice.model.documenteditor.Config;
 import com.onlyoffice.model.documenteditor.config.document.Type;

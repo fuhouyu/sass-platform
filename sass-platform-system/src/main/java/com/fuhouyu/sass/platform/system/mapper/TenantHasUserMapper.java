@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.entity.TenantHasUser;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantHasUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.core.handle;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.sass.platform.system.entity.BaseEntity;
+import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -27,10 +27,7 @@ import org.apache.ibatis.plugin.Signature;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -103,11 +100,15 @@ public class BaseEntityHandle implements Interceptor {
      */
     private void onInsert(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        baseDO.setCreateAt(nowTime);
-        baseDO.setUpdateAt(nowTime);
-        baseDO.setCreateBy(username);
-        baseDO.setUpdateBy(username);
+        baseDO.setCreatedAt(nowTime);
+        baseDO.setUpdatedAt(nowTime);
+        baseDO.setCreatedBy(Objects.isNull(baseDO.getCreatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getCreatedBy()
+        );
+        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getUpdatedBy());
         baseDO.setIsDeleted(false);
     }
 
@@ -118,8 +119,9 @@ public class BaseEntityHandle implements Interceptor {
      */
     private void onUpdate(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        baseDO.setUpdateAt(nowTime);
-        baseDO.setUpdateBy(username);
+        baseDO.setUpdatedAt(nowTime);
+        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getUpdatedBy());
     }
 }

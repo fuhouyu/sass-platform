@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
 
 import java.util.List;
 import java.util.Map;

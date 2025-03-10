@@ -17,9 +17,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
-import com.fuhouyu.sass.platform.system.dto.role.RolePageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.role.RolePageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

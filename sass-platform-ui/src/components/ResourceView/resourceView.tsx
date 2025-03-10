@@ -23,6 +23,7 @@ import "./index.scss"
 import VideoView from "./videoView";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
+import {YamlView} from "@components/ResourceView/yamlView.tsx";
 
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
@@ -45,6 +46,8 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                     }
                 ]
             }}/>
+        case ResourceTypeEnum.YAML:
+            return <YamlView resourceId={resourceView.id}/>
         default:
             return <div>{t('Resource.unknownType')}</div>
     }

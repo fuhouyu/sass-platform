@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.RoleMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Roles" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Roles" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
         <result column="role_code" property="roleCode" jdbcType="VARCHAR"/>
@@ -41,10 +41,10 @@
        is_enabled,
        is_allow_modified,
        is_deleted,
-       create_at,
-       update_at,
-       create_by,
-       update_by
+       created_at,
+       updated_at,
+       created_by,
+       updated_by
     </sql>
 
     <sql id="QueryColumns" >
@@ -57,13 +57,13 @@
        r.is_enabled,
        r.is_allow_modified,
        r.is_deleted,
-       r.create_at,
-       r.update_at,
-       r.create_by,
-       r.update_by
+       r.created_at,
+       r.updated_at,
+       r.created_by,
+       r.updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Roles">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Roles">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,10 +80,10 @@
             #{isEnabled},
             #{isAllowModified},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy},
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -105,15 +105,15 @@
                 #{entity.isEnabled},
                 #{entity.isAllowModified},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Roles">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Roles">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -130,8 +130,8 @@
         <if test="dataScope != null and dataScope != ''">
             data_scope = #{dataScope},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

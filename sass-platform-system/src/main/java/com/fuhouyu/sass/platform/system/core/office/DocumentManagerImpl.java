@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.core.office;
 
 import com.fuhouyu.framework.common.utils.NumberFormatUtil;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.onlyoffice.manager.document.DefaultDocumentManager;
 import com.onlyoffice.manager.settings.SettingsManager;

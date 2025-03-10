@@ -22,12 +22,12 @@ import com.fuhouyu.framework.security.token.OAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.entity.TenantInfo;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
@@ -169,7 +169,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         Collection<? extends GrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
 
         Authentication authentication = tokenStore.readAuthentication(userToken);
-        UserDTO userDetailsDTO = (UserDTO) authentication.getDetails();
+        AdminUserDTO userDetailsDTO = (AdminUserDTO) authentication.getDetails();
         userDetailsDTO.setTenantId(id);
 
         OAuth2Token auth2Token = tokenStore.readAuth2Token(userToken);

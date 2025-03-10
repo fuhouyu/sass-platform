@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.entity.UserHasRole;
+import com.fuhouyu.sass.platform.system.domain.entity.UserHasRole;
 import com.fuhouyu.sass.platform.system.mapper.UserHasRoleMapper;
 import com.fuhouyu.sass.platform.system.service.UserHasRoleService;
 import lombok.RequiredArgsConstructor;

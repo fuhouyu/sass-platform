@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.dict.DictTypeDTO;
-import com.fuhouyu.sass.platform.system.entity.DictType;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypeDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.DictType;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

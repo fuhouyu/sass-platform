@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.entity.Permissions;
+import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

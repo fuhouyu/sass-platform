@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.OrganizationMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Organizations" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Organizations" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
         <result column="organization_code" property="organizationCode" jdbcType="VARCHAR"/>
@@ -44,10 +44,10 @@
         o.display_order,
         o.owner_tenant_id,
         o.is_deleted,
-        o.create_at,
-        o.update_at,
-        o.create_by,
-        o.update_by
+        o.created_at,
+        o.updated_at,
+        o.created_by,
+        o.updated_by
     </sql>
 
     <sql id="AllColumns">
@@ -62,13 +62,13 @@
         display_order,
         owner_tenant_id,
         is_deleted,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Organizations">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -87,10 +87,10 @@
             #{displayOrder},
             #{ownerTenantId},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -114,15 +114,15 @@
                 #{entity.displayOrder},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Organizations">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -139,8 +139,8 @@
             display_order = #{displayOrder},
         </if>
         remark = #{remark},
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

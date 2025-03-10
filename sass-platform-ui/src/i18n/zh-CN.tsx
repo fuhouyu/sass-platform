@@ -16,10 +16,10 @@
 const ZhCN = {
     // 公共参数
     Common: {
-        createBy: '创建人',
-        createAt: '创建时间',
-        updateBy: '操作人',
-        updateAt: '操作时间',
+        createdBy: '创建人',
+        createdAt: '创建时间',
+        updatedBy: '操作人',
+        updatedAt: '操作时间',
         status: '状态',
         statusPlaceholder: '请选择状态',
         displayOrder: '显示顺序',

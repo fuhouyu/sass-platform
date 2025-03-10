@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.BaseDTO;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.page.PageMethod;
 

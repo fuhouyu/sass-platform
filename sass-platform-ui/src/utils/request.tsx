@@ -54,7 +54,6 @@ request.interceptors.response.use(async function (response) {
         return response.data.data;
     }
     const pathname = window.location.pathname;
-    console.log(pathname)
     // 如果 isSuccess 为 false，抛出异常
     if (response.data.code === 402) {
         const refreshToken = getRefreshToken();
@@ -93,10 +92,12 @@ request.interceptors.response.use(async function (response) {
             } as UserBind;
         }
     }
-
-    const error = new Error(response.data.message || '请求失败');
-    await message.error(error.message);
-    return Promise.reject(error);
+    if (response.data.message) {
+        const error = new Error(response.data.message);
+        await message.error(error.message);
+        return Promise.reject(error);
+    }
+    return response.data;
 
 }, function (error: Error) {
     // 超出 2xx 范围的状态码都会触发该函数。

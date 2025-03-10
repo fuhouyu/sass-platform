@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/did/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.DictItemMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.DictItem" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.DictItem" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="item_name" property="itemName" jdbcType="VARCHAR"/>
         <result column="item_code" property="itemCode" jdbcType="VARCHAR"/>
@@ -42,10 +42,10 @@
         is_allow_modified,
         owner_tenant_id,
         is_deleted, 
-        create_at, 
-        create_by, 
-        update_at, 
-        update_by
+        created_at,
+        created_by,
+        updated_at,
+        updated_by
     </sql>
 
     <sql id="QueryColumns" >
@@ -59,13 +59,13 @@
         di.is_allow_modified,
         di.owner_tenant_id,
         di.is_deleted, 
-        di.create_at, 
-        di.create_by, 
-        di.update_at, 
-        di.update_by
+        di.created_at,
+        di.created_by,
+        di.updated_at,
+        di.updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.DictItem">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.DictItem">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -83,10 +83,10 @@
             #{isAllowModified},
             #{ownerTenantId},
             #{isDeleted},
-            #{createAt},
-            #{createBy},
-            #{updateAt},
-            #{updateBy},
+            #{createdAt},
+            #{createdBy},
+            #{updatedAt},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -109,15 +109,15 @@
                 #{entity.isAllowModified},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.createBy},
-                #{entity.updateAt},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.createdBy},
+                #{entity.updatedAt},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.DictItem">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.DictItem">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -134,8 +134,8 @@
         <if test="remark != null ">
             remark = #{remark},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

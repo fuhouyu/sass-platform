@@ -25,16 +25,17 @@ import com.fuhouyu.framework.s3.enums.StsActionEnum;
 import com.fuhouyu.framework.s3.properties.S3Properties;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceSignedUrlDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.entity.Resources;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
+import com.fuhouyu.sass.platform.system.utils.SignedUrlUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,17 +59,12 @@ import software.amazon.awssdk.services.sts.model.Credentials;
 import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -88,8 +84,6 @@ import java.util.function.Function;
 public class ResourceServiceImpl implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
-
-    private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 
     /**
      * 过期时间一个小时
@@ -283,17 +277,15 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public String generateSignedUrl(Long id) {
         ResourceDTO resourceDTO = this.checkResourceExists(id);
-        long expirationTime = Instant.now().getEpochSecond() + EXPIRE_TIME;
-        String stringToSign = resourceDTO.getObjectKey() + "\n" + expirationTime;
-        String signature = this.generateSignature(stringToSign);
-        String baseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
-        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
-            baseUrl += ":" + httpServletRequest.getServerPort();
-        }
-        return String.format("%s/v1/resource/download/%s?signature=%s&expires=%s", baseUrl,
-                id,
-                signature, expirationTime);
+        String baseUrl = String.format("%s/v1/resource/download/%s", this.getHttpBaseUrl(), id);
 
+        SignedUrlUtil.UrlSignedDTO urlSignedDTO = SignedUrlUtil.UrlSignedDTO
+                .builder()
+                .expiresSeconds(EXPIRE_TIME)
+                .accessKey(resourceDTO.getObjectKey())
+                .secretKey(s3Properties.getSecretKey())
+                .build();
+        return SignedUrlUtil.generateSignedUrl(baseUrl, urlSignedDTO);
     }
 
 
@@ -453,26 +445,6 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * 使用 HMAC-SHA256 计算签名
-     *
-     * @param data 待签名的数据
-     * @return 签名
-     */
-    private String generateSignature(String data) {
-        try {
-            SecretKeySpec signingKey = new SecretKeySpec(s3Properties.getSecretKey().getBytes(StandardCharsets.UTF_8), HMAC_SHA256_ALGORITHM);
-            Mac mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
-            mac.init(signingKey);
-            byte[] rawHmac = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(rawHmac);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            LoggerUtil.error(log, "使用签名: {} 计算数据失败: {}", HMAC_SHA256_ALGORITHM, e.getMessage(), e);
-            throw new IllegalArgumentException("签名计算失败", e);
-        }
-    }
-
-
-    /**
      * 检查签名url
      *
      * @param resourceSignedUrlDTO 资源签名url dto
@@ -487,23 +459,16 @@ public class ResourceServiceImpl implements ResourceService {
         if (resources.getIsPublic()) {
             return;
         }
-        Long expires = resourceSignedUrlDTO.getExpires();
-        // 检查 URL 是否过期
-        long currentTime = Instant.now().getEpochSecond();
-        if (currentTime > expires) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前url签名已过期");
-        }
-
-        // 重新计算签名
-        String stringToSign = resources.getObjectKey() + "\n" + expires;
-        String expectedSignature = this.generateSignature(stringToSign);
-
-        // 比较签名
-        String originSignedData = resourceSignedUrlDTO.getSignature();
-        if (!Objects.equals(originSignedData, expectedSignature)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "当前下载url已过期");
-        }
+        SignedUrlUtil.VerifySignedUrlDTO verifySignedUrlDTO = SignedUrlUtil.VerifySignedUrlDTO
+                .builder()
+                .expires(resourceSignedUrlDTO.getExpires())
+                .nonce(resourceSignedUrlDTO.getNonce())
+                .signature(resourceSignedUrlDTO.getSignature())
+                .accessKey(resources.getObjectKey())
+                .secretKey(s3Properties.getSecretKey())
+                .signature(resourceSignedUrlDTO.getSignature())
+                .build();
+        SignedUrlUtil.verifySignedUrl(verifySignedUrlDTO);
     }
 
     /**
@@ -525,6 +490,20 @@ public class ResourceServiceImpl implements ResourceService {
                 builder.range(rangeHeader);
             }
         });
+    }
+
+
+    /**
+     * 获取url 地址
+     *
+     * @return 当前url地址
+     */
+    private String getHttpBaseUrl() {
+        String baseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
+        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
+            baseUrl += ":" + httpServletRequest.getServerPort();
+        }
+        return baseUrl;
     }
 }
 

@@ -91,13 +91,13 @@ export const DictItem = () => {
         },
 
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: "center",
         },
         {
-            title: t('Common.updateBy'),
-            dataIndex: 'updateBy',
+            title: t('Common.updatedBy'),
+            dataIndex: 'updatedBy',
             align: "center",
         },
         {
@@ -114,7 +114,7 @@ export const DictItem = () => {
         }
     ];
 
-    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [updateId, setUpdatedId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -148,7 +148,7 @@ export const DictItem = () => {
      * @param dictItemId 角色id
      */
     const openModal = async (dictItemId?: string) => {
-        setUpdateId(dictItemId);
+        setUpdatedId(dictItemId);
         if (dictItemId) {
             const dictItemInfo: DictItemModel = await dictItemApi.getInfoByIdApi(dictItemId);
             setFormInitValues(dictItemInfo);

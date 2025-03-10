@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 
 import java.util.Collection;
 import java.util.List;

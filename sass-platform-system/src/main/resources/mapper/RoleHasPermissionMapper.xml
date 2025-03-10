@@ -16,11 +16,11 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.RoleHasPermissionMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.RoleHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
-        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
@@ -30,11 +30,11 @@
     <sql id="AllColumns">
         role_id,
         permission_id,
-        create_at,
-        create_by
+        created_at,
+        created_by
     </sql>
 
-    <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+    <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.domain.entity.AdminUsers">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -45,8 +45,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{entity.roleId},
             #{entity.permissionId},
-            #{entity.createAt},
-            #{entity.createBy},
+            #{entity.createdAt},
+            #{entity.createdBy},
         </trim>
         </foreach>
     </insert>

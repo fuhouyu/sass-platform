@@ -18,14 +18,13 @@
 // 添加按钮
 .add-button {
   color: #2090FF;
-  background-color: #E8F4FF;
   border: 1px solid #2090FF;
 }
 
-.add-button:hover {
-  color: white !important;
-  background-color: #1890ff !important;
-  border-color: #1890ff !important;
+.components .component .add-button:hover {
+  color: white;
+  background-color: #1890ff;
+  border-color: #1890ff;
 }
 
 
@@ -36,10 +35,10 @@
   border: 1px solid #FF5E5E;
 }
 
-.del-button:hover {
-  color: white !important;
-  background-color: #FF4949 !important;
-  border-color: #FF4949 !important;
+.components .component .del-button:hover {
+  color: white;
+  background-color: #FF4949;
+  border-color: #FF4949;
 }
 
 // 删除按钮
@@ -49,8 +48,8 @@
   border: 1px solid #72E3A3;
 }
 
-.edit-button:hover {
-  color: white !important;
-  background-color: #42D885 !important;
-  border-color: #42D885 !important;
+.components .component .edit-button:hover {
+  color: white;
+  background-color: #42D885;
+  border-color: #42D885;
 }

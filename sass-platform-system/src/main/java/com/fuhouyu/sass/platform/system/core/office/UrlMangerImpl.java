@@ -15,9 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.core.office;
 
+import com.fuhouyu.framework.common.utils.NumberFormatUtil;
+import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.onlyoffice.manager.settings.SettingsManager;
 import com.onlyoffice.manager.url.DefaultUrlManager;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 
 /**
@@ -30,27 +31,19 @@ import lombok.NonNull;
  */
 public class UrlMangerImpl extends DefaultUrlManager {
 
-    private static final String DOWNLOAD_FILE_PATH = "/v1/resource/download/";
-    private final HttpServletRequest request;
+
+    private final ResourceService resourceService;
 
     public UrlMangerImpl(SettingsManager settingsManager,
-                         HttpServletRequest request) {
+                         ResourceService resourceService) {
         super(settingsManager);
-        this.request = request;
+        this.resourceService = resourceService;
     }
 
     @Override
     public String getFileUrl(@NonNull String fileId) {
-        return this.getServerUrl() + DOWNLOAD_FILE_PATH + fileId;
+        return resourceService.generateSignedUrl(NumberFormatUtil.toLong(fileId));
     }
 
-    /**
-     * 获取服务url
-     *
-     * @return url
-     */
-    private String getServerUrl() {
-        return String.format("%s://%s:%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
-    }
 
 }

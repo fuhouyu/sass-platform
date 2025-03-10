@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+.table-container {
+  border-radius: .5rem;
+  padding: .5rem;
+  background-color: #ffffff;
+  flex-grow: 1;
+  overflow: auto;
+}
+
 // 组件
 .component {
   display: flex;
@@ -64,4 +72,8 @@
     padding: 0 0.3125rem;
     color: red;
   }
+}
+
+.table-tips-icon {
+  color: #1578FF;
 }

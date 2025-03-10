@@ -16,10 +16,10 @@
 const EnUS = {
     // 公共参数
     Common: {
-        createBy: 'Create By',
-        createAt: 'Create At',
-        updateBy: 'Update By',
-        updateAt: 'Update At',
+        createdBy: 'Create By',
+        createdAt: 'Create At',
+        updatedBy: 'Update By',
+        updatedAt: 'Update At',
         status: 'Status',
         statusPlaceholder: 'Please choose Status',
         displayOrder: 'Display Order',

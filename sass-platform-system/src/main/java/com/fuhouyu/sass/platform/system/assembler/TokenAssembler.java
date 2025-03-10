@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.assembler;
 
 import com.fuhouyu.framework.security.token.OAuth2Token;
-import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -15,9 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.entity.Accounts;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
+import org.mapstruct.EnumMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -34,4 +36,13 @@ public interface AccountsAssembler extends BaseAssembler<Accounts, AccountDTO> {
     AccountsAssembler INSTANCE = Mappers.getMapper(AccountsAssembler.class);
 
 
+    @Override
+    @EnumMapping(nameTransformationStrategy = MappingConstants.CASE_TRANSFORMATION,
+            configuration = "upper")
+    AccountDTO toDTO(Accounts source);
+
+    @Override
+    @EnumMapping(nameTransformationStrategy = MappingConstants.CASE_TRANSFORMATION,
+            configuration = "upper")
+    Accounts toEntity(AccountDTO source);
 }

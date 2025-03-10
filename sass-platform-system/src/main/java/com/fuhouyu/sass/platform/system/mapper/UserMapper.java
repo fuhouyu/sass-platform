@@ -15,34 +15,21 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-
-import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
-import com.fuhouyu.sass.platform.system.entity.Users;
+import com.fuhouyu.sass.platform.system.domain.entity.Users;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * <p>
- * 用户mapper接口
+ * 用户mapper
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/24 20:26
+ * @since 2025/3/10 17:34
  */
 public interface UserMapper extends BaseMapper<Long, Users> {
 
-    /**
-     * 通过用户名称查询
-     *
-     * @param username 用户名称
-     * @return userEntity对象
-     */
-    Users queryByUsername(String username);
 
     /**
      * 记录用户登录信息
@@ -55,21 +42,4 @@ public interface UserMapper extends BaseMapper<Long, Users> {
                             @Param("loginIp") String loginIp,
                             @Param("loginTime") LocalDateTime loginTime);
 
-    /**
-     * 查询用户详情列表
-     *
-     * @param pageQuery 分页查询对象
-     * @return 用户详情列表
-     */
-    @TenantQuery(column = "tu.tenant_id")
-    <P extends PageQueryDTO> List<UserDTO> queryDetailList(@Param("pageQuery") P pageQuery);
-
-    /**
-     * 查询用户详情
-     *
-     * @param id 用户id
-     * @return 用户详情
-     */
-    @TenantQuery(column = "tu.tenant_id")
-    UserDetailDTO queryDetailById(Long id);
 }

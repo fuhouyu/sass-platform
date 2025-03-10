@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.PermissionMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Permissions" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Permissions" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
         <result column="permission_name" property="permissionName" jdbcType="VARCHAR"/>
@@ -57,10 +57,10 @@
         is_enabled,
         owner_tenant_id,
         is_deleted,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
     <sql id="QueryColumns">
@@ -81,13 +81,13 @@
         p.is_enabled,
         p.owner_tenant_id,
         p.is_deleted,
-        p.create_at,
-        p.update_at,
-        p.create_by,
-        p.update_by
+        p.created_at,
+        p.updated_at,
+        p.created_by,
+        p.updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Permissions">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Permissions">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -112,10 +112,10 @@
             #{isEnabled},
             #{ownerTenantId},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy},
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -145,15 +145,15 @@
                 #{entity.isEnabled},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Permissions">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Permissions">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -188,8 +188,8 @@
         <if test="isEnabled != null">
             is_enabled = #{isEnabled},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

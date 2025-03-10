@@ -15,54 +15,17 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 
 /**
  * <p>
- * 用户接口
+ * 普通用户接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/5 19:17
+ * @since 2025/3/10 17:45
  */
 public interface UserService extends BaseService<Long, UserDTO> {
 
-    /**
-     * 保存用户详情
-     *
-     * @param userDTO 用户dto对象
-     * @return 主键id
-     */
-    Long saveUser(UserDetailDTO userDTO);
 
-    /**
-     * 通过用户名称查询
-     *
-     * @param username 用户名
-     * @return 用户dto对象
-     */
-    UserDTO findByUsername(String username);
-
-    /**
-     * 登录成功后，记录用户的登录信息
-     *
-     * @param userId 用户id
-     */
-    void recordLoginSuccess(Long userId);
-
-    /**
-     * 通过id查询用户详情
-     *
-     * @param id 主键id
-     * @return 用户详情dto对象
-     */
-    UserDetailDTO findDetailById(Long id);
-
-    /**
-     * 修改用户
-     *
-     * @param userDTO 用户dto对象
-     */
-    void editUser(UserDetailDTO userDTO);
 }

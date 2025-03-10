@@ -53,11 +53,11 @@ const VideoView = ({options}: { options: AnyObject }) => {
     }, [options]);
 
     return (
-        <Flex justify={"center"} align={"center"} className={'video-view'}>
+        <Flex justify={"center"} align={"center"} className={'view-container'}>
             <video
                 id={'video-js'}
                 ref={videoRef}
-                className=" video-js  video-view vjs-big-play-centered"
+                className=" video-js  view-container vjs-big-play-centered"
             />
         </Flex>
     );

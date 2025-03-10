@@ -21,12 +21,13 @@ import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Button, Card, Divider, Dropdown, Flex, MenuProps, Modal, Space, Tooltip} from "antd";
-import {LogoutOutlined, UserOutlined} from "@ant-design/icons";
+import {Avatar, Button, Card, Divider, Dropdown, Flex, MenuProps, Modal, Segmented, Space, Tooltip} from "antd";
+import {LogoutOutlined, MoonOutlined, SunOutlined, UserOutlined} from "@ant-design/icons";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
 import {BaseApiUrlConstant, BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 export const LayoutHeader = () => {
     const {t} = useTranslation();
@@ -36,6 +37,7 @@ export const LayoutHeader = () => {
     const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
     const navigate = useNavigate();
     const {tenant} = useUserStore(state => state);
+    const {theme, changeTheme} = useThemeStore();
 
     const setTenant = useCallback(async () => {
         if (tenantInfos.length === 0) {
@@ -101,6 +103,17 @@ export const LayoutHeader = () => {
                 </div>
 
                 <Flex className={'header-actions-user-container'} justify={'center'} align={'center'} gap={20}>
+                    <Flex>
+                        <Segmented
+                            shape="round"
+                            defaultValue={theme}
+                            options={[
+                                {value: 'light', icon: <SunOutlined/>},
+                                {value: 'dark', icon: <MoonOutlined/>},
+                            ]}
+                            onChange={(value: string) => changeTheme(value)}
+                        />
+                    </Flex>
                     <Flex>
                         {LanguageSwitcherButton}
                     </Flex>

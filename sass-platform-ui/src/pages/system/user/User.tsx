@@ -40,7 +40,7 @@ import {
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {Userinfo} from "@/model/user";
-import {userApi} from "@/apis/user";
+import {userApi} from "@/apis/adminUser.tsx";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {useTranslation} from "react-i18next";
@@ -125,14 +125,14 @@ export const User: React.FC = () => {
             )
         },
         {
-            title: t('Common.updateAt'),
+            title: t('Common.updatedAt'),
             align: 'center',
-            dataIndex: 'updateAt',
+            dataIndex: 'updatedAt',
         },
         {
-            title: t('Common.updateBy'),
+            title: t('Common.updatedBy'),
             align: 'center',
-            dataIndex: 'updateBy',
+            dataIndex: 'updatedBy',
         },
         {
             title: t('Common.action'),
@@ -159,7 +159,7 @@ export const User: React.FC = () => {
             }
         }
     ];
-    const [updateUserId, setUpdateUserId] = useState<string | undefined>();
+    const [updateUserId, setUpdatedUserId] = useState<string | undefined>();
     const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
@@ -188,7 +188,7 @@ export const User: React.FC = () => {
      * @param userId 用户id
      */
     const openModal = async (userId?: string) => {
-        setUpdateUserId(userId);
+        setUpdatedUserId(userId);
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
         setRoleSelectList(await roleApi.list());
         if (!userId) {

@@ -17,10 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationPageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
-import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

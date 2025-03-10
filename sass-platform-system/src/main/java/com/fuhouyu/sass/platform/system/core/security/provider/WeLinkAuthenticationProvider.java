@@ -23,13 +23,14 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.constants.CacheConstant;
 import com.fuhouyu.sass.platform.system.constants.HttpRequestHeaderConstant;
-import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.WebResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -55,6 +56,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RequiredArgsConstructor
 @Component
+@ConditionalOnBean(WeLinkService.class)
 public class WeLinkAuthenticationProvider implements AuthenticationProvider {
 
     private final WeLinkService weLinkService;

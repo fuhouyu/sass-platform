@@ -15,7 +15,7 @@
  */
 
 import {Button, Col, Input, Row, Table, TableColumnsType, Tag, Tree} from "antd";
-import {userApi} from "@/apis/user.tsx";
+import {userApi} from "@/apis/adminUser.tsx";
 import React, {Key, useCallback, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Userinfo} from "@/model/user.tsx";

@@ -16,9 +16,10 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.AccountMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Accounts" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Accounts" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="account" property="account" jdbcType="VARCHAR"/>
         <result column="account_type" property="accountType" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="VARCHAR"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="credentials" property="credentials" jdbcType="VARCHAR"/>
         <result column="credentials_expiration_time" property="credentialsExpirationTime" jdbcType="TIMESTAMP"/>
@@ -33,18 +34,19 @@
     <sql id="AllColumns">
         account,
         account_type,
+        user_type,
         user_id,
         credentials,
         credentials_expiration_time,
         ref_account_id,
         is_enabled,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Accounts">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Accounts">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -54,15 +56,16 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{account},
             #{accountType},
+            #{userType},
             #{userId},
             #{credentials},
             #{credentialsExpirationTime},
             #{refAccountId},
             #{isEnabled},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -77,20 +80,21 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.account},
                 #{entity.accountType},
+                #{entity.userType},
                 #{entity.userId},
                 #{entity.credentials},
                 #{entity.credentialsExpirationTime},
                 #{entity.refAccountId},
                 #{entity.isEnabled},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Accounts">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Accounts">
         UPDATE
         <include refid="TableName"/>
         SET
@@ -103,8 +107,8 @@
         <if test="refAccountId != null and refAccountId != ''">
             ref_account_id = #{refAccountId},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE account = #{account}
         AND account_type = #{accountType}
     </update>

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.entity.TenantHasPermission;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantHasPermission;
 import com.fuhouyu.sass.platform.system.mapper.TenantHasPermissionMapper;
 import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
 import lombok.RequiredArgsConstructor;

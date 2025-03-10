@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.entity.UserHasRole;
+import com.fuhouyu.sass.platform.system.domain.entity.UserHasRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

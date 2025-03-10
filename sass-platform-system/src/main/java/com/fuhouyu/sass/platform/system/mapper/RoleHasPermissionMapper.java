@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.entity.RoleHasPermission;
+import com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

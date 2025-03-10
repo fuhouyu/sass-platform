@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.sass.platform.system.entity.AccountId;
-import com.fuhouyu.sass.platform.system.entity.Accounts;
+import com.fuhouyu.sass.platform.system.domain.entity.AccountId;
+import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

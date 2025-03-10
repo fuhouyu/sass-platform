@@ -19,11 +19,11 @@
  */
 export type BaseModel = {
     // 创建时间
-    createAt?: string;
+    createdAt?: string;
     // 创建人
-    createBy?: string;
+    createdBy?: string;
     // 更新时间
-    updateAt?: string;
+    updatedAt?: string;
     // 更新人
-    updateBy?: string;
+    updatedBy?: string;
 }

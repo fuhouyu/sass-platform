@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserHasRoleMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.UserHasRole" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.UserHasRole" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="role_id" property="roleId" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
     </resultMap>
@@ -29,11 +29,11 @@
     <sql id="InsertColumn">
         role_id,
         user_id,
-        create_at,
-        create_by
+        created_at,
+        created_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.AdminUsers">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -43,8 +43,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{roleId},
             #{userId},
-            #{createAt},
-            #{createBy},
+            #{createdAt},
+            #{createdBy},
         </trim>
         ON CONFLICT(user_id, role_id) DO NOTHING
     </insert>
@@ -60,8 +60,8 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.roleId},
                 #{entity.userId},
-                #{entity.createAt},
-                #{entity.createBy},
+                #{entity.createdAt},
+                #{entity.createdBy},
             </trim>
         </foreach>
         ON CONFLICT(user_id, role_id) DO NOTHING

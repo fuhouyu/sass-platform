@@ -55,7 +55,7 @@ export const Organization = () => {
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
-    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [updateId, setUpdatedId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -83,16 +83,16 @@ export const Organization = () => {
             defaultSortOrder: 'descend',
         },
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: 'center',
             sorter: true,
             showSorterTooltip: false
         },
         {
-            title: t('Common.updateBy'),
+            title: t('Common.updatedBy'),
             align: 'center',
-            dataIndex: 'updateBy',
+            dataIndex: 'updatedBy',
         },
         {
             title: t('Common.action'),
@@ -148,7 +148,7 @@ export const Organization = () => {
      * @param updateId 修改的id
      */
     const openModal = async (updateId?: string | undefined) => {
-        setUpdateId(updateId);
+        setUpdatedId(updateId);
         await organizationTreeSelect();
         if (updateId) {
             const organizationDetails = await organizationApi.getInfoByIdApi(updateId);
@@ -162,7 +162,7 @@ export const Organization = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        setUpdateId(undefined);
+        setUpdatedId(undefined);
         setFormParentOrganization({} as OrganizationModal)
     }
 

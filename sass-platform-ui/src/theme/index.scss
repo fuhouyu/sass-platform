@@ -13,3 +13,127 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// 主容器
+$dark-container-bgc: #161616;
+$dark-container-border: #303030;
+$dark-menu-bac: #2D2D2D;
+$dark-main-bgc: #303030;
+$dark-main-border: #161616;
+$dark-aside-border: #1C1D1F;
+
+// modal
+$dark-modal-bac: #2A2A2A;
+
+// 按钮
+$dark-button-bgc: #2A2A2A;
+$dark-button-border: #585858;
+
+// 字体
+$dark-font-color: #ffffff;
+$dark-button-font-hover-color: #2090FF;
+
+
+.dark {
+  // 页头
+  .layout-header {
+    background-color: $dark-container-bgc;
+    border-bottom: 1px solid $dark-container-border;
+    .header-title-divider {
+      background-color: $dark-container-bgc;
+    }
+
+    .header-title-container h2 {
+      color: $dark-font-color;
+    }
+  }
+
+  // 侧边栏
+  .ant-layout-sider-light, .ant-menu-light {
+    background-color: $dark-container-bgc;
+  }
+
+  .layout-main-sider, .ant-layout-sider-light {
+    border-right: $dark-aside-border;
+  }
+
+  .ant-layout-sider-trigger {
+    background: $dark-container-bgc;
+    border-top: 1px solid $dark-container-border;
+  }
+}
+
+// main
+.dark {
+  // 表单搜索头
+  .search-header {
+    background-color: $dark-main-bgc;
+  }
+
+  .table-container {
+    background-color: $dark-main-bgc;
+  }
+
+  .tips-container {
+    background-color: $dark-main-bgc;
+    border: 1px solid $dark-aside-border;
+  }
+
+  .tree-container, .ant-tree-list {
+    background-color: $dark-main-bgc;
+  }
+
+  .tenant-space-content .title-line {
+    background-color: $dark-container-bgc;
+  }
+
+  .space-bucket-breadcrumb {
+    background-color: $dark-container-bgc;
+  }
+
+  .table-tips-icon {
+    color: $dark-font-color;
+  }
+
+  .title-line .title:before {
+    background-color: $dark-font-color;
+  }
+}
+
+// 登录
+.dark {
+  .login-container, .qrcode-container {
+    background-color: $dark-container-bgc;
+  }
+}
+
+// 租户空间
+.dark {
+  .file-actions-list {
+    background-color: $dark-container-bgc;
+
+    .ant-list-item:hover {
+      background-color: $dark-container-bgc;
+    }
+  }
+}
+
+// 按钮
+.dark {
+  .ant-btn-primary, .add-button, .edit-button {
+    background-color: $dark-button-bgc;
+    border: 1px solid $dark-button-border;
+    color: $dark-font-color;
+  }
+
+  .components .component .add-button:hover {
+    background-color: $dark-button-bgc;
+    color: $dark-button-font-hover-color;
+  }
+}
+
+// modal
+.dark {
+  .ant-modal-header .ant-modal-title {
+    background: $dark-modal-bac;
+  }
+}

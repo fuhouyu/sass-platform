@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.BaseDTO;
-import com.fuhouyu.sass.platform.system.entity.BaseEntity;
+import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
 
 import java.util.List;
 
