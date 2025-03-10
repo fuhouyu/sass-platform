@@ -120,7 +120,7 @@ const TenantSpace: React.FC = () => {
             }
         },
         {
-            title: t('Resource.isPublic'),
+            title: t('Resource.access'),
             dataIndex: 'isPublic',
             align: "center",
             render: (_, record: Resource) => {

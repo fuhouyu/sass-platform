@@ -307,6 +307,7 @@ const ZhCN = {
         uploadFolder: '上传文件夹',
         unknownType: '未知类型',
         rootPath: '根目录',
+        access: '访问权限',
         public: '公开',
         private: '私有'
     }

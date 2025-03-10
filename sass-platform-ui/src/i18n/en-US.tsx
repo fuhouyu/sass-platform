@@ -304,6 +304,7 @@ const EnUS = {
         uploadFolder: 'Upload Folder',
         unknownType: 'Unknow Type',
         rootPath: 'Root Path',
+        access: 'Access Permission',
         public: 'Public',
         private: 'Private'
     }
