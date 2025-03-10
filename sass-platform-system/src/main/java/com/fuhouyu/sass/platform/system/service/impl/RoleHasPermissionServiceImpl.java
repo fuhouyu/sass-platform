@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.entity.RoleHasPermission;
+import com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission;
 import com.fuhouyu.sass.platform.system.mapper.RoleHasPermissionMapper;
 import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
 import lombok.RequiredArgsConstructor;

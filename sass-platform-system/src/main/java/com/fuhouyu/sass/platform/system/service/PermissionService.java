@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;

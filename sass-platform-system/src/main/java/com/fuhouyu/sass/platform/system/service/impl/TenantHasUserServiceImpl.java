@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.sass.platform.system.entity.TenantHasUser;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantHasUser;
 import com.fuhouyu.sass.platform.system.mapper.TenantHasUserMapper;
 import com.fuhouyu.sass.platform.system.service.TenantHasUserService;
 import lombok.RequiredArgsConstructor;

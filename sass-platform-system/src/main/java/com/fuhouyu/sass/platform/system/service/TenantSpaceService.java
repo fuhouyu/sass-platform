@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDetailDTO;
 
 import java.util.Collection;
 

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 
 /**
  * <p>

@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionDTO;
-import com.fuhouyu.sass.platform.system.dto.permission.PermissionTreeDTO;
-import com.fuhouyu.sass.platform.system.entity.Permissions;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

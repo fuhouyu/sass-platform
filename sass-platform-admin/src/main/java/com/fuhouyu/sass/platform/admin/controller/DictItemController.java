@@ -17,9 +17,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.dict.DictItemDTO;
-import com.fuhouyu.sass.platform.system.dto.dict.DictItemPageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.service.DictItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

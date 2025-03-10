@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.entity.Resources;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

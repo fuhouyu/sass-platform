@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.entity.Organizations;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;

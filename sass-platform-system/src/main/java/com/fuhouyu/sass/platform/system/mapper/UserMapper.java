@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.entity.Users;
+import com.fuhouyu.sass.platform.system.domain.entity.Users;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;

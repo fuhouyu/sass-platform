@@ -15,10 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.ResourceSignedUrlDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

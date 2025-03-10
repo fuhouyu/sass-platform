@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDetailDTO;
-import com.fuhouyu.sass.platform.system.entity.TenantSpace;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantSpace;
 import org.apache.ibatis.annotations.Param;
 
 /**

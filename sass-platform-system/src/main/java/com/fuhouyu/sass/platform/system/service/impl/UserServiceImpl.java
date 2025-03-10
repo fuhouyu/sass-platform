@@ -17,9 +17,9 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UserAssembler;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.entity.Users;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Users;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;

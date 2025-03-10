@@ -23,7 +23,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.constants.CacheConstant;
 import com.fuhouyu.sass.platform.system.constants.HttpRequestHeaderConstant;
-import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.WebResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;

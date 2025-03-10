@@ -20,7 +20,7 @@ import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
-import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
 import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
 import com.fuhouyu.sass.platform.system.service.WechatAppletService;

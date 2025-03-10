@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
-import com.fuhouyu.sass.platform.system.entity.TenantInfo;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

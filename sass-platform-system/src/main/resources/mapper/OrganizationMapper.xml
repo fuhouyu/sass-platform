@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.OrganizationMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Organizations" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Organizations" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
         <result column="organization_code" property="organizationCode" jdbcType="VARCHAR"/>
@@ -68,7 +68,7 @@
         updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Organizations">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -122,7 +122,7 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Organizations">
         UPDATE
         <include refid="TableName"/>
         SET

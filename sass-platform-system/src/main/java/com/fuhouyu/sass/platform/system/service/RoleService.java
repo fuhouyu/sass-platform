@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.role.RoleDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 
 import java.util.Collection;
 import java.util.List;

@@ -17,10 +17,10 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
-import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO;
-import com.fuhouyu.sass.platform.system.entity.AdminUsers;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;

@@ -17,7 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -15,9 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationDTO;
-import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
-import com.fuhouyu.sass.platform.system.entity.Organizations;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

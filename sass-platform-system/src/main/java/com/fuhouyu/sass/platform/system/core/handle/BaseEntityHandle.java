@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.core.handle;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.sass.platform.system.entity.BaseEntity;
+import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;

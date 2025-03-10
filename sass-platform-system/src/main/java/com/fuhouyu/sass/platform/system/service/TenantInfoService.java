@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
 
 import java.util.List;
 

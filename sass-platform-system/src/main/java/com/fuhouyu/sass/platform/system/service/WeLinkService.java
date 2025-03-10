@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.welink.WeLinkLoginUserDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 
 /**
  * <p>

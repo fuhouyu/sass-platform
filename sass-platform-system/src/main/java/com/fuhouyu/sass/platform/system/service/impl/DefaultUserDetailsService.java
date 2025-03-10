@@ -17,8 +17,8 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
-import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import lombok.RequiredArgsConstructor;
