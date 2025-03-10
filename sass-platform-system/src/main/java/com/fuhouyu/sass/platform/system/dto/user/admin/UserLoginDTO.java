@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.user;
+package com.fuhouyu.sass.platform.system.dto.user.admin;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountIdDTO;
 import io.swagger.v3.oas.annotations.media.Schema;

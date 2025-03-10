@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.organization.OrganizationPageQueryDT
 import com.fuhouyu.sass.platform.system.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.entity.Organizations;
 import com.fuhouyu.sass.platform.system.mapper.OrganizationMapper;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;

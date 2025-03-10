@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -41,12 +44,22 @@ import java.util.Objects;
 @Slf4j
 public class WechatAppletServiceImpl implements WechatAppletService {
 
+    private static final String WECHAT_APPLET_CACHE_KEY = "wechat:applet:access-token";
+
     private static final String SESSION_URL = "/sns/jscode2session";
+
+    /**
+     * 接口调用凭证token
+     */
+    private static final String ACCESS_TOKEN = "/cgi-bin/token";
 
     private final OpenPlatformProperties.Properties properties;
 
-    public WechatAppletServiceImpl(OpenPlatformProperties openPlatformProperties) {
+    private final CacheService<String, Object> cacheService;
+
+    public WechatAppletServiceImpl(OpenPlatformProperties openPlatformProperties, CacheService<String, Object> cacheService) {
         this.properties = openPlatformProperties.getOpenPlatform().get(OpenPlatformTypeEnum.WECHAT_APPLET);
+        this.cacheService = cacheService;
     }
 
     @Override
@@ -73,5 +86,34 @@ public class WechatAppletServiceImpl implements WechatAppletService {
             return wechatAppletSessionDTO;
         }
         throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, wechatAppletSessionDTO.getErrMsg());
+    }
+
+
+    @Override
+    public String getAccessToken() {
+        Object accessToken = this.cacheService.get(ACCESS_TOKEN);
+        if (Objects.nonNull(accessToken)) {
+            return accessToken.toString();
+        }
+        String responseStr = RestClient.create(properties.getBaseUrl())
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder.path(SESSION_URL)
+                                .queryParam("appid", properties.getAccessKey())
+                                .queryParam("secret", properties.getSecretKey())
+                                .queryParam("grant_type", "client_credential").build()
+                )
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(String.class);
+        if (Objects.isNull(responseStr)) {
+            log.error("获取accessToken失败，返回为null");
+            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR);
+        }
+        ObjectNode responseValueNode = JacksonUtil.readValue(responseStr, ObjectNode.class);
+        accessToken = responseValueNode.get("access_token").asText();
+        cacheService.set(WECHAT_APPLET_CACHE_KEY, accessToken,
+                responseValueNode.get("expires_in").asInt(), TimeUnit.SECONDS);
+        return accessToken.toString();
     }
 }

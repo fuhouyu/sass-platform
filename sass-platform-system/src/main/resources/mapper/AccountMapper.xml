@@ -19,6 +19,7 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Accounts" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="account" property="account" jdbcType="VARCHAR"/>
         <result column="account_type" property="accountType" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="VARCHAR"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
         <result column="credentials" property="credentials" jdbcType="VARCHAR"/>
         <result column="credentials_expiration_time" property="credentialsExpirationTime" jdbcType="TIMESTAMP"/>
@@ -33,6 +34,7 @@
     <sql id="AllColumns">
         account,
         account_type,
+        user_type,
         user_id,
         credentials,
         credentials_expiration_time,
@@ -54,6 +56,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{account},
             #{accountType},
+            #{userType},
             #{userId},
             #{credentials},
             #{credentialsExpirationTime},
@@ -77,6 +80,7 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.account},
                 #{entity.accountType},
+                #{entity.userType},
                 #{entity.userId},
                 #{entity.credentials},
                 #{entity.credentialsExpirationTime},

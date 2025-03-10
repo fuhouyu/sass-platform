@@ -26,7 +26,7 @@ import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;

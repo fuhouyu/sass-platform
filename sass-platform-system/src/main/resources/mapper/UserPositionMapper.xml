@@ -24,7 +24,7 @@
         <result column="is_main" property="isMain" jdbcType="BOOLEAN"/>
     </resultMap>
 
-    <resultMap id="UserPositionDetailResultMap" type="com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO" extends="BaseResultMap"/>
+    <resultMap id="UserPositionDetailResultMap" type="com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO" extends="BaseResultMap"/>
 
     <sql id="TableName">
         user_positions

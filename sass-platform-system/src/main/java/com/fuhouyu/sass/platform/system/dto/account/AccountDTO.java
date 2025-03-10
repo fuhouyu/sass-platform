@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
+import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -65,5 +66,8 @@ public class AccountDTO extends BaseDTO {
 
     @Schema(name = "isEnabled", description = "是否启用标记")
     private Boolean isEnabled;
+
+    @Schema(name = "用户类型", description = "用户类型")
+    private UserTypeEnum userType;
 
 }

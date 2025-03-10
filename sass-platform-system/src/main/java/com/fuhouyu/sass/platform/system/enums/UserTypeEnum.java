@@ -13,34 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.enums;
 
-import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * <p>
- * 微信小程序相关接口
+ * 用户类型
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/9 21:34
+ * @since 2025/3/10 17:46
  */
-public interface WechatAppletService {
+public enum UserTypeEnum {
+    /**
+     * 管理员用户
+     */
+    ADMIN,
+    /**
+     * 普通用户
+     */
+    NORMAL,
+
+    ;
 
 
     /**
-     * 通过临时码获取session
+     * 判断是否是管理员账号
      *
-     * @param code 临时码，前端传入
-     * @return session信息
+     * @param userType 用户类型
+     * @return true / false
      */
-    WechatAppletSessionDTO code2Session(String code);
-
-    /**
-     * 获取接口调用凭证
-     *
-     * @return token
-     */
-    String getAccessToken();
-
+    public static boolean isAdmin(String userType) {
+        return Objects.nonNull(userType) &&
+                Objects.equals(userType.toUpperCase(Locale.ROOT), ADMIN.name());
+    }
 }

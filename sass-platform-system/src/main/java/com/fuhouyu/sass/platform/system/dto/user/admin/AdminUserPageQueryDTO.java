@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.user;
+package com.fuhouyu.sass.platform.system.dto.user.admin;
 
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +32,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@Schema(name = "UserPageQueryDTO", description = "管理员用户查询dto对象")
+@Schema(name = "AdminUserPageQueryDTO", description = "管理员用户查询dto对象")
 public class AdminUserPageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "username", description = "关键字模糊搜索用户名")

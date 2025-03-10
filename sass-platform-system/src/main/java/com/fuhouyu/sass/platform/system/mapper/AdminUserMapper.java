@@ -18,8 +18,8 @@ package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.AdminUsers;
 import org.apache.ibatis.annotations.Param;
 
@@ -71,5 +71,5 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @return 用户详情
      */
     @TenantQuery(column = "tu.tenant_id")
-    AdminAdminUserDetailDTO queryDetailById(Long id);
+    AdminUserDetailDTO queryDetailById(Long id);
 }

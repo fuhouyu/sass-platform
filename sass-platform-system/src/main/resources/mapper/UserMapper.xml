@@ -15,61 +15,61 @@
   limitations under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fuhouyu.sass.platform.system.mapper.AdminUserMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.AdminUsers" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.Users" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
-        <result column="avatar" property="avatar" jdbcType="BIGINT"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="TIMESTAMP"/>
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
     </resultMap>
 
-    <resultMap id="UserDetailResultMap" type="com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO" extends="BaseResultMap">
-        <association property="userPosition" resultMap="com.fuhouyu.sass.platform.system.mapper.UserPositionMapper.UserPositionDetailResultMap"/>
-    </resultMap>
 
     <sql id="TableName">
-        admin_users
+        users
     </sql>
 
     <sql id="InsertColumns">
         id,
-        username,
-        real_name,
         nickname,
-        email,
+        phone,
         gender,
         avatar,
+        email,
+        birthday,
         login_date,
         login_ip,
+        is_enabled,
         is_deleted,
         created_at,
-        updated_at,
         created_by,
+        updated_at,
         updated_by
     </sql>
 
     <sql id="QueryAllColumns">
         u.id,
-        u.username,
-        u.real_name,
         u.nickname,
-        u.email,
+        u.phone,
         u.gender,
         u.avatar,
+        u.email,
+        u.birthday,
         u.login_date,
         u.login_ip,
+        u.is_enabled,
+        u.is_deleted,
         u.created_at,
-        u.updated_at,
         u.created_by,
+        u.updated_at,
         u.updated_by
     </sql>
 
-    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.AdminUsers">
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
         INSERT INTO
         <include refid="TableName"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -78,19 +78,20 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
-            #{username},
-            #{realName},
             #{nickname},
-            #{email},
+            #{phone},
             #{gender},
             #{avatar},
+            #{email},
+            #{birthday},
             #{loginDate},
             #{loginIp},
+            #{isEnabled},
             #{isDeleted},
             #{createdAt},
-            #{updatedAt},
             #{createdBy},
-            #{updatedBy}
+            #{updatedAt},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -104,32 +105,30 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
-                #{entity.username},
-                #{entity.realName},
                 #{entity.nickname},
-                #{entity.email},
+                #{entity.phone},
                 #{entity.gender},
                 #{entity.avatar},
+                #{entity.email},
+                #{entity.birthday},
                 #{entity.loginDate},
                 #{entity.loginIp},
+                #{entity.isEnabled},
                 #{entity.isDeleted},
                 #{entity.createdAt},
-                #{entity.updatedAt},
                 #{entity.createdBy},
+                #{entity.updatedAt},
                 #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.AdminUsers">
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
         UPDATE
         <include refid="TableName"/>
         SET
         <if test="avatar != null">
             avatar = #{avatar},
-        </if>
-        <if test="realName != null and realName != ''">
-            real_name = #{realName},
         </if>
         <if test="nickname != null and nickname != ''">
             nickname = #{nickname},
@@ -145,6 +144,9 @@
         </if>
         <if test="loginIp != null and loginIp != ''">
             login_ip = #{loginIp},
+        </if>
+        <if test="birthday != null">
+            birthday = #{birthday},
         </if>
         updated_at = #{updatedAt},
         updated_by = #{updatedBy}
@@ -180,28 +182,11 @@
         </foreach>
     </select>
 
-
-    <select id="queryByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT <include refid="QueryAllColumns"/>
-        FROM <include refid="TableName"/> u
-        WHERE u.username = #{username}
-    </select>
-
     <select id="queryList" resultMap="BaseResultMap" >
         SELECT
         <include refid="QueryAllColumns"/>
         FROM
-        <include refid="TableName"/>  u LEFT JOIN
-        user_positions up ON u.id = up.user_id
-        <where>
-            up.organization_id = #{pageQuery.organizationId}
-            <if test="pageQuery.username != null and pageQuery.username != ''">
-                AND username LIKE CONCAT('%', #{pageQuery.username}, '%')
-            </if>
-            <if test="pageQuery.gender != null and pageQuery.gender != ''">
-                AND gender = #{pageQuery.gender}
-            </if>
-        </where>
+        <include refid="TableName"/>
     </select>
 
     <update id="recordLoginSuccess">
@@ -212,39 +197,4 @@
         WHERE id = #{userId}
 
     </update>
-
-    <select id="queryDetailList" resultMap="UserDetailResultMap">
-        SELECT
-        <include refid="QueryAllColumns"/>,
-        up.organization_id,
-        up.order_in_organization,
-        up.position_name,
-        up.is_main
-        FROM tenant_has_user tu
-        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
-        LEFT JOIN user_positions up ON u.id = up.user_id
-        <where>
-            up.organization_id = #{pageQuery.organizationId}
-            <if test="pageQuery.username != null and pageQuery.username != ''">
-                AND username LIKE CONCAT('%', #{pageQuery.username}, '%')
-            </if>
-            <if test="pageQuery.gender != null and pageQuery.gender != ''">
-                AND gender = #{pageQuery.gender}
-            </if>
-        </where>
-        ORDER BY up.order_in_organization
-    </select>
-
-    <select id="queryDetailById" resultMap="UserDetailResultMap">
-        SELECT
-        <include refid="QueryAllColumns"/>,
-        up.organization_id,
-        up.order_in_organization,
-        up.position_name,
-        up.is_main
-        FROM tenant_has_user tu
-        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
-        LEFT JOIN user_positions up ON u.id = up.user_id
-        WHERE u.id = #{id}
-    </select>
 </mapper>

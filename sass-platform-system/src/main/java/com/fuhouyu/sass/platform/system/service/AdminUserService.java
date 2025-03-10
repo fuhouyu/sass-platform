@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param userDTO 用户dto对象
      * @return 主键id
      */
-    Long saveUser(AdminAdminUserDetailDTO userDTO);
+    Long saveUser(AdminUserDetailDTO userDTO);
 
     /**
      * 通过用户名称查询
@@ -57,12 +57,12 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param id 主键id
      * @return 用户详情dto对象
      */
-    AdminAdminUserDetailDTO findDetailById(Long id);
+    AdminUserDetailDTO findDetailById(Long id);
 
     /**
      * 修改用户
      *
      * @param userDTO 用户dto对象
      */
-    void editUser(AdminAdminUserDetailDTO userDTO);
+    void editUser(AdminUserDetailDTO userDTO);
 }

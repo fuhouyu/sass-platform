@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO;
 
 import java.util.Collection;
 

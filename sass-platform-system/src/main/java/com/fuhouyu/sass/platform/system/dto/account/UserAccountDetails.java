@@ -57,6 +57,11 @@ public class UserAccountDetails implements UserDetails {
      */
     private final Long userId;
 
+    /**
+     * 用户类型
+     */
+    private String userType;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

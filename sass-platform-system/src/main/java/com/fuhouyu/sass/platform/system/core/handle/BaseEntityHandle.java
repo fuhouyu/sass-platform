@@ -27,10 +27,7 @@ import org.apache.ibatis.plugin.Signature;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -103,11 +100,15 @@ public class BaseEntityHandle implements Interceptor {
      */
     private void onInsert(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = ContextHolderStrategy.getContext().getUser().getUsername();
         baseDO.setCreatedAt(nowTime);
         baseDO.setUpdatedAt(nowTime);
-        baseDO.setCreatedBy(username);
-        baseDO.setUpdatedBy(username);
+        baseDO.setCreatedBy(Objects.isNull(baseDO.getCreatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getCreatedBy()
+        );
+        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getUpdatedBy());
         baseDO.setIsDeleted(false);
     }
 
@@ -118,8 +119,9 @@ public class BaseEntityHandle implements Interceptor {
      */
     private void onUpdate(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
-        String username = ContextHolderStrategy.getContext().getUser().getUsername();
         baseDO.setUpdatedAt(nowTime);
-        baseDO.setUpdatedBy(username);
+        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
+                ContextHolderStrategy.getContext().getUser().getUsername()
+                : baseDO.getUpdatedBy());
     }
 }

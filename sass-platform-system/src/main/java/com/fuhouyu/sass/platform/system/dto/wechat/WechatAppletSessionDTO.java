@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.dto.wechat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -30,6 +31,9 @@ import java.io.Serializable;
  */
 @Data
 public class WechatAppletSessionDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 8917234986123812937L;
 
 
     /**

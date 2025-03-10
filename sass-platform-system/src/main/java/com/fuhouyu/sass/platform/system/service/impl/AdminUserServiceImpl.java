@@ -24,9 +24,10 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.AdminUsersAssembler;
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO;
 import com.fuhouyu.sass.platform.system.entity.AdminUsers;
+import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
 import com.fuhouyu.sass.platform.system.mapper.AdminUserMapper;
 import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public Long saveUser(AdminAdminUserDetailDTO userDTO) {
+    public Long saveUser(AdminUserDetailDTO userDTO) {
         Long id = this.save(userDTO);
         // 保存账号信息
         userDTO.setId(id);
@@ -105,8 +106,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public AdminAdminUserDetailDTO findDetailById(Long id) {
-        AdminAdminUserDetailDTO adminUserDetailDTO = this.adminUserMapper.queryDetailById(id);
+    public AdminUserDetailDTO findDetailById(Long id) {
+        AdminUserDetailDTO adminUserDetailDTO = this.adminUserMapper.queryDetailById(id);
         if (Objects.isNull(adminUserDetailDTO)) {
             return null;
         }
@@ -116,7 +117,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public void editUser(AdminAdminUserDetailDTO userDTO) {
+    public void editUser(AdminUserDetailDTO userDTO) {
         this.adminUserMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
         this.userPositionService.saveUserPosition(userDTO.getId(), userDTO.getUserPosition());
         AccountDTO account = userDTO.getAccount();
@@ -201,11 +202,12 @@ public class AdminUserServiceImpl implements AdminUserService {
      *
      * @param adminUserDetailDTO 用户详情dto
      */
-    private void saveAccounts(AdminAdminUserDetailDTO adminUserDetailDTO) {
+    private void saveAccounts(AdminUserDetailDTO adminUserDetailDTO) {
         AccountDTO accountDTO = adminUserDetailDTO.getAccount();
         accountDTO.setAccount(adminUserDetailDTO.getUsername());
         accountDTO.setUserId(adminUserDetailDTO.getId());
         accountDTO.setIsEnabled(true);
+        accountDTO.setUserType(UserTypeEnum.ADMIN);
         try {
             this.accountService.save(accountDTO);
         } catch (Exception e) {

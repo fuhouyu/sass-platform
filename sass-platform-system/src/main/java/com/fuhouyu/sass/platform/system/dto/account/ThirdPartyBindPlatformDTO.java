@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.dto.account;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserLoginDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;

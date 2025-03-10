@@ -15,66 +15,75 @@
  */
 package com.fuhouyu.sass.platform.system.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 账号do对象
+ * 用户
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/27 23:32
+ * @since 2025/3/10 12:40
  */
-@Getter
-@Setter
-@ToString(callSuper = true)
-public class Accounts extends BaseEntity {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Users extends BaseEntity {
 
     @Serial
-    private static final long serialVersionUID = 1234512354123112381L;
+    private static final long serialVersionUID = 5411236546541232131L;
 
     /**
-     * 账号唯一标识
+     * 主键id
      */
-    private String account;
+    private Long id;
 
     /**
-     * 账号类型
+     * 昵称
      */
-    private String accountType;
+    private String nickname;
 
     /**
-     * 账号类型
+     * 手机号
      */
-    private String userType;
+    private String phone;
 
     /**
-     * 用户id
+     * 性别
      */
-    private Long userId;
+    private String gender;
 
     /**
-     * 凭证
+     * 头像地址
      */
-    private String credentials;
+    private String avatar;
 
     /**
-     * 凭证过期时间
+     * 邮箱
      */
-    private LocalDateTime credentialsExpirationTime;
+    private String email;
 
     /**
-     * 第三方所属的账号id
+     * 生日
      */
-    private String refAccountId;
+    private LocalDate birthday;
 
     /**
-     * 是否启用标记
+     * 登录日期
+     */
+    private LocalDateTime loginDate;
+
+    /**
+     * 登录ip
+     */
+    private String loginIp;
+
+    /**
+     * 启禁用状态
      */
     private Boolean isEnabled;
 }

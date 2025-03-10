@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.user;
+package com.fuhouyu.sass.platform.system.dto.user.admin;
 
 import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,8 +35,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Schema(name = "UserDetailDTO", description = "管理员用户详情dto对象")
-public class AdminAdminUserDetailDTO extends AdminUserDTO {
+@Schema(name = "AdminUserDetailDTO", description = "管理员用户详情dto对象")
+public class AdminUserDetailDTO extends AdminUserDTO {
 
     @Valid
     @Schema(name = "account", description = "用户账号信息")

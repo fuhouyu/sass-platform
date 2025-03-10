@@ -15,32 +15,17 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 
 /**
  * <p>
- * 微信小程序相关接口
+ * 普通用户接口
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/9 21:34
+ * @since 2025/3/10 17:45
  */
-public interface WechatAppletService {
+public interface UserService extends BaseService<Long, UserDTO> {
 
-
-    /**
-     * 通过临时码获取session
-     *
-     * @param code 临时码，前端传入
-     * @return session信息
-     */
-    WechatAppletSessionDTO code2Session(String code);
-
-    /**
-     * 获取接口调用凭证
-     *
-     * @return token
-     */
-    String getAccessToken();
 
 }

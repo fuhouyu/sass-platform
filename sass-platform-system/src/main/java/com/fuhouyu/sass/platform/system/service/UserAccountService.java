@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.dto.account.ThirdPartyBindPlatformDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserTokenDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserLoginDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserTokenDTO;
 
 /**
  * <p>

@@ -13,34 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
+import com.fuhouyu.sass.platform.system.entity.Users;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
- * 微信小程序相关接口
+ * 用户mapper
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/9 21:34
+ * @since 2025/3/10 17:34
  */
-public interface WechatAppletService {
+public interface UserMapper extends BaseMapper<Long, Users> {
 
 
     /**
-     * 通过临时码获取session
+     * 记录用户登录信息
      *
-     * @param code 临时码，前端传入
-     * @return session信息
+     * @param userId    用户id
+     * @param loginIp   登录ip
+     * @param loginTime 登录时间
      */
-    WechatAppletSessionDTO code2Session(String code);
-
-    /**
-     * 获取接口调用凭证
-     *
-     * @return token
-     */
-    String getAccessToken();
+    void recordLoginSuccess(@Param("userId") Long userId,
+                            @Param("loginIp") String loginIp,
+                            @Param("loginTime") LocalDateTime loginTime);
 
 }

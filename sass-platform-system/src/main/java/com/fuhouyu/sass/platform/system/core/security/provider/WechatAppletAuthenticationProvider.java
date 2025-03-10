@@ -17,11 +17,15 @@ package com.fuhouyu.sass.platform.system.core.security.provider;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
-import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
+import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
+import com.fuhouyu.sass.platform.system.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
+import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.UserService;
 import com.fuhouyu.sass.platform.system.service.WechatAppletService;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,18 +57,43 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
 
     private final ExtensionUserDetailsService userDetailsService;
 
+    private final UserService userService;
+
+    private final AccountService accountService;
+
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String code = (String) authentication.getPrincipal();
         WechatAppletSessionDTO wechatAppletSessionDTO = this.wechatAppletService.code2Session(code);
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(wechatAppletSessionDTO.getOpenid(), AccountTypeEnum.WECHAT_APPLET.name());
+        String openid = wechatAppletSessionDTO.getOpenid();
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(openid, AccountTypeEnum.WECHAT_APPLET.name());
         if (Objects.isNull(userDetails)) {
-            // TODO 用户不存在，需要处理保存逻辑
-            throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "当前用户不存在");
+            // 如果不存在，新增一个普通用户
+            UserDTO userDTO = UserDTO
+                    .builder()
+                    .gender("UNKNOWN")
+                    .isEnabled(true)
+                    .build();
+            userDTO.setCreatedBy(openid);
+            userDTO.setUpdatedBy(openid);
+            Long userId = this.userService.save(userDTO);
+            AccountDTO accountDTO = new AccountDTO();
+            accountDTO.setAccount(openid);
+            accountDTO.setAccountType(AccountTypeEnum.WECHAT_APPLET.name());
+            accountDTO.setUserId(userId);
+            accountDTO.setRefAccountId(wechatAppletSessionDTO.getUnionid());
+            accountDTO.setIsEnabled(true);
+            accountDTO.setUserType(UserTypeEnum.NORMAL);
+            accountDTO.setCreatedBy(openid);
+            accountDTO.setUpdatedBy(openid);
+            this.accountService.save(accountDTO);
+            userDetails = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
         }
         return UsernamePasswordAuthenticationToken.authenticated(userDetails, authentication.getCredentials(), List.of());
     }
+
 
     @Override
     public boolean supports(Class<?> authentication) {

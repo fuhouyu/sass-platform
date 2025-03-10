@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.entity.UserPositions;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

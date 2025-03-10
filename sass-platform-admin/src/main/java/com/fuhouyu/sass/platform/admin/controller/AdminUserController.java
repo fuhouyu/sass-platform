@@ -20,9 +20,9 @@ import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminAdminUserDetailDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserDTO;
-import com.fuhouyu.sass.platform.system.dto.user.AdminUserPageQueryDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.AdminUserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.service.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -64,9 +64,9 @@ public class AdminUserController {
      */
     @Operation(summary = "当前用户详情")
     @GetMapping("/me")
-    public BaseResponse<AdminAdminUserDetailDTO> userinfo() {
+    public BaseResponse<AdminUserDetailDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
-        AdminAdminUserDetailDTO userDetail = this.adminUserService.findDetailById(userId);
+        AdminUserDetailDTO userDetail = this.adminUserService.findDetailById(userId);
         userDetail.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         return ResponseHelper.success(userDetail);
     }
@@ -80,7 +80,7 @@ public class AdminUserController {
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
     @PreAuthorize("@auth.hasAnyPermission('system:user:query')")
-    public BaseResponse<AdminAdminUserDetailDTO> userDetailById(@PathVariable("id") Long id) {
+    public BaseResponse<AdminUserDetailDTO> userDetailById(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.adminUserService.findDetailById(id));
     }
 
@@ -107,7 +107,7 @@ public class AdminUserController {
     @Operation(summary = "保存用户信息")
     @PostMapping
     @PreAuthorize("@auth.hasAnyPermission('system:user:add')")
-    public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) AdminAdminUserDetailDTO userDTO) {
+    public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) AdminUserDetailDTO userDTO) {
         return ResponseHelper.success(this.adminUserService.saveUser(userDTO));
     }
 
@@ -123,7 +123,7 @@ public class AdminUserController {
     @PreAuthorize("@auth.hasAnyPermission('system:user:edit')")
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
-            @Valid @RequestBody AdminAdminUserDetailDTO userDTO) {
+            @Valid @RequestBody AdminUserDetailDTO userDTO) {
         userDTO.setId(id);
         this.adminUserService.editUser(userDTO);
         return ResponseHelper.success();

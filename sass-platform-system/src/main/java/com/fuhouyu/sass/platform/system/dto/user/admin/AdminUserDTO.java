@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.dto.user;
+package com.fuhouyu.sass.platform.system.dto.user.admin;
 
 import com.fuhouyu.sass.platform.system.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +37,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Schema(name = "UserDTO", description = "用户详情dto对象")
+@Schema(name = "AdminUserDTO", description = "用户详情dto对象")
 @EqualsAndHashCode(callSuper = true)
 public class AdminUserDTO extends BaseDTO {
 

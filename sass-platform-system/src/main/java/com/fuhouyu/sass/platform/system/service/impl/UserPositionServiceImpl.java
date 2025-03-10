@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.sass.platform.system.assembler.UserPositionAssembler;
-import com.fuhouyu.sass.platform.system.dto.user.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.mapper.UserPositionMapper;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import lombok.RequiredArgsConstructor;

@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.service;
+package com.fuhouyu.sass.platform.system.assembler;
 
-import com.fuhouyu.sass.platform.system.dto.wechat.WechatAppletSessionDTO;
+import com.fuhouyu.sass.platform.system.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.entity.Users;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * <p>
- * 微信小程序相关接口
+ * 用户转换
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/9 21:34
+ * @since 2025/3/10 17:48
  */
-public interface WechatAppletService {
+@Mapper
+public interface UserAssembler extends BaseAssembler<Users, UserDTO> {
 
-
-    /**
-     * 通过临时码获取session
-     *
-     * @param code 临时码，前端传入
-     * @return session信息
-     */
-    WechatAppletSessionDTO code2Session(String code);
-
-    /**
-     * 获取接口调用凭证
-     *
-     * @return token
-     */
-    String getAccessToken();
-
+    UserAssembler INSTANCE = Mappers.getMapper(UserAssembler.class);
 }

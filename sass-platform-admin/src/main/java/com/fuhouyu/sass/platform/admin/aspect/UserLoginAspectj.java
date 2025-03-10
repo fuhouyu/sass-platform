@@ -22,7 +22,7 @@ import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.dto.cloudflare.TurnstileVerifyRequestDTO;
 import com.fuhouyu.sass.platform.system.dto.cloudflare.TurnstileVerifyResponseDTO;
-import com.fuhouyu.sass.platform.system.dto.user.UserLoginDTO;
+import com.fuhouyu.sass.platform.system.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.properties.CloudflareProperties;
 import lombok.extern.slf4j.Slf4j;
