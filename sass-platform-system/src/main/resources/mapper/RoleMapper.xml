@@ -41,10 +41,10 @@
        is_enabled,
        is_allow_modified,
        is_deleted,
-       create_at,
-       update_at,
-       create_by,
-       update_by
+       created_at,
+       updated_at,
+       created_by,
+       updated_by
     </sql>
 
     <sql id="QueryColumns" >
@@ -57,10 +57,10 @@
        r.is_enabled,
        r.is_allow_modified,
        r.is_deleted,
-       r.create_at,
-       r.update_at,
-       r.create_by,
-       r.update_by
+       r.created_at,
+       r.updated_at,
+       r.created_by,
+       r.updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Roles">
@@ -80,10 +80,10 @@
             #{isEnabled},
             #{isAllowModified},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy},
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -105,10 +105,10 @@
                 #{entity.isEnabled},
                 #{entity.isAllowModified},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
@@ -130,8 +130,8 @@
         <if test="dataScope != null and dataScope != ''">
             data_scope = #{dataScope},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

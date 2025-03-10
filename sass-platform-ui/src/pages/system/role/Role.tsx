@@ -79,13 +79,13 @@ export const Role: React.FC = () => {
         },
 
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: "center",
         },
         {
-            title: t('Common.updateBy'),
-            dataIndex: 'updateBy',
+            title: t('Common.updatedBy'),
+            dataIndex: 'updatedBy',
             align: "center",
         },
         {
@@ -104,7 +104,7 @@ export const Role: React.FC = () => {
 
     const tableRef = useRef<TableRefType<RoleModel>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [updateId, setUpdatedId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -120,7 +120,7 @@ export const Role: React.FC = () => {
      * @param roleId 角色id
      */
     const openModal = async (roleId?: string) => {
-        setUpdateId(roleId);
+        setUpdatedId(roleId);
         const treeData = await permissionApi.getPermissionTreeSelect();
         setTreeSelectData(treeData);
         if (roleId) {

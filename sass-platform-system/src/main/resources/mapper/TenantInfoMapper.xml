@@ -52,10 +52,10 @@
         ti.is_enabled,
         ti.start_date,
         ti.end_date,
-        ti.create_at,
-        ti.update_at,
-        ti.create_by,
-        ti.update_by
+        ti.created_at,
+        ti.updated_at,
+        ti.created_by,
+        ti.updated_by
     </sql>
 
     <sql id="AllColumns">
@@ -72,10 +72,10 @@
         start_date,
         end_date,
         is_deleted,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.TenantInfo">
@@ -99,10 +99,10 @@
             #{startDate},
             #{endDate},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -128,10 +128,10 @@
                 #{entity.startDate},
                 #{entity.endDate},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
@@ -155,8 +155,8 @@
         start_date = #{startDate},
         end_date = #{endDate},
         remark = #{remark},
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

@@ -35,10 +35,10 @@
         bucket_name,
         capacity,
         acl,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
 
@@ -47,10 +47,10 @@
         ts.bucket_name,
         ts.capacity,
         ts.acl,
-        ts.create_at,
-        ts.update_at,
-        ts.create_by,
-        ts.update_by
+        ts.created_at,
+        ts.updated_at,
+        ts.created_by,
+        ts.updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Resources">
@@ -65,10 +65,10 @@
             #{bucketName},
             #{capacity},
             #{acl},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -85,10 +85,10 @@
                 #{entity.bucketName},
                 #{entity.capacity},
                 #{entity.acl},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
@@ -106,8 +106,8 @@
         <if test="acl != null and acl != ''">
             acl = #{acl},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE tenant_id = #{tenantId}
     </update>
 

@@ -104,10 +104,10 @@ public class BaseEntityHandle implements Interceptor {
     private void onInsert(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
         String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        baseDO.setCreateAt(nowTime);
-        baseDO.setUpdateAt(nowTime);
-        baseDO.setCreateBy(username);
-        baseDO.setUpdateBy(username);
+        baseDO.setCreatedAt(nowTime);
+        baseDO.setUpdatedAt(nowTime);
+        baseDO.setCreatedBy(username);
+        baseDO.setUpdatedBy(username);
         baseDO.setIsDeleted(false);
     }
 
@@ -119,7 +119,7 @@ public class BaseEntityHandle implements Interceptor {
     private void onUpdate(BaseEntity baseDO) {
         LocalDateTime nowTime = LocalDateTime.now();
         String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        baseDO.setUpdateAt(nowTime);
-        baseDO.setUpdateBy(username);
+        baseDO.setUpdatedAt(nowTime);
+        baseDO.setUpdatedBy(username);
     }
 }

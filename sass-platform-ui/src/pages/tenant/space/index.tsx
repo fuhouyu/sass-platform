@@ -138,25 +138,25 @@ const TenantSpace: React.FC = () => {
             }
         },
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: "center",
             render: (_, record) => {
                 if (record.isDirectory) {
                     return <span>-</span>
                 }
-                return <span>{record.updateAt}</span>
+                return <span>{record.updatedAt}</span>
             }
         },
         {
-            title: t('Common.updateBy'),
-            dataIndex: 'updateBy',
+            title: t('Common.updatedBy'),
+            dataIndex: 'updatedBy',
             align: "center",
             render: (_, record) => {
                 if (record.isDirectory) {
                     return <span>-</span>
                 }
-                return <span>{record.updateBy}</span>
+                return <span>{record.updatedBy}</span>
             }
         },
     ]
@@ -309,7 +309,7 @@ const TenantSpace: React.FC = () => {
                     <Flex vertical justify={'center'} className={'space-bucket-info'}>
                         <h2>{tenantSpace?.bucketName}</h2>
                         <Space size={24}>
-                            <span>{t('Common.createAt')}：<strong>{tenantSpace?.createAt}</strong></span>
+                            <span>{t('Common.createdAt')}：<strong>{tenantSpace?.createdAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
                             <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {tableRef?.current?.pageResult?.total} Objects
                             </span>

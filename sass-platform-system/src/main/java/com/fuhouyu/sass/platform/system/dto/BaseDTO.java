@@ -37,15 +37,15 @@ import java.time.LocalDateTime;
 @ToString
 public class BaseDTO implements Serializable {
 
-    @Schema(name = "createAt", description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime createAt;
+    @Schema(name = "createdAt", description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime createdAt;
 
-    @Schema(name = "updateAt", description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime updateAt;
+    @Schema(name = "updatedAt", description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime updatedAt;
 
-    @Schema(name = "createBy", description = "创建人", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String createBy;
+    @Schema(name = "createdBy", description = "创建人", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String createdBy;
 
-    @Schema(name = "updateBy", description = "操作人", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String updateBy;
+    @Schema(name = "updatedBy", description = "操作人", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String updatedBy;
 }

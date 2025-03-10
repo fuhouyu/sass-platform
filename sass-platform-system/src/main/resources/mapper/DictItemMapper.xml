@@ -42,10 +42,10 @@
         is_allow_modified,
         owner_tenant_id,
         is_deleted, 
-        create_at, 
-        create_by, 
-        update_at, 
-        update_by
+        created_at,
+        created_by,
+        updated_at,
+        updated_by
     </sql>
 
     <sql id="QueryColumns" >
@@ -59,10 +59,10 @@
         di.is_allow_modified,
         di.owner_tenant_id,
         di.is_deleted, 
-        di.create_at, 
-        di.create_by, 
-        di.update_at, 
-        di.update_by
+        di.created_at,
+        di.created_by,
+        di.updated_at,
+        di.updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.DictItem">
@@ -83,10 +83,10 @@
             #{isAllowModified},
             #{ownerTenantId},
             #{isDeleted},
-            #{createAt},
-            #{createBy},
-            #{updateAt},
-            #{updateBy},
+            #{createdAt},
+            #{createdBy},
+            #{updatedAt},
+            #{updatedBy},
         </trim>
     </insert>
 
@@ -109,10 +109,10 @@
                 #{entity.isAllowModified},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.createBy},
-                #{entity.updateAt},
-                #{entity.updateBy},
+                #{entity.createdAt},
+                #{entity.createdBy},
+                #{entity.updatedAt},
+                #{entity.updatedBy},
             </trim>
         </foreach>
     </insert>
@@ -134,8 +134,8 @@
         <if test="remark != null ">
             remark = #{remark},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

@@ -43,21 +43,21 @@ public class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     /**
      * 创建人
      */
-    private String createBy;
+    private String createdBy;
 
     /**
      * 操作人
      */
-    private String updateBy;
+    private String updatedBy;
 
 }

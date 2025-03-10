@@ -19,8 +19,8 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
-        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
@@ -30,8 +30,8 @@
     <sql id="AllColumns">
         tenant_id,
         permission_id,
-        create_at,
-        create_by
+        created_at,
+        created_by
     </sql>
 
     <insert id="insertBatch" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
@@ -45,8 +45,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{entity.tenantId},
             #{entity.permissionId},
-            #{entity.createAt},
-            #{entity.createBy},
+            #{entity.createdAt},
+            #{entity.createdBy},
         </trim>
         </foreach>
     </insert>

@@ -29,8 +29,8 @@
     <sql id="InsertColumn">
         role_id,
         user_id,
-        create_at,
-        create_by
+        created_at,
+        created_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
@@ -43,8 +43,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{roleId},
             #{userId},
-            #{createAt},
-            #{createBy},
+            #{createdAt},
+            #{createdBy},
         </trim>
         ON CONFLICT(user_id, role_id) DO NOTHING
     </insert>
@@ -60,8 +60,8 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.roleId},
                 #{entity.userId},
-                #{entity.createAt},
-                #{entity.createBy},
+                #{entity.createdAt},
+                #{entity.createdBy},
             </trim>
         </foreach>
         ON CONFLICT(user_id, role_id) DO NOTHING

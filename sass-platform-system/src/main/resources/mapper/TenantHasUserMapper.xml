@@ -19,8 +19,8 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.entity.TenantHasUser" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <result column="tenant_id" property="tenantId" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
-        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="TableName">
@@ -30,8 +30,8 @@
     <sql id="AllColumns">
         tenant_id,
         user_id,
-        create_at,
-        create_by
+        created_at,
+        created_by
     </sql>
 
     <insert id="insertBatch">
@@ -45,8 +45,8 @@
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.tenantId},
                 #{entity.userId},
-                #{entity.createAt},
-                #{entity.createBy},
+                #{entity.createdAt},
+                #{entity.createdBy},
             </trim>
         </foreach>
     </insert>
@@ -61,8 +61,8 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{tenantId},
             #{userId},
-            #{createAt},
-            #{createBy},
+            #{createdAt},
+            #{createdBy},
         </trim>
         ON CONFLICT(tenant_id, user_id) DO NOTHING
     </insert>

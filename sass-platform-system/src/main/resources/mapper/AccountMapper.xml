@@ -38,10 +38,10 @@
         credentials_expiration_time,
         ref_account_id,
         is_enabled,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Accounts">
@@ -59,10 +59,10 @@
             #{credentialsExpirationTime},
             #{refAccountId},
             #{isEnabled},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -82,10 +82,10 @@
                 #{entity.credentialsExpirationTime},
                 #{entity.refAccountId},
                 #{entity.isEnabled},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
@@ -103,8 +103,8 @@
         <if test="refAccountId != null and refAccountId != ''">
             ref_account_id = #{refAccountId},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE account = #{account}
         AND account_type = #{accountType}
     </update>

@@ -87,7 +87,7 @@ export const Permission: React.FC = () => {
     const {t} = useTranslation();
     const buttonPermissions = useButton(PermissionConstant.List);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
-    const [updateId, setUpdateId] = useState<string | undefined>();
+    const [updateId, setUpdatedId] = useState<string | undefined>();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [form] = Form.useForm();
     const tableRef = useRef<TableRefType<Menu>>(null);
@@ -121,15 +121,15 @@ export const Permission: React.FC = () => {
             defaultSortOrder: 'descend',
         },
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: 'center',
             showSorterTooltip: false
         },
         {
-            title: t('Common.updateBy'),
+            title: t('Common.updatedBy'),
             align: 'center',
-            dataIndex: 'updateBy',
+            dataIndex: 'updatedBy',
         },
         {
             title: t('Common.action'),
@@ -216,7 +216,7 @@ export const Permission: React.FC = () => {
      * @param updateId 修改的id
      */
     const openModal = async (updateId?: string | undefined) => {
-        setUpdateId(updateId);
+        setUpdatedId(updateId);
         await permissionTreeSelect();
         if (updateId) {
             const permissionDetails = await permissionApi.getInfoByIdApi(updateId);
@@ -230,7 +230,7 @@ export const Permission: React.FC = () => {
      */
     const closeModal = () => {
         setIsModalOpen(false);
-        setUpdateId(undefined);
+        setUpdatedId(undefined);
         setFormParentPermission({})
     }
 

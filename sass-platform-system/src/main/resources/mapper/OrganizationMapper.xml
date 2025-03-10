@@ -44,10 +44,10 @@
         o.display_order,
         o.owner_tenant_id,
         o.is_deleted,
-        o.create_at,
-        o.update_at,
-        o.create_by,
-        o.update_by
+        o.created_at,
+        o.updated_at,
+        o.created_by,
+        o.updated_by
     </sql>
 
     <sql id="AllColumns">
@@ -62,10 +62,10 @@
         display_order,
         owner_tenant_id,
         is_deleted,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Organizations">
@@ -87,10 +87,10 @@
             #{displayOrder},
             #{ownerTenantId},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -114,10 +114,10 @@
                 #{entity.displayOrder},
                 #{entity.ownerTenantId},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
@@ -139,8 +139,8 @@
             display_order = #{displayOrder},
         </if>
         remark = #{remark},
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 

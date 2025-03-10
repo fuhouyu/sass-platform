@@ -99,14 +99,14 @@ export const DictType = () => {
         },
 
         {
-            title: t('Common.updateAt'),
-            dataIndex: 'updateAt',
+            title: t('Common.updatedAt'),
+            dataIndex: 'updatedAt',
             align: "center",
             showSorterTooltip: false
         },
         {
-            title: t('Common.updateBy'),
-            dataIndex: 'updateBy',
+            title: t('Common.updatedBy'),
+            dataIndex: 'updatedBy',
             align: "center",
         },
         {
@@ -124,7 +124,7 @@ export const DictType = () => {
         }
     ];
 
-    const [updateId, setUpdateUserId] = useState<string | undefined>();
+    const [updateId, setUpdatedUserId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -139,7 +139,7 @@ export const DictType = () => {
      * @param dictTypeId 角色id
      */
     const openModal = async (dictTypeId?: string) => {
-        setUpdateUserId(dictTypeId);
+        setUpdatedUserId(dictTypeId);
         if (dictTypeId) {
             const dictTypeInfo: DictTypeModel = await dictTypeApi.getInfoByIdApi(dictTypeId);
             setFormInitValues(dictTypeInfo);

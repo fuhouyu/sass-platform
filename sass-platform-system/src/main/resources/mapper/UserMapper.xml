@@ -47,10 +47,10 @@
         login_date,
         login_ip,
         is_deleted,
-        create_at,
-        update_at,
-        create_by,
-        update_by
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
     </sql>
 
     <sql id="QueryAllColumns">
@@ -63,10 +63,10 @@
         u.avatar,
         u.login_date,
         u.login_ip,
-        u.create_at,
-        u.update_at,
-        u.create_by,
-        u.update_by
+        u.created_at,
+        u.updated_at,
+        u.created_by,
+        u.updated_by
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.entity.Users">
@@ -87,10 +87,10 @@
             #{loginDate},
             #{loginIp},
             #{isDeleted},
-            #{createAt},
-            #{updateAt},
-            #{createBy},
-            #{updateBy}
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
         </trim>
     </insert>
 
@@ -113,10 +113,10 @@
                 #{entity.loginDate},
                 #{entity.loginIp},
                 #{entity.isDeleted},
-                #{entity.createAt},
-                #{entity.updateAt},
-                #{entity.createBy},
-                #{entity.updateBy}
+                #{entity.createdAt},
+                #{entity.updatedAt},
+                #{entity.createdBy},
+                #{entity.updatedBy}
             </trim>
         </foreach>
     </insert>
@@ -146,8 +146,8 @@
         <if test="loginIp != null and loginIp != ''">
             login_ip = #{loginIp},
         </if>
-        update_at = #{updateAt},
-        update_by = #{updateBy}
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
         WHERE id = #{id}
     </update>
 
