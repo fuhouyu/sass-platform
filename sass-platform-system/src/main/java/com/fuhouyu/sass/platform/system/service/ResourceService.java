@@ -71,20 +71,28 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
     ResourceDTO findResourceByEtag(String etag);
 
     /**
-     * 查询当前的资源是否存在，不存在抛出异常
-     *
-     * @param id 主键id
-     * @return 资源对象
-     */
-    ResourceDTO checkResourceExists(Long id);
-
-
-    /**
      * 生成资源签名的url
      *
      * @param id 主键id
      * @return 签名的url
      */
     String generateSignedUrl(Long id);
+
+
+    /**
+     * 检查资源权限
+     *
+     * @param id 资源id
+     * @return 资源dto对象
+     */
+    ResourceDTO checkResourcePermission(Long id);
+
+    /**
+     * 生成一个预签名，直接从oss中下载的url
+     *
+     * @param id 资源id
+     * @return url
+     */
+    String generatePresignerDownloadUrl(Long id);
 
 }

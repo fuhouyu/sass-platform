@@ -46,7 +46,7 @@ public class DocumentManagerImpl extends DefaultDocumentManager {
 
     @Override
     public String getDocumentName(String fileId) {
-        ResourceDTO resourceDTO = this.resourceService.checkResourceExists(NumberFormatUtil.toLong(fileId));
+        ResourceDTO resourceDTO = this.resourceService.checkResourcePermission(NumberFormatUtil.toLong(fileId));
         return resourceDTO.getName();
     }
 
