@@ -54,6 +54,8 @@ import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import software.amazon.awssdk.services.sts.model.AssumeRoleResponse;
 import software.amazon.awssdk.services.sts.model.Credentials;
 import software.amazon.awssdk.utils.BinaryUtils;
@@ -112,6 +114,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final S3Properties s3Properties;
 
+    private final S3Presigner s3Presigner;
 
     @Override
     public Long save(ResourceDTO dto) {
@@ -198,14 +201,14 @@ public class ResourceServiceImpl implements ResourceService {
     public void downloadFile(Long id,
                              boolean isPreview,
                              HttpServletRequest request, HttpServletResponse response) {
-        Resources resources = this.checkResourcePermission(id);
-        ResponseInputStream<GetObjectResponse> responseInputStream = this.downloadFileByS3(resources);
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
+        ResponseInputStream<GetObjectResponse> responseInputStream = this.downloadFileByS3(resourceDTO);
         if (isPreview) {
             response.setHeader(HttpHeaders.CONTENT_TYPE, responseInputStream.response().contentType());
         } else {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
         }
         try {
             this.doFileDownload(responseInputStream);
@@ -222,7 +225,7 @@ public class ResourceServiceImpl implements ResourceService {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
-        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(resources);
+        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(RESOURCES_ASSEMBLER.toDTO(resources));
         try {
             this.doFileDownload(responseResponseInputStream);
         } catch (IOException e) {
@@ -265,20 +268,9 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     @Override
-    public ResourceDTO checkResourceExists(Long id) {
-        Resources resources = this.resourceMapper.queryById(id);
-        if (Objects.isNull(resources)) {
-            LoggerUtil.warn(log, "资源不存在或不属于当前租户, id: {}", id);
-            throw new ServiceException(ResponseStatusEnum.NOT_FOUND);
-        }
-        return RESOURCES_ASSEMBLER.toDTO(resources);
-    }
-
-    @Override
     public String generateSignedUrl(Long id) {
-        ResourceDTO resourceDTO = this.checkResourceExists(id);
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
         String baseUrl = String.format("%s/v1/resource/download/%s", this.getHttpBaseUrl(), id);
-
         SignedUrlUtil.UrlSignedDTO urlSignedDTO = SignedUrlUtil.UrlSignedDTO
                 .builder()
                 .expiresSeconds(EXPIRE_TIME)
@@ -288,6 +280,19 @@ public class ResourceServiceImpl implements ResourceService {
         return SignedUrlUtil.generateSignedUrl(baseUrl, urlSignedDTO);
     }
 
+    @Override
+    public String generatePresignerDownloadUrl(Long id) {
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+        PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
+            request.signatureDuration(Duration.ofHours(1));
+            request.getObjectRequest(getObject -> {
+                getObject.key(resourceDTO.getObjectKey());
+                getObject.bucket(tenantSpaceDTO.getBucketName());
+            });
+        });
+        return presignedGetObjectRequest.url().toExternalForm();
+    }
 
     /**
      * 检查资源权限
@@ -295,7 +300,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param id 资源id
      * @return 资源
      */
-    private Resources checkResourcePermission(Long id) {
+    public ResourceDTO checkResourcePermission(Long id) {
         Resources resources = this.resourceMapper.queryById(id);
         if (Objects.isNull(resources)) {
             LoggerUtil.warn(log, "资源不存在, id: {}", id);
@@ -308,7 +313,7 @@ public class ResourceServiceImpl implements ResourceService {
                 throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "无权访问该资源");
             }
         }
-        return resources;
+        return RESOURCES_ASSEMBLER.toDTO(resources);
     }
 
 
@@ -474,18 +479,18 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * 从s3 下载资源
      *
-     * @param resources 资源文件
+     * @param resourceDTO 资源文件
      * @return 从s3下载的资源
      */
-    private ResponseInputStream<GetObjectResponse> downloadFileByS3(Resources resources) {
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resources.getOwnerTenantId());
+    private ResponseInputStream<GetObjectResponse> downloadFileByS3(ResourceDTO resourceDTO) {
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
         String rangeHeader = httpServletRequest.getHeader(HttpHeaders.RANGE);
         int status = Objects.isNull(rangeHeader) ?
                 HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
         httpServletResponse.setStatus(status);
         return this.s3Client.getObject(builder -> {
             builder.bucket(tenantSpaceDTO.getBucketName())
-                    .key(resources.getObjectKey());
+                    .key(resourceDTO.getObjectKey());
             if (Objects.nonNull(rangeHeader)) {
                 builder.range(rangeHeader);
             }
