@@ -284,11 +284,14 @@ public class ResourceServiceImpl implements ResourceService {
     public String generatePresignerDownloadUrl(Long id) {
         ResourceDTO resourceDTO = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
             request.signatureDuration(Duration.ofHours(1));
             request.getObjectRequest(getObject -> {
                 getObject.key(resourceDTO.getObjectKey());
                 getObject.bucket(tenantSpaceDTO.getBucketName());
+                getObject.responseContentType(MediaType.APPLICATION_OCTET_STREAM.getType());
+                getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
             });
         });
         return presignedGetObjectRequest.url().toExternalForm();
@@ -300,6 +303,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param id 资源id
      * @return 资源
      */
+    @Override
     public ResourceDTO checkResourcePermission(Long id) {
         Resources resources = this.resourceMapper.queryById(id);
         if (Objects.isNull(resources)) {
@@ -360,7 +364,6 @@ public class ResourceServiceImpl implements ResourceService {
         response.setHeader(HttpHeaders.ETAG, objectResponse.eTag());
         response.setHeader(HttpHeaders.LAST_MODIFIED, objectResponse.lastModified().toString());
         response.setHeader(HttpHeaders.ACCEPT_RANGES, objectResponse.acceptRanges());
-        response.setHeader(HttpHeaders.CONTENT_RANGE, objectResponse.contentRange());
         response.setHeader(HttpHeaders.CONTENT_ENCODING, objectResponse.contentEncoding());
         response.setHeader(HttpHeaders.CONTENT_LANGUAGE, objectResponse.contentLanguage());
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,

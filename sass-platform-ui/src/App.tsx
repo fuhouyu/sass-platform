@@ -52,7 +52,7 @@ export const App: React.FC = () => {
 
     useEffect(() => {
         setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
-    }, [currentTheme, language]);
+    }, [language]);
 
     if (isLoading) {
         return <PageLoading/>;
