@@ -115,6 +115,9 @@ const ZhCN = {
         startAndEndDate: '起止日期',
         startDatePlaceholder: '请选择开始日期',
         endDatePlaceholder: '请选择结束日期',
+        expiration: '有效期',
+        permanent: '永久',
+
 
     },
     // 菜单

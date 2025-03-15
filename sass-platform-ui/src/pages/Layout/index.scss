@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.layout-container, .ant-layout-has-sider, .ant-layout-content {
+
+.ant-layout, .ant-layout-has-sider, .ant-layout-content, .layout-content {
   height: 100%;
-  padding: 0;
   width: 100%;
+  padding: 0;
 }
-// 内容区域
+
 .layout-content {
-  margin: 0 1rem;
+  padding: 0 1rem;
+
 }
 
 // 分隔线

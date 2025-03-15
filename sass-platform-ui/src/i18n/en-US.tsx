@@ -138,6 +138,8 @@ const EnUS = {
         publicReadAcl: 'Public Read',
         publicWriteAcl: 'Public Read Write',
         authenticationRead: 'Authentication Read',
+        expiration: 'Expiration',
+        permanent: 'Permanent',
     },
     // 权限
     Permission: {

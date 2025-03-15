@@ -49,26 +49,31 @@ export const Tenant: React.FC = () => {
             title: t('Tenant.code'),
             dataIndex: 'tenantCode',
             showSorterTooltip: {target: 'full-header'},
+            align: 'center',
         },
         {
             title: t('Tenant.name'),
             dataIndex: 'tenantName',
             defaultSortOrder: 'descend',
+            align: 'center',
         },
         {
             title: t('Tenant.type'),
             dataIndex: 'tenantType',
+            align: 'center',
             render: (_, record: TenantInfo) => {
                 return findDictItemName('TENANT_TYPE', record.tenantType);
             }
         },
         {
             title: t('Tenant.contactPerson'),
+            align: 'center',
             dataIndex: 'contactPerson',
         },
         {
             title: t('Tenant.contactInfo'),
             dataIndex: 'contactInfo',
+            align: 'center',
         },
         {
             title: t('Common.status'),
@@ -86,6 +91,19 @@ export const Tenant: React.FC = () => {
             )
         },
         {
+            title: t('Tenant.expiration'),
+            dataIndex: 'expiration',
+            align: 'center',
+            render: (_, record: TenantInfo) => {
+                {
+                    if (record.startDate && record.endDate) {
+                        return record.startDate + "-" + record.endDate;
+                    }
+                    return t('Tenant.permanent');
+                }
+            }
+        },
+        {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
             align: "center",
@@ -99,6 +117,8 @@ export const Tenant: React.FC = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: "center",
+            width: 240,
+            fixed: 'right',
             render: (_, record: TenantInfo) => {
                 return (<PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
