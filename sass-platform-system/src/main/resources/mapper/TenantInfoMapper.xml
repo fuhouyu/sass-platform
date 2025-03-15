@@ -233,7 +233,7 @@
         u.real_name
         FROM
         <include refid="TableName"/> ti
-        LEFT JOIN adminUsers u ON ti.admin_user_id = u.id
+        LEFT JOIN admin_users u ON ti.admin_user_id = u.id
         WHERE ti.id = #{id}
     </select>
 </mapper>
