@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.utils;
 
+import cn.hutool.core.codec.Base64Encoder;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
@@ -147,7 +148,7 @@ public class SignedUrlUtil {
             SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), SIGNED_ALGORITHM);
             mac.init(secretKeySpec);
             byte[] hash = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hash);
+            return Base64Encoder.encodeUrlSafe(hash);
         } catch (Exception e) {
             LoggerUtil.error(log, "{} 签名失败, data: {} , secretKey: {}", SIGNED_ALGORITHM, data, secretKey);
             throw new IllegalArgumentException(String.format("%s 算法签名url失败: ", SIGNED_ALGORITHM), e);
