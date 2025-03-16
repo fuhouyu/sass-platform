@@ -24,6 +24,7 @@
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
         <result column="avatar" property="avatar" jdbcType="BIGINT"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BIGINT"/>
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
     </resultMap>
@@ -46,6 +47,7 @@
         avatar,
         login_date,
         login_ip,
+        owner_tenant_id,
         is_deleted,
         created_at,
         updated_at,
@@ -63,6 +65,7 @@
         u.avatar,
         u.login_date,
         u.login_ip,
+        u.owner_tenant_id,
         u.created_at,
         u.updated_at,
         u.created_by,
@@ -86,6 +89,7 @@
             #{avatar},
             #{loginDate},
             #{loginIp},
+            #{ownerTenantId},
             #{isDeleted},
             #{createdAt},
             #{updatedAt},
@@ -112,6 +116,7 @@
                 #{entity.avatar},
                 #{entity.loginDate},
                 #{entity.loginIp},
+                #{entity.ownerTenantId},
                 #{entity.isDeleted},
                 #{entity.createdAt},
                 #{entity.updatedAt},
@@ -220,8 +225,7 @@
         up.order_in_organization,
         up.position_name,
         up.is_main
-        FROM tenant_has_user tu
-        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
+        FROM  <include refid="TableName"/>  u
         LEFT JOIN user_positions up ON u.id = up.user_id
         <where>
             up.organization_id = #{pageQuery.organizationId}
@@ -242,8 +246,7 @@
         up.order_in_organization,
         up.position_name,
         up.is_main
-        FROM tenant_has_user tu
-        LEFT JOIN <include refid="TableName"/>  u ON u.id = tu.user_id
+        FROM <include refid="TableName"/>   u
         LEFT JOIN user_positions up ON u.id = up.user_id
         WHERE u.id = #{id}
     </select>

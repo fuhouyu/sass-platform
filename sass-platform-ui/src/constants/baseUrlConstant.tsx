@@ -107,11 +107,6 @@ export class BaseUrlConstant {
     static readonly LOGIN_URL: string = '/login';
 
     /**
-     * 门户页
-     */
-    static readonly PORTAL_URL: string = '/portal';
-
-    /**
      * 第三方登录的回调地址
      */
     static readonly REDIRECT_URL: string = '/redirect';

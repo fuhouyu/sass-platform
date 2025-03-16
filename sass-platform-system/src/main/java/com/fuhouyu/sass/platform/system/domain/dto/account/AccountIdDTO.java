@@ -41,18 +41,13 @@ public class AccountIdDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 5142354211238415241L;
 
-    /**
-     * 用户名
-     */
     @NotBlank(message = "登录标识未填写")
     @Schema(name = "account", description = """
             登录标识，如用户名，刷新令牌等
             """, requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonAlias({"account", "identify", "username"})
     private String account;
-    /**
-     * 账号类型
-     */
+
     @NotNull(message = "登录类型未选择")
     @Schema(name = "accountType", description = "账号类型", defaultValue = "PASSWORD", requiredMode = Schema.RequiredMode.REQUIRED)
     private AccountTypeEnum accountType;

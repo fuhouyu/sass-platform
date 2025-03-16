@@ -84,6 +84,11 @@ public class AdminUsers extends BaseEntity {
     private String loginIp;
 
     /**
+     * 租户id
+     */
+    private Long ownerTenantId;
+
+    /**
      * 是否删除标记
      */
     private Boolean isDeleted;

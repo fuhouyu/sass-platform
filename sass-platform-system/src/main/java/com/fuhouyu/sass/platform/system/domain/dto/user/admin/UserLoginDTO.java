@@ -48,4 +48,7 @@ public class UserLoginDTO extends AccountIdDTO {
             """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String cloudflareTurnstileToken;
 
+    @Schema(name = "tenantId", description = "租户id")
+    private Long tenantId;
+
 }

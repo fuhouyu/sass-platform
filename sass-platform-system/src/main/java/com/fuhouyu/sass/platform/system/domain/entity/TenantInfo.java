@@ -72,7 +72,7 @@ public class TenantInfo extends BaseEntity {
     /**
      * 租户图标
      */
-    private String icon;
+    private Long icon;
 
     /**
      * 联系人

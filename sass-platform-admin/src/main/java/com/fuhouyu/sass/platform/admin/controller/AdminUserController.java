@@ -67,7 +67,6 @@ public class AdminUserController {
     public BaseResponse<AdminUserDetailDTO> userinfo() {
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
         AdminUserDetailDTO userDetail = this.adminUserService.findDetailById(userId);
-        userDetail.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         return ResponseHelper.success(userDetail);
     }
 

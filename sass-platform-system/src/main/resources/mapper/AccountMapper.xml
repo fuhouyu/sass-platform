@@ -25,6 +25,7 @@
         <result column="credentials_expiration_time" property="credentialsExpirationTime" jdbcType="TIMESTAMP"/>
         <result column="ref_account_id" property="refAccountId" jdbcType="VARCHAR"/>
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="TableName">
@@ -39,6 +40,7 @@
         credentials,
         credentials_expiration_time,
         ref_account_id,
+        owner_tenant_id,
         is_enabled,
         created_at,
         updated_at,
@@ -61,6 +63,7 @@
             #{credentials},
             #{credentialsExpirationTime},
             #{refAccountId},
+            #{ownerTenantId},
             #{isEnabled},
             #{createdAt},
             #{updatedAt},
@@ -85,6 +88,7 @@
                 #{entity.credentials},
                 #{entity.credentialsExpirationTime},
                 #{entity.refAccountId},
+                #{entity.ownerTenantId},
                 #{entity.isEnabled},
                 #{entity.createdAt},
                 #{entity.updatedAt},
@@ -117,6 +121,7 @@
         DELETE FROM <include refid="TableName"/>
         WHERE account = #{account}
         AND account_type = #{accountType}
+
     </delete>
 
     <delete id="deleteByIds" parameterType="java.util.List">
@@ -133,6 +138,7 @@
         FROM <include refid="TableName"/>
         WHERE account = #{account}
         AND account_type = #{accountType}
+        AND owner_tenant_id = #{tenantId}
     </select>
 
 

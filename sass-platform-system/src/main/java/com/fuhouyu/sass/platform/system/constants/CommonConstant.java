@@ -33,4 +33,7 @@ public class CommonConstant {
      * 用户附加信息权限
      */
     public static final String USER_ADDITIONAL_INFORMATION_PERMISSIONS = "permissions";
+
+
+    public static final String TENANT_ADDITIONAL_INFORMATION_ID = "tenantId";
 }

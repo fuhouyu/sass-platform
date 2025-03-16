@@ -100,6 +100,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
         UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
         userAccountDetails.eraseCredentials();
+        // TODO 待抽离
         if (Objects.isNull(authentication.getDetails())) {
             if (UserTypeEnum.isAdmin(userAccountDetails.getUserType())) {
                 // 管理员用户

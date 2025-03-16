@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -72,8 +73,9 @@ public class AdminUserDTO extends BaseDTO {
     @Schema(name = "loginIp", description = "登录ip", requiredMode = Schema.RequiredMode.REQUIRED)
     private String loginIp;
 
-    @Schema(name = "tenantId", description = "用户当前登录的租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long tenantId;
+    @Schema(name = "ownerTenantId", description = "用户当前登录的租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonProperty("tenantId")
+    private Long ownerTenantId;
 
 
 }

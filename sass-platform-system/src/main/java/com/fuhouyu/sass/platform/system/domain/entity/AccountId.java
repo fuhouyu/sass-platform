@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @author fuhouyu
  * @since 2024/9/28 12:50
  */
-public record AccountId(String account, String accountType) implements Serializable {
+public record AccountId(String account, String accountType, Long tenantId) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1712354129835421345L;

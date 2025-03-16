@@ -241,4 +241,11 @@
         LEFT JOIN admin_users u ON ti.admin_user_id = u.id
         WHERE ti.id = #{id}
     </select>
+
+    <select id="queryAllList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE is_deleted = false
+    </select>
 </mapper>

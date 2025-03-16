@@ -74,6 +74,11 @@ public class Accounts extends BaseEntity {
     private String refAccountId;
 
     /**
+     * 所属的租户id
+     */
+    private Long ownerTenantId;
+
+    /**
      * 是否启用标记
      */
     private Boolean isEnabled;

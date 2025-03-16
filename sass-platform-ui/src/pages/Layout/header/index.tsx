@@ -16,28 +16,28 @@
 
 
 import {useTranslation} from "react-i18next";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect} from "react";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Button, Card, Divider, Dropdown, Flex, MenuProps, Modal, Segmented, Space, Tooltip} from "antd";
+import {Avatar, Button, Divider, Dropdown, Flex, MenuProps, Segmented, Space, Tooltip} from "antd";
 import {LogoutOutlined, MoonOutlined, SunOutlined, UserOutlined} from "@ant-design/icons";
-import {tenantApi} from "@/apis/tenant.tsx";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
-import {BaseApiUrlConstant, BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 export const LayoutHeader = () => {
     const {t} = useTranslation();
-    const [switchTenantModalOpen, setSwitchTenantModalOpen] = useState<boolean>(false);
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
     const tenantInfos = useTenant();
     const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
     const navigate = useNavigate();
     const {tenant} = useUserStore(state => state);
     const {theme, changeTheme} = useThemeStore();
+    const {preview} = useResourceAction();
 
     const setTenant = useCallback(async () => {
         if (tenantInfos.length === 0) {
@@ -76,16 +76,6 @@ export const LayoutHeader = () => {
         },
     ];
 
-    /**
-     * 租户切换
-     * @param tenantId 租户id
-     */
-    const switchTenant = async (tenantId: string) => {
-        await tenantApi.switchTenant(tenantId);
-        setSwitchTenantModalOpen(false);
-        window.location.reload();
-    }
-
 
     return (
         <>
@@ -117,12 +107,13 @@ export const LayoutHeader = () => {
                     <Flex>
                         {LanguageSwitcherButton}
                     </Flex>
-                    <Flex justify={'center'} align={'center'}>
+                    <Flex className={'cursor-point'} justify={'center'} align={'center'}>
                         <Dropdown menu={{items: dropDownMenus}}>
                             <Space>
-                                {userinfo.avatar && <Avatar size={24}
-                                                            src={`${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${userinfo.avatar}`}
-                                />}
+                                <Avatar size={24}
+                                        icon={<UserOutlined/>}
+                                        src={preview(userinfo.avatar)}
+                                />
                                 <span>{userinfo.realName}</span>
                             </Space>
                         </Dropdown>
@@ -130,34 +121,6 @@ export const LayoutHeader = () => {
                 </Flex>
 
             </Header>
-            <Modal
-                centered
-                destroyOnClose={true}
-                title={t('Tenant.list')}
-                closable={false}
-                onCancel={() => setSwitchTenantModalOpen(false)}
-                open={switchTenantModalOpen}
-                width={'auto'}
-                footer={[]}>
-                <Flex justify="space-around" vertical>
-                    {tenantInfos?.map(tenant => {
-                        return <Card
-                            onClick={() => switchTenant(tenant.id!)}
-                            key={tenant.id}
-                            className={"switch-tenant-container"}
-                            hoverable
-                        >
-                            <Card.Meta
-                                avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"/>}
-                                title={tenant.tenantName}
-                                description={<p>{tenant.remark}</p>}
-                            />
-
-                        </Card>
-
-                    })}
-                </Flex>
-            </Modal>
         </>
     )
 }

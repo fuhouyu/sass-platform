@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
 import com.fuhouyu.sass.platform.system.domain.entity.AccountId;
 import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
 import org.apache.ibatis.annotations.Param;
@@ -64,5 +65,6 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param accountType 账号类型
      * @return 账号
      */
+    @TenantQuery
     Accounts queryAccountByUserIdAndType(@Param("userId") Long userId, @Param("accountType") String accountType);
 }

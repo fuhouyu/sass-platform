@@ -19,7 +19,6 @@ import {NotFound} from "@/pages/error/notfound/NotFound";
 import {Home} from "@/pages/home/Home";
 import {UserProfile} from "@/pages/profile";
 import Login from "@/pages/login";
-import MainPortal from "@/pages/portal";
 import {PostThirdPartyRedirect} from "@/pages/redirect/PostThirdPartyRedirect.tsx";
 import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
@@ -60,11 +59,6 @@ export const commonRoutes: DataRouteObject[] = [
         id: 'login',
         path: BaseUrlConstant.LOGIN_URL,
         Component: Login,
-    },
-    {
-        id: 'portal',
-        path: BaseUrlConstant.PORTAL_URL,
-        Component: MainPortal,
     },
     {
         id: 'redirect',
