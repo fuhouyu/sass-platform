@@ -37,6 +37,8 @@ export const PostThirdPartyRedirect = () => {
     const [temporaryToken, setTemporaryToken] = useState<string>('');
     const {fetchLogin, fetchLoginAndBind} = useUserStore();
     const navigate = useNavigate();
+    const fromRouter = location.state?.from;
+    const from = (fromRouter && fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter || '/';
     /**
      * 用户登录
      */
@@ -44,7 +46,7 @@ export const PostThirdPartyRedirect = () => {
         fetchLogin({accountType: accountType as AccountType, identify: code}).then(async (res) => {
             // 如果登录成功直接跳转
             if (!('userBindToken' in res)) {
-                navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
+                navigate(from);
                 return
             }
             setTemporaryToken(res.userBindToken);
@@ -55,7 +57,7 @@ export const PostThirdPartyRedirect = () => {
             message.error(err.message).then()
             navigate(BaseUrlConstant.LOGIN_URL, {state: location.state});
         });
-    }, [fetchLogin, navigate, location.state]);
+    }, [fetchLogin, navigate, from, location.state]);
 
     /**
      * 登录表单
@@ -67,10 +69,10 @@ export const PostThirdPartyRedirect = () => {
         userBindAuthentication.accountType = AccountType.PASSWORD;
         try {
             await fetchLoginAndBind(userBindAuthentication);
+            navigate(from);
         } catch {
             navigate(BaseUrlConstant.LOGIN_URL, {state: location.state});
         }
-        navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
     }
 
     /**
@@ -81,7 +83,7 @@ export const PostThirdPartyRedirect = () => {
     const bindAccount = useCallback(async (accountType: string, code: string) => {
         await accountApi.bindThirdPartyAccount(accountType, code);
         navigate(BaseUrlConstant.USER_PROFILE_URL);
-    }, []);
+    }, [navigate]);
 
 
     useEffect(() => {
@@ -102,7 +104,7 @@ export const PostThirdPartyRedirect = () => {
             login(accountType, code);
         }
 
-    }, [bindAccount, login, searchParams, t]);
+    }, [bindAccount, login, navigate, searchParams, t]);
 
 
     return (
