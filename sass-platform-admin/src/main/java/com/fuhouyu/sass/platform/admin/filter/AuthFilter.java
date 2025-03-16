@@ -36,7 +36,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import java.util.Objects;
 
-import static com.fuhouyu.sass.platform.system.constants.CommonConstsant.USER_ADDITIONAL_INFORMATION_PERMISIONS;
+import static com.fuhouyu.sass.platform.system.constants.CommonConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
 
 /**
  * <p>
@@ -92,7 +92,7 @@ public class AuthFilter implements ParseHttpRequest {
         }
         UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
-        userEntity.putAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISIONS, authentication.getAuthorities());
+        userEntity.putAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISSIONS, authentication.getAuthorities());
         return userEntity;
     }
 

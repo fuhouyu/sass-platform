@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id             BIGINT PRIMARY KEY    NOT NULL,
-    admin_user_id BIGINT      NOT NULL,
+    admin_user_id BIGINT                NOT NULL,
     tenant_code    VARCHAR(64)           NOT NULL,
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
@@ -29,11 +29,12 @@ CREATE TABLE tenant_info
     start_date    DATE,
     end_date      DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_platform   BOOLEAN DEFAULT FALSE NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at    TIMESTAMP   NOT NULL,
-    created_by    VARCHAR(64) NOT NULL,
-    updated_at    TIMESTAMP   NOT NULL,
-    updated_by    VARCHAR(64) NOT NULL,
+    created_at    TIMESTAMP             NOT NULL,
+    created_by    VARCHAR(64)           NOT NULL,
+    updated_at    TIMESTAMP             NOT NULL,
+    updated_by    VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -51,6 +52,7 @@ COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
 COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
 COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
+COMMENT ON COLUMN tenant_info.is_platform IS '是否平台';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_info.created_by IS '创建人';
@@ -61,9 +63,9 @@ COMMENT ON COLUMN tenant_info.updated_by IS '更新人';
 -- 内置租户
 INSERT INTO tenant_info(id, admin_user_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, created_at,
-                        created_by, updated_at, updated_by)
+                        created_by, updated_at, updated_by, is_platform)
 VALUES (1, 1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
-        now(), 'admin');
+        now(), 'admin', true);
 
 -- 租户权限
 DROP TABLE IF EXISTS tenant_has_permission;
@@ -92,7 +94,7 @@ CREATE TABLE admin_users
     nickname   VARCHAR(64),
     email      VARCHAR(64),
     gender     VARCHAR(8),
-    avatar BIGINT,
+    avatar     BIGINT,
     login_date TIMESTAMP,
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN DEFAULT TRUE,
@@ -228,10 +230,10 @@ CREATE TABLE permissions
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (permission_code)
 );
 CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
@@ -603,16 +605,16 @@ CREATE TABLE accounts
 (
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
-    user_id    BIGINT      NOT NULL,
+    user_id     BIGINT      NOT NULL,
     credentials VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
-    user_type  VARCHAR(32) NOT NULL,
+    user_type   VARCHAR(32) NOT NULL,
     is_enabled                  BOOLEAN DEFAULT true NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at  TIMESTAMP   NOT NULL,
+    created_by  VARCHAR(32) NOT NULL,
+    updated_at  TIMESTAMP   NOT NULL,
+    updated_by  VARCHAR(32) NOT NULL,
     PRIMARY KEY (account, account_type)
 );
 
@@ -652,10 +654,10 @@ CREATE TABLE dict_type
     display_order   INT     DEFAULT 0    NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     remark          VARCHAR(128),
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (owner_tenant_id, dict_code)
 );
 
@@ -700,10 +702,10 @@ CREATE TABLE dict_item
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     remark          VARCHAR(128),
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (owner_tenant_id, dict_code, item_code)
 );
 
@@ -751,12 +753,12 @@ CREATE TABLE organizations
     organization_name VARCHAR(255)       NOT NULL,
     organization_code VARCHAR(255)       NOT NULL,
     organization_type VARCHAR(32)        NOT NULL,
-    is_enabled BOOLEAN NOT NULL DEFAULT true,
-    is_leaf    BOOLEAN NOT NULL DEFAULT true,
+    is_enabled BOOLEAN     NOT NULL DEFAULT true,
+    is_leaf    BOOLEAN     NOT NULL DEFAULT true,
     remark            VARCHAR(255),
     display_order     INTEGER            NOT NULL DEFAULT 1,
     owner_tenant_id   BIGINT             NOT NULL,
-    is_deleted BOOLEAN NOT NULL DEFAULT false,
+    is_deleted BOOLEAN     NOT NULL DEFAULT false,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(64) NOT NULL,
@@ -827,8 +829,8 @@ CREATE TABLE tenant_space
 (
     tenant_id   BIGINT       NOT NULL,
     bucket_name VARCHAR(100) NOT NULL,
-    capacity BIGINT      NOT NULL,
-    acl      VARCHAR(32) NOT NULL,
+    capacity   BIGINT      NOT NULL,
+    acl        VARCHAR(32) NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
@@ -866,10 +868,10 @@ CREATE TABLE resources
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at   TIMESTAMP    NOT NULL,
+    created_by   VARCHAR(32)  NOT NULL,
+    updated_at   TIMESTAMP    NOT NULL,
+    updated_by   VARCHAR(32)  NOT NULL,
     UNIQUE (owner_tenant_id, object_key)
 );
 CREATE INDEX idx_resources_parent_id ON resources (parent_id);

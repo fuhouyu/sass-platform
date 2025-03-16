@@ -27,10 +27,10 @@ import lombok.RequiredArgsConstructor;
  * @since 2024/12/28 16:32
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommonConstsant {
+public class CommonConstant {
 
     /**
      * 用户附加信息权限
      */
-    public static final String USER_ADDITIONAL_INFORMATION_PERMISIONS = "permissions";
+    public static final String USER_ADDITIONAL_INFORMATION_PERMISSIONS = "permissions";
 }
