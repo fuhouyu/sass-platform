@@ -42,6 +42,14 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
     List<AccountDTO> findByUserId(Long userId);
 
     /**
+     * 通过租户id和账号id进行查询
+     *
+     * @param accountIdDTO 账号id对象
+     * @return 账号dto对象
+     */
+    AccountDTO findById(AccountIdDTO accountIdDTO, Long tenantId);
+
+    /**
      * 通过用户id进行删除
      *
      * @param userIds 用户id

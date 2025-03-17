@@ -67,6 +67,7 @@ const ZhCN = {
         passwordEmptyMessage: '请输入用户密码',
         passwordPlaceholder: '密码必填',
         otherLogin: '其它登录方式',
+        tenantChoosePlaceholder: '请选择租户',
         wechatLogin: '微信登录',
         usernamePasswordLogin: '账号密码',
         usernamePasswordLoginTitle: '请使用<span>账号密码</span>登录',

@@ -84,31 +84,35 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int removeById(AccountIdDTO accountIdDTO) {
-        return this.accountMapper.deleteById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name()));
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        return this.accountMapper.deleteById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name(), tenantId));
     }
 
     @Override
     public int removeByIds(Collection<AccountIdDTO> accountIdList) {
-        List<AccountId> ids = accountIdList.stream().map(account -> new AccountId(account.getAccount(), account.getAccountType().name()))
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        List<AccountId> ids = accountIdList.stream().map(account ->
+                        new AccountId(account.getAccount(), account.getAccountType().name(), tenantId))
                 .toList();
         return this.accountMapper.deleteByIds(ids);
     }
 
     @Override
     public AccountDTO findById(AccountIdDTO accountIdDTO) {
-        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name()));
-        if (Objects.isNull(accounts)) {
-            return null;
-        }
-        AccountDTO dto = ACCOUNT_ASSEMBLER.toDTO(accounts);
-        dto.setUserId(accounts.getUserId());
-        return dto;
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        return this.getAccountDTO(accountIdDTO, tenantId);
     }
 
     @Override
     public List<AccountDTO> findByUserId(Long userId) {
         return ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryByUserId(userId));
     }
+
+    @Override
+    public AccountDTO findById(AccountIdDTO accountIdDTO, Long tenantId) {
+        return this.getAccountDTO(accountIdDTO, tenantId);
+    }
+
 
     @Override
     public void removeByUserIds(Collection<Long> userIds) {
@@ -159,6 +163,24 @@ public class AccountServiceImpl implements AccountService {
         accounts.setRefAccountId(weLinkLoginUserDTO.getUserId());
         accounts.setIsEnabled(true);
         this.accountMapper.insert(accounts);
-
     }
+
+
+    /**
+     * 获取账号dto对象
+     *
+     * @param accountIdDTO 账号id dto对象
+     * @param tenantId     租户id
+     * @return 账号dto对象
+     */
+    private AccountDTO getAccountDTO(AccountIdDTO accountIdDTO, Long tenantId) {
+        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name(), tenantId));
+        if (Objects.isNull(accounts)) {
+            return null;
+        }
+        AccountDTO dto = ACCOUNT_ASSEMBLER.toDTO(accounts);
+        dto.setUserId(accounts.getUserId());
+        return dto;
+    }
+
 }

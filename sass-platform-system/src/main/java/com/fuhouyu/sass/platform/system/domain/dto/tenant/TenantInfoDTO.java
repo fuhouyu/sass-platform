@@ -57,14 +57,13 @@ public class TenantInfoDTO extends BaseDTO {
     private String tenantName;
 
     @Schema(name = "tenantType", description = "租户类型", requiredMode = Schema.RequiredMode.REQUIRED)
-    // FIXME 先写死默认值
-    private String tenantType = "COMPANY";
+    private String tenantType;
 
     @Schema(name = "remark", description = "备注")
     private String remark;
 
     @Schema(name = "icon", description = "租户图标", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String icon;
+    private Long icon;
 
     @Schema(name = "contactPerson", description = "联系人")
     private String contactPerson;

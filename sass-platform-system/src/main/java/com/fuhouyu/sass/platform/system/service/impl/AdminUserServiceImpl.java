@@ -130,13 +130,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public AdminUserDTO findById(Long userId) {
         AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
-        AdminUserDTO adminUserDTO = USERS_ASSEMBLER.toDTO(adminUsers);
-
-        if (Objects.nonNull(ContextHolderStrategy.getContext().getUser())) {
-            adminUserDTO.setTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
-        }
-
-        return adminUserDTO;
+        return USERS_ASSEMBLER.toDTO(adminUsers);
     }
 
     @Override

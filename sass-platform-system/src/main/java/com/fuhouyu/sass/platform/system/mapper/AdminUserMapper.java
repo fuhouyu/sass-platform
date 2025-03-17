@@ -36,6 +36,11 @@ import java.util.List;
  */
 public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
 
+
+    @Override
+    @TenantQuery
+    int update(AdminUsers adminUsers);
+
     /**
      * 通过用户名称查询
      *
@@ -51,9 +56,15 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param loginIp   登录ip
      * @param loginTime 登录时间
      */
+    @TenantQuery
     void recordLoginSuccess(@Param("userId") Long userId,
                             @Param("loginIp") String loginIp,
                             @Param("loginTime") LocalDateTime loginTime);
+
+
+    @Override
+    @TenantQuery
+    <P extends PageQueryDTO> List<AdminUsers> queryList(P pageQuery);
 
     /**
      * 查询用户详情列表
@@ -61,7 +72,7 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param pageQuery 分页查询对象
      * @return 用户详情列表
      */
-    @TenantQuery(column = "tu.tenant_id")
+    @TenantQuery
     <P extends PageQueryDTO> List<AdminUserDTO> queryDetailList(@Param("pageQuery") P pageQuery);
 
     /**
@@ -70,6 +81,6 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param id 用户id
      * @return 用户详情
      */
-    @TenantQuery(column = "tu.tenant_id")
+    @TenantQuery
     AdminUserDetailDTO queryDetailById(Long id);
 }

@@ -15,18 +15,24 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
+import com.fuhouyu.sass.platform.system.constants.CommonConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -44,6 +50,8 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     private final AccountService accountService;
 
+    private final PermissionService permissionService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.loadUserByUsername(username, AccountTypeEnum.PASSWORD.name());
@@ -51,11 +59,16 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String account, String accountType) throws UsernameNotFoundException {
+        Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
         AccountIdDTO accountIdDTO = new AccountIdDTO(account, AccountTypeEnum.valueOf(accountType));
-        AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
+        AccountDTO accountDTO = this.accountService.findById(accountIdDTO, tenantId);
         if (Objects.isNull(accountDTO)) {
             return null;
         }
-        return SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
+        Collection<? extends GrantedAuthority> simpleGrantedAuthorities =
+                this.permissionService.findUserSimpleGrantedAuthorities(tenantId, accountDTO.getUserId());
+        UserAccountDetails userDetail = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
+        userDetail.setAuthorities(simpleGrantedAuthorities);
+        return userDetail;
     }
 }

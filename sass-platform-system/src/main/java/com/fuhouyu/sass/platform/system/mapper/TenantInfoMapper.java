@@ -63,4 +63,11 @@ public interface TenantInfoMapper extends BaseMapper<Long, TenantInfo> {
      * @return 详情dto对象
      */
     TenantInfoDetailDTO queryDetailById(@Param("id") Long id);
+
+    /**
+     * 查询所有
+     *
+     * @return 所有的租户列表
+     */
+    List<TenantInfo> queryAllList();
 }

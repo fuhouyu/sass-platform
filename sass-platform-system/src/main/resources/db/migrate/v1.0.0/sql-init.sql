@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id             BIGINT PRIMARY KEY    NOT NULL,
-    admin_user_id BIGINT      NOT NULL,
+    admin_user_id BIGINT                NOT NULL,
     tenant_code    VARCHAR(64)           NOT NULL,
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
@@ -29,11 +29,12 @@ CREATE TABLE tenant_info
     start_date    DATE,
     end_date      DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_platform   BOOLEAN DEFAULT FALSE NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at    TIMESTAMP   NOT NULL,
-    created_by    VARCHAR(64) NOT NULL,
-    updated_at    TIMESTAMP   NOT NULL,
-    updated_by    VARCHAR(64) NOT NULL,
+    created_at    TIMESTAMP             NOT NULL,
+    created_by    VARCHAR(64)           NOT NULL,
+    updated_at    TIMESTAMP             NOT NULL,
+    updated_by    VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -51,6 +52,7 @@ COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
 COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
 COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
+COMMENT ON COLUMN tenant_info.is_platform IS '是否平台';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_info.created_by IS '创建人';
@@ -61,9 +63,9 @@ COMMENT ON COLUMN tenant_info.updated_by IS '更新人';
 -- 内置租户
 INSERT INTO tenant_info(id, admin_user_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, created_at,
-                        created_by, updated_at, updated_by)
+                        created_by, updated_at, updated_by, is_platform)
 VALUES (1, 1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
-        now(), 'admin');
+        now(), 'admin', true);
 
 -- 租户权限
 DROP TABLE IF EXISTS tenant_has_permission;
@@ -86,21 +88,22 @@ DROP TABLE IF EXISTS admin_users;
 -- 用户表
 CREATE TABLE admin_users
 (
-    id         BIGINT PRIMARY KEY NOT NULL,
-    username   VARCHAR(64)        NOT NULL,
-    real_name  VARCHAR(64),
-    nickname   VARCHAR(64),
-    email      VARCHAR(64),
-    gender     VARCHAR(8),
-    avatar BIGINT,
-    login_date TIMESTAMP,
-    login_ip   VARCHAR(64),
-    is_enabled BOOLEAN DEFAULT TRUE,
-    is_deleted BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    id              BIGINT PRIMARY KEY NOT NULL,
+    username        VARCHAR(64)        NOT NULL,
+    real_name       VARCHAR(64),
+    nickname        VARCHAR(64),
+    email           VARCHAR(64),
+    gender          VARCHAR(8),
+    avatar          BIGINT,
+    login_date      TIMESTAMP,
+    login_ip        VARCHAR(64),
+    is_enabled      BOOLEAN DEFAULT TRUE,
+    is_deleted      BOOLEAN DEFAULT FALSE,
+    owner_tenant_id BIGINT             NOT NULL,
+    created_at      TIMESTAMP          NOT NULL,
+    created_by      VARCHAR(32)        NOT NULL,
+    updated_at      TIMESTAMP          NOT NULL,
+    updated_by      VARCHAR(32)        NOT NULL,
     UNIQUE (username)
 );
 
@@ -117,6 +120,7 @@ COMMENT ON COLUMN admin_users.login_date IS '登录日期';
 COMMENT ON COLUMN admin_users.login_ip IS '登录ip';
 COMMENT ON COLUMN admin_users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN admin_users.is_deleted IS '删除标记：false 未删除';
+COMMENT ON COLUMN admin_users.owner_tenant_id IS '租户id';
 COMMENT ON COLUMN admin_users.created_at IS '创建时间';
 COMMENT ON COLUMN admin_users.created_by IS '创建人';
 COMMENT ON COLUMN admin_users.updated_at IS '更新时间';
@@ -124,29 +128,29 @@ COMMENT ON COLUMN admin_users.updated_by IS '更新人';
 
 INSERT INTO admin_users(id, username, real_name, nickname, email, gender, avatar, login_date, login_ip, created_at,
                         created_by,
-                        updated_at, updated_by)
+                        updated_at, updated_by, owner_tenant_id)
 VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'MALE',
-        null, now(), '127.0.0.1', now(), 'admin', now(), 'admin');
-
-DROP TABLE IF EXISTS tenant_has_user;
--- 租户和用户关系表
-CREATE TABLE tenant_has_user
-(
-    tenant_id BIGINT NOT NULL,
-    user_id   BIGINT NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    PRIMARY KEY (tenant_id, user_id)
-);
-
-COMMENT ON TABLE tenant_has_user IS '租户和用户的关联关系表';
-COMMENT ON COLUMN tenant_has_user.tenant_id IS '租户id';
-COMMENT ON COLUMN tenant_has_user.user_id IS '用户id';
-COMMENT ON COLUMN tenant_has_user.created_at IS '创建时间';
-COMMENT ON COLUMN tenant_has_user.created_by IS '创建人';
-
-INSERT INTO tenant_has_user (tenant_id, user_id, created_at, created_by)
-VALUES (1, 1, now(), 'admin');
+        null, now(), '127.0.0.1', now(), 'admin', now(), 'admin', 1);
+--
+-- DROP TABLE IF EXISTS tenant_has_user;
+-- -- 租户和用户关系表
+-- CREATE TABLE tenant_has_user
+-- (
+--     tenant_id BIGINT NOT NULL,
+--     user_id   BIGINT NOT NULL,
+--     created_at TIMESTAMP   NOT NULL,
+--     created_by VARCHAR(32) NOT NULL,
+--     PRIMARY KEY (tenant_id, user_id)
+-- );
+--
+-- COMMENT ON TABLE tenant_has_user IS '租户和用户的关联关系表';
+-- COMMENT ON COLUMN tenant_has_user.tenant_id IS '租户id';
+-- COMMENT ON COLUMN tenant_has_user.user_id IS '用户id';
+-- COMMENT ON COLUMN tenant_has_user.created_at IS '创建时间';
+-- COMMENT ON COLUMN tenant_has_user.created_by IS '创建人';
+--
+-- INSERT INTO tenant_has_user (tenant_id, user_id, created_at, created_by)
+-- VALUES (1, 1, now(), 'admin');
 
 -- 角色表
 DROP TABLE IF EXISTS roles;
@@ -228,10 +232,10 @@ CREATE TABLE permissions
     is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (permission_code)
 );
 CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
@@ -603,17 +607,18 @@ CREATE TABLE accounts
 (
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
-    user_id    BIGINT      NOT NULL,
-    credentials VARCHAR(128),
+    user_id         BIGINT               NOT NULL,
+    credentials     VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
-    user_type  VARCHAR(32) NOT NULL,
-    is_enabled                  BOOLEAN DEFAULT true NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
-    PRIMARY KEY (account, account_type)
+    user_type       VARCHAR(32)          NOT NULL,
+    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
+    owner_tenant_id BIGINT               NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
+    PRIMARY KEY (owner_tenant_id, account, account_type)
 );
 
 CREATE INDEX idx_account_user_id ON accounts (user_id);
@@ -627,15 +632,17 @@ COMMENT ON COLUMN accounts.credentials_expiration_time IS '凭证过期时间，
 COMMENT ON COLUMN accounts.user_type IS '账号类型：ADMIN/NORMAL';
 COMMENT ON COLUMN accounts.ref_account_id IS '第三方账号登录时的账号id';
 COMMENT ON COLUMN accounts.is_enabled IS '是否启用该账号登录';
+COMMENT ON COLUMN accounts.owner_tenant_id IS '当前账号所属的租户id'
 COMMENT ON COLUMN accounts.created_at IS '创建时间';
 COMMENT ON COLUMN accounts.created_by IS '创建人';
 COMMENT ON COLUMN accounts.updated_at IS '更新时间';
 COMMENT ON COLUMN accounts.updated_by IS '更新人';
 
-INSERT INTO accounts(account, account_type, user_id, credentials, credentials_expiration_time, ref_account_id,
+INSERT INTO accounts(owner_tenant_id, account, account_type, user_id, credentials, credentials_expiration_time,
+                     ref_account_id,
                      user_type,
                      created_at, created_by, updated_at, updated_by)
-VALUES ('admin', 'PASSWORD', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
+VALUES (1, 'admin', 'PASSWORD', 1, '{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE',
         null, null, 'ADMIN', now(), 'admin', now(), 'admin');
 
 
@@ -652,10 +659,10 @@ CREATE TABLE dict_type
     display_order   INT     DEFAULT 0    NOT NULL,
     owner_tenant_id BIGINT               NOT NULL,
     remark          VARCHAR(128),
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (owner_tenant_id, dict_code)
 );
 
@@ -700,10 +707,10 @@ CREATE TABLE dict_item
     owner_tenant_id BIGINT               NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     remark          VARCHAR(128),
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at      TIMESTAMP            NOT NULL,
+    created_by      VARCHAR(32)          NOT NULL,
+    updated_at      TIMESTAMP            NOT NULL,
+    updated_by      VARCHAR(32)          NOT NULL,
     UNIQUE (owner_tenant_id, dict_code, item_code)
 );
 
@@ -751,12 +758,12 @@ CREATE TABLE organizations
     organization_name VARCHAR(255)       NOT NULL,
     organization_code VARCHAR(255)       NOT NULL,
     organization_type VARCHAR(32)        NOT NULL,
-    is_enabled BOOLEAN NOT NULL DEFAULT true,
-    is_leaf    BOOLEAN NOT NULL DEFAULT true,
+    is_enabled BOOLEAN     NOT NULL DEFAULT true,
+    is_leaf    BOOLEAN     NOT NULL DEFAULT true,
     remark            VARCHAR(255),
     display_order     INTEGER            NOT NULL DEFAULT 1,
     owner_tenant_id   BIGINT             NOT NULL,
-    is_deleted BOOLEAN NOT NULL DEFAULT false,
+    is_deleted BOOLEAN     NOT NULL DEFAULT false,
     created_at TIMESTAMP   NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(64) NOT NULL,
@@ -827,8 +834,8 @@ CREATE TABLE tenant_space
 (
     tenant_id   BIGINT       NOT NULL,
     bucket_name VARCHAR(100) NOT NULL,
-    capacity BIGINT      NOT NULL,
-    acl      VARCHAR(32) NOT NULL,
+    capacity   BIGINT      NOT NULL,
+    acl        VARCHAR(32) NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
@@ -866,10 +873,10 @@ CREATE TABLE resources
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL,
+    created_at   TIMESTAMP    NOT NULL,
+    created_by   VARCHAR(32)  NOT NULL,
+    updated_at   TIMESTAMP    NOT NULL,
+    updated_by   VARCHAR(32)  NOT NULL,
     UNIQUE (owner_tenant_id, object_key)
 );
 CREATE INDEX idx_resources_parent_id ON resources (parent_id);

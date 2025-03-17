@@ -68,6 +68,7 @@ const EnUS = {
         usernameEmptyMessage: 'Please input your username!',
         passwordPlaceholder: 'Please input your password',
         passwordEmptyMessage: 'Password is required',
+        tenantChoosePlaceholder: 'Please select a tenant',
         otherLogin: 'Alternative Login Options',
         wechatLogin: 'Wechat Login',
         weLinkLogin: 'WeLink Login',

@@ -70,4 +70,7 @@ public class AccountDTO extends BaseDTO {
     @Schema(name = "用户类型", description = "用户类型")
     private UserTypeEnum userType;
 
+    @Schema(name = "ownerTenantId", description = "所属的租户id")
+    private Long ownerTenantId;
+
 }

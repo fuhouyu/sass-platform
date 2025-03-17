@@ -16,7 +16,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import "./index.scss"
-import {Button, Divider, Form, Input, message} from "antd";
+import {Avatar, Button, Divider, Form, Input, message, Select, Space} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
@@ -27,6 +27,9 @@ import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
 import {useUserStore} from "@/store";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {TenantInfo} from "@/model/tenant.tsx";
+import {tenantApi} from "@/apis/tenant.tsx";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 /**
  * 登录组件
@@ -43,12 +46,18 @@ export const Login: React.FC = () => {
     const [weLinkQr, setWeLinkQr] = useState<boolean>(true);
     const [loginTitle, setLoginTitle] = useState<string>('weLinkLoginTitle');
     const [turnstileToken, setTurnstileToken] = useState<string | undefined>();
-    const fetchLogin = useUserStore((state) => state.fetchLogin);
+    const {fetchLogin} = useUserStore(state => state);
+    const {preview} = useResourceAction();
+    const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
+    const initTenantList = async () => {
+        setTenantList(await tenantApi.list());
+    }
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
         }
+        initTenantList().then();
     }, [isAuth, navigate]);
     const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
@@ -58,7 +67,10 @@ export const Login: React.FC = () => {
             await fetchLogin(loginData);
             setLoginButtonLoading(false)
             setLoginButtonLoading(false);
-            navigate(BaseUrlConstant.PORTAL_URL, {state: location.state});
+            const fromRouter = location.state?.from;
+            const from = (fromRouter && fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter || '/';
+            navigate(from);
+
         } catch (err) {
             setLoginButtonLoading(false);
             setTurnstileToken(undefined);
@@ -90,6 +102,24 @@ export const Login: React.FC = () => {
                               }}
                               onFinish={onFinish}
                         >
+                            <Form.Item
+                                name="tenantId"
+                                required
+                                rules={[
+                                    {required: true, message: t('Login.tenantChoosePlaceholder')}
+                                ]}
+                            >
+                                <Select
+                                    prefix={<IconFont type={'i-zuhuguanli'}/>}
+                                    className={'tenant-choose-container'}
+                                    options={tenantList.map(tenantInfo => {
+                                        return {
+                                            value: tenantInfo.id,
+                                            label: <Space className={'tenant-choose'}><Avatar
+                                                src={preview(tenantInfo.icon)}/>{tenantInfo.tenantName}</Space>
+                                        }
+                                    })}/>
+                            </Form.Item>
                             <Form.Item
                                 name="identify"
                                 rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
@@ -162,5 +192,5 @@ export const Login: React.FC = () => {
             </div>
 
         </div>
-    )
+    );
 }

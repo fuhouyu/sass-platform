@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.constants;
 
-.portal-container {
-  height: 100%;
-  padding: 0 1rem;
-}
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-.switch-tenant-container {
-  background-color: rgba(0, 0, 0, 0.3); /* Dark semi-transparent background */
-  backdrop-filter: blur(10px); /* Frosted glass effect */
-  max-height: 6rem;
-  max-width: 12rem;
-}
+/**
+ * <p>
+ * 公共常量
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/28 16:32
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class CommonConstant {
 
-.tenant-active {
-  background-color: #2196f3;
-}
+    /**
+     * 用户附加信息权限
+     */
+    public static final String USER_ADDITIONAL_INFORMATION_PERMISSIONS = "permissions";
 
-.switch-tenant-container:hover {
-  background-color: #2196f3;
+
+    public static final String TENANT_ADDITIONAL_INFORMATION_ID = "tenantId";
 }

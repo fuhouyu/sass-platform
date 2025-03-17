@@ -158,11 +158,13 @@
         updated_at = #{updatedAt},
         updated_by = #{updatedBy}
         WHERE id = #{id}
+        AND is_platform  = false
     </update>
 
     <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM <include refid="TableName"/>
         WHERE id = #{id}
+        AND is_platform  = false
     </delete>
 
     <delete id="deleteByIds" parameterType="java.util.List">
@@ -171,6 +173,7 @@
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
+        AND is_platform  = false
     </delete>
 
     <select id="queryById" resultMap="BaseResultMap">
@@ -187,6 +190,7 @@
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}
         </foreach>
+        AND is_platform  = false
     </select>
 
 
@@ -205,6 +209,7 @@
             <if test="pageQuery.tenantName != null and pageQuery.tenantName != ''">
                 ti.tenant_name LIKE CONCAT('%', #{pageQuery.tenantName}, '%')
             </if>
+            AND is_platform  = false
         </where>
     </select>
 
@@ -235,5 +240,12 @@
         <include refid="TableName"/> ti
         LEFT JOIN admin_users u ON ti.admin_user_id = u.id
         WHERE ti.id = #{id}
+    </select>
+
+    <select id="queryAllList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM <include refid="TableName"/> ti
+        WHERE is_deleted = false
     </select>
 </mapper>

@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.fuhouyu.sass.platform.system.constants.CommonConstsant.USER_ADDITIONAL_INFORMATION_PERMISIONS;
+import static com.fuhouyu.sass.platform.system.constants.CommonConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
 
 /**
  * <p>
@@ -74,7 +74,7 @@ public class AuthorityFilter {
             return true;
         }
         User user = ContextHolderStrategy.getContext().getUser();
-        Collection<? extends GrantedAuthority> userPermissions = user.getAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISIONS);
+        Collection<? extends GrantedAuthority> userPermissions = user.getAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISSIONS);
         if (CollectionUtils.isEmpty(userPermissions)) {
             return false;
         }

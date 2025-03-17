@@ -23,6 +23,7 @@ import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
@@ -170,7 +171,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
         Authentication authentication = tokenStore.readAuthentication(userToken);
         AdminUserDTO userDetailsDTO = (AdminUserDTO) authentication.getDetails();
-        userDetailsDTO.setTenantId(id);
+        userDetailsDTO.setOwnerTenantId(id);
 
         OAuth2Token auth2Token = tokenStore.readAuth2Token(userToken);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -202,6 +203,17 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         TenantSpaceDTO tenantSpace = tenantInfoDTO.getTenantSpace();
         tenantSpace.setTenantId(tenantInfoDTO.getId());
         this.tenantSpaceService.editTenantSpace(tenantSpace);
+    }
+
+
+    @Override
+    public List<BasicTenantDTO> findTenantList() {
+        List<TenantInfo> list = this.tenantInfoMapper.queryAllList();
+        return list.stream().map(res -> BasicTenantDTO.builder()
+                .id(res.getId())
+                .tenantName(res.getTenantName())
+                .tenantCode(res.getTenantCode())
+                .icon(res.getIcon()).build()).toList();
     }
 
     /**

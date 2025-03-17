@@ -18,7 +18,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantPageQueryDTO;
@@ -150,6 +152,18 @@ public class TenantInfoController {
     @Operation(summary = "查询出当前用户关联的租户")
     public BaseResponse<List<TenantInfoDTO>> findTenantForMe() {
         return ResponseHelper.success(this.tenantInfoService.findTenantByUserId(ContextHolderStrategy.getContext().getUser().getId()));
+    }
+
+    /**
+     * 获取租户的列表
+     *
+     * @return 租户列表集合
+     */
+    @GetMapping("/list")
+    @Operation(summary = "租户列表")
+    @NoAuth
+    public BaseResponse<List<BasicTenantDTO>> tenantList() {
+        return ResponseHelper.success(this.tenantInfoService.findTenantList());
     }
 
 
