@@ -20,9 +20,10 @@ import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.s3.StsOperation;
 import com.fuhouyu.framework.s3.enums.StsActionEnum;
+import com.fuhouyu.framework.s3.model.StsTokenResponse;
 import com.fuhouyu.framework.s3.properties.S3Properties;
+import com.fuhouyu.framework.s3.service.StsOperation;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
@@ -56,8 +57,6 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
-import software.amazon.awssdk.services.sts.model.AssumeRoleResponse;
-import software.amazon.awssdk.services.sts.model.Credentials;
 import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
@@ -245,19 +244,18 @@ public class ResourceServiceImpl implements ResourceService {
             objectsMap.put(fileName, this.generateKey(parentPrefix));
         }
         // 只允许上传到指定的对象中
-        AssumeRoleResponse assumeRoleResponse = this.stsOperation.generateStsToken(tenantSpaceDTO.getBucketName(),
+        StsTokenResponse stsTokenResponse = this.stsOperation.generateStsToken(tenantSpaceDTO.getBucketName(),
                 objectsMap.values(),
                 StsActionEnum.PutObject);
-        Credentials credentials = assumeRoleResponse.credentials();
         return StsTemporaryTokenResponseDTO.builder()
-                .accessKeyId(credentials.accessKeyId())
-                .secretAccessKey(credentials.secretAccessKey())
-                .stsToken(credentials.sessionToken())
+                .accessKeyId(stsTokenResponse.getAccessKey())
+                .secretAccessKey(stsTokenResponse.getSecretAccessKey())
+                .stsToken(stsTokenResponse.getSessionToken())
                 .bucketName(tenantSpaceDTO.getBucketName())
                 .objectsMap(objectsMap)
-                .enabledPathStyle(s3Properties.getPathStyleEnabled())
-                .endpoint(s3Properties.getEndpoint())
-                .region(s3Properties.getRegion().id())
+                .enabledPathStyle(stsTokenResponse.getEnablePathStyle())
+                .endpoint(stsTokenResponse.getEndpoint())
+                .region(stsTokenResponse.getRegion())
                 .build();
     }
 
