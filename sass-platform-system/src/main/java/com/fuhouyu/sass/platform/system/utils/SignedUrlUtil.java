@@ -164,10 +164,7 @@ public class SignedUrlUtil {
      */
     private static Map<String, Object> getSignParamsMap(UrlSignedDTO urlSignedDTO) {
         String accessKey = urlSignedDTO.getAccessKey();
-        Map<String, Object> params = urlSignedDTO.getParams();
-        if (Objects.isNull(params)) {
-            params = new HashMap<>(3);
-        }
+        Map<String, Object> params = new TreeMap<>(urlSignedDTO.getParams());
         if (urlSignedDTO instanceof VerifySignedUrlDTO verifySignedUrlDTO) {
             params.put("accessKey", accessKey);
             params.put("nonce", verifySignedUrlDTO.getNonce());
