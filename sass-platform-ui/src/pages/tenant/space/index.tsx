@@ -65,7 +65,7 @@ const TenantSpace: React.FC = () => {
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-    const {download} = useResourceAction();
+    const {generateSignedUrl} = useResourceAction();
 
 
     const columns: TableColumnsType<Resource> = [
@@ -291,7 +291,7 @@ const TenantSpace: React.FC = () => {
     const fileActions = [
         {
             icon: <DownloadOutlined/>, text: t('Resource.download'),
-            onClick: async () => selectFile && window.open(await download(selectFile.id))
+            onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
         },
         {
             icon: <EyeOutlined/>,
@@ -398,6 +398,7 @@ const TenantSpace: React.FC = () => {
         </Card>
 
         <Modal
+            title={selectFile?.name}
             className={'preview-modal'}
             destroyOnClose
             open={previewModal}
@@ -409,6 +410,7 @@ const TenantSpace: React.FC = () => {
             <ResourceView
                 mimeType={selectFile?.mimeType ?? ''}
                 id={selectFile?.id ?? ''}
+                isPublic={selectFile?.isPublic ?? false}
                 type={parseResourceType(selectFile?.mimeType ?? '').type}
                 mode={'VIEW'}/>
         </Modal>

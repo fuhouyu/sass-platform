@@ -99,6 +99,7 @@ export const Login: React.FC = () => {
                               initialValues={{
                                   "identify": "admin",
                                   "credentials": "admin",
+                                  "tenantId": tenantList[0].id
                               }}
                               onFinish={onFinish}
                         >

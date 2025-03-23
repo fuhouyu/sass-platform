@@ -26,12 +26,14 @@ export function useResourceAction() {
         return undefined;
     }
 
-    const download = async (resourceId?: string): Promise<string> => {
+    const generateSignedUrl = async (resourceId?: string,
+                                     preview?: boolean): Promise<string> => {
         if (resourceId) {
-            return await resourceApi.generateSignedUrl(resourceId);
+            return await resourceApi.generateSignedUrl(resourceId, preview);
         }
         return "#";
     }
 
-    return {preview, download}
+
+    return {preview, generateSignedUrl}
 }

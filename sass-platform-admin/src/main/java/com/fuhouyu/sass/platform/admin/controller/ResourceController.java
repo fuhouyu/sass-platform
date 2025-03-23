@@ -25,8 +25,6 @@ import com.fuhouyu.sass.platform.system.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -64,23 +62,6 @@ public class ResourceController {
     @Operation(summary = "生成临时的stsToken")
     public BaseResponse<StsTemporaryTokenResponseDTO> generateStsToken(@Valid @RequestBody StsTemporaryTokenRequestDTO requestDTO) {
         return ResponseHelper.success(this.resourceService.generateToken(requestDTO));
-    }
-
-
-    /**
-     * 读取文件
-     *
-     * @param id       资源id
-     * @param request  请求
-     * @param response 响应
-     */
-    @GetMapping("/preview/{id}")
-    @Operation(summary = "读取资源文件")
-    @NoAuth
-    public void preview(@PathVariable("id") Long id,
-                         HttpServletRequest request,
-                         HttpServletResponse response) {
-        this.resourceService.downloadFile(id, true, request, response);
     }
 
 
@@ -161,11 +142,15 @@ public class ResourceController {
      * 生成签名url
      *
      * @param id 主键id
+     * @param preview 是否为预览
      * @return 签名url
      */
     @Operation(summary = "生成签名url")
     @GetMapping("/generate/signed-url/{id}")
-    public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.resourceService.generateSignedUrl(id));
+    @Parameter(name = "preview", description = "是否为预览")
+    public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id,
+                                                  @RequestParam(value = "preview", required = false, defaultValue = "false")
+                                                  Boolean preview) {
+        return ResponseHelper.success(this.resourceService.generateSignedUrl(id, preview));
     }
 }

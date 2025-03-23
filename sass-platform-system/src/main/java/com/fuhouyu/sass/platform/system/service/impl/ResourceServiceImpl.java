@@ -93,6 +93,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    private static final String BASE_DOWNLOAD_API = "%s/v1/resource/download/%s";
+
     private static final String TMP_DIR = "tmp/";
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -196,35 +198,20 @@ public class ResourceServiceImpl implements ResourceService {
         return p -> RESOURCES_ASSEMBLER.toDTO(this.resourceMapper.queryList(p));
     }
 
-    @Override
-    public void downloadFile(Long id,
-                             boolean isPreview,
-                             HttpServletRequest request, HttpServletResponse response) {
-        ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        ResponseInputStream<GetObjectResponse> responseInputStream = this.downloadFileByS3(resourceDTO);
-        if (isPreview) {
-            response.setHeader(HttpHeaders.CONTENT_TYPE, responseInputStream.response().contentType());
-        } else {
-            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
-        }
-        try {
-            this.doFileDownload(responseInputStream);
-        } catch (IOException e) {
-            // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
-        }
-    }
-
 
     @Override
     public void downloadFile(Long id, ResourceSignedUrlDTO resourceSignedUrlDTO) {
         Resources resources = this.resourceMapper.queryById(id);
         this.checkSignedUrl(resourceSignedUrlDTO, resources);
-        httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
         ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(RESOURCES_ASSEMBLER.toDTO(resources));
+        // 判断是预览还是下载
+        if (Objects.equals(resourceSignedUrlDTO.getPreview(), Boolean.TRUE)) {
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, responseResponseInputStream.response().contentType());
+        } else {
+            httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+        }
         try {
             this.doFileDownload(responseResponseInputStream);
         } catch (IOException e) {
@@ -266,14 +253,16 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     @Override
-    public String generateSignedUrl(Long id) {
+    public String generateSignedUrl(Long id,
+                                    Boolean preview) {
         ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        String baseUrl = String.format("%s/v1/resource/download/%s", this.getHttpBaseUrl(), id);
+        String baseUrl = String.format(BASE_DOWNLOAD_API, this.getHttpBaseUrl(), id);
         SignedUrlUtil.UrlSignedDTO urlSignedDTO = SignedUrlUtil.UrlSignedDTO
                 .builder()
                 .expiresSeconds(EXPIRE_TIME)
                 .accessKey(resourceDTO.getObjectKey())
                 .secretKey(s3Properties.getSecretKey())
+                .params(Map.of("preview", preview))
                 .build();
         return SignedUrlUtil.generateSignedUrl(baseUrl, urlSignedDTO);
     }

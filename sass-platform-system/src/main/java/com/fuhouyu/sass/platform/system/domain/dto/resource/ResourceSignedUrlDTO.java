@@ -41,4 +41,7 @@ public class ResourceSignedUrlDTO implements Serializable {
 
     @Schema(name = "nonce", description = "随机串")
     private String nonce;
+
+    @Schema(name = "preview", description = "是否为预览")
+    private Boolean preview;
 }
