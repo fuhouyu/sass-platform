@@ -23,7 +23,7 @@
     "antd": "^5.24.4",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
-    "fast-xml-parser": "^4.5.3",
+    "fast-xml-parser": "^5.0.9",
     "i18next": "^24.0.2",
     "normalize.css": "^8.0.1",
     "react": "^19.0.0",
