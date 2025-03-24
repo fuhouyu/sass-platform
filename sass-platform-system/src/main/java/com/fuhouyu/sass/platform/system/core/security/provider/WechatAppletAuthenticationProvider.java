@@ -17,8 +17,10 @@ package com.fuhouyu.sass.platform.system.core.security.provider;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
+import com.fuhouyu.sass.platform.system.constants.CommonConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
@@ -83,6 +85,8 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
             accountDTO.setAccount(openid);
             accountDTO.setAccountType(AccountTypeEnum.WECHAT_APPLET.name());
             accountDTO.setUserId(userId);
+            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
+            accountDTO.setOwnerTenantId(tenantId);
             accountDTO.setRefAccountId(wechatAppletSessionDTO.getUnionid());
             accountDTO.setIsEnabled(true);
             accountDTO.setUserType(UserTypeEnum.NORMAL);
