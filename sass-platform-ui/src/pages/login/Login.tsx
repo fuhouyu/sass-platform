@@ -116,8 +116,11 @@ export const Login: React.FC = () => {
                                     options={tenantList.map(tenantInfo => {
                                         return {
                                             value: tenantInfo.id,
-                                            label: <Space className={'tenant-choose'}><Avatar
-                                                src={preview(tenantInfo.icon)}/>{tenantInfo.tenantName}</Space>
+                                            label: <Space className={'tenant-choose'}>
+                                                <Avatar
+                                                    icon={null}
+                                                    src={preview(tenantInfo.icon)}/>{tenantInfo.tenantName}
+                                            </Space>
                                         }
                                     })}/>
                             </Form.Item>
