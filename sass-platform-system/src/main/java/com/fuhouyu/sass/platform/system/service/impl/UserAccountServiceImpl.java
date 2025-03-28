@@ -121,7 +121,11 @@ public class UserAccountServiceImpl implements UserAccountService {
             context.setUser(userEntity);
         }
         UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
-        this.adminUserService.recordLoginSuccess(userAccountDetails.getUserId());
+        if (UserTypeEnum.isAdmin(userAccountDetails.getUserType())) {
+            this.adminUserService.recordLoginSuccess(userAccountDetails.getUserId());
+        } else {
+            this.userService.recordLoginSuccess(userAccountDetails.getUserId());
+        }
         return userTokenDTO;
     }
 

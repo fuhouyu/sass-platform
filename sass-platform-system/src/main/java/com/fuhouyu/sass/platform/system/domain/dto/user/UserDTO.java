@@ -48,6 +48,9 @@ public class UserDTO extends BaseDTO {
     @Schema(name = "id", description = "手机号")
     private String phone;
 
+    @Schema(name = "username", description = "用户名")
+    private String username;
+
     @Schema(name = "gender", description = "性别")
     private String gender;
 

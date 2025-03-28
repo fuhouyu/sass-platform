@@ -43,6 +43,11 @@ public class Users extends BaseEntity {
     private Long id;
 
     /**
+     * username
+     */
+    private String username;
+
+    /**
      * 昵称
      */
     private String nickname;

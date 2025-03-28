@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UserAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
@@ -26,8 +27,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -45,9 +48,22 @@ public class UserServiceImpl implements UserService {
 
     private static final UserAssembler USERS_ASSEMBLER = UserAssembler.INSTANCE;
 
+    private static final String USERNAME_PREFIX = "sa_";
+
     private final UserMapper userMapper;
 
     private final SnowflakeIdWorker snowflakeIdWorker;
+
+    @Override
+    public String generateUsername() {
+        return USERNAME_PREFIX + UUID.randomUUID().toString().replace("-", "").substring(9);
+    }
+
+    @Override
+    public void recordLoginSuccess(Long userId) {
+        this.userMapper.recordLoginSuccess(userId, ContextHolderStrategy.getContext().getRequest().getRequestIp(),
+                LocalDateTime.now());
+    }
 
     @Override
     public Long save(UserDTO dto) {

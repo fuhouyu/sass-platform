@@ -80,6 +80,7 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
                     .isEnabled(true)
                     .build();
             userDTO.setCreatedBy(openid);
+            userDTO.setUsername(this.userService.generateUsername());
             userDTO.setOwnerTenantId(tenantId);
             userDTO.setUpdatedBy(openid);
             Long userId = this.userService.save(userDTO);
@@ -92,8 +93,8 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
             accountDTO.setRefAccountId(wechatAppletSessionDTO.getUnionid());
             accountDTO.setIsEnabled(true);
             accountDTO.setUserType(UserTypeEnum.NORMAL);
-            accountDTO.setCreatedBy(openid);
-            accountDTO.setUpdatedBy(openid);
+            accountDTO.setCreatedBy(userDTO.getUsername());
+            accountDTO.setUpdatedBy(userDTO.getUsername());
             this.accountService.save(accountDTO);
             userDetails = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
         }

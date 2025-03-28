@@ -883,6 +883,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
     id         BIGINT PRIMARY KEY,
+    username VARCHAR(32) NOT NULL,
     nickname   VARCHAR(64),
     phone      VARCHAR(128),
     gender     VARCHAR(12) NOT NULL,
@@ -902,6 +903,7 @@ CREATE TABLE users
 
 COMMENT ON TABLE users IS '用户表';
 COMMENT ON COLUMN users.id IS '用户主键id';
+COMMENT ON COLUMN users.username IS '用户名';
 COMMENT ON COLUMN users.nickname IS '昵称';
 COMMENT ON COLUMN users.email IS '邮箱地址';
 COMMENT ON COLUMN users.birthday IS '生日';

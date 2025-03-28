@@ -18,6 +18,7 @@
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Users" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
@@ -36,6 +37,7 @@
 
     <sql id="InsertColumns">
         id,
+        username,
         nickname,
         phone,
         gender,
@@ -55,6 +57,7 @@
 
     <sql id="QueryAllColumns">
         u.id,
+        u.username,
         u.nickname,
         u.phone,
         u.gender,
@@ -81,6 +84,7 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
+            #{username},
             #{nickname},
             #{phone},
             #{gender},
@@ -109,6 +113,7 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
+                #{entity.username},
                 #{entity.nickname},
                 #{entity.phone},
                 #{entity.gender},
