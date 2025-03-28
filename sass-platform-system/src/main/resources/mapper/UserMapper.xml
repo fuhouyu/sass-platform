@@ -26,6 +26,7 @@
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BOOLEAN"/>
     </resultMap>
 
 
@@ -43,6 +44,7 @@
         birthday,
         login_date,
         login_ip,
+        owner_tenant_id,
         is_enabled,
         is_deleted,
         created_at,
@@ -61,6 +63,7 @@
         u.birthday,
         u.login_date,
         u.login_ip,
+        u.owner_tenant_id,
         u.is_enabled,
         u.is_deleted,
         u.created_at,
@@ -86,6 +89,7 @@
             #{birthday},
             #{loginDate},
             #{loginIp},
+            #{ownerTenantId},
             #{isEnabled},
             #{isDeleted},
             #{createdAt},
@@ -113,6 +117,7 @@
                 #{entity.birthday},
                 #{entity.loginDate},
                 #{entity.loginIp},
+                #{entity.ownerTenantId},
                 #{entity.isEnabled},
                 #{entity.isDeleted},
                 #{entity.createdAt},

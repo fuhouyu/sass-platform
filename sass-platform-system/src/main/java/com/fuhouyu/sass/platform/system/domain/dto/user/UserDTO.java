@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -61,6 +62,10 @@ public class UserDTO extends BaseDTO {
 
     @Schema(name = "loginDate", description = "登录日期")
     private LocalDateTime loginDate;
+
+    @Schema(name = "ownerTenantId", description = "用户当前登录的租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonProperty("tenantId")
+    private Long ownerTenantId;
 
     @Schema(name = "loginIp", description = "登录ip")
     private String loginIp;

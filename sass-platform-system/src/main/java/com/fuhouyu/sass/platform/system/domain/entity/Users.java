@@ -78,6 +78,11 @@ public class Users extends BaseEntity {
     private LocalDateTime loginDate;
 
     /**
+     * 租户id
+     */
+    private Long ownerTenantId;
+
+    /**
      * 登录ip
      */
     private String loginIp;

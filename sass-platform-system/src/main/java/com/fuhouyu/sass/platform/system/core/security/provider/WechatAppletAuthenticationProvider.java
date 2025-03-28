@@ -73,19 +73,21 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(openid, AccountTypeEnum.WECHAT_APPLET.name());
         if (Objects.isNull(userDetails)) {
             // 如果不存在，新增一个普通用户
+            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
             UserDTO userDTO = UserDTO
                     .builder()
                     .gender("UNKNOWN")
                     .isEnabled(true)
                     .build();
             userDTO.setCreatedBy(openid);
+            userDTO.setOwnerTenantId(tenantId);
             userDTO.setUpdatedBy(openid);
             Long userId = this.userService.save(userDTO);
             AccountDTO accountDTO = new AccountDTO();
             accountDTO.setAccount(openid);
             accountDTO.setAccountType(AccountTypeEnum.WECHAT_APPLET.name());
             accountDTO.setUserId(userId);
-            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
+
             accountDTO.setOwnerTenantId(tenantId);
             accountDTO.setRefAccountId(wechatAppletSessionDTO.getUnionid());
             accountDTO.setIsEnabled(true);
