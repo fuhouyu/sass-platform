@@ -131,26 +131,7 @@ INSERT INTO admin_users(id, username, real_name, nickname, email, gender, avatar
                         updated_at, updated_by, owner_tenant_id)
 VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'MALE',
         null, now(), '127.0.0.1', now(), 'admin', now(), 'admin', 1);
---
--- DROP TABLE IF EXISTS tenant_has_user;
--- -- 租户和用户关系表
--- CREATE TABLE tenant_has_user
--- (
---     tenant_id BIGINT NOT NULL,
---     user_id   BIGINT NOT NULL,
---     created_at TIMESTAMP   NOT NULL,
---     created_by VARCHAR(32) NOT NULL,
---     PRIMARY KEY (tenant_id, user_id)
--- );
---
--- COMMENT ON TABLE tenant_has_user IS '租户和用户的关联关系表';
--- COMMENT ON COLUMN tenant_has_user.tenant_id IS '租户id';
--- COMMENT ON COLUMN tenant_has_user.user_id IS '用户id';
--- COMMENT ON COLUMN tenant_has_user.created_at IS '创建时间';
--- COMMENT ON COLUMN tenant_has_user.created_by IS '创建人';
---
--- INSERT INTO tenant_has_user (tenant_id, user_id, created_at, created_by)
--- VALUES (1, 1, now(), 'admin');
+
 
 -- 角色表
 DROP TABLE IF EXISTS roles;
@@ -632,7 +613,7 @@ COMMENT ON COLUMN accounts.credentials_expiration_time IS '凭证过期时间，
 COMMENT ON COLUMN accounts.user_type IS '账号类型：ADMIN/NORMAL';
 COMMENT ON COLUMN accounts.ref_account_id IS '第三方账号登录时的账号id';
 COMMENT ON COLUMN accounts.is_enabled IS '是否启用该账号登录';
-COMMENT ON COLUMN accounts.owner_tenant_id IS '当前账号所属的租户id'
+COMMENT ON COLUMN accounts.owner_tenant_id IS '当前账号所属的租户id';
 COMMENT ON COLUMN accounts.created_at IS '创建时间';
 COMMENT ON COLUMN accounts.created_by IS '创建人';
 COMMENT ON COLUMN accounts.updated_at IS '更新时间';
@@ -912,6 +893,7 @@ CREATE TABLE users
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN     NOT NULL DEFAULT TRUE,
     is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
+    owner_tenant_id BIGINT NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
@@ -927,9 +909,64 @@ COMMENT ON COLUMN users.gender IS '性别';
 COMMENT ON COLUMN users.avatar IS '头像url';
 COMMENT ON COLUMN users.login_date IS '登录日期';
 COMMENT ON COLUMN users.login_ip IS '登录ip';
+COMMENT ON COLUMN users.owner_tenant_id IS '当前用户所属的租户id';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
 COMMENT ON COLUMN users.created_at IS '创建时间';
 COMMENT ON COLUMN users.created_by IS '创建人';
 COMMENT ON COLUMN users.updated_at IS '更新时间';
 COMMENT ON COLUMN users.updated_by IS '更新人';
+
+-- 操作日志
+DROP TABLE IF EXISTS operation_log;
+CREATE TABLE operation_log
+(
+    id               BIGINT       NOT NULL PRIMARY KEY,
+    module_name      VARCHAR(100) NOT NULL,
+    request_uri      VARCHAR(500) NOT NULL,
+    request_ip       VARCHAR(32)  NOT NULL,
+    request_location VARCHAR(64)  NOT NULL,
+    request_method   VARCHAR(10)  NOT NULL,
+    request_param    VARCHAR(256),
+    response_data    TEXT,
+    operation_type   VARCHAR(50)  NOT NULL,
+    content          VARCHAR(256) NOT NULL,
+    content_en       VARCHAR(256) NOT NULL,
+    is_success       BOOLEAN,
+    risk_type        VARCHAR(50)  NOT NULL,
+    system_name      VARCHAR(100) NOT NULL,
+    operation_user   VARCHAR(100) NOT NULL,
+    operation_time   TIMESTAMP    NOT NULL,
+    owner_tenant_id  BIGINT       NOT NULL
+);
+
+-- 添加表注释
+COMMENT ON TABLE operation_log IS '系统操作日志表';
+
+-- 添加字段注释
+COMMENT ON COLUMN operation_log.id IS '主键ID';
+COMMENT ON COLUMN operation_log.module_name IS '模块名称';
+COMMENT ON COLUMN operation_log.request_ip IS '请求ip';
+COMMENT ON COLUMN operation_log.request_location IS '请求位置';
+COMMENT ON COLUMN operation_log.request_uri IS '请求地址';
+COMMENT ON COLUMN operation_log.request_method IS '请求方法(GET/POST/PUT/DELETE等)';
+COMMENT ON COLUMN operation_log.operation_type IS '操作类型';
+COMMENT ON COLUMN operation_log.content IS '日志内容(中文)';
+COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
+COMMENT ON COLUMN operation_log.operation_user IS '操作人';
+COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
+COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
+COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';
+COMMENT ON COLUMN operation_log.risk_type IS '操作风险类型';
+COMMENT ON COLUMN operation_log.request_param IS '请求参数(JSON格式)';
+COMMENT ON COLUMN operation_log.response_data IS '响应数据,isSuccess为false时，这里显示错误信息';
+COMMENT ON COLUMN operation_log.system_name IS '系统名称';
+
+-- 创建索引
+CREATE INDEX idx_operation_log_module_name ON operation_log (owner_tenant_id, module_name);
+CREATE INDEX idx_operation_log_operation_type ON operation_log (owner_tenant_id, operation_type);
+CREATE INDEX idx_operation_log_risk_type ON operation_log (owner_tenant_id, risk_type);
+
+COMMENT ON index idx_operation_log_module_name IS '模块名称';
+COMMENT ON index idx_operation_log_operation_type IS '操作类型';
+COMMENT ON index idx_operation_log_risk_type IS '风险类型';

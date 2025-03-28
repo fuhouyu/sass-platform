@@ -18,11 +18,15 @@ package com.fuhouyu.sass.platform.admin.filter;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
+import com.fuhouyu.framework.web.Ip2RegionTemplate;
 import com.fuhouyu.framework.web.handler.ParseHttpRequest;
+import com.fuhouyu.framework.web.model.Ip2Region;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -36,7 +40,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import java.util.Objects;
 
-import static com.fuhouyu.sass.platform.system.constants.CommonConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
+import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
 
 /**
  * <p>
@@ -55,6 +59,8 @@ public class AuthFilter implements ParseHttpRequest {
 
     private final TokenStore tokenStore;
 
+    private final Ip2RegionTemplate ip2RegionTemplate;
+
     @Override
     public User parseUser(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                           @NonNull Object handler) {
@@ -68,6 +74,15 @@ public class AuthFilter implements ParseHttpRequest {
         return this.parseUser(bearerToken, true);
     }
 
+    @Override
+    public Request parseRequest(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
+        Request parseRequest = ParseHttpRequest.super.parseRequest(request, response);
+        Ip2Region ip2Region = ip2RegionTemplate.searchIp(parseRequest.getRequestIp());
+        String location = String.format("%s/%s/%s", ip2Region.getCountry(), ip2Region.getProvince(), ip2Region.getCity());
+        parseRequest.putAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION,
+                location);
+        return parseRequest;
+    }
 
     /**
      * 解析用户信息

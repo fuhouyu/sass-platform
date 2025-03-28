@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.constants;
+package com.fuhouyu.sass.platform.common.constants;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
- * 租户常量类
+ * http 请求扩展常量类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/17 21:25
+ * @since 2024/12/28 16:32
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class TenantConstant {
+public class HttpRequestAdditionalConstant {
 
     /**
-     * 默认的租户角色名称
+     * 用户附加信息权限
      */
-    public static final String DEFAULT_TENANT_ROLE_NAME = "管理员";
+    public static final String USER_ADDITIONAL_INFORMATION_PERMISSIONS = "permissions";
 
     /**
-     * 默认的租户角色编码
+     * 租户id
      */
-    public static final String DEFAULT_TENANT_ROLE_CODE = "ADMIN";
+    public static final String TENANT_ADDITIONAL_INFORMATION_ID = "tenantId";
 
     /**
-     * 默认的租户角色数据权限
+     * 请求位置
      */
-    public static final String DEFAULT_TENANT_ROLE_DATA_SCOPE = "ALL";
+    public static final String IP_LOCATION_ADDITIONAL_INFORMATION = "requestLocation";
 }

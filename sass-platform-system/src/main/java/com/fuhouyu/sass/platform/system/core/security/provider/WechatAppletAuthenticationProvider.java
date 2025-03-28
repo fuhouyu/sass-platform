@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
-import com.fuhouyu.sass.platform.system.constants.CommonConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
@@ -73,7 +73,7 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(openid, AccountTypeEnum.WECHAT_APPLET.name());
         if (Objects.isNull(userDetails)) {
             // 如果不存在，新增一个普通用户
-            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
+            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
             UserDTO userDTO = UserDTO
                     .builder()
                     .gender("UNKNOWN")

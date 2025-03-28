@@ -73,7 +73,7 @@ public class RoleServiceImpl implements RoleService {
         role.setRoleCode(TenantConstant.DEFAULT_TENANT_ROLE_CODE);
         role.setDisplayOrder(1);
         role.setIsAllowModified(false);
-        role.setDataScope(TenantConstant.DEFAULT_TENANT_ROLE_DATASCOPE);
+        role.setDataScope(TenantConstant.DEFAULT_TENANT_ROLE_DATA_SCOPE);
         role.setIsEnabled(true);
         role.setOwnerTenantId(tenantId);
         this.roleMapper.insert(role);

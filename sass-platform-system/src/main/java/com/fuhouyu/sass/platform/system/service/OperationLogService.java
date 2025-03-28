@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.constants;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+package com.fuhouyu.sass.platform.system.service;
 
 /**
  * <p>
- * 公共常量
+ * 操作日志接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/28 16:32
+ * @since 2025/3/28 21:42
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommonConstant {
+public interface OperationLogService {
 
-    /**
-     * 用户附加信息权限
-     */
-    public static final String USER_ADDITIONAL_INFORMATION_PERMISSIONS = "permissions";
-
-
-    public static final String TENANT_ADDITIONAL_INFORMATION_ID = "tenantId";
 }
