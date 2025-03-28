@@ -36,15 +36,10 @@ class TenantApi extends DefaultApiImpl<TenantInfo> {
     checkTenantCodeExists: (tenantCode: string) => Promise<boolean> = (tenantCode: string): Promise<boolean> => request.get(`${this.baseUrl}/exists?tenantCode=${tenantCode}`)
 
     /**
-     * 查询出租户详情
+     * 查询当前用户所属的租户详情
      */
-    findTenantInfoForMe: () => Promise<TenantInfo[]> = (): Promise<TenantInfo[]> => request.get(`${this.baseUrl}/me`);
+    findTenantInfoForMe: () => Promise<TenantInfo> = (): Promise<TenantInfo> => request.get(`${this.baseUrl}/me`);
 
-    /**
-     * 切换租户
-     * @param tenantId 租户id
-     */
-    switchTenant: (tenantId: string) => Promise<void> = (tenantId: string): Promise<void> => request.get(`${this.baseUrl}/switch/${tenantId}`);
 
     /**
      * 租户列表

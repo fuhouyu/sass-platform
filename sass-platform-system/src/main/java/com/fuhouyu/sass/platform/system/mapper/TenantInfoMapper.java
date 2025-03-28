@@ -40,14 +40,6 @@ public interface TenantInfoMapper extends BaseMapper<Long, TenantInfo> {
     TenantInfo queryByTenantCode(String tenantCode);
 
     /**
-     * 通过用户id查询出租户
-     *
-     * @param userId 用户id
-     * @return 租户集合
-     */
-    List<TenantInfo> queryByUserId(@Param("userId") Long userId);
-
-    /**
      * count用户下的租户信息，用于判断用户是否存在于租户中
      *
      * @param userId   用户id

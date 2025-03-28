@@ -42,21 +42,6 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
     TenantInfoDTO findByTenantCode(String tenantCode);
 
     /**
-     * 通过用户id查询租户集合
-     *
-     * @param userId 用户id
-     * @return 租户集合
-     */
-    List<TenantInfoDTO> findTenantByUserId(Long userId);
-
-    /**
-     * 租户切换
-     *
-     * @param id 租户id
-     */
-    void switchTenant(Long id);
-
-    /**
      * 通过id查询出租户的详情
      *
      * @param id 主键id
