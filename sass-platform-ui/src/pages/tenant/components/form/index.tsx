@@ -346,7 +346,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                                         }
                                         setPermissionIds(checked.checked);
                                     },
-                                    titleRender: (menu: Menu) => t(`Menu.${menu.permissionName}`),
+                                    titleRender: (menu: Menu) => t(`${menu.permissionName}`),
                                     treeData: permissionTreeData,
 
                                 }}
