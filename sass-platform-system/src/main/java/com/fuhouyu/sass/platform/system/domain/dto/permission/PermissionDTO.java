@@ -86,4 +86,9 @@ public class PermissionDTO extends BaseDTO implements Serializable {
 
     @Schema(name = "isEnabled", description = "启禁用状态：true启用")
     private Boolean isEnabled;
+
+    public PermissionDTO() {
+        this.isFrame = true;
+        this.isVisible = true;
+    }
 }
