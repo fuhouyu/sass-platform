@@ -38,6 +38,8 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
@@ -78,7 +80,12 @@ public class AuthFilter implements ParseHttpRequest {
     public Request parseRequest(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         Request parseRequest = ParseHttpRequest.super.parseRequest(request, response);
         Ip2Region ip2Region = ip2RegionTemplate.searchIp(parseRequest.getRequestIp());
-        String location = String.format("%s/%s/%s", ip2Region.getCountry(), ip2Region.getProvince(), ip2Region.getCity());
+        List<String> locationList = new ArrayList<>(5);
+        locationList.add(ip2Region.getCountry());
+        locationList.add(ip2Region.getProvince());
+        locationList.add(ip2Region.getCity());
+        locationList.removeIf(s -> Objects.isNull(s) || Objects.equals(s, "0"));
+        String location = String.join("/", locationList);
         parseRequest.putAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION,
                 location);
         return parseRequest;

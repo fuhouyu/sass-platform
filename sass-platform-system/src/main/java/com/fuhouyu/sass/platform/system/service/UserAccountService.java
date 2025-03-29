@@ -58,4 +58,11 @@ public interface UserAccountService {
      */
     UserTokenDTO adminLogin(UserLoginDTO userLoginDTO);
 
+    /**
+     * 通过刷新令牌更新token
+     *
+     * @param refreshToken 刷新令眚
+     * @return 用户token dto对象
+     */
+    UserTokenDTO refreshToken(String refreshToken);
 }

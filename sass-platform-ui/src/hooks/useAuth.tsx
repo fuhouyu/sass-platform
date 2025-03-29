@@ -18,7 +18,6 @@ import {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {message} from 'antd';
 import {getAccessToken, getRefreshToken, removeToken} from "@/utils";
-import {AccountType} from "@/model/account.tsx";
 import {useUserStore} from "@/store";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
@@ -27,11 +26,8 @@ const useAuth = () => {
     const location = useLocation();
     const pathname = location.pathname;
     const token = getAccessToken();
-    const {fetchLogin} = useUserStore(state => state);
+    const {fetchRefreshToken} = useUserStore(state => state);
     useEffect(() => {
-        // if (pathname.includes(BaseUrlConstant.LOGIN_URL)) {
-        //     return;
-        // }
         const isLoginUrl = pathname.includes(BaseUrlConstant.LOGIN_URL);
         if (!token) {
             const refreshToken = getRefreshToken();
@@ -45,7 +41,7 @@ const useAuth = () => {
             }
 
             // 通过刷新令牌更新token
-            fetchLogin({identify: refreshToken, accountType: AccountType.REFRESH_TOKEN})
+            fetchRefreshToken(refreshToken)
                 .then(() => {
                     navigate(isLoginUrl ? '/' : pathname);
                 })
@@ -54,7 +50,7 @@ const useAuth = () => {
                     navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
                 })
         }
-    }, [fetchLogin, navigate, pathname, token]);
+    }, [fetchRefreshToken, navigate, pathname, token]);
     return getAccessToken();
 };
 

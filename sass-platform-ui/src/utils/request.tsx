@@ -17,9 +17,8 @@
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
 import {message} from "antd";
-import {UserBind, UserToken} from "@/model/authentication.tsx";
+import {UserBind} from "@/model/authentication.tsx";
 import {authenticationApi} from "@/apis/authentication.tsx";
-import {AccountType} from "@/model/account.tsx";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {useRouterStore} from "@/store";
 
@@ -59,10 +58,7 @@ request.interceptors.response.use(async function (response) {
         const refreshToken = getRefreshToken();
         if (refreshToken) {
             // 刷新token
-            const res = await authenticationApi.loginApi({
-                accountType: AccountType.REFRESH_TOKEN,
-                identify: refreshToken
-            }) as UserToken;
+            const res = await authenticationApi.refreshTokenApi(refreshToken);
             if (!res) {
                 removeToken();
                 useRouterStore.getState().router?.navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}}).then();

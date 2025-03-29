@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.enums;
 
-import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.core.security.provider.WeLinkAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.core.security.provider.WechatAppletAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
@@ -39,12 +38,12 @@ public enum AccountTypeEnum {
         }
     },
 
-    REFRESH_TOKEN {
-        @Override
-        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
-            return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getAccount());
-        }
-    },
+//    REFRESH_TOKEN {
+//        @Override
+//        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+//            return new RefreshAuthenticationProvider.RefreshAuthenticationToken(userLoginDTO.getAccount());
+//        }
+//    },
 
     WELINK {
         @Override

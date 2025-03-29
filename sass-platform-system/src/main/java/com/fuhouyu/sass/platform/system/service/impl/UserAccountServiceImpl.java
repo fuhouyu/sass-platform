@@ -25,6 +25,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.UserEntity;
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
@@ -82,7 +83,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserTokenDTO adminLogin(UserLoginDTO userLoginDTO) {
-        return this.doLogin(userLoginDTO, authentication -> {
+        return this.authentication(userLoginDTO, authentication -> {
             UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
             // 管理员用户
             AdminUserDTO adminUserDTO = this.adminUserService.findById(userAccountDetails.getUserId());
@@ -94,7 +95,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
-        return this.doLogin(userLoginDTO, authentication -> {
+        return this.authentication(userLoginDTO, authentication -> {
             UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
             UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
             ((UsernamePasswordAuthenticationToken) authentication)
@@ -111,6 +112,22 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.tokenStore.removeAuth2Token(token);
     }
 
+    @Override
+    public UserTokenDTO refreshToken(String refreshToken) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(new RefreshAuthenticationProvider.RefreshAuthenticationToken(refreshToken));
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            LoggerUtil.error(log, "用户: {} 使用 refreshToken 方式登录失败: {} ",
+                    refreshToken, e.getMessage(), e);
+            throw new ServiceException(
+                    ResponseStatusEnum.SERVER_ERROR,
+                    "登录失败");
+        }
+        return this.doLogin(authentication, null);
+    }
 
     @Override
     public UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO) {
@@ -143,15 +160,15 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     }
 
-
     /**
-     * 用户登录
+     * 用户认证
      *
-     * @param userLoginDTO 用户登录的dto对象
-     * @return 用户账号详情
+     * @param userLoginDTO           用户登录的dto对象
+     * @param authenticationCallback 回调
+     * @return 用户token dto对象
      */
-    private UserTokenDTO doLogin(UserLoginDTO userLoginDTO,
-                                 Callback<Authentication> authenticationCallback) {
+    private UserTokenDTO authentication(UserLoginDTO userLoginDTO,
+                                        Callback<Authentication> authenticationCallback) {
         Request request = ContextHolderStrategy.getContext().getRequest();
         request.putAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
         Authentication authentication;
@@ -172,9 +189,24 @@ public class UserAccountServiceImpl implements UserAccountService {
                     "登录失败");
 
         }
+        return this.doLogin(authentication, authenticationCallback);
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param authentication         authentication
+     * @param authenticationCallback callback
+     * @return 用户账号详情
+     */
+    private UserTokenDTO doLogin(Authentication authentication,
+                                 Callback<Authentication> authenticationCallback) {
+
         UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
         userAccountDetails.eraseCredentials();
-        authenticationCallback.call(authentication);
+        if (Objects.nonNull(authenticationCallback)) {
+            authenticationCallback.call(authentication);
+        }
         // 设置上下文信息
         UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));

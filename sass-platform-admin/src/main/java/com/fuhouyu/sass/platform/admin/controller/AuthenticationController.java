@@ -25,15 +25,13 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -84,6 +82,21 @@ public class AuthenticationController {
     public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
         UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
         return ResponseHelper.success(userTokenDTO);
+    }
+
+
+    /**
+     * 通过刷新令牌，更新token
+     *
+     * @param refreshToken 刷新令牌
+     * @return 用户信息
+     */
+    @PutMapping("/refresh-token")
+    @Operation(summary = "通过刷新令牌更新token")
+    @Parameter(name = "refreshToken", description = "刷新令牌")
+    @NoAuth
+    public BaseResponse<UserTokenDTO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
+        return ResponseHelper.success(this.userAccountService.refreshToken(refreshToken));
     }
 
     /**

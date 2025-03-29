@@ -58,6 +58,11 @@ interface UserAction {
      */
     fetchLogin: (loginForm: UserAuthentication) => Promise<UserToken | UserBind>
     /**
+     * 刷新用户令牌
+     * @param token 刷新令牌
+     */
+    fetchRefreshToken: (refreshToken: string) => Promise<UserToken>
+    /**
      * 登录并绑定
      * @param loginForm 表单对象
      */
@@ -100,12 +105,21 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
     tenant: {},
     storeTenant: (tenant) => set({tenant}),
     fetchLogin: async (loginForm) => {
-        const authenticationRes = await authenticationApi.loginApi(loginForm);
+        const authenticationRes = await authenticationApi.adminLoginApi(loginForm);
         if (!('isUserBind' in authenticationRes)) {
             set({token: authenticationRes});
             storeToken(authenticationRes);
         }
         return authenticationRes;
+    },
+
+    fetchRefreshToken: async (refreshToken) => {
+        const res = await authenticationApi.refreshTokenApi(refreshToken);
+        if (res) {
+            set({token: res});
+            storeToken(res);
+        }
+        return res;
     },
 
     fetchLoginAndBind: async (loginForm: ThirdPartyBindAuthentication) => {
