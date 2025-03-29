@@ -33,7 +33,7 @@ class AuthenticationApi {
      * @param loginData 登录的表单信息
      */
     loginApi = (loginData: UserAuthentication): Promise<UserToken | UserBind> =>
-        request.post(`${baseAuthUrl}/login`, loginData);
+        request.post(`${baseAuthUrl}/admin-login`, loginData);
 
     /**
      * 登录的

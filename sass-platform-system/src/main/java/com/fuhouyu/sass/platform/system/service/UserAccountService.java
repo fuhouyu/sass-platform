@@ -49,4 +49,13 @@ public interface UserAccountService {
      * @return 用户token
      */
     UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO);
+
+    /**
+     * 管理员登录
+     *
+     * @param userLoginDTO 用户登录的dto对象
+     * @return 用户token dto对象
+     */
+    UserTokenDTO adminLogin(UserLoginDTO userLoginDTO);
+
 }

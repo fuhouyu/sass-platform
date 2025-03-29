@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.common.function.Callback;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -25,6 +26,7 @@ import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
 import com.fuhouyu.sass.platform.system.constants.CacheConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
@@ -36,7 +38,6 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
-import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.AdminUserService;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -78,55 +79,28 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserService userService;
 
+
+    @Override
+    public UserTokenDTO adminLogin(UserLoginDTO userLoginDTO) {
+        return this.doLogin(userLoginDTO, authentication -> {
+            UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
+            // 管理员用户
+            AdminUserDTO adminUserDTO = this.adminUserService.findById(userAccountDetails.getUserId());
+            ((UsernamePasswordAuthenticationToken) authentication)
+                    .setDetails(adminUserDTO);
+            this.userService.recordLoginSuccess(userAccountDetails.getUserId());
+        });
+    }
+
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
-        Authentication authentication;
-        try {
-            authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
-        } catch (ServiceException e) {
-            throw e;
-        } catch (Exception e) {
-            LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
-                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage(), e);
-            if (Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
-                throw new ServiceException(
-                        ResponseStatusEnum.INVALID_PARAM,
-                        "用户名或密码错误");
-            }
-            throw new ServiceException(
-                    ResponseStatusEnum.SERVER_ERROR,
-                    "登录失败");
-
-        }
-        UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
-        userAccountDetails.eraseCredentials();
-        // TODO 待抽离
-        if (Objects.isNull(authentication.getDetails())) {
-            if (UserTypeEnum.isAdmin(userAccountDetails.getUserType())) {
-                // 管理员用户
-                AdminUserDTO adminUserDTO = this.adminUserService.findById(userAccountDetails.getUserId());
-                ((UsernamePasswordAuthenticationToken) authentication)
-                        .setDetails(adminUserDTO);
-            } else {
-                // 普通用户
-                UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
-                ((UsernamePasswordAuthenticationToken) authentication)
-                        .setDetails(userDTO);
-            }
-
-            // 设置上下文信息
-            UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
-                    UserEntity.class));
-            DefaultListableContextFactory context = (DefaultListableContextFactory) ContextHolderStrategy.getContext();
-            context.setUser(userEntity);
-        }
-        UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
-        if (UserTypeEnum.isAdmin(userAccountDetails.getUserType())) {
-            this.adminUserService.recordLoginSuccess(userAccountDetails.getUserId());
-        } else {
+        return this.doLogin(userLoginDTO, authentication -> {
+            UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
+            UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
+            ((UsernamePasswordAuthenticationToken) authentication)
+                    .setDetails(userDTO);
             this.userService.recordLoginSuccess(userAccountDetails.getUserId());
-        }
-        return userTokenDTO;
+        });
     }
 
     @Override
@@ -136,6 +110,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         String token = authorization.replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
         this.tokenStore.removeAuth2Token(token);
     }
+
 
     @Override
     public UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO) {
@@ -166,6 +141,46 @@ public class UserAccountServiceImpl implements UserAccountService {
         cacheService.delete(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
         return userTokenDTO;
 
+    }
+
+
+    /**
+     * 用户登录
+     *
+     * @param userLoginDTO 用户登录的dto对象
+     * @return 用户账号详情
+     */
+    private UserTokenDTO doLogin(UserLoginDTO userLoginDTO,
+                                 Callback<Authentication> authenticationCallback) {
+        Request request = ContextHolderStrategy.getContext().getRequest();
+        request.putAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
+                    userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage(), e);
+            if (Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
+                throw new ServiceException(
+                        ResponseStatusEnum.INVALID_PARAM,
+                        "用户名或密码错误");
+            }
+            throw new ServiceException(
+                    ResponseStatusEnum.SERVER_ERROR,
+                    "登录失败");
+
+        }
+        UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
+        userAccountDetails.eraseCredentials();
+        authenticationCallback.call(authentication);
+        // 设置上下文信息
+        UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
+                UserEntity.class));
+        DefaultListableContextFactory context = (DefaultListableContextFactory) ContextHolderStrategy.getContext();
+        context.setUser(userEntity);
+        return TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
     }
 
 }
