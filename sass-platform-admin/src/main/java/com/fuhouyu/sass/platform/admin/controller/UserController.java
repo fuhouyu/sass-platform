@@ -22,12 +22,11 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -57,5 +56,21 @@ public class UserController {
     @Operation(summary = "当前用户详情接口")
     public BaseResponse<UserDTO> userinfo() {
         return ResponseHelper.success(this.userService.findById(ContextHolderStrategy.getContext().getUser().getId()));
+    }
+
+
+    /**
+     * 修改用户详情
+     *
+     * @param userDTO 用户dto对象
+     * @return void
+     */
+    @PutMapping
+    @Operation(summary = "修改当前用户详情")
+    public BaseResponse<Void> editUser(@Valid @RequestBody UserDTO userDTO) {
+        Long id = ContextHolderStrategy.getContext().getUser().getId();
+        userDTO.setId(id);
+        this.userService.edit(userDTO);
+        return ResponseHelper.success();
     }
 }
