@@ -17,7 +17,9 @@ package com.fuhouyu.sass.platform.system.core.security.provider;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
@@ -71,23 +73,28 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(openid, AccountTypeEnum.WECHAT_APPLET.name());
         if (Objects.isNull(userDetails)) {
             // 如果不存在，新增一个普通用户
+            Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
             UserDTO userDTO = UserDTO
                     .builder()
                     .gender("UNKNOWN")
                     .isEnabled(true)
                     .build();
             userDTO.setCreatedBy(openid);
+            userDTO.setUsername(this.userService.generateUsername());
+            userDTO.setOwnerTenantId(tenantId);
             userDTO.setUpdatedBy(openid);
             Long userId = this.userService.save(userDTO);
             AccountDTO accountDTO = new AccountDTO();
             accountDTO.setAccount(openid);
             accountDTO.setAccountType(AccountTypeEnum.WECHAT_APPLET.name());
             accountDTO.setUserId(userId);
+
+            accountDTO.setOwnerTenantId(tenantId);
             accountDTO.setRefAccountId(wechatAppletSessionDTO.getUnionid());
             accountDTO.setIsEnabled(true);
             accountDTO.setUserType(UserTypeEnum.NORMAL);
-            accountDTO.setCreatedBy(openid);
-            accountDTO.setUpdatedBy(openid);
+            accountDTO.setCreatedBy(userDTO.getUsername());
+            accountDTO.setUpdatedBy(userDTO.getUsername());
             this.accountService.save(accountDTO);
             userDetails = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
         }

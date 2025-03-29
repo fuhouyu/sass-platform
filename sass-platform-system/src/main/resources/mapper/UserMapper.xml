@@ -18,6 +18,7 @@
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Users" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
@@ -26,6 +27,7 @@
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
         <result column="is_enabled" property="isEnabled" jdbcType="BOOLEAN"/>
+        <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BOOLEAN"/>
     </resultMap>
 
 
@@ -35,6 +37,7 @@
 
     <sql id="InsertColumns">
         id,
+        username,
         nickname,
         phone,
         gender,
@@ -43,6 +46,7 @@
         birthday,
         login_date,
         login_ip,
+        owner_tenant_id,
         is_enabled,
         is_deleted,
         created_at,
@@ -53,6 +57,7 @@
 
     <sql id="QueryAllColumns">
         u.id,
+        u.username,
         u.nickname,
         u.phone,
         u.gender,
@@ -61,6 +66,7 @@
         u.birthday,
         u.login_date,
         u.login_ip,
+        u.owner_tenant_id,
         u.is_enabled,
         u.is_deleted,
         u.created_at,
@@ -78,6 +84,7 @@
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
             #{id},
+            #{username},
             #{nickname},
             #{phone},
             #{gender},
@@ -86,6 +93,7 @@
             #{birthday},
             #{loginDate},
             #{loginIp},
+            #{ownerTenantId},
             #{isEnabled},
             #{isDeleted},
             #{createdAt},
@@ -105,6 +113,7 @@
         <foreach collection="list" separator="," item="entity">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{entity.id},
+                #{entity.username},
                 #{entity.nickname},
                 #{entity.phone},
                 #{entity.gender},
@@ -113,6 +122,7 @@
                 #{entity.birthday},
                 #{entity.loginDate},
                 #{entity.loginIp},
+                #{entity.ownerTenantId},
                 #{entity.isEnabled},
                 #{entity.isDeleted},
                 #{entity.createdAt},

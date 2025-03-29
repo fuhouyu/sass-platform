@@ -19,8 +19,10 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
-import com.fuhouyu.sass.platform.system.constants.CommonConstant;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
@@ -64,9 +66,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     @Operation(summary = "用户登录接口")
     @NoAuth
+    @LogRecord(operationType = OperationTypeEnum.LOGIN,
+            operationUser = "#{#userLoginDTO.account}")
     public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
         Request request = ContextHolderStrategy.getContext().getRequest();
-        request.putAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
+        request.putAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
         UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
         return ResponseHelper.success(userTokenDTO);
     }

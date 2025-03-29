@@ -43,8 +43,8 @@ export function useMenuTree(menus: Menu[], excludeType?: MenuType[]): MenuTreeTy
             return {
                 id: item.id,
                 key: item.routePath ?? item.id!,
-                title: t(`Menu.${item.permissionName}`),
-                label: t(`Menu.${item.permissionName}`),
+                title: t(`${item.permissionName}`),
+                label: t(`${item.permissionName}`),
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '1rem'}}/> : undefined,
                 children: item.children ? convertMenuItem(item.children) : undefined

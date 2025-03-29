@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.fuhouyu.sass.platform.system.constants.CommonConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
+import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
 
 /**
  * <p>

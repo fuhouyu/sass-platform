@@ -36,4 +36,9 @@ export interface ResourceViewProps {
      * mode
      */
     mode: 'VIEW' | 'EDIT';
+
+    /**
+     * 是否是公开资源
+     */
+    isPublic: boolean;
 }

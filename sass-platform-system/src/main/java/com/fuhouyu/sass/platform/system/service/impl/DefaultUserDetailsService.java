@@ -17,8 +17,8 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
+import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
-import com.fuhouyu.sass.platform.system.constants.CommonConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
@@ -59,7 +59,7 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String account, String accountType) throws UsernameNotFoundException {
-        Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(CommonConstant.TENANT_ADDITIONAL_INFORMATION_ID);
+        Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
         AccountIdDTO accountIdDTO = new AccountIdDTO(account, AccountTypeEnum.valueOf(accountType));
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO, tenantId);
         if (Objects.isNull(accountDTO)) {

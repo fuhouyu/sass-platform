@@ -142,18 +142,6 @@ public class TenantInfoController {
         return ResponseHelper.success(Objects.nonNull(this.tenantInfoService.findByTenantCode(tenantCode)));
     }
 
-
-    /**
-     * 查询出当前用户关联的租户
-     *
-     * @return 用户关联的租户
-     */
-    @GetMapping("/me")
-    @Operation(summary = "查询出当前用户关联的租户")
-    public BaseResponse<List<TenantInfoDTO>> findTenantForMe() {
-        return ResponseHelper.success(this.tenantInfoService.findTenantByUserId(ContextHolderStrategy.getContext().getUser().getId()));
-    }
-
     /**
      * 获取租户的列表
      *
@@ -167,17 +155,16 @@ public class TenantInfoController {
     }
 
 
+
     /**
-     * 租户切换
+     * 查询出当前用户关联的租户
      *
-     * @param id 租户id
-     * @return void
+     * @return 用户关联的租户
      */
-    @GetMapping("/switch/{id}")
-    @Operation(summary = "租户切换")
-    public BaseResponse<Void> switchTenant(@PathVariable("id") Long id) {
-        this.tenantInfoService.switchTenant(id);
-        return ResponseHelper.success();
+    @GetMapping("/me")
+    @Operation(summary = "查询出当前用户关联的租户")
+    public BaseResponse<TenantInfoDTO> findTenantForMe() {
+        return ResponseHelper.success(this.tenantInfoService.findDetailById(ContextHolderStrategy.getContext().getUser().getTenantId()));
     }
-    
+
 }

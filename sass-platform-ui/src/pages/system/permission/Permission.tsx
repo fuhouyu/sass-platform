@@ -76,7 +76,7 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 const mainPermission: Menu = {
     id: '-1',
-    permissionName: 'main',
+    permissionName: 'Menu.main',
     permissionCode: '',
 }
 
@@ -106,7 +106,7 @@ export const Permission: React.FC = () => {
             dataIndex: 'permissionName',
             showSorterTooltip: {target: 'full-header'},
             align: 'center',
-            render: (permissionName: string) => t(`Menu.${permissionName}`)
+            render: (permissionName: string) => t(`${permissionName}`)
         },
         {
             title: t('Permission.code'),
@@ -291,7 +291,7 @@ export const Permission: React.FC = () => {
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={lazyTreeData}
-                            titleRender={(menu: Menu) => t(`Menu.${menu.permissionName}`)}
+                            titleRender={(menu: Menu) => t(`${menu.permissionName}`)}
                             onSelect={onSelectTree}
                         />
                     </div>
@@ -381,7 +381,7 @@ export const Permission: React.FC = () => {
                         <TreeSelect
                             treeTitleRender={(menu: Menu) => {
                                 if (menu) {
-                                    return t(`Menu.${menu.permissionName}`);
+                                    return t(`${menu.permissionName}`);
                                 }
                                 return t('Menu.main')
                             }}

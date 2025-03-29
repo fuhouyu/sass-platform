@@ -18,8 +18,6 @@ package com.fuhouyu.sass.platform.system.service.impl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.security.token.OAuth2Token;
-import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
@@ -27,7 +25,6 @@ import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
@@ -36,10 +33,6 @@ import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -74,8 +67,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     private final ApplicationEventPublisher applicationEventPublisher;
-
-    private final TokenStore tokenStore;
 
     private final PermissionService permissionService;
 
@@ -154,34 +145,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     }
 
     @Override
-    public List<TenantInfoDTO> findTenantByUserId(Long userId) {
-        return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryByUserId(userId));
-    }
-
-    @Override
-    public void switchTenant(Long id) {
-        this.checkUserTenantExists(id);
-        // 切换租户
-        String userToken = ContextHolderStrategy
-                .getContext()
-                .getRequest()
-                .getAuthorization()
-                .replace(OAuth2AccessToken.TokenType.BEARER.getValue(), "").trim();
-        Collection<? extends GrantedAuthority> simpleGrantedAuthorities = this.permissionService.findUserSimpleGrantedAuthorities(id, ContextHolderStrategy.getContext().getUser().getId());
-
-        Authentication authentication = tokenStore.readAuthentication(userToken);
-        AdminUserDTO userDetailsDTO = (AdminUserDTO) authentication.getDetails();
-        userDetailsDTO.setOwnerTenantId(id);
-
-        OAuth2Token auth2Token = tokenStore.readAuth2Token(userToken);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), simpleGrantedAuthorities);
-        usernamePasswordAuthenticationToken.setDetails(userDetailsDTO);
-        this.tokenStore.storeAuth2Token(auth2Token, usernamePasswordAuthenticationToken);
-        this.tokenStore.storeRefreshToken(auth2Token.getRefreshToken(), usernamePasswordAuthenticationToken);
-    }
-
-    @Override
     public TenantInfoDetailDTO findDetailById(Long id) {
         TenantInfoDetailDTO tenantInfoDetailDTO = this.tenantInfoMapper.queryDetailById(id);
         tenantInfoDetailDTO.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
@@ -214,20 +177,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                 .tenantName(res.getTenantName())
                 .tenantCode(res.getTenantCode())
                 .icon(res.getIcon()).build()).toList();
-    }
-
-    /**
-     * 检查用户当前是否可以访问该租户，不能访问则抛出异常
-     *
-     * @param id 主键id
-     */
-    private void checkUserTenantExists(Long id) {
-        Long userId = ContextHolderStrategy.getContext().getUser().getId();
-        Integer count = this.tenantInfoMapper.existsUserTenant(userId, id);
-        if (Objects.isNull(count) || count == 0) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "用户当前无可访问该租户的权限");
-        }
     }
 
     /**

@@ -131,26 +131,7 @@ INSERT INTO admin_users(id, username, real_name, nickname, email, gender, avatar
                         updated_at, updated_by, owner_tenant_id)
 VALUES (1, 'admin', '管理员', '管理员', 'fuhouyu@live.cn', 'MALE',
         null, now(), '127.0.0.1', now(), 'admin', now(), 'admin', 1);
---
--- DROP TABLE IF EXISTS tenant_has_user;
--- -- 租户和用户关系表
--- CREATE TABLE tenant_has_user
--- (
---     tenant_id BIGINT NOT NULL,
---     user_id   BIGINT NOT NULL,
---     created_at TIMESTAMP   NOT NULL,
---     created_by VARCHAR(32) NOT NULL,
---     PRIMARY KEY (tenant_id, user_id)
--- );
---
--- COMMENT ON TABLE tenant_has_user IS '租户和用户的关联关系表';
--- COMMENT ON COLUMN tenant_has_user.tenant_id IS '租户id';
--- COMMENT ON COLUMN tenant_has_user.user_id IS '用户id';
--- COMMENT ON COLUMN tenant_has_user.created_at IS '创建时间';
--- COMMENT ON COLUMN tenant_has_user.created_by IS '创建人';
---
--- INSERT INTO tenant_has_user (tenant_id, user_id, created_at, created_by)
--- VALUES (1, 1, now(), 'admin');
+
 
 -- 角色表
 DROP TABLE IF EXISTS roles;
@@ -269,192 +250,200 @@ COMMENT ON COLUMN permissions.updated_by IS '更新人';
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (2, -1, 'systemManage', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'DIR', false, true, false,
+VALUES (2, -1, 'Menu.systemManage', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'DIR', false, true, false,
         true, 1, false, now(), 'admin', now(), 'admin');
 -- 权限管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (23, 2, 'permissionManage', 'system:permission:list', 3, 'i-icon-quanxian', 'permission', 'system/permission',
+VALUES (23, 2, 'Menu.permissionManage', 'system:permission:list', 3, 'i-icon-quanxian', 'permission',
+        'system/permission',
         '', false, 'MENU', false, true, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (231, 23, 'query', 'system:permission:query', 1, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (231, 23, 'Menu.query', 'system:permission:query', 1, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (232, 23, 'add', 'system:permission:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (232, 23, 'Menu.add', 'system:permission:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (233, 23, 'edit', 'system:permission:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (233, 23, 'Menu.edit', 'system:permission:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (234, 23, 'delete', 'system:permission:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (234, 23, 'Menu.delete', 'system:permission:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 
 -- 用户管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (21, 2, 'userManage', 'system:user:list', 1, 'i-yonghu1', 'user', 'system/user', '', false, 'MENU', false, true,
+VALUES (21, 2, 'Menu.userManage', 'system:user:list', 1, 'i-yonghu1', 'user', 'system/user', '', false, 'MENU', false,
+        true,
         false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (211, 21, 'query', 'system:user:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
+VALUES (211, 21, 'Menu.query', 'system:user:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false, now(), 'Menu.admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (212, 21, 'add', 'system:user:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (212, 21, 'Menu.add', 'system:user:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (213, 21, 'edit', 'system:user:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (213, 21, 'Menu.edit', 'system:user:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (214, 21, 'delete', 'system:user:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (214, 21, 'Menu.delete', 'system:user:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 字典管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (24, 2, 'dictManage', 'system:dict-type:list', 4, 'i-zidian1', 'dict-type', 'system/dictType', null, false,
+VALUES (24, 2, 'Menu.dictManage', 'system:dict-type:list', 4, 'i-zidian1', 'dict-type', 'system/dictType', null, false,
         'MENU', false, true, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (241, 24, 'query', 'system:dict-type:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (241, 24, 'Menu.query', 'system:dict-type:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (242, 24, 'add', 'system:dict-type:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (242, 24, 'Menu.add', 'system:dict-type:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (243, 24, 'edit', 'system:dict-type:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (243, 24, 'Menu.edit', 'system:dict-type:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (244, 24, 'delete', 'system:dict-type:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (244, 24, 'Menu.delete', 'system:dict-type:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
         false, now(), 'admin', now(), 'admin');
 
 -- 字典项管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (25, 2, 'dictItem', 'system:dict-item:list', 4, 'i-zidian1', 'dict-item/:dictCode?', 'system/dictItem', null,
+VALUES (25, 2, 'Menu.dictItem', 'system:dict-item:list', 4, 'i-zidian1', 'dict-item/:dictCode?', 'system/dictItem',
+        null,
         false, 'MENU', false, false, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (251, 25, 'query', 'system:dict-item:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (251, 25, 'Menu.query', 'system:dict-item:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (252, 25, 'add', 'system:dict-item:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (252, 25, 'Menu.add', 'system:dict-item:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (253, 25, 'edit', 'system:dict-item:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (253, 25, 'Menu.edit', 'system:dict-item:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
         1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (254, 25, 'delete', 'system:dict-item:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (254, 25, 'Menu.delete', 'system:dict-item:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1, false, now(), 'admin', now(), 'admin');
 
 -- 角色管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (22, 2, 'roleManage', 'system:role:list', 2, 'i-jiaoseguanli2', 'role', 'system/role', '', false, 'MENU', false,
+VALUES (22, 2, 'Menu.roleManage', 'system:role:list', 2, 'i-jiaoseguanli2', 'role', 'system/role', '', false, 'MENU',
+        false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (221, 22, 'query', 'system:role:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (221, 22, 'Menu.query', 'system:role:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (222, 22, 'add', 'system:role:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (222, 22, 'Menu.add', 'system:role:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (223, 22, 'edit', 'system:role:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (223, 22, 'Menu.edit', 'system:role:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (224, 22, 'delete', 'system:role:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (224, 22, 'Menu.delete', 'system:role:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 租户管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (1, -1, 'tenantManage', 'tenant:list', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'MENU', false, true,
+VALUES (1, -1, 'Menu.tenantManage', 'tenant:list', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'MENU', false,
+        true,
         false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (11, 1, 'query', 'tenant:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (11, 1, 'Menu.query', 'tenant:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (12, 1, 'add', 'tenant:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (12, 1, 'Menu.add', 'tenant:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (13, 1, 'edit', 'tenant:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (13, 1, 'Menu.edit', 'tenant:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (14, 1, 'delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (14, 1, 'Menu.delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 租户空间
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (3, -1, 'tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
+VALUES (3, -1, 'Menu.tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
         false, false, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (31, 3, 'query', 'tenant-space:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (31, 3, 'Menu.query', 'tenant-space:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (32, 3, 'resourceList', 'tenant-space:resource-list', 2, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (32, 3, 'Menu.resourceList', 'tenant-space:resource-list', 2, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (33, 3, 'delete', 'tenant-space:delete', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (33, 3, 'Menu.delete', 'tenant-space:delete', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 
@@ -462,40 +451,46 @@ VALUES (33, 3, 'delete', 'tenant-space:delete', 2, '', '', '', '', false, 'BUTTO
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (26, 2, 'organizationManage', 'system:organization:list', 2, 'i-drxx95', 'organization', 'system/organization',
+VALUES (26, 2, 'Menu.organizationManage', 'system:organization:list', 2, 'i-drxx95', 'organization',
+        'system/organization',
         '', false, 'MENU', false, true,
         false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (261, 26, 'query', 'system:organization:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (261, 26, 'Menu.query', 'system:organization:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (262, 26, 'add', 'system:organization:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (262, 26, 'Menu.add', 'system:organization:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (263, 26, 'edit', 'system:organization:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (263, 26, 'Menu.edit', 'system:organization:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (264, 26, 'delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
-        false, now(), 'admin', now(), 'admin');
-INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
-                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
-                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (265, 26, 'addMember', 'system:organization:add-member', 5, '', '', '', '', false, 'BUTTON', false, true, true,
+VALUES (264, 26, 'Menu.delete', 'system:organization:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
         true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (266, 26, 'deleteMember', 'system:organization:delete-member', 6, '', '', '', '', false, 'BUTTON', false, true,
+VALUES (265, 26, 'Menu.addMember', 'system:organization:add-member', 5, '', '', '', '', false, 'BUTTON', false, true,
+        true,
+        true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (266, 26, 'Menu.deleteMember', 'system:organization:delete-member', 6, '', '', '', '', false, 'BUTTON', false,
+        true,
         true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
@@ -632,7 +627,7 @@ COMMENT ON COLUMN accounts.credentials_expiration_time IS '凭证过期时间，
 COMMENT ON COLUMN accounts.user_type IS '账号类型：ADMIN/NORMAL';
 COMMENT ON COLUMN accounts.ref_account_id IS '第三方账号登录时的账号id';
 COMMENT ON COLUMN accounts.is_enabled IS '是否启用该账号登录';
-COMMENT ON COLUMN accounts.owner_tenant_id IS '当前账号所属的租户id'
+COMMENT ON COLUMN accounts.owner_tenant_id IS '当前账号所属的租户id';
 COMMENT ON COLUMN accounts.created_at IS '创建时间';
 COMMENT ON COLUMN accounts.created_by IS '创建人';
 COMMENT ON COLUMN accounts.updated_at IS '更新时间';
@@ -902,6 +897,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
     id         BIGINT PRIMARY KEY,
+    username VARCHAR(32) NOT NULL,
     nickname   VARCHAR(64),
     phone      VARCHAR(128),
     gender     VARCHAR(12) NOT NULL,
@@ -912,6 +908,7 @@ CREATE TABLE users
     login_ip   VARCHAR(64),
     is_enabled BOOLEAN     NOT NULL DEFAULT TRUE,
     is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
+    owner_tenant_id BIGINT NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
@@ -920,6 +917,7 @@ CREATE TABLE users
 
 COMMENT ON TABLE users IS '用户表';
 COMMENT ON COLUMN users.id IS '用户主键id';
+COMMENT ON COLUMN users.username IS '用户名';
 COMMENT ON COLUMN users.nickname IS '昵称';
 COMMENT ON COLUMN users.email IS '邮箱地址';
 COMMENT ON COLUMN users.birthday IS '生日';
@@ -927,9 +925,64 @@ COMMENT ON COLUMN users.gender IS '性别';
 COMMENT ON COLUMN users.avatar IS '头像url';
 COMMENT ON COLUMN users.login_date IS '登录日期';
 COMMENT ON COLUMN users.login_ip IS '登录ip';
+COMMENT ON COLUMN users.owner_tenant_id IS '当前用户所属的租户id';
 COMMENT ON COLUMN users.is_enabled IS '是否启用：true 启用';
 COMMENT ON COLUMN users.is_deleted IS '删除标记：false 未删除';
 COMMENT ON COLUMN users.created_at IS '创建时间';
 COMMENT ON COLUMN users.created_by IS '创建人';
 COMMENT ON COLUMN users.updated_at IS '更新时间';
 COMMENT ON COLUMN users.updated_by IS '更新人';
+
+-- 操作日志
+DROP TABLE IF EXISTS operation_log;
+CREATE TABLE operation_log
+(
+    id               BIGINT       NOT NULL PRIMARY KEY,
+    module_name      VARCHAR(100) NOT NULL,
+    request_uri      VARCHAR(500) NOT NULL,
+    request_ip       VARCHAR(32)  NOT NULL,
+    request_location VARCHAR(64)  NOT NULL,
+    request_method   VARCHAR(10)  NOT NULL,
+    request_param    VARCHAR(256),
+    response_data    TEXT,
+    operation_type   VARCHAR(50)  NOT NULL,
+    content          VARCHAR(256) NOT NULL,
+    content_en       VARCHAR(256) NOT NULL,
+    is_success       BOOLEAN,
+    risk_type        VARCHAR(50)  NOT NULL,
+    system_name      VARCHAR(100) NOT NULL,
+    operation_user   VARCHAR(100) NOT NULL,
+    operation_time   TIMESTAMP    NOT NULL,
+    owner_tenant_id  BIGINT       NOT NULL
+);
+
+-- 添加表注释
+COMMENT ON TABLE operation_log IS '系统操作日志表';
+
+-- 添加字段注释
+COMMENT ON COLUMN operation_log.id IS '主键ID';
+COMMENT ON COLUMN operation_log.module_name IS '模块名称';
+COMMENT ON COLUMN operation_log.request_ip IS '请求ip';
+COMMENT ON COLUMN operation_log.request_location IS '请求位置';
+COMMENT ON COLUMN operation_log.request_uri IS '请求地址';
+COMMENT ON COLUMN operation_log.request_method IS '请求方法(GET/POST/PUT/DELETE等)';
+COMMENT ON COLUMN operation_log.operation_type IS '操作类型';
+COMMENT ON COLUMN operation_log.content IS '日志内容(中文)';
+COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
+COMMENT ON COLUMN operation_log.operation_user IS '操作人';
+COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
+COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
+COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';
+COMMENT ON COLUMN operation_log.risk_type IS '操作风险类型';
+COMMENT ON COLUMN operation_log.request_param IS '请求参数(JSON格式)';
+COMMENT ON COLUMN operation_log.response_data IS '响应数据,isSuccess为false时，这里显示错误信息';
+COMMENT ON COLUMN operation_log.system_name IS '系统名称';
+
+-- 创建索引
+CREATE INDEX idx_operation_log_module_name ON operation_log (owner_tenant_id, module_name);
+CREATE INDEX idx_operation_log_operation_type ON operation_log (owner_tenant_id, operation_type);
+CREATE INDEX idx_operation_log_risk_type ON operation_log (owner_tenant_id, risk_type);
+
+COMMENT ON index idx_operation_log_module_name IS '模块名称';
+COMMENT ON index idx_operation_log_operation_type IS '操作类型';
+COMMENT ON index idx_operation_log_risk_type IS '风险类型';

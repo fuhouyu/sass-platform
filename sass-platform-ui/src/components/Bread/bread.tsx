@@ -73,7 +73,7 @@ export const Bread = () => {
                 return undefined
             }
             return {
-                title: t(`Menu.${breadcrumbName}`),
+                title: t(`${breadcrumbName}`),
                 key: path,
                 path: path,
             };

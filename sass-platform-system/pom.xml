@@ -70,6 +70,10 @@
             <groupId>com.onlyoffice</groupId>
             <artifactId>docs-integration-sdk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-log-starter</artifactId>
+        </dependency>
     </dependencies>
 
 

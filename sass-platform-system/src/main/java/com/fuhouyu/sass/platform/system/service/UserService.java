@@ -27,5 +27,17 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
  */
 public interface UserService extends BaseService<Long, UserDTO> {
 
+    /**
+     * 生成用户名称
+     *
+     * @return 生成用户名
+     */
+    String generateUsername();
 
+    /**
+     * 记录登录信息
+     *
+     * @param userId 用户id
+     */
+    void recordLoginSuccess(Long userId);
 }

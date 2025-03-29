@@ -43,6 +43,11 @@ public class Users extends BaseEntity {
     private Long id;
 
     /**
+     * username
+     */
+    private String username;
+
+    /**
      * 昵称
      */
     private String nickname;
@@ -76,6 +81,11 @@ public class Users extends BaseEntity {
      * 登录日期
      */
     private LocalDateTime loginDate;
+
+    /**
+     * 租户id
+     */
+    private Long ownerTenantId;
 
     /**
      * 登录ip

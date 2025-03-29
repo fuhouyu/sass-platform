@@ -42,7 +42,7 @@ public class UrlMangerImpl extends DefaultUrlManager {
 
     @Override
     public String getFileUrl(@NonNull String fileId) {
-        return resourceService.generateSignedUrl(NumberFormatUtil.toLong(fileId));
+        return resourceService.generateSignedUrl(NumberFormatUtil.toLong(fileId), false);
     }
 
 

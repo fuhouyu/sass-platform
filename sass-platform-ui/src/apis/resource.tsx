@@ -60,9 +60,12 @@ class ResourceApi extends DefaultApiImpl<Resource> {
     /**
      * 生成随机的url
      * @param id 主键id
+     * @param preview 是否为预览
      */
-    generateSignedUrl: (id: string) => Promise<string> = (id: string): Promise<string> =>
-        request.get(`${this.baseUrl}/generate/signed-url/${id}`)
+    generateSignedUrl: (id: string, preview?: boolean) => Promise<string> = (id: string, preview?: boolean): Promise<string> =>
+        request.get(`${this.baseUrl}/generate/signed-url/${id}`, {
+            params: {preview}
+        })
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

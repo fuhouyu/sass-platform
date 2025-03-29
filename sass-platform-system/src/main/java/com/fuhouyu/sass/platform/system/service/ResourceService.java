@@ -19,8 +19,6 @@ import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -32,18 +30,6 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface ResourceService extends BaseService<Long, ResourceDTO> {
 
-    /**
-     * 预览资源
-     *
-     * @param id        资源id
-     * @param isPreview 是否为预览
-     * @param request   请求对象
-     * @param response  响应对象
-     */
-    void downloadFile(Long id,
-                      boolean isPreview,
-                      HttpServletRequest request,
-                      HttpServletResponse response);
 
     /**
      * 下载资源
@@ -74,9 +60,11 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 生成资源签名的url
      *
      * @param id 主键id
+     * @param preview 是否预览
      * @return 签名的url
      */
-    String generateSignedUrl(Long id);
+    String generateSignedUrl(Long id,
+                             Boolean preview);
 
 
     /**

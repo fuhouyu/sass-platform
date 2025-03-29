@@ -18,7 +18,6 @@
 import {useTranslation} from "react-i18next";
 import {useCallback, useEffect} from "react";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
-import useTenant from "@/hooks/useTenant.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
 import {Avatar, Button, Divider, Dropdown, Flex, MenuProps, Segmented, Space, Tooltip} from "antd";
@@ -28,11 +27,11 @@ import './index.scss'
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {tenantApi} from "@/apis/tenant.tsx";
 
 export const LayoutHeader = () => {
     const {t} = useTranslation();
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
-    const tenantInfos = useTenant();
     const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
     const navigate = useNavigate();
     const {tenant} = useUserStore(state => state);
@@ -40,13 +39,8 @@ export const LayoutHeader = () => {
     const {preview} = useResourceAction();
 
     const setTenant = useCallback(async () => {
-        if (tenantInfos.length === 0) {
-            return;
-        }
-        const currentUserinfo = await fetchUserinfo();
-        const currentTenant = tenantInfos.find(t => t.id === currentUserinfo.tenantId);
-        storeTenant(currentTenant);
-    }, [fetchUserinfo, storeTenant, tenantInfos])
+        storeTenant(await tenantApi.findTenantInfoForMe());
+    }, [fetchUserinfo, storeTenant])
 
     useEffect(() => {
         setTenant().then();

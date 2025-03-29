@@ -21,17 +21,19 @@ export function useResourceAction() {
 
     const preview = (resourceId?: string): string | undefined => {
         if (resourceId) {
-            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/preview/${resourceId}`
+            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/download/${resourceId}?preview=true`
         }
         return undefined;
     }
 
-    const download = async (resourceId?: string): Promise<string> => {
+    const generateSignedUrl = async (resourceId?: string,
+                                     preview?: boolean): Promise<string> => {
         if (resourceId) {
-            return await resourceApi.generateSignedUrl(resourceId);
+            return await resourceApi.generateSignedUrl(resourceId, preview);
         }
         return "#";
     }
 
-    return {preview, download}
+
+    return {preview, generateSignedUrl}
 }
