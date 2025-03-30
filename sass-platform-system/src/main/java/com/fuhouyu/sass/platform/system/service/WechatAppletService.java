@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletPhoneInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 
 /**
@@ -42,5 +43,13 @@ public interface WechatAppletService {
      * @return token
      */
     String getAccessToken();
+
+    /**
+     * 获取手机号
+     *
+     * @param code 临时code
+     * @return 手机号信息
+     */
+    WechatAppletPhoneInfoDTO getPhoneNum(String code);
 
 }

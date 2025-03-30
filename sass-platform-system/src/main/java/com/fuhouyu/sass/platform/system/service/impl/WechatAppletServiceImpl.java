@@ -20,6 +20,7 @@ import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletPhoneInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
 import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
@@ -29,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +49,8 @@ public class WechatAppletServiceImpl implements WechatAppletService {
     private static final String WECHAT_APPLET_CACHE_KEY = "wechat:applet:access-token";
 
     private static final String SESSION_URL = "/sns/jscode2session";
+
+    private static final String PHONE_INFO_URL = "/wxa/business/getuserphonenumber";
 
     /**
      * 接口调用凭证token
@@ -115,5 +119,29 @@ public class WechatAppletServiceImpl implements WechatAppletService {
         cacheService.set(WECHAT_APPLET_CACHE_KEY, accessToken,
                 responseValueNode.get("expires_in").asInt(), TimeUnit.SECONDS);
         return accessToken.toString();
+    }
+
+    @Override
+    public WechatAppletPhoneInfoDTO getPhoneNum(String code) {
+
+        String responseStr = RestClient.create(properties.getBaseUrl())
+                .post()
+                .uri(uriBuilder ->
+                        uriBuilder.path(SESSION_URL)
+                                .queryParam("access_token", this.getAccessToken()).build()
+                )
+                .body(Map.of("code", code))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(String.class);
+        if (Objects.isNull(responseStr)) {
+            log.error("通过code: {} 获取手机号失败, 返回结果为空", code);
+            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "获取用户手机号失败");
+        }
+        ObjectNode objectNode = JacksonUtil.readValue(responseStr, ObjectNode.class);
+        if (!Objects.equals(objectNode.get("errcode").asInt(), 0)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, objectNode.get("errmsg").asText());
+        }
+        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(objectNode.get("phone_info"), WechatAppletPhoneInfoDTO.class));
     }
 }
