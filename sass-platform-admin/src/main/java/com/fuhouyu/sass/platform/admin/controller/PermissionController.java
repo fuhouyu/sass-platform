@@ -84,7 +84,7 @@ public class PermissionController {
     /**
      * 获取用户当前权限列表
      *
-     * @return 用户当前的权限列表
+     * @return 用户当前的权限列表ss
      */
     @GetMapping("/me")
     @Operation(summary = "获取用户当前权限列表")
@@ -171,5 +171,25 @@ public class PermissionController {
     @Parameter(name = "permissionCode", description = "权限编码已存在")
     public BaseResponse<Boolean> checkPermissionCodeExists(@RequestParam("permissionCode") String permissionCode) {
         return ResponseHelper.success(this.permissionService.checkPermissionCodeExists(permissionCode));
+    }
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:permission:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        PermissionDTO permissionDTO = new PermissionDTO();
+        permissionDTO.setId(id);
+        permissionDTO.setIsEnabled(enabled);
+        this.permissionService.edit(permissionDTO);
+        return ResponseHelper.success();
     }
 }

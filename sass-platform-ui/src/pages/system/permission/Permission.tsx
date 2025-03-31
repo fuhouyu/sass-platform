@@ -28,6 +28,7 @@ import {
     Radio,
     Row,
     Splitter,
+    Switch,
     TableColumnsType,
     Tooltip,
     Tree,
@@ -78,6 +79,7 @@ const mainPermission: Menu = {
     id: '-1',
     permissionName: 'Menu.main',
     permissionCode: '',
+    isEnabled: true,
 }
 
 export const Permission: React.FC = () => {
@@ -96,7 +98,7 @@ export const Permission: React.FC = () => {
         ...querySearchParams()
     });
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-    const [formParentPermission, setFormParentPermission] = useState<Menu>({});
+    const [formParentPermission, setFormParentPermission] = useState<Menu>({} as Menu);
     const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
     const language = useLocaleStore((state) => state.language);
 
@@ -119,6 +121,17 @@ export const Permission: React.FC = () => {
             align: 'center',
             sorter: true,
             defaultSortOrder: 'descend',
+        },
+        {
+            title: t('Common.status'),
+            dataIndex: 'isEnabled',
+            align: 'center',
+            render: (_, record: Menu) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await permissionApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
+            )
         },
         {
             title: t('Common.updatedAt'),
@@ -231,7 +244,7 @@ export const Permission: React.FC = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setUpdatedId(undefined);
-        setFormParentPermission({})
+        setFormParentPermission({} as Menu)
     }
 
     /**

@@ -15,6 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+
 /**
  * <p>
  * 操作日志接口
@@ -25,4 +29,11 @@ package com.fuhouyu.sass.platform.system.service;
  */
 public interface OperationLogService {
 
+    /**
+     * 分页查询日志
+     *
+     * @param operationLogPageQueryDTO 日志查询的dto对象
+     * @return 查询的分页对象
+     */
+    PageResultDTO<OperationLogDTO> page(OperationLogPageQueryDTO operationLogPageQueryDTO);
 }

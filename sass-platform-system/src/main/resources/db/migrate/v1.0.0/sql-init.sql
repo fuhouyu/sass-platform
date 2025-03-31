@@ -494,6 +494,14 @@ VALUES (266, 26, 'Menu.deleteMember', 'system:organization:delete-member', 6, ''
         true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
+-- 操作日志
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (27, 2, 'Menu.operationLogManage', 'system:operationLog:list', 4, 'i-caozuorizhi', 'operationLog',
+        'system/operationLog', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
@@ -596,6 +604,8 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 32, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 33, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 27, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

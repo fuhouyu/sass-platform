@@ -165,4 +165,24 @@ public class OrganizationController {
     public BaseResponse<Boolean> checkOrganizationCodeExists(@RequestParam("organizationCode") String organizationCode) {
         return ResponseHelper.success(this.organizationService.checkOrganizationCodeExists(organizationCode));
     }
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:organization:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        OrganizationDTO organizationDTO = new OrganizationDTO();
+        organizationDTO.setId(id);
+        organizationDTO.setIsEnabled(enabled);
+        this.organizationService.edit(organizationDTO);
+        return ResponseHelper.success();
+    }
 }

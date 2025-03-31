@@ -27,8 +27,8 @@ const ZhCN = {
         remark: '备注',
         reset: '重置',
         action: '操作',
-        success: '成功！',
-        failed: '失败！',
+        success: '成功',
+        failed: '失败',
         yes: '是',
         no: '否',
         enabled: '启用',
@@ -145,6 +145,7 @@ const ZhCN = {
         deleteMember: '删除成员',
         tenantForm: '租户表单',
         tenantSpace: '租户空间',
+        operationLogManage: '日志管理',
     },
     Account: {
         personal: '个人账号',
@@ -314,6 +315,25 @@ const ZhCN = {
         access: '访问权限',
         public: '公开',
         private: '私有'
+    },
+    OperationLog: {
+        list: '日志列表',
+        info: '日志详情',
+        moduleName: '模块名称',
+        moduleNamePlaceholder: '请输入模块',
+        requestUri: '请求地址',
+        requestIp: '请求ip',
+        requestLocation: '请求地点',
+        requestMethod: '请求方法',
+        requestParam: '请求参数',
+        responseData: '响应数据',
+        operationType: '操作类型',
+        isSuccess: '操作状态',
+        riskType: '风险等级',
+        systemName: '系统名称',
+        operationUser: '操作人',
+        operationTime: '操作时间',
+
     }
 }
 

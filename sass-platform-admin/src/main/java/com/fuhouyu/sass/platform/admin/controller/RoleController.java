@@ -149,4 +149,25 @@ public class RoleController {
     public BaseResponse<List<RoleDTO>> list() {
         return ResponseHelper.success(this.roleService.list());
     }
+
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setId(id);
+        roleDTO.setIsEnabled(enabled);
+        this.roleService.editStatus(roleDTO);
+        return ResponseHelper.success();
+    }
 }

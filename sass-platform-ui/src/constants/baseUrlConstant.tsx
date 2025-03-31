@@ -95,6 +95,11 @@ export class BaseApiUrlConstant {
      * office url
      */
     static readonly OFFICE_API_URL: string = `${BaseApiUrlConstant.VERSION}/office`;
+
+    /**
+     * 操作日志
+     */
+    static readonly OPERATION_LOG_URL: string = `${BaseApiUrlConstant.VERSION}/log`;
 }
 
 /**

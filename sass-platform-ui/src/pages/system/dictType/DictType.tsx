@@ -26,8 +26,8 @@ import {
     Popconfirm,
     Radio,
     Select,
+    Switch,
     TableColumnsType,
-    Tag,
     Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
@@ -36,10 +36,8 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
 import TextArea from "antd/es/input/TextArea";
-import {Menu} from "@/model/menu";
 import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
-import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
@@ -86,15 +84,11 @@ export const DictType = () => {
             title: t('Common.status'),
             dataIndex: 'isEnabled',
             align: 'center',
-            render: (isEnabled: boolean) => (
-                isEnabled ?
-                    <Tag icon={<CheckCircleOutlined/>} color="success">
-                        {t('Common.enabled')}
-                    </Tag>
-                    :
-                    <Tag icon={<CheckCircleOutlined/>} color="error">
-                        {t('Common.disabled')}
-                    </Tag>
+            render: (_, record: DictTypeModel) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await dictTypeApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
             )
         },
 
@@ -172,7 +166,7 @@ export const DictType = () => {
      */
     const rowSelection: TableRowSelection<DictTypeModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: Menu) => ({
+        getCheckboxProps: (record: DictTypeModel) => ({
             disabled: !record.isAllowModified
         }),
     };

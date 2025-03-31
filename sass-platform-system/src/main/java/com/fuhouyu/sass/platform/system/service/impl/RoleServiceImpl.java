@@ -100,6 +100,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public void editStatus(RoleDTO roleDTO) {
+        this.roleMapper.update(ROLES_ASSEMBLER.toEntity(roleDTO));
+    }
+
+    @Override
     public Long save(RoleDTO dto) {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);

@@ -57,6 +57,10 @@ export interface Menu extends BaseModel {
      */
     isVisible?: boolean;
     /**
+     * 启禁用
+     */
+    isEnabled: boolean;
+    /**
      * 父级id，一级时为-1
      */
     parentId?: number;

@@ -16,7 +16,19 @@
 
 import React, {Key, useRef, useState} from "react";
 import './index.scss'
-import {Button, Form, Input, InputNumber, message, Radio, Select, TableColumnsType, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Radio,
+    Select,
+    Switch,
+    TableColumnsType,
+    Tooltip
+} from "antd";
 import {Role as RoleModel} from "@/model/role";
 import {roleApi} from "@/apis/role";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -27,7 +39,6 @@ import {permissionApi} from "@/apis/permission";
 import {Menu} from "@/model/menu";
 import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.tsx";
-import {CheckCircleOutlined} from "@ant-design/icons";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
@@ -66,15 +77,11 @@ export const Role: React.FC = () => {
             title: t('Common.status'),
             dataIndex: 'isEnabled',
             align: 'center',
-            render: (isEnabled: boolean) => (
-                isEnabled ?
-                    <Tag icon={<CheckCircleOutlined/>} color="success">
-                        {t('Common.enabled')}
-                    </Tag>
-                    :
-                    <Tag icon={<CheckCircleOutlined/>} color="error">
-                        {t('Common.disabled')}
-                    </Tag>
+            render: (_, record: RoleModel) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await roleApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
             )
         },
 
@@ -178,23 +185,19 @@ export const Role: React.FC = () => {
                             </PermissionButton>
                             <PermissionButton permissionStr={RolePermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
-                                {/*<Popconfirm*/}
-                                {/*    title={t('Button.delete')}*/}
-                                {/*    description={t('Button.deleteConfirm')}*/}
-                                {/*    okText={t('Common.yes')}*/}
-                                {/*    cancelText={t('Common.no')}*/}
-                                {/*    onConfirm={async () => {*/}
-                                {/*        await roleApi.deleteInfoApi(rowKeys as string[]);*/}
-                                {/*        await tableRef?.current?.refreshPageList();*/}
-                                {/*    }}*/}
-                                {/*>*/}
-                                <DeleteButton
-                                    onClick={async () => {
+                                <Popconfirm
+                                    title={t('Button.delete')}
+                                    description={t('Button.deleteConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
                                         await roleApi.deleteInfoApi(rowKeys as string[]);
                                         await tableRef?.current?.refreshPageList();
                                     }}
+                                >
+                                <DeleteButton
                                     disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                                {/*</Popconfirm>*/}
+                                </Popconfirm>
                             </PermissionButton>
                         </>
                     ]
