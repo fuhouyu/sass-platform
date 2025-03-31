@@ -72,4 +72,12 @@ public class RoleHasPermissionServiceImpl implements RoleHasPermissionService {
     public void removeRolePermissionByTenantIds(Collection<Long> tenantIds) {
         this.roleHasPermissionMapper.deleteRolePermissionByTenantIds(tenantIds);
     }
+
+    @Override
+    public void removeByPermissionIds(Collection<Long> permissionIds) {
+        if (CollectionUtils.isEmpty(permissionIds)) {
+            return;
+        }
+        this.roleHasPermissionMapper.deleteByPermissionIds(permissionIds);
+    }
 }

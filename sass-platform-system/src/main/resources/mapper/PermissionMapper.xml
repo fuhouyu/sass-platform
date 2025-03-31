@@ -262,16 +262,14 @@
     </select>
 
     <select id="queryUserPermissonList" resultMap="BaseResultMap">
-
         SELECT
         <include refid="QueryColumns"/>
-        FROM
-        user_has_role uhr
-        LEFT JOIN role_has_permission uhp ON uhr.role_id = uhp.role_id
-        LEFT JOIN roles r ON r.id = uhp.role_id
-        LEFT JOIN <include refid="TableName"/> p ON p.id = uhp.permission_id AND p.is_deleted = false
-        WHERE
-        uhr.user_id = #{userId}
+        FROM permissions p
+        LEFT JOIN role_has_permission uhp ON uhp.permission_id = p.id
+        LEFT JOIN user_has_role uhr ON uhr.role_id = uhp.role_id
+        LEFT JOIN roles r ON r.id = uhr.role_id
+        WHERE uhr.user_id = #{userId}
+        AND p.is_deleted = false
         ORDER BY p.display_order
     </select>
 

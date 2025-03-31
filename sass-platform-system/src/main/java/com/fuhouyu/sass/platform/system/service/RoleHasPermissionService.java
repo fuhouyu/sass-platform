@@ -59,4 +59,11 @@ public interface RoleHasPermissionService {
      * @param tenantIds 租户id
      */
     void removeRolePermissionByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 通过权限id进行删除
+     *
+     * @param permissionIds 权限id集合
+     */
+    void removeByPermissionIds(Collection<Long> permissionIds);
 }
