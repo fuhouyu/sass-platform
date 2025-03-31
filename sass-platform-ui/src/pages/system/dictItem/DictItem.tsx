@@ -26,12 +26,12 @@ import {
     Popconfirm,
     Radio,
     Select,
+    Switch,
     TableColumnsType,
-    Tag,
     Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Menu} from "@/model/menu";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
@@ -41,7 +41,6 @@ import {DictType} from "@/model/dictType";
 import {useNavigate, useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
-import {CheckCircleOutlined} from "@ant-design/icons";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {dictTypeApi} from '@/apis/dictType';
 import {TableRefType} from '@/components/List/table/interface';
@@ -78,15 +77,13 @@ export const DictItem = () => {
             title: t('Common.status'),
             dataIndex: 'isEnabled',
             align: 'center',
-            render: (isEnabled: boolean) => (
-                isEnabled ?
-                    <Tag icon={<CheckCircleOutlined/>} color="success">
-                        {t('Common.enabled')}
-                    </Tag>
-                    :
-                    <Tag icon={<CheckCircleOutlined/>} color="error">
-                        {t('Common.disabled')}
-                    </Tag>
+            render: (_, record: DictItemModel) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await dictItemApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList({
+                        pageQuery: params
+                    });
+                }}/>
             )
         },
 
@@ -134,14 +131,15 @@ export const DictItem = () => {
     }
     const [formInitValues, setFormInitValues] = useState<DictItemModel>(initForm);
 
-    useEffect(() => {
-
-        // 分页字典类型列表
-        dictTypeApi.getList()
-            .then((res: DictType[]) => {
-                setDictTypeList(res);
-            });
+    const queryDictType = useCallback(async () => {
+        setDictTypeList(await dictTypeApi.getList());
     }, []);
+
+    useEffect(() => {
+        queryDictType().then();
+    }, [])
+
+
 
     /**
      * 打开模态组
@@ -195,6 +193,7 @@ export const DictItem = () => {
                     tableName: t('DictItem.list'),
                     columns: columns,
                     pageApi: (pageQuery) => {
+
                         return dictItemApi.pageInfoListApi({...pageQuery, ...params});
                     },
                     rowSelection: rowSelection,
@@ -219,8 +218,8 @@ export const DictItem = () => {
                                         });
                                     }}
                                 >
-                                <DeleteButton
-                                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                    <DeleteButton
+                                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                 </Popconfirm>
                             </PermissionButton>
 

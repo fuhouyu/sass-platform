@@ -148,4 +148,25 @@ public class DictTypeController {
         return ResponseHelper.success(this.dictTypeService.findList());
     }
 
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-type:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        DictTypeDTO dictTypeDTO = new DictTypeDTO();
+        dictTypeDTO.setId(id);
+        dictTypeDTO.setIsEnabled(enabled);
+        this.dictTypeService.edit(dictTypeDTO);
+        return ResponseHelper.success();
+    }
+
 }

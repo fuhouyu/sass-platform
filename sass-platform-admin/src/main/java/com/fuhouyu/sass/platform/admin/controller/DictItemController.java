@@ -168,4 +168,24 @@ public class DictItemController {
     public BaseResponse<Map<String, List<DictItemDTO>>> dictCodeItemMap(@RequestParam("dictCodes") String dictCodes) {
         return ResponseHelper.success(this.dictItemService.findDictCodeItemMap(dictCodes));
     }
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:dict-item:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        DictItemDTO dictItemDTO = new DictItemDTO();
+        dictItemDTO.setId(id);
+        dictItemDTO.setIsEnabled(enabled);
+        this.dictItemService.edit(dictItemDTO);
+        return ResponseHelper.success();
+    }
 }

@@ -267,9 +267,10 @@
         FROM permissions p
         LEFT JOIN role_has_permission uhp ON uhp.permission_id = p.id
         LEFT JOIN user_has_role uhr ON uhr.role_id = uhp.role_id
-        LEFT JOIN roles r ON r.id = uhr.role_id
+        LEFT JOIN roles r ON r.id = uhr.role_id AND r.is_enabled = true
         WHERE uhr.user_id = #{userId}
         AND p.is_deleted = false
+        AND p.is_enabled = true
         ORDER BY p.display_order
     </select>
 

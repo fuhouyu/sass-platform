@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Drawer, Input, Popconfirm, TableColumnsType, Tag} from "antd";
+import {Drawer, Input, Popconfirm, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -27,7 +27,6 @@ import {Userinfo} from "@/model/user";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
-import {CheckCircleOutlined} from "@ant-design/icons";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
@@ -79,15 +78,11 @@ export const Tenant: React.FC = () => {
             title: t('Common.status'),
             dataIndex: 'isEnabled',
             align: 'center',
-            render: (isEnabled: boolean) => (
-                isEnabled ?
-                    <Tag icon={<CheckCircleOutlined/>} color="success">
-                        {t('Common.enabled')}
-                    </Tag>
-                    :
-                    <Tag icon={<CheckCircleOutlined/>} color="error">
-                        {t('Common.disabled')}
-                    </Tag>
+            render: (_, record: TenantInfo) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await tenantApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
             )
         },
         {

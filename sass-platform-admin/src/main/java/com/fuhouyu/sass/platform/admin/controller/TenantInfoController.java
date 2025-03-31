@@ -167,4 +167,25 @@ public class TenantInfoController {
         return ResponseHelper.success(this.tenantInfoService.findDetailById(ContextHolderStrategy.getContext().getUser().getTenantId()));
     }
 
+
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "启禁用字典项")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:tenant:edit')")
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        TenantInfoDTO tenantInfoDTO = new TenantInfoDTO();
+        tenantInfoDTO.setId(id);
+        tenantInfoDTO.setIsEnabled(enabled);
+        this.tenantInfoService.edit(tenantInfoDTO);
+        return ResponseHelper.success();
+    }
+
 }

@@ -27,6 +27,7 @@ import {
     Popconfirm,
     Radio,
     Splitter,
+    Switch,
     TableColumnsType,
     Tree,
     TreeSelect
@@ -81,6 +82,17 @@ export const Organization = () => {
             align: 'center',
             sorter: true,
             defaultSortOrder: 'descend',
+        },
+        {
+            title: t('Common.status'),
+            dataIndex: 'isEnabled',
+            align: 'center',
+            render: (_, record: OrganizationModal) => (
+                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await organizationApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
+            )
         },
         {
             title: t('Common.updatedAt'),

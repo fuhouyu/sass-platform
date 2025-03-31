@@ -58,6 +58,12 @@ interface BaseApi<T> {
      */
     pageInfoListApi: (pageQuery: PageQuery) => Promise<PageResult<T>>;
 
+    /**
+     * 修改状态
+     * @param id 主键id
+     * @param enabled 启禁用状态
+     */
+    status: (id: string, enabled: boolean) => Promise<void>;
 }
 
 
@@ -97,6 +103,9 @@ export class DefaultApiImpl<T> implements BaseApi<T> {
     pageInfoListApi = (pageQuery: PageQuery): Promise<PageResult<T>> => {
         return request.get(`${this.baseUrl}/page`, {params: pageQuery})
     }
+
+    status: (id: string, enabled: boolean) => Promise<void> = (id: string, enabled: boolean): Promise<void> =>
+        request.put(`${this.baseUrl}/${id}/status?enabled=${enabled}`)
 
 
 }
