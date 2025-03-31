@@ -262,7 +262,7 @@ export const Permission: React.FC = () => {
 
             await tableRef?.current?.refreshPageList({
                 dataCallback: (res) => {
-                    res?.list.forEach(menu => menu.permissionName = t(`Menu.${menu.permissionName}`));
+                    res?.list.forEach(menu => menu.permissionName = t(`${menu.permissionName}`));
                 }
             });
             const parentId = values.parentId;

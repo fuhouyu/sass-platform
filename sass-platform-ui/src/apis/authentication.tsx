@@ -32,8 +32,16 @@ class AuthenticationApi {
      * 用户登录
      * @param loginData 登录的表单信息
      */
-    loginApi = (loginData: UserAuthentication): Promise<UserToken | UserBind> =>
-        request.post(`${baseAuthUrl}/login`, loginData);
+    adminLoginApi = (loginData: UserAuthentication): Promise<UserToken | UserBind> =>
+        request.post(`${baseAuthUrl}/admin-login`, loginData);
+
+
+    /**
+     * 刷新token
+     * @param refreshToken 刷新令牌
+     */
+    refreshTokenApi = (refreshToken: string): Promise<UserToken> =>
+        request.put(`${baseAuthUrl}/refresh-token?refreshToken=${refreshToken}`)
 
     /**
      * 登录的

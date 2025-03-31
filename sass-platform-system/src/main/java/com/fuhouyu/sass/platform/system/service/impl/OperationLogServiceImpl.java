@@ -53,13 +53,11 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
     @Override
     public void saveLogRecord(LogRecordEntity logRecordEntity) {
         User user = ContextHolderStrategy.getContext().getUser();
-        // 这里为空，先直接返回
-        if (Objects.isNull(user)) {
-            return;
-        }
-        Long tenantId = user.getTenantId();
-
         Request request = ContextHolderStrategy.getContext().getRequest();
+        Long tenantId = Objects.isNull(user) ?
+                request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID)
+                : user.getTenantId();
+
         OperationLog operationLog = new OperationLog();
 
         BeanUtils.copyProperties(logRecordEntity, operationLog);

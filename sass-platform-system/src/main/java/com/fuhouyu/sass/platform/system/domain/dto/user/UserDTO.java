@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.common.desensitize.PhoneDesensitize;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -45,7 +46,8 @@ public class UserDTO extends BaseDTO {
     @Schema(name = "nickname", description = "昵称")
     private String nickname;
 
-    @Schema(name = "id", description = "手机号")
+    @Schema(name = "phone", description = "手机号")
+    @PhoneDesensitize
     private String phone;
 
     @Schema(name = "username", description = "用户名")

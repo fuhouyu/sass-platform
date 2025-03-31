@@ -82,4 +82,13 @@
         </foreach>
         )
     </delete>
+
+    <delete id="deleteByPermissionIds">
+        DELETE FROM
+        <include refid="TableName"/>
+        WHERE permission_id IN
+        <foreach collection="permissionIds" open="(" close=")" separator="," item="permissionId">
+            #{permissionId}
+        </foreach>
+    </delete>
 </mapper>

@@ -20,15 +20,18 @@ import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletPhoneInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
 import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
 import com.fuhouyu.sass.platform.system.service.WechatAppletService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -48,10 +51,11 @@ public class WechatAppletServiceImpl implements WechatAppletService {
 
     private static final String SESSION_URL = "/sns/jscode2session";
 
-    /**
-     * 接口调用凭证token
-     */
-    private static final String ACCESS_TOKEN = "/cgi-bin/token";
+    private static final String PHONE_INFO_URL = "/wxa/business/getuserphonenumber";
+
+    private static final String ACCESS_TOKEN_URL = "/cgi-bin/token";
+
+    private static final String ACCESS_TOKEN_CACHE = "wechat:applet:access-token";
 
     private final OpenPlatformProperties.Properties properties;
 
@@ -91,14 +95,14 @@ public class WechatAppletServiceImpl implements WechatAppletService {
 
     @Override
     public String getAccessToken() {
-        Object accessToken = this.cacheService.get(ACCESS_TOKEN);
+        Object accessToken = this.cacheService.get(ACCESS_TOKEN_CACHE);
         if (Objects.nonNull(accessToken)) {
             return accessToken.toString();
         }
         String responseStr = RestClient.create(properties.getBaseUrl())
                 .get()
                 .uri(uriBuilder ->
-                        uriBuilder.path(SESSION_URL)
+                        uriBuilder.path(ACCESS_TOKEN_URL)
                                 .queryParam("appid", properties.getAccessKey())
                                 .queryParam("secret", properties.getSecretKey())
                                 .queryParam("grant_type", "client_credential").build()
@@ -115,5 +119,30 @@ public class WechatAppletServiceImpl implements WechatAppletService {
         cacheService.set(WECHAT_APPLET_CACHE_KEY, accessToken,
                 responseValueNode.get("expires_in").asInt(), TimeUnit.SECONDS);
         return accessToken.toString();
+    }
+
+    @Override
+    public WechatAppletPhoneInfoDTO getPhoneNum(String code) {
+
+        ResponseEntity<ObjectNode> responseEntity = RestClient.create(properties.getBaseUrl())
+                .post()
+                .uri(uriBuilder ->
+                        uriBuilder.path(PHONE_INFO_URL)
+                                .queryParam("access_token", this.getAccessToken()).build()
+                )
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(JacksonUtil.writeValueAsBytes(Map.of("code", code)))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(ObjectNode.class);
+        if (Objects.isNull(responseEntity.getBody())) {
+            log.error("通过code: {} 获取手机号失败, 返回结果为空", code);
+            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "获取用户手机号失败");
+        }
+        ObjectNode objectNode = responseEntity.getBody();
+        if (!Objects.equals(objectNode.get("errcode").asInt(), 0)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, objectNode.get("errmsg").asText());
+        }
+        return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(objectNode.get("phone_info"), WechatAppletPhoneInfoDTO.class));
     }
 }

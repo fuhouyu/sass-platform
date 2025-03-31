@@ -17,26 +17,21 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
-import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -57,6 +52,22 @@ public class AuthenticationController {
 
     private final UserAccountService userAccountService;
 
+
+    /**
+     * 后台管理员用户登录
+     *
+     * @param userLoginDTO 用户登录的dto对象
+     * @return 用户登录的dto对象
+     */
+    @PostMapping("/admin-login")
+    @Operation(summary = "后台用户登录接口")
+    @NoAuth
+    @LogRecord(operationType = OperationTypeEnum.LOGIN,
+            operationUser = "#{#userLoginDTO.account}")
+    public BaseResponse<UserTokenDTO> adminLogin(@RequestBody @Valid UserLoginDTO userLoginDTO) {
+        return ResponseHelper.success(this.userAccountService.adminLogin(userLoginDTO));
+    }
+
     /**
      * 用户登录
      *
@@ -69,10 +80,23 @@ public class AuthenticationController {
     @LogRecord(operationType = OperationTypeEnum.LOGIN,
             operationUser = "#{#userLoginDTO.account}")
     public BaseResponse<UserTokenDTO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
-        Request request = ContextHolderStrategy.getContext().getRequest();
-        request.putAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
         UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
         return ResponseHelper.success(userTokenDTO);
+    }
+
+
+    /**
+     * 通过刷新令牌，更新token
+     *
+     * @param refreshToken 刷新令牌
+     * @return 用户信息
+     */
+    @PutMapping("/refresh-token")
+    @Operation(summary = "通过刷新令牌更新token")
+    @Parameter(name = "refreshToken", description = "刷新令牌")
+    @NoAuth
+    public BaseResponse<UserTokenDTO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
+        return ResponseHelper.success(this.userAccountService.refreshToken(refreshToken));
     }
 
     /**

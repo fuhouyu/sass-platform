@@ -943,7 +943,7 @@ CREATE TABLE operation_log
     request_ip       VARCHAR(32)  NOT NULL,
     request_location VARCHAR(64)  NOT NULL,
     request_method   VARCHAR(10)  NOT NULL,
-    request_param    VARCHAR(256),
+    request_param TEXT,
     response_data    TEXT,
     operation_type   VARCHAR(50)  NOT NULL,
     content          VARCHAR(256) NOT NULL,

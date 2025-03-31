@@ -28,6 +28,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
+import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,6 +58,8 @@ public class PermissionServiceImpl implements PermissionService {
     private final PermissionMapper permissionMapper;
 
     private final SnowflakeIdWorker snowflakeIdWorker;
+
+    private final RoleHasPermissionService roleHasPermissionService;
 
 
     @Override
@@ -135,6 +138,7 @@ public class PermissionServiceImpl implements PermissionService {
                 .map(Permissions::getParentId)
                 .filter(parentId -> !Objects.equals(parentId, -1L))
                 .toList();
+        this.roleHasPermissionService.removeByPermissionIds(ids);
         int deleteCount = this.permissionMapper.deleteByIds(ids);
         if (!CollectionUtils.isEmpty(parentIdList)) {
             // 修改isLeaf
