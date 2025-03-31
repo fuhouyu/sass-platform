@@ -310,6 +310,22 @@ const EnUS = {
         access: 'Access Permission',
         public: 'Public',
         private: 'Private'
+    },
+    OperationLog: {
+        list: 'Operation Log List',
+        info: 'Operation Log Info',
+        moduleName: 'Module Name',
+        requestUri: 'Request Uri',
+        requestIp: 'Request Ip',
+        requestLocation: 'Request Location',
+        requestMethod: 'Request Method',
+        requestParam: 'Request Param',
+        responseData: 'Response Data',
+        operationType: 'Operation Type',
+        isSuccess: 'Operation Status',
+        riskType: 'Risk Type',
+        systemName: 'System Name',
+        operationTime: 'Operation Time',
     }
 }
 

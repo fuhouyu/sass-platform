@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import {OperationLog, OperationLogPageQuery} from "@/model/operationLog.tsx";
+import {PageResult} from "@/model/pageQuery.tsx";
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {OnlyOffice as OnlyOfficeModal} from '@/model/office.tsx'
 
-class OnlyOfficeApi {
+class OperationLogApi {
+
     private readonly _baseUrl: string;
 
     constructor(baseUrl: string) {
@@ -26,16 +28,13 @@ class OnlyOfficeApi {
     }
 
     /**
-     * office 视图
-     * @param id 主键id
-     * @param mode mode
+     * 分页查询的对象
+     * @param pageQuery 分页查询
      */
-    view: ({id, mode}: { id: string, mode: 'VIEW' | 'EDIT' }) => Promise<OnlyOfficeModal> = ({id, mode}: {
-        id: string,
-        mode: 'VIEW' | 'EDIT'
-    }): Promise<OnlyOfficeModal> =>
-        request.get(`${this._baseUrl}/${id}`, {params: {mode}});
-
+    pageApi: (pageQuery: OperationLogPageQuery) => Promise<PageResult<OperationLog>> = (pageQuery: OperationLogPageQuery): Promise<PageResult<OperationLog>> =>
+        request.get(`${this._baseUrl}/page`, {
+            params: pageQuery
+        });
 }
 
-export const onlyOfficeApi: OnlyOfficeApi = new OnlyOfficeApi(BaseApiUrlConstant.OFFICE_API_URL);
+export const operationLogApi: OperationLogApi = new OperationLogApi(BaseApiUrlConstant.OPERATION_LOG_URL);

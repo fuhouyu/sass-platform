@@ -22,15 +22,21 @@ import com.fuhouyu.framework.log.core.LogRecordStoreService;
 import com.fuhouyu.framework.log.model.LogRecordEntity;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
+import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.OperationLog;
 import com.fuhouyu.sass.platform.system.mapper.OperationLogMapper;
 import com.fuhouyu.sass.platform.system.service.OperationLogService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -69,5 +75,22 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
         operationLog.setOwnerTenantId(tenantId);
         operationLog.setOperationTime(LocalDateTime.parse(logRecordEntity.getOperationTime(), LogRecordEntity.DATE_TIME_FORMATTER));
         this.operationLogMapper.insert(operationLog);
+    }
+
+    @Override
+    public PageResultDTO<OperationLogDTO> page(OperationLogPageQueryDTO operationLogPageQueryDTO) {
+        try (Page<Object> page = PageMethod.startPage(operationLogPageQueryDTO.getPageNum(), operationLogPageQueryDTO.getPageSize())) {
+            page.setUnsafeOrderBy(operationLogPageQueryDTO.getOrderBy());
+            List<OperationLog> operationLogs = this.operationLogMapper.queryList(operationLogPageQueryDTO);
+            List<OperationLogDTO> list = operationLogs.stream()
+                    .map(log -> {
+                        OperationLogDTO dto = new OperationLogDTO();
+                        BeanUtils.copyProperties(log, dto);
+                        return dto;
+                    }).toList();
+            return new PageResultDTO<>(page.getPageNum(),
+                    page.getPageSize(), page.getTotal(),
+                    list);
+        }
     }
 }

@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("认证模块")
 public class AuthenticationController {
 
 

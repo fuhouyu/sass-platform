@@ -1,6 +1,11 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.OperationLog;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +23,13 @@ public interface OperationLogMapper {
      * @param record 日志记录
      */
     void insert(OperationLog record);
+
+    /**
+     * 查询列表
+     *
+     * @param pageQuery 分页查询
+     * @return 操作日志集合
+     */
+    @TenantQuery
+    List<OperationLog> queryList(@Param("pageQuery") OperationLogPageQueryDTO pageQuery);
 }

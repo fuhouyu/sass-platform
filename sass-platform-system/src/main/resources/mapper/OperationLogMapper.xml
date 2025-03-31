@@ -20,6 +20,10 @@
         <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime"/>
     </resultMap>
 
+    <sql id="TableName">
+        operation_log
+    </sql>
+
     <sql id="Base_Column_List">
 
         id,
@@ -42,7 +46,7 @@
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.OperationLog">
-        insert into operation_log (id, module_name, request_uri,
+        insert into <include refid="TableName"/> (id, module_name, request_uri,
                                    request_method, request_param,
                                    request_ip,
                                    request_location,
@@ -59,4 +63,25 @@
                 #{isSuccess,jdbcType=BOOLEAN}, #{riskType,jdbcType=VARCHAR}, #{systemName,jdbcType=VARCHAR},#{ownerTenantId},
                 #{operationUser,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP})
     </insert>
+
+    <select id="queryList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        <include refid="TableName"/>
+        <where>
+            <if test="pageQuery.isSuccess != null ">
+                is_success = #{pageQuery.isSuccess}
+            </if>
+            <if test="pageQuery.moduleName != null and pageQuery.moduleName != ''">
+                AND module_name = #{pageQuery.moduleName}
+            </if>
+            <if test="pageQuery.systemName != null and pageQuery.systemName != ''">
+                AND system_name = #{pageQuery.systemName}
+            </if>
+            <if test="pageQuery.riskType != null and pageQuery.riskType != ''">
+                AND risk_type = #{pageQuery.riskType}
+            </if>
+        </where>
+    </select>
 </mapper>

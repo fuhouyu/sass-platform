@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,11 +43,13 @@ public class UserLoginDTO extends AccountIdDTO {
     @Schema(name = "credentials", description = """
             登录凭证
             """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String credentials;
 
     @Schema(name = "cloudflareTurnstileToken", description = """
             cloudflare 令牌，类型为password时，需要验证
             """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String cloudflareTurnstileToken;
 
     @Schema(name = "tenantId", description = "租户id")
