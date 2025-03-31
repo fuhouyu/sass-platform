@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.fuhouyu.framework.database.annotaions.FieldCipher;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -55,6 +56,7 @@ public class Users extends BaseEntity {
     /**
      * 手机号
      */
+    @FieldCipher
     private String phone;
 
     /**

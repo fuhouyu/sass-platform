@@ -140,6 +140,9 @@
         <if test="avatar != null">
             avatar = #{avatar},
         </if>
+        <if test="phone != null and phone != ''">
+            phone = #{phone},
+        </if>
         <if test="nickname != null and nickname != ''">
             nickname = #{nickname},
         </if>
