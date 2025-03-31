@@ -69,4 +69,11 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      * @return 角色dto对象
      */
     RoleDTO findByRoleCodeAndTenantId(String roleCode, Long tenantId);
+
+    /**
+     * 修改状态信息
+     *
+     * @param roleDTO 角色dto对象
+     */
+    void editStatus(RoleDTO roleDTO);
 }

@@ -167,7 +167,7 @@ public class RoleController {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(id);
         roleDTO.setIsEnabled(enabled);
-        this.roleService.edit(roleDTO);
+        this.roleService.editStatus(roleDTO);
         return ResponseHelper.success();
     }
 }
