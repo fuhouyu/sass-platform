@@ -36,7 +36,6 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';
 import TextArea from "antd/es/input/TextArea";
-import {Menu} from "@/model/menu";
 import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
 import {useLocaleStore} from "@/store";
@@ -167,7 +166,7 @@ export const DictType = () => {
      */
     const rowSelection: TableRowSelection<DictTypeModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: Menu) => ({
+        getCheckboxProps: (record: DictTypeModel) => ({
             disabled: !record.isAllowModified
         }),
     };

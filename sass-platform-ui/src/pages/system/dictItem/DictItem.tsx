@@ -33,7 +33,6 @@ import {
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Menu} from "@/model/menu";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem";
@@ -180,7 +179,7 @@ export const DictItem = () => {
      */
     const rowSelection: TableRowSelection<DictItemModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: Menu) => ({
+        getCheckboxProps: (record: DictItemModel) => ({
             disabled: !record.isAllowModified
         }),
     };
