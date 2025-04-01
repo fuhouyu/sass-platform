@@ -222,7 +222,10 @@ export const OperationLog = () => {
                             <RangePicker
                                 allowClear
                                 allowEmpty
-                                defaultValue={[dayjs(pageQuery['startTime']), dayjs(pageQuery['endTime'])]}
+                                defaultValue={[
+                                    pageQuery['startTime'] ? dayjs(pageQuery['startTime']) : null,
+                                    pageQuery['endTime'] ? dayjs(pageQuery['endTime']) : null
+                                ]}
                                 onCalendarChange={(_, search, __) => {
                                     setPageQuery({...pageQuery, startTime: search[0], endTime: search[1]})
                                 }}/>
