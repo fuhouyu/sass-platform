@@ -61,7 +61,7 @@ export const DictItem = () => {
         },
         {
             title: t('DictItem.code'),
-            dataIndex: 'dictCode',
+            dataIndex: 'itemCode',
             defaultSortOrder: 'descend',
             align: "center",
         },
