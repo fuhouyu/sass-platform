@@ -29,7 +29,7 @@ import {Modal} from "@/components";
 export const OrganizationUserModal = (organizationUserProps: OrganizationUserModalProps) => {
 
     const {t} = useTranslation();
-    const {onLoadData, organizationLazyData} = useOrganizationLazyData();
+    const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
     const {isModalOpen, setIsModalOpen, rowSelection} = organizationUserProps;
     const columns: TableColumnsType = [
         {
@@ -77,6 +77,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
 
     useEffect(() => {
         if (isModalOpen) {
+            initOrganization().then();
             pageQueryCallback().then();
         }
     }, [isModalOpen, pageQueryCallback])

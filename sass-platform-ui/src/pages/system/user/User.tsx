@@ -15,7 +15,7 @@
  */
 
 
-import React, {Key, useRef, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {
     Button,
     Card,
@@ -170,7 +170,7 @@ export const User: React.FC = () => {
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [userQuery, setUserQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
-    const {organizationLazyData, onLoadData} = useOrganizationLazyData();
+    const {initOrganization, organizationLazyData, onLoadData} = useOrganizationLazyData();
     const [organizationTree, setOrganizationTree] = useState<Organization[]>();
     const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
     const language = useLocaleStore((state) => state.language);
@@ -182,6 +182,10 @@ export const User: React.FC = () => {
     const [isOrganizationUserModalOpen, setIsOrganizationUserModalOpen] = useState<boolean>(false);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
 
+
+    useEffect(() => {
+        initOrganization().then();
+    }, [])
 
     /**
      * 打开模态组
