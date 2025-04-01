@@ -18,6 +18,8 @@ package com.fuhouyu.sass.platform.system.domain.dto.account;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
@@ -56,6 +58,7 @@ public class AccountDTO extends BaseDTO {
     @JsonProperty("credentials")
     @JsonAlias({"password", "credentials"})
     @NotEmpty(message = "用户密码未填写", groups = ValidGroups.SaveGroup.class)
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String credentials;
 
     @JsonIgnore

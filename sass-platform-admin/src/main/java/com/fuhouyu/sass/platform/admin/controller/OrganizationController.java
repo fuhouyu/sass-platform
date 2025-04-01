@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
@@ -48,6 +52,7 @@ import java.util.Optional;
 @Tag(name = "组织 web接口")
 @Validated
 @RequiredArgsConstructor
+@LogModule("组织模块")
 public class OrganizationController {
 
     private final OrganizationService organizationService;
@@ -61,6 +66,7 @@ public class OrganizationController {
     @PostMapping
     @Operation(summary = "保存组织dto对象")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> saveOrganization(@RequestBody OrganizationDTO organizationDTO) {
         return ResponseHelper.success(this.organizationService.save(organizationDTO));
     }
@@ -75,6 +81,7 @@ public class OrganizationController {
     @PutMapping("/{id}")
     @Operation(summary = "修改组织")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> updateOrganization(@PathVariable("id") Long id,
                                                  @RequestBody OrganizationDTO organizationDTO) {
         organizationDTO.setId(id);
@@ -123,6 +130,7 @@ public class OrganizationController {
     @DeleteMapping
     @Operation(summary = "根据组织id删除组织")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> deleteOrganization(@RequestBody @NotEmpty(message = "未选择要删除的组织") List<Long> idList) {
         this.organizationService.removeByIds(idList);
         return ResponseHelper.success();
@@ -174,9 +182,10 @@ public class OrganizationController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         OrganizationDTO organizationDTO = new OrganizationDTO();

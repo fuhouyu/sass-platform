@@ -342,6 +342,8 @@ const ZhCN = {
         operationUser: '操作人',
         operationTime: '操作时间',
         operationTimePlaceholder: '请选择操作时间',
+        errorMessage: '错误信息',
+
 
 
     }

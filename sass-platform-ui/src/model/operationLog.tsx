@@ -89,6 +89,11 @@ export interface OperationLog {
     isSuccess?: boolean;
 
     /**
+     * 异常信息
+     */
+    errorMessage?: string;
+
+    /**
      * 操作风险类型
      */
     riskType?: string;

@@ -220,6 +220,8 @@ export const OperationLog = () => {
                         <>
                             <span>{t('OperationLog.operationTime')}</span>
                             <RangePicker
+                                allowClear
+                                allowEmpty
                                 defaultValue={[dayjs(pageQuery['startTime']), dayjs(pageQuery['endTime'])]}
                                 onCalendarChange={(_, search, __) => {
                                     setPageQuery({...pageQuery, startTime: search[0], endTime: search[1]})
@@ -257,16 +259,16 @@ export const OperationLog = () => {
                     <Descriptions.Item
                         span={2}
                         label={t('OperationLog.requestParam')}
-                        className={'request-params-list'}
                     >
-                        <List>
+                        <List className={'request-params-list'}>
                             {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam as string)).map(([key, value], index) => (
                                 <List.Item key={index}>
-                                    <span className={'request-param-title'}>{key}:</span>
-
                                     <div className={'log-item-value'}
                                     >
-                                        {value ? value as string : ''}
+                                        <List.Item.Meta
+                                            title={key}
+                                            description={value ? value as string : ''}
+                                        />
                                         <Button
                                             icon={<CopyOutlined/>}
                                             size="small"
@@ -285,11 +287,11 @@ export const OperationLog = () => {
                         span={2}
                         styles={{
                             content: {
-                                maxWidth: '400px'
+                                maxWidth: '25rem'
                             }
                         }}
                         label={t('OperationLog.responseData')}>
-                        <div className={'log-item-value'}
+                        {operationLog.responseData && <div className={'log-item-value'}
                         >
                             {operationLog.responseData}
                             <Button
@@ -299,7 +301,18 @@ export const OperationLog = () => {
                                 onClick={() => handleCopy(operationLog.responseData as string)}
                                 title={t('Common.copy')}
                             />
-                        </div>
+                        </div>}
+                    </Descriptions.Item>
+
+                    <Descriptions.Item
+                        span={2}
+                        styles={{
+                            content: {
+                                maxWidth: '25rem'
+                            }
+                        }}
+                        label={t('OperationLog.errorMessage')}>
+                        {operationLog.errorMessage}
                     </Descriptions.Item>
 
                     <Descriptions.Item

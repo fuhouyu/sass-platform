@@ -335,6 +335,7 @@ const EnUS = {
         highLevel: 'High Level',
         systemName: 'System Name',
         operationTime: 'Operation Time',
+        errorMessage: 'Error Message',
     }
 }
 

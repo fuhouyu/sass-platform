@@ -12,6 +12,7 @@
         <result column="response_data" jdbcType="VARCHAR" property="responseData"/>
         <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="error_message" jdbcType="VARCHAR" property="errorMessage"/>
         <result column="content_en" jdbcType="VARCHAR" property="contentEn"/>
         <result column="is_success" jdbcType="BOOLEAN" property="isSuccess"/>
         <result column="risk_type" jdbcType="VARCHAR" property="riskType"/>
@@ -38,6 +39,7 @@
         content,
         content_en,
         is_success,
+        error_message,
         risk_type,
         system_name,
         operation_user,
@@ -54,14 +56,14 @@
                                    operation_type, content, content_en,
                                    is_success, risk_type, system_name,
         owner_tenant_id,
-                                   operation_user, operation_time)
+                                   operation_user, operation_time, error_message)
         values (#{id,jdbcType=BIGINT}, #{moduleName,jdbcType=VARCHAR}, #{requestUri,jdbcType=VARCHAR},
                 #{requestMethod,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR},
                 #{requestIp}, #{requestLocation},
                 #{responseData,jdbcType=VARCHAR},
                 #{operationType,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{contentEn,jdbcType=VARCHAR},
                 #{isSuccess,jdbcType=BOOLEAN}, #{riskType,jdbcType=VARCHAR}, #{systemName,jdbcType=VARCHAR},#{ownerTenantId},
-                #{operationUser,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP})
+                #{operationUser,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}, #{errorMessage})
     </insert>
 
     <select id="queryList" resultMap="BaseResultMap">

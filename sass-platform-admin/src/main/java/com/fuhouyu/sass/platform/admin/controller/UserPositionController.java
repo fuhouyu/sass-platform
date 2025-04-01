@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +48,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("用户职务模块")
 public class UserPositionController {
 
     private final UserPositionService userPositionService;
@@ -57,6 +62,7 @@ public class UserPositionController {
     @PostMapping
     @Operation(summary = "保存用户职务信息")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:add-member')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> saveUserPosition(@RequestBody UserPositionDTO userPositionDTO) {
         this.userPositionService.saveUserPosition(userPositionDTO.getUserId(), userPositionDTO);
         return ResponseHelper.success();
@@ -72,6 +78,7 @@ public class UserPositionController {
     @DeleteMapping("/{organizationId}")
     @Operation(summary = "通过组织id和用户id删除成员")
     @PreAuthorize("@auth.hasAnyPermission('system:organization:delete-member')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Long> deleteUserPosition(@PathVariable("organizationId") Long organizationId,
                                                  @NotEmpty(message = "用户未选择") @RequestBody Collection<Long> userIds) {
         return ResponseHelper.success(this.userPositionService.removeByOrganizationIdAndUserIds(organizationId, userIds));

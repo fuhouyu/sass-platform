@@ -62,8 +62,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final TenantHasPermissionService tenantHasPermissionService;
 
-    private final TenantHasUserService tenantHasUserService;
-
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -191,7 +189,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         this.tenantHasPermissionService.removeTenantPermissions(tenantIds);
         this.roleService.removeByTenantIds(tenantIds);
         this.permissionService.removeByTenantIds(tenantIds);
-        this.tenantHasUserService.removeByTenantIds(tenantIds);
         this.organizationService.removeOrganizationByTenantIds(tenantIds);
     }
 }

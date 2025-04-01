@@ -52,8 +52,6 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
 
     private final RoleHasPermissionService roleHasPermissionService;
 
-    private final TenantHasUserService tenantHasUserService;
-
     private final UserHasRoleService userHasRoleService;
 
     private final OrganizationService organizationService;
@@ -81,7 +79,6 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         // 组织配置
         this.organizationService.createTenantDefaultOrganization(tenantInfoDTO);
         // 管理员配置
-        this.tenantHasUserService.save(tenantInfoDTO.getId(), tenantInfoDTO.getAdminUserId());
         this.userHasRoleService.saveOrUpdateUserRole(tenantInfoDTO.getAdminUserId(), List.of(roleId));
     }
 

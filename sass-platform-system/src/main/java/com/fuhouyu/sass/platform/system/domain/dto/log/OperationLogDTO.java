@@ -70,6 +70,9 @@ public class OperationLogDTO implements Serializable {
     @Schema(name = "operationTime", description = "操作时间")
     private LocalDateTime operationTime;
 
+    @Schema(name = "errorMessage", description = "错误信息")
+    private String errorMessage;
+
     @Schema(name = "ownerTenantId", description = "所属的租户id")
     private Long ownerTenantId;
 }

@@ -942,23 +942,23 @@ COMMENT ON COLUMN resources.updated_by IS '更新人';
 DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
-    id         BIGINT PRIMARY KEY,
-    username VARCHAR(32) NOT NULL,
-    nickname   VARCHAR(64),
-    phone      VARCHAR(128),
-    gender     VARCHAR(12) NOT NULL,
-    avatar     VARCHAR(128),
-    email      VARCHAR(128),
-    birthday   DATE,
-    login_date TIMESTAMP,
-    login_ip   VARCHAR(64),
-    is_enabled BOOLEAN     NOT NULL DEFAULT TRUE,
-    is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
-    owner_tenant_id BIGINT NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL
+    id              BIGINT PRIMARY KEY,
+    username        VARCHAR(32) NOT NULL,
+    nickname        VARCHAR(64),
+    phone           VARCHAR(128),
+    gender          VARCHAR(12) NOT NULL,
+    avatar          VARCHAR(128),
+    email           VARCHAR(128),
+    birthday        DATE,
+    login_date      TIMESTAMP,
+    login_ip        VARCHAR(64),
+    is_enabled      BOOLEAN     NOT NULL DEFAULT TRUE,
+    is_deleted      BOOLEAN     NOT NULL DEFAULT FALSE,
+    owner_tenant_id BIGINT      NOT NULL,
+    created_at      TIMESTAMP   NOT NULL,
+    created_by      VARCHAR(32) NOT NULL,
+    updated_at      TIMESTAMP   NOT NULL,
+    updated_by      VARCHAR(32) NOT NULL
 );
 
 COMMENT ON TABLE users IS '用户表';
@@ -992,9 +992,10 @@ CREATE TABLE operation_log
     request_param TEXT,
     response_data    TEXT,
     operation_type   VARCHAR(50)  NOT NULL,
-    content          VARCHAR(256) NOT NULL,
-    content_en       VARCHAR(256) NOT NULL,
-    is_success       BOOLEAN,
+    content       VARCHAR(1024),
+    content_en    VARCHAR(1024),
+    error_message VARCHAR(1024),
+    is_success    BOOLEAN NOT NULL,
     risk_type        VARCHAR(50)  NOT NULL,
     system_name      VARCHAR(100) NOT NULL,
     operation_user   VARCHAR(100) NOT NULL,
@@ -1018,6 +1019,7 @@ COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
 COMMENT ON COLUMN operation_log.operation_user IS '操作人';
 COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
 COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
+COMMENT ON COLUMN operation_log.error_message IS '错误信息';
 COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN operation_log.risk_type IS '操作风险类型';
 COMMENT ON COLUMN operation_log.request_param IS '请求参数(JSON格式)';
