@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
@@ -61,7 +60,6 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
     public void saveLogRecord(LogRecordEntity logRecordEntity) {
         // 使用虚拟线程
         Thread.ofVirtual().start(() -> {
-            LoggerUtil.info(log, "线程: {} 开始记录日志", Thread.currentThread());
             User user = ContextHolderStrategy.getContext().getUser();
             Request request = ContextHolderStrategy.getContext().getRequest();
             Long tenantId = Objects.isNull(user) ?
