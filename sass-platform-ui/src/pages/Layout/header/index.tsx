@@ -40,6 +40,7 @@ export const LayoutHeader = () => {
 
     const setTenant = useCallback(async () => {
         storeTenant(await tenantApi.findTenantInfoForMe());
+        await fetchUserinfo();
     }, [fetchUserinfo, storeTenant])
 
     useEffect(() => {
