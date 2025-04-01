@@ -19,6 +19,8 @@ import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 操作日志接口
@@ -36,4 +38,19 @@ public interface OperationLogService {
      * @return 查询的分页对象
      */
     PageResultDTO<OperationLogDTO> page(OperationLogPageQueryDTO operationLogPageQueryDTO);
+
+    /**
+     * 获取模块列表
+     *
+     * @return 模块列表
+     */
+    List<String> getModuleList();
+
+    /**
+     * 通过id查询日志详情
+     *
+     * @param id 主键id
+     * @return 操作日志详情
+     */
+    OperationLogDTO findById(Long id);
 }

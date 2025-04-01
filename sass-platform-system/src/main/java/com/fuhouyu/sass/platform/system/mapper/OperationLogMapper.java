@@ -32,4 +32,20 @@ public interface OperationLogMapper {
      */
     @TenantQuery
     List<OperationLog> queryList(@Param("pageQuery") OperationLogPageQueryDTO pageQuery);
+
+    /**
+     * 获取模块列表
+     *
+     * @return 模块列表
+     */
+    List<String> getModuleList();
+
+    /**
+     * 通过id查询出操作日志
+     *
+     * @param id 主键id
+     * @return 操作日志
+     */
+    @TenantQuery
+    OperationLog queryById(Long id);
 }

@@ -82,6 +82,32 @@
             <if test="pageQuery.riskType != null and pageQuery.riskType != ''">
                 AND risk_type = #{pageQuery.riskType}
             </if>
+            <if test="pageQuery.operationType != null and pageQuery.operationType != ''">
+                AND operation_type = #{pageQuery.operationType}
+            </if>
+            <if test="pageQuery.startTime != null">
+                <bind name="startTime" value="pageQuery.startTime.atStartOfDay()" />
+                AND operation_time &gt;= #{startTime}
+            </if>
+            <if test="pageQuery.endTime != null">
+                <bind name="endDateTime" value="pageQuery.endTime.atTime(@java.time.LocalTime@MAX)" />
+                AND operation_time &lt;= #{endDateTime}
+            </if>
         </where>
+    </select>
+
+    <select id="getModuleList" resultType="java.lang.String">
+        SELECT
+        DISTINCT
+        module_name
+        FROM
+        <include refid="TableName"/>
+    </select>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM <include refid="TableName"/>
+        WHERE id = #{id}
     </select>
 </mapper>

@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -45,11 +46,20 @@ public class OperationLogPageQueryDTO extends PageQueryDTO {
     @Schema(name = "moduleName", description = "模块名称检索")
     private String moduleName;
 
+    @Schema(name = "operationType", description = "操作日志类型")
+    private String operationType;
+
     @Schema(name = "riskType", description = "风险等级检索")
     private String riskType;
 
     @Schema(name = "isSuccess", description = "是否成功检索")
     private Boolean isSuccess;
+
+    @Schema(name = "startTime", description = "开始时间")
+    private LocalDate startTime;
+
+    @Schema(name = "endTime", description = "结束时间")
+    private LocalDate endTime;
 
     public OperationLogPageQueryDTO() {
         if (Objects.isNull(super.getSortColumn())) {

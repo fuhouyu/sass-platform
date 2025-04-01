@@ -17,13 +17,16 @@
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {OperationLog as OperationLogModel} from "@/model/operationLog";
-import {Input, TableColumnsType, Tag} from "antd";
-import React, {useRef, useState} from "react";
-import {PageList} from "@/components";
+import {Button, DatePicker, Descriptions, List, message, Select, TableColumnsType, Tag} from "antd";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Modal, PageList} from "@/components";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from '@/components/List/table/interface';
-import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, CloseCircleOutlined, CopyOutlined, EyeOutlined} from '@ant-design/icons';
 import {operationLogApi} from '@/apis/operationLog';
+import {useDictItem} from "@/hooks/useDictItem.tsx";
+import dayjs from "dayjs";
+
 
 /**
  * 操作日志
@@ -43,9 +46,12 @@ export const OperationLog = () => {
             title: t('OperationLog.operationType'),
             dataIndex: 'operationType',
             align: "center",
+            render: (_, record: OperationLogModel) => {
+                return findDictItemName('OPERATION_LOG_TYPE', record.operationType);
+            }
         },
         {
-            title: t('OperationLog.isSuccess'),
+            title: t('OperationLog.operationStatus'),
             dataIndex: 'isSuccess',
             align: 'center',
             render: (isSuccess: boolean) => (
@@ -72,6 +78,29 @@ export const OperationLog = () => {
             showSorterTooltip: false
         },
         {
+            title: t('OperationLog.riskType'),
+            dataIndex: 'riskType',
+            align: "center",
+            showSorterTooltip: false,
+            render: (riskType: string) => {
+                switch (riskType) {
+                    case 'LOW_LEVEL':
+                        return <Tag color="warning">
+                            {t('OperationLog.lowLevel')}
+                        </Tag>
+                    case 'MIDDLE_LEVEL':
+                        return <Tag color="warning">
+                            {t('OperationLog.middleLevel')}
+                        </Tag>
+                    case 'HIGH_LEVEL':
+                        return <Tag color="error">
+                            {t('OperationLog.highLevel')}
+                        </Tag>
+
+                }
+            }
+        },
+        {
             title: t('OperationLog.operationUser'),
             dataIndex: 'operationUser',
             align: "center",
@@ -82,12 +111,48 @@ export const OperationLog = () => {
             dataIndex: 'operationTime',
             align: "center",
         },
+        {
+            title: t('Common.action'),
+            dataIndex: 'action',
+            align: "center",
+            render: (_, record: OperationLogModel) => {
+
+                return <Button icon={<EyeOutlined/>} type={'link'}
+                               onClick={async () => {
+                                   setOperationLog(await operationLogApi.operationLogInfo(record.id!))
+                                   setModalOpen(true)
+                               }}
+                >{t('OperationLog.detail')}</Button>
+            }
+        }
     ];
 
     const tableRef = useRef<TableRefType<OperationLogModel>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
+    const [moduleNameList, setModuleNameList] = useState<string[]>([]);
+    const {findDictItemName, findDictItems} = useDictItem(["OPERATION_LOG_TYPE"]);
+    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+    const [operationLog, setOperationLog] = useState<OperationLogModel>({});
+    const {RangePicker} = DatePicker;
 
+
+    const initSearchSelect = useCallback(async () => {
+        setModuleNameList(await operationLogApi.getModuleList());
+    }, [])
+
+    useEffect(() => {
+        initSearchSelect().then();
+    }, []);
+
+    /**
+     * 复制
+     * @param value 值
+     */
+    const handleCopy = async (value: string) => {
+        await navigator.clipboard.writeText(value);
+        await message.success(t('Common.copySuccess'));
+    };
 
     return (
         <>
@@ -100,34 +165,150 @@ export const OperationLog = () => {
                 }}
                 headerSearchProps={{
                     components: [
-                        <><label htmlFor="moduleName">{t('OperationLog.moduleName')}</label>
-                            <Input
+                        <>
+                            <span>{t('OperationLog.moduleName')}</span>
+                            <Select
                                 allowClear
                                 defaultValue={pageQuery.moduleName}
+                                key={'moduleName'}
                                 placeholder={t('OperationLog.moduleNamePlaceholder')}
-                                id={'moduleName'}
-                                onChange={(e) => {
-                                    setPageQuery({moduleName: e.target.value})
-                                }}/>
+                                onChange={(value) => {
+                                    setPageQuery({...pageQuery, moduleName: value})
+                                }}
+                                options={moduleNameList.map(value => {
+                                    return {
+                                        value: value,
+                                        label: value
+                                    }
+                                })}
+                            />
                         </>,
-                        // <>
-                        //     <span>{t('Common.status')}</span>
-                        //     <Select
-                        //         allowClear
-                        //         defaultValue={pageQuery.isEnabled}
-                        //         key={'isEnabled'}
-                        //         placeholder={t('Common.statusPlaceholder')}
-                        //         onChange={(value) => pageQuery['isEnabled'] = value}
-                        //         options={[
-                        //             {value: 'true', label: <span>{t('Common.enabled')}</span>},
-                        //             {value: 'false', label: <span>{t('Common.disabled')}</span>}
-                        //         ]}
-                        //     />
-                        // </>
+                        <>
+                            <span>{t('OperationLog.operationType')}</span>
+                            <Select
+                                allowClear
+                                defaultValue={pageQuery.operationType}
+                                key={'operationType'}
+                                placeholder={t('OperationLog.operationTypePlaceholder')}
+                                onChange={(value) => {
+                                    setPageQuery({...pageQuery, operationType: value})
+                                }}
+                                options={findDictItems('OPERATION_LOG_TYPE').map(itemValue => {
+                                    return {
+                                        value: itemValue.itemCode,
+                                        label: itemValue.itemName
+                                    }
+                                })}
+                            />
+                        </>,
+                        <>
+                            <span>{t('OperationLog.operationStatus')}</span>
+                            <Select
+                                allowClear
+                                defaultValue={pageQuery.isSuccess}
+                                key={'isSuccess'}
+                                placeholder={t('OperationLog.operationStatusPlaceholder')}
+                                onChange={(value) => {
+                                    setPageQuery({...pageQuery, isSuccess: value})
+                                }}
+                                options={[
+                                    {value: 'true', label: t('Common.success')},
+                                    {value: 'false', label: t('Common.failed')},
+                                ]}
+                            />
+                        </>,
+                        <>
+                            <span>{t('OperationLog.operationTime')}</span>
+                            <RangePicker
+                                defaultValue={[dayjs(pageQuery['startTime']), dayjs(pageQuery['endTime'])]}
+                                onCalendarChange={(_, search, __) => {
+                                    setPageQuery({...pageQuery, startTime: search[0], endTime: search[1]})
+                                }}/>
+                        </>
                     ],
                     onSearchClick: () => updateSearchParams(pageQuery)
                 }}
             />
+
+            <Modal
+                title={t('OperationLog.info')}
+                open={isModalOpen}
+                closable
+                onCancel={() => setModalOpen(false)}
+                destroyOnClose
+                width={'80%'}
+                footer={[]}
+            >
+                <Descriptions column={2} size={'small'} bordered>
+                    <Descriptions.Item
+                        label={t('OperationLog.systemName')}>{operationLog.systemName}</Descriptions.Item>
+                    <Descriptions.Item
+                        label={t('OperationLog.moduleName')}>{operationLog.moduleName}</Descriptions.Item>
+
+                    <Descriptions.Item
+                        label={t('OperationLog.requestMethod')}>{operationLog.requestMethod}</Descriptions.Item>
+                    <Descriptions.Item
+                        label={t('OperationLog.requestUri')}>{operationLog.requestUri}</Descriptions.Item>
+
+                    <Descriptions.Item label={t('OperationLog.requestIp')}>{operationLog.requestIp}</Descriptions.Item>
+                    <Descriptions.Item
+                        label={t('OperationLog.requestLocation')}>{operationLog.requestLocation}</Descriptions.Item>
+
+                    <Descriptions.Item
+                        span={2}
+                        label={t('OperationLog.requestParam')}
+                        className={'request-params-list'}
+                    >
+                        <List>
+                            {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam as string)).map(([key, value], index) => (
+                                <List.Item key={index}>
+                                    <span className={'request-param-title'}>{key}:</span>
+
+                                    <div className={'log-item-value'}
+                                    >
+                                        {value ? value as string : ''}
+                                        <Button
+                                            icon={<CopyOutlined/>}
+                                            size="small"
+                                            style={{marginLeft: 10}}
+                                            onClick={() => handleCopy(value as string)}
+                                            title={t('Common.copy')}
+                                        />
+                                    </div>
+
+                                </List.Item>
+                            ))}
+                        </List>
+
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        span={2}
+                        styles={{
+                            content: {
+                                maxWidth: '400px'
+                            }
+                        }}
+                        label={t('OperationLog.responseData')}>
+                        <div className={'log-item-value'}
+                        >
+                            {operationLog.responseData}
+                            <Button
+                                icon={<CopyOutlined/>}
+                                size="small"
+                                style={{marginLeft: 10}}
+                                onClick={() => handleCopy(operationLog.responseData as string)}
+                                title={t('Common.copy')}
+                            />
+                        </div>
+                    </Descriptions.Item>
+
+                    <Descriptions.Item
+                        label={t('OperationLog.operationUser')}>{operationLog.operationUser}</Descriptions.Item>
+                    <Descriptions.Item
+                        label={t('OperationLog.operationTime')}>{operationLog.operationTime}</Descriptions.Item>
+                </Descriptions>
+            </Modal>
+
         </>
     )
 }

@@ -93,4 +93,17 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
                     list);
         }
     }
+
+    @Override
+    public List<String> getModuleList() {
+        return this.operationLogMapper.getModuleList();
+    }
+
+    @Override
+    public OperationLogDTO findById(Long id) {
+        OperationLog operationLog = this.operationLogMapper.queryById(id);
+        OperationLogDTO dto = new OperationLogDTO();
+        BeanUtils.copyProperties(operationLog, dto);
+        return dto;
+    }
 }

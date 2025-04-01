@@ -28,6 +28,8 @@ import zhCN from 'antd/locale/zh_CN';
 import {CommonConstant} from "./constants/commonConstant";
 import {PageLoading} from "./components";
 import {useThemeStore} from "@/store/modules/theme.tsx";
+import 'dayjs/locale/zh-cn';
+import dayjs from "dayjs";
 
 export const App: React.FC = () => {
     // 假设 useRoutes 是一个自定义钩子，返回路由是否加载完成
@@ -51,6 +53,7 @@ export const App: React.FC = () => {
 
 
     useEffect(() => {
+        dayjs.locale(language);
         setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
     }, [language]);
 
