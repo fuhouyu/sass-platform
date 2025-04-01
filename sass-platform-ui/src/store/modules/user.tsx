@@ -40,7 +40,7 @@ interface UserState {
     /**
      * 用户菜单
      */
-    userMenus: Menu[];
+    userMenus: Menu[] | undefined;
 
     /**
      * 当前用户的租户
@@ -101,7 +101,7 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
         refreshToken: '',
     },
     userinfo: {},
-    userMenus: [],
+    userMenus: undefined,
     tenant: {},
     storeTenant: (tenant) => set({tenant}),
     fetchLogin: async (loginForm) => {
@@ -137,7 +137,7 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
 
     fetchUserMenus: async () => {
         const menus = await permissionApi.getUserPermissionApi();
-        set({userMenus: menus});
+        set((state) => ({...state, userMenus: menus ?? []}));
         return menus;
     },
 
