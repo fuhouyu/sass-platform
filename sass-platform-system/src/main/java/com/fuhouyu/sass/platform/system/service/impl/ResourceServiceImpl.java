@@ -462,6 +462,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .accessKey(resources.getObjectKey())
                 .secretKey(s3Properties.getSecretKey())
                 .signature(resourceSignedUrlDTO.getSignature())
+                .params(Map.of("preview", resourceSignedUrlDTO.getPreview()))
                 .build();
         SignedUrlUtil.verifySignedUrl(verifySignedUrlDTO);
     }
