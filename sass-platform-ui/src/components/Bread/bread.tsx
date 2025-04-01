@@ -50,7 +50,7 @@ const itemRender: BreadcrumbProps<object>['itemRender'] = (currentRoute, _params
 
 
 export const Bread = () => {
-    const userMenus = useUserStore(state => state.userMenus);
+    const userMenus = useUserStore(state => state.userMenus) ?? [];
     const pathname = location.pathname;
     const {t} = useTranslation();
 
