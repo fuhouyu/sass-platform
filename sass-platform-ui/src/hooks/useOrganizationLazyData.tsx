@@ -15,7 +15,7 @@
  */
 
 import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {organizationApi} from "@/apis/organization.tsx";
 
 /**
@@ -46,20 +46,21 @@ function updateTreeData(
  * 懒加载组织树
  */
 export function useOrganizationLazyData(): {
+    initOrganization: () => Promise<void>,
     organizationLazyData: Organization[];
     onLoadData: ({key, children}: { key: React.Key; children?: Organization[] }) => Promise<void>
 } {
     // 维护 lazyData 状态
     const [organizationLazyData, setOrganizationLazyData] = useState<OrganizationModal[]>([]);
 
-    useEffect(() => {
-        // 先查询出一级
-        const initOrganization = async () => {
-            const organizations = await organizationApi.getOrganizationListApi();
-            setOrganizationLazyData(organizations);
-        }
-        initOrganization().then();
-    }, [setOrganizationLazyData]);
+    /**
+     * 初始化data
+     */
+    const initOrganization = async () => {
+        const organizations = await organizationApi.getOrganizationListApi();
+        setOrganizationLazyData(organizations);
+    }
+
 
     /**
      * 懒加载树
@@ -74,5 +75,5 @@ export function useOrganizationLazyData(): {
         setOrganizationLazyData(prevState => updateTreeData(prevState, key, res));
     };
 
-    return {organizationLazyData, onLoadData};
+    return {initOrganization, organizationLazyData, onLoadData};
 }

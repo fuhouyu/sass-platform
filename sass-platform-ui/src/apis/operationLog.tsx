@@ -35,6 +35,20 @@ class OperationLogApi {
         request.get(`${this._baseUrl}/page`, {
             params: pageQuery
         });
+
+    /**
+     * 获取模块列表
+     */
+    getModuleList: () => Promise<string[]> = (): Promise<string[]> =>
+        request.get(`${this._baseUrl}/module-list`);
+
+
+    /**
+     * 操作日志详情
+     * @param id 主键id
+     */
+    operationLogInfo: (id: string) => Promise<OperationLog> = (id: string): Promise<OperationLog> =>
+        request.get(`${this._baseUrl}/${id}`)
 }
 
 export const operationLogApi: OperationLogApi = new OperationLogApi(BaseApiUrlConstant.OPERATION_LOG_URL);

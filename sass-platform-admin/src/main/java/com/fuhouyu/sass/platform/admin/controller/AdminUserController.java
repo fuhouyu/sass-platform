@@ -18,6 +18,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
@@ -53,6 +57,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule(value = "管理用户模块")
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
@@ -91,6 +96,7 @@ public class AdminUserController {
      */
     @PutMapping
     @Operation(summary = "修改当前的用户详情")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> editUserinfo(@Valid @RequestBody AdminUserDTO adminUserDTO) {
         adminUserDTO.setId(ContextHolderStrategy.getContext().getUser().getId());
         this.adminUserService.edit(adminUserDTO);
@@ -106,6 +112,7 @@ public class AdminUserController {
     @Operation(summary = "保存用户信息")
     @PostMapping
     @PreAuthorize("@auth.hasAnyPermission('system:user:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> saveUser(@RequestBody @Validated({ValidGroups.SaveGroup.class}) AdminUserDetailDTO userDTO) {
         return ResponseHelper.success(this.adminUserService.saveUser(userDTO));
     }
@@ -120,6 +127,7 @@ public class AdminUserController {
     @PutMapping("/{id}")
     @Operation(summary = "修改用户详情")
     @PreAuthorize("@auth.hasAnyPermission('system:user:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editUserinfo(
             @PathVariable("id") Long id,
             @Valid @RequestBody AdminUserDetailDTO userDTO) {
@@ -150,6 +158,7 @@ public class AdminUserController {
     @Operation(summary = "通过用户id删除用户")
     @DeleteMapping
     @PreAuthorize("@auth.hasAnyPermission('system:user:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> removeUserList(
             @RequestBody
             @Size(min = 1, message = "需要删除的用户不能为空")

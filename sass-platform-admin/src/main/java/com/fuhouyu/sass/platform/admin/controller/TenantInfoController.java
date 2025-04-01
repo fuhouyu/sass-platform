@@ -18,6 +18,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
@@ -53,6 +57,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("租户模块")
 public class TenantInfoController {
 
     private final TenantInfoService tenantInfoService;
@@ -66,6 +71,7 @@ public class TenantInfoController {
     @PostMapping
     @Operation(summary = "保存租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.saveTenantDetail(tenantInfoDTO));
     }
@@ -79,6 +85,7 @@ public class TenantInfoController {
     @PutMapping("/{id}")
     @Operation(summary = "修改租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
             @RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
@@ -122,6 +129,7 @@ public class TenantInfoController {
     @DeleteMapping
     @Operation(summary = "通过id集合删除租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的租户")
                                                   List<Long> ids) {
         int count = this.tenantInfoService.removeByIds(ids);
@@ -176,9 +184,10 @@ public class TenantInfoController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:tenant:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         TenantInfoDTO tenantInfoDTO = new TenantInfoDTO();

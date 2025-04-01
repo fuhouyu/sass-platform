@@ -25,11 +25,12 @@ import {useTranslation} from "react-i18next";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
-import {useUserStore} from "@/store";
+import {useRouterStore, useUserStore} from "@/store";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {TenantInfo} from "@/model/tenant.tsx";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {parseRoutes} from "@/hooks/useRoutes.tsx";
 
 /**
  * 登录组件
@@ -49,6 +50,8 @@ export const Login: React.FC = () => {
     const {fetchLogin} = useUserStore(state => state);
     const {preview} = useResourceAction();
     const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
+    const {userMenus, fetchUserMenus} = useUserStore(state => state);
+    const router = useRouterStore(state => state.router);
     const initTenantList = async () => {
         setTenantList(await tenantApi.list());
     }
@@ -69,6 +72,10 @@ export const Login: React.FC = () => {
             setLoginButtonLoading(false);
             const fromRouter = location.state?.from;
             const from = (fromRouter && fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter || '/';
+            const menus = await fetchUserMenus();
+            if (router?.routes[0]?.children) {
+                router.routes[0].children.push(...parseRoutes(menus));
+            }
             navigate(from);
 
         } catch (err) {

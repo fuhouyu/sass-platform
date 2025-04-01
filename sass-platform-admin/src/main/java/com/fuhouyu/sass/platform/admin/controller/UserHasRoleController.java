@@ -17,6 +17,9 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.service.UserHasRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,6 +72,10 @@ public class UserHasRoleController {
      */
     @PostMapping("/{userId}")
     @Operation(summary = "保存用户和角色的关系")
+    @LogRecord(
+            content = "#{'保存用户:[' + #userId + '] 和角色:[' + #roleIdList + '] 关系'}",
+            contentEn = "#{'Attach User:[' + #userId + ']to Roles:[' + #roleIdList + '] 关系'}",
+            operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.HIGH_LEVEL)
     @PreAuthorize("@auth.hasAnyPermission('system:user:add', 'system:user:edit')")
     public BaseResponse<Void> saveUserRole(@PathVariable("userId") Long userId,
                                            @RequestBody List<Long> roleIdList) {

@@ -91,6 +91,11 @@ public class OperationLog implements Serializable {
     private String systemName;
 
     /**
+     * 错误信息
+     */
+    private String errorMessage;
+
+    /**
      * 操作人
      */
     private String operationUser;

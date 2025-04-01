@@ -29,7 +29,10 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO
 import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
 import com.fuhouyu.sass.platform.system.mapper.AdminUserMapper;
-import com.fuhouyu.sass.platform.system.service.*;
+import com.fuhouyu.sass.platform.system.service.AccountService;
+import com.fuhouyu.sass.platform.system.service.AdminUserService;
+import com.fuhouyu.sass.platform.system.service.UserHasRoleService;
+import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,8 +66,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     private final UserPositionService userPositionService;
 
-    private final TenantHasUserService tenantHasUserService;
-
     private final UserHasRoleService userHasRoleService;
 
     @Override
@@ -72,11 +73,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         this.validUsernameExists(userinfoDTO.getUsername());
         long id = snowflakeIdWorker.nextId();
         AdminUsers entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         entity.setId(id);
+        entity.setOwnerTenantId(tenantId);
         this.adminUserMapper.insert(entity);
-        this.tenantHasUserService.save(
-                ContextHolderStrategy.getContext().getUser().getTenantId(),
-                id);
         return id;
     }
 
@@ -166,7 +166,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         int deleteUserCount = this.adminUserMapper.deleteByIds(ids);
         this.accountService.removeByUserIds(ids);
-        this.tenantHasUserService.removeByTenantIdAndUserIds(ContextHolderStrategy.getContext().getUser().getTenantId(), ids);
         this.userPositionService.removeByUserIds(ids);
         this.userHasRoleService.removeByUserIds(ids);
         return deleteUserCount;

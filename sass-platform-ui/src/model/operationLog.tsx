@@ -31,7 +31,7 @@ export interface OperationLog {
     /**
      * 主键id
      */
-    id?: number;
+    id?: string;
 
     /**
      * 模块名称
@@ -89,6 +89,11 @@ export interface OperationLog {
     isSuccess?: boolean;
 
     /**
+     * 异常信息
+     */
+    errorMessage?: string;
+
+    /**
      * 操作风险类型
      */
     riskType?: string;
@@ -106,7 +111,7 @@ export interface OperationLog {
     /**
      * 操作时间
      */
-    operationTime?: Date;
+    operationTime?: string;
 
     /**
      * 所属的租户id

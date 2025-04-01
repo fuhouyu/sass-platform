@@ -51,10 +51,7 @@ import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.Delete;
-import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import software.amazon.awssdk.utils.BinaryUtils;
@@ -183,7 +180,11 @@ public class ResourceServiceImpl implements ResourceService {
                 .overrideConfiguration(builder -> builder.putHeader("Content-Md5", this.calculateContentMd5(deleteObjects)))
                 .delete(deleteObjects)
                 .build();
-        this.s3Client.deleteObjects(deleteObjectsRequest);
+        try {
+            this.s3Client.deleteObjects(deleteObjectsRequest);
+        } catch (S3Exception e) {
+            LoggerUtil.error(log, "资源文件: [{}] 删除失败，错误信息: {}", resources, e.getMessage(), e);
+        }
         return this.resourceMapper.deleteByIds(resources.stream().map(Resources::getId).toList());
     }
 
@@ -462,6 +463,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .accessKey(resources.getObjectKey())
                 .secretKey(s3Properties.getSecretKey())
                 .signature(resourceSignedUrlDTO.getSignature())
+                .params(Map.of("preview", resourceSignedUrlDTO.getPreview()))
                 .build();
         SignedUrlUtil.verifySignedUrl(verifySignedUrlDTO);
     }

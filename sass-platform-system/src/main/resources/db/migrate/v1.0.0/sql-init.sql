@@ -502,6 +502,12 @@ VALUES (27, 2, 'Menu.operationLogManage', 'system:operationLog:list', 4, 'i-caoz
         'system/operationLog', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (271, 27, 'Menu.query', 'system:operationLog:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
@@ -606,6 +612,8 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 33, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 27, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 271, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
@@ -698,6 +706,13 @@ INSERT INTO dict_type
  created_by, updated_at, updated_by)
 VALUES (2, '租户类型', 'TENANT_TYPE', 2, true, false, false, '租户类型', 1, now(), 'admin', now(), 'admin');
 
+INSERT INTO dict_type
+(id, dict_name, dict_code, display_order, is_enabled, is_deleted, is_allow_modified, remark, owner_tenant_id,
+ created_at,
+ created_by, updated_at, updated_by)
+VALUES (3, '日志类型', 'OPERATION_LOG_TYPE', 3, true, false, false, '日志操作类型', 1, now(), 'admin', now(), 'admin');
+
+
 
 DROP TABLE IF EXISTS dict_item;
 CREATE TABLE dict_item
@@ -753,6 +768,27 @@ VALUES (4, 'TENANT_TYPE', '公司', 'COMPANY', 1, true, false, false, 1, '公司
 INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
                       owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
 VALUES (5, 'TENANT_TYPE', '学校', 'SCHOOL', 2, true, false, false, 1, '学校', now(), 'admin', now(), 'admin');
+
+-- 操作日志类型
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (6, 'OPERATION_LOG_TYPE', '登录', 'LOGIN', 1, true, false, false, 1, '登录', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (7, 'OPERATION_LOG_TYPE', '登出', 'LOGOUT', 2, true, false, false, 1, '登出', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (8, 'OPERATION_LOG_TYPE', '查询', 'QUERY', 3, true, false, false, 1, '查询', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (9, 'OPERATION_LOG_TYPE', '创建', 'CREATE', 4, true, false, false, 1, '创建', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (10, 'OPERATION_LOG_TYPE', '更新', 'UPDATE', 5, true, false, false, 1, '更新', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (11, 'OPERATION_LOG_TYPE', '删除', 'DELETE', 6, true, false, false, 1, '删除', now(), 'admin', now(), 'admin');
+
 
 
 DROP TABLE IF EXISTS organizations;
@@ -906,23 +942,23 @@ COMMENT ON COLUMN resources.updated_by IS '更新人';
 DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
-    id         BIGINT PRIMARY KEY,
-    username VARCHAR(32) NOT NULL,
-    nickname   VARCHAR(64),
-    phone      VARCHAR(128),
-    gender     VARCHAR(12) NOT NULL,
-    avatar     VARCHAR(128),
-    email      VARCHAR(128),
-    birthday   DATE,
-    login_date TIMESTAMP,
-    login_ip   VARCHAR(64),
-    is_enabled BOOLEAN     NOT NULL DEFAULT TRUE,
-    is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
-    owner_tenant_id BIGINT NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(32) NOT NULL
+    id              BIGINT PRIMARY KEY,
+    username        VARCHAR(32) NOT NULL,
+    nickname        VARCHAR(64),
+    phone           VARCHAR(128),
+    gender          VARCHAR(12) NOT NULL,
+    avatar          VARCHAR(128),
+    email           VARCHAR(128),
+    birthday        DATE,
+    login_date      TIMESTAMP,
+    login_ip        VARCHAR(64),
+    is_enabled      BOOLEAN     NOT NULL DEFAULT TRUE,
+    is_deleted      BOOLEAN     NOT NULL DEFAULT FALSE,
+    owner_tenant_id BIGINT      NOT NULL,
+    created_at      TIMESTAMP   NOT NULL,
+    created_by      VARCHAR(32) NOT NULL,
+    updated_at      TIMESTAMP   NOT NULL,
+    updated_by      VARCHAR(32) NOT NULL
 );
 
 COMMENT ON TABLE users IS '用户表';
@@ -956,9 +992,10 @@ CREATE TABLE operation_log
     request_param TEXT,
     response_data    TEXT,
     operation_type   VARCHAR(50)  NOT NULL,
-    content          VARCHAR(256) NOT NULL,
-    content_en       VARCHAR(256) NOT NULL,
-    is_success       BOOLEAN,
+    content       VARCHAR(1024),
+    content_en    VARCHAR(1024),
+    error_message VARCHAR(1024),
+    is_success    BOOLEAN NOT NULL,
     risk_type        VARCHAR(50)  NOT NULL,
     system_name      VARCHAR(100) NOT NULL,
     operation_user   VARCHAR(100) NOT NULL,
@@ -982,6 +1019,7 @@ COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
 COMMENT ON COLUMN operation_log.operation_user IS '操作人';
 COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
 COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
+COMMENT ON COLUMN operation_log.error_message IS '错误信息';
 COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN operation_log.risk_type IS '操作风险类型';
 COMMENT ON COLUMN operation_log.request_param IS '请求参数(JSON格式)';

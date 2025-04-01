@@ -40,7 +40,7 @@ export const LayoutMenu = () => {
         }
     ]
 
-    const userMenus: UserMenus[] = useUserStore(state => state.userMenus)
+    const userMenus: UserMenus[] = useUserStore(state => state.userMenus) ?? []
 
     const menuItems: MenuProps[] = useMenuTree(userMenus, [MenuType.BUTTON]) as MenuProps[]
     menuItems.unshift(...commonMenus);

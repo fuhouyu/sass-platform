@@ -68,7 +68,9 @@ public class AccountServiceImpl implements AccountService {
             accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
         }
         accountDTO.setIsEnabled(true);
-        this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
+        Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
+        entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        this.accountMapper.insert(entity);
         return new AccountIdDTO(accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
     }
 

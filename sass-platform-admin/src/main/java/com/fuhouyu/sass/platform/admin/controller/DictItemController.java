@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
@@ -50,6 +54,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("字典项模块")
 public class DictItemController {
 
     private final DictItemService dictItemService;
@@ -64,6 +69,7 @@ public class DictItemController {
     @PostMapping
     @Operation(summary = "保存字典项")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-item:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> save(@Valid @RequestBody DictItemDTO dictItemDTO) {
         return ResponseHelper.success(this.dictItemService.save(dictItemDTO));
     }
@@ -77,6 +83,7 @@ public class DictItemController {
     @PutMapping("/{id}")
     @Operation(summary = "修改字典项")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-item:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Valid @RequestBody DictItemDTO dictItemDTO) {
         dictItemDTO.setId(id);
@@ -106,6 +113,7 @@ public class DictItemController {
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-item:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.dictItemService.removeByIds(ids));
     }
@@ -177,9 +185,10 @@ public class DictItemController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-item:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         DictItemDTO dictItemDTO = new DictItemDTO();

@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
@@ -48,6 +52,7 @@ import java.util.List;
 @Tag(name = "资源 web接口")
 @Validated
 @RequiredArgsConstructor
+@LogModule("资源模块")
 public class ResourceController {
 
     private final ResourceService resourceService;
@@ -87,6 +92,7 @@ public class ResourceController {
      */
     @Operation(summary = "保存资源信息")
     @PostMapping
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> saveResource(@RequestBody @Validated({ValidGroups.SaveGroup.class}) ResourceDTO resourceDTO) {
         return ResponseHelper.success(this.resourceService.save(resourceDTO));
     }
@@ -101,6 +107,7 @@ public class ResourceController {
     @Operation(summary = "通过资源id删除资源")
     @DeleteMapping
     @PreAuthorize("@auth.hasAnyPermission('tenant-space:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> removeResourceList(
             @RequestBody
             @Size(min = 1, message = "需要删除的资源不能为空")

@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDetailDTO;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("租户空间模块")
 public class TenantSpaceController {
 
     private final TenantSpaceService tenantSpaceService;

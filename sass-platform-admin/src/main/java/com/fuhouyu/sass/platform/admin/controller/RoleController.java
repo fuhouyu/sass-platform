@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RolePageQueryDTO;
@@ -50,6 +54,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("角色模块")
 public class RoleController {
 
     private final RoleService roleService;
@@ -63,6 +68,7 @@ public class RoleController {
     @PostMapping
     @Operation(summary = "保存角色")
     @PreAuthorize("@auth.hasAnyPermission('system:role:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> save(@Valid @RequestBody RoleDTO roleDTO) {
         return ResponseHelper.success(this.roleService.save(roleDTO));
     }
@@ -76,6 +82,7 @@ public class RoleController {
     @PutMapping("/{id}")
     @Operation(summary = "修改角色")
     @PreAuthorize("@auth.hasAnyPermission('system:role:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Valid @RequestBody RoleDTO roleDTO) {
         roleDTO.setId(id);
@@ -105,6 +112,7 @@ public class RoleController {
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     @PreAuthorize("@auth.hasAnyPermission('system:role:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.roleService.removeByIds(ids));
     }
@@ -159,9 +167,10 @@ public class RoleController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:role:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         RoleDTO roleDTO = new RoleDTO();

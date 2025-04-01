@@ -16,7 +16,7 @@
 
 import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import Layout, {Content} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
@@ -28,6 +28,8 @@ import {CloudUploadOutlined} from "@ant-design/icons";
 import {Card, Progress} from "antd";
 import {useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
+import {parseRoutes} from "@/hooks/useRoutes.tsx";
+import {useRouterStore, useUserStore} from "@/store";
 
 export const LayoutMain = () => {
     const accessToken = useAuth();
@@ -35,11 +37,21 @@ export const LayoutMain = () => {
     const uploadFiles = useUploadStore(state => state.uploadFiles);
     const {t} = useTranslation();
     const navigate = useNavigate();
+    const {userMenus, fetchUserMenus} = useUserStore(state => state);
+    const router = useRouterStore(state => state.router);
+
+    const initRoutes = useCallback(async () => {
+        const menus = userMenus ? userMenus : await fetchUserMenus();
+        if (router?.routes[0]?.children) {
+            router.routes[0].children.push(...parseRoutes(menus));
+        }
+    }, [fetchUserMenus, router])
     useEffect(() => {
         if (!accessToken) {
             navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
         }
-    }, [accessToken, navigate, pathname]);
+        initRoutes().then();
+    }, [accessToken, navigate, pathname, initRoutes]);
 
     return (
         <Layout className={'layout-container'}>

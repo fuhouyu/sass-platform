@@ -208,6 +208,9 @@ public class SignedUrlUtil {
          */
         private long expiresSeconds;
 
+        public UrlSignedDTO() {
+            this.params = Collections.emptyMap();
+        }
     }
 
     /**

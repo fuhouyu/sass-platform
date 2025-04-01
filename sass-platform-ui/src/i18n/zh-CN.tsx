@@ -29,6 +29,8 @@ const ZhCN = {
         action: '操作',
         success: '成功',
         failed: '失败',
+        copy: '复制',
+        copySuccess: '已复制到剪切板',
         yes: '是',
         no: '否',
         enabled: '启用',
@@ -318,9 +320,10 @@ const ZhCN = {
     },
     OperationLog: {
         list: '日志列表',
+        detail: '详细',
         info: '日志详情',
         moduleName: '模块名称',
-        moduleNamePlaceholder: '请输入模块',
+        moduleNamePlaceholder: '请选择模块名称',
         requestUri: '请求地址',
         requestIp: '请求ip',
         requestLocation: '请求地点',
@@ -328,11 +331,20 @@ const ZhCN = {
         requestParam: '请求参数',
         responseData: '响应数据',
         operationType: '操作类型',
-        isSuccess: '操作状态',
+        operationTypePlaceholder: '请选择操作类型',
+        operationStatus: '操作状态',
+        operationStatusPlaceholder: '请选择操作状态',
         riskType: '风险等级',
+        lowLevel: '低风险',
+        middleLevel: '中风险',
+        highLevel: '高风险',
         systemName: '系统名称',
         operationUser: '操作人',
         operationTime: '操作时间',
+        operationTimePlaceholder: '请选择操作时间',
+        errorMessage: '错误信息',
+
+
 
     }
 }

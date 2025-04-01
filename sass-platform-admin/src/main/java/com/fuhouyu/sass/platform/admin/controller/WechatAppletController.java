@@ -18,6 +18,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletPhoneInfoDTO;
 import com.fuhouyu.sass.platform.system.service.UserService;
@@ -47,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("微信小程序模块")
 public class WechatAppletController {
 
     private final UserService userService;
@@ -62,6 +67,7 @@ public class WechatAppletController {
     @PostMapping("/phone")
     @Operation(summary = "保存手机号")
     @Parameter(name = "code", description = "用于获取手机号的临时编码")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> savePhoneNum(@RequestParam("code") String code) {
         WechatAppletPhoneInfoDTO wechatAppletPhoneInfoDTO = this.wechatAppletService.getPhoneNum(code);
         UserDTO user = this.userService.findById(ContextHolderStrategy.getContext().getUser().getId());

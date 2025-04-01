@@ -55,7 +55,7 @@ export const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
  * 路由hook
  */
 export const useRoutes = () => {
-    const {fetchUserMenus} = useUserStore();
+    const {userMenus, fetchUserMenus} = useUserStore();
     const [initialized, setInitialized] = useState(false);
     const [dynamicRoutes, setRoutes] = useState<DataRouteObject[]>([]);
 
@@ -67,17 +67,16 @@ export const useRoutes = () => {
         }
 
         const initializeRoutes = async () => {
-            if (initialized) return; // Avoid duplicate calls
-
-            const userMenus = await fetchUserMenus();
-            const newRoutes = parseRoutes(userMenus); // Parse new routes
+            if (initialized || userMenus) return; // Avoid duplicate calls
+            const menus = await fetchUserMenus();
+            const newRoutes = parseRoutes(menus); // Parse new routes
             setRoutes(newRoutes); // Update routes
 
             setInitialized(true);
         };
 
         initializeRoutes().then();
-    }, [fetchUserMenus, initialized]);
+    }, [userMenus, initialized]);
 
     return {initialized, dynamicRoutes};
 }

@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypeDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
@@ -47,6 +51,7 @@ import java.util.List;
 @Tag(name = "字典类型 web接口")
 @Validated
 @RequiredArgsConstructor
+@LogModule("字典类型模块")
 public class DictTypeController {
 
     private final DictTypeService dictTypeService;
@@ -61,6 +66,7 @@ public class DictTypeController {
     @PostMapping
     @Operation(summary = "保存字典类型")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-type:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> save(@Valid @RequestBody DictTypeDTO dictTypeDTO) {
         return ResponseHelper.success(this.dictTypeService.save(dictTypeDTO));
     }
@@ -74,6 +80,7 @@ public class DictTypeController {
     @PutMapping("/{id}")
     @Operation(summary = "修改字典类型")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-type:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> update(@PathVariable("id") Long id,
                                      @Valid @RequestBody DictTypeDTO dictTypeDTO) {
         dictTypeDTO.setId(id);
@@ -103,6 +110,7 @@ public class DictTypeController {
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-type:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.dictTypeService.removeByIds(ids));
     }
@@ -157,9 +165,10 @@ public class DictTypeController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-type:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         DictTypeDTO dictTypeDTO = new DictTypeDTO();

@@ -24,10 +24,14 @@ import com.fuhouyu.sass.platform.system.service.OperationLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -54,7 +58,33 @@ public class OperationLogController {
      */
     @GetMapping("/page")
     @Operation(summary = "查询操作日志")
+    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:list')")
     public BaseResponse<PageResultDTO<OperationLogDTO>> page(OperationLogPageQueryDTO operationLogPageQueryDTO) {
         return ResponseHelper.success(this.operationLogService.page(operationLogPageQueryDTO));
     }
+
+    /**
+     * 日志详情
+     *
+     * @return 日志详情
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "日志详情")
+    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:query')")
+    public BaseResponse<OperationLogDTO> operationLogInfo(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.operationLogService.findById(id));
+    }
+
+    /**
+     * 获取模块列表
+     *
+     * @return 模块列表
+     */
+    @GetMapping("/module-list")
+    @Operation(summary = "获取模块列表")
+    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:list')")
+    public BaseResponse<List<String>> moduleList() {
+        return ResponseHelper.success(this.operationLogService.getModuleList());
+    }
+
 }

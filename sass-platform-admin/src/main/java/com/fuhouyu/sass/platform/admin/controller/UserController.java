@@ -18,6 +18,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +46,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("普通用户模块")
 public class UserController {
 
     private final UserService userService;
@@ -67,6 +72,7 @@ public class UserController {
      */
     @PutMapping
     @Operation(summary = "修改当前用户详情")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editUser(@Valid @RequestBody UserDTO userDTO) {
         Long id = ContextHolderStrategy.getContext().getUser().getId();
         userDTO.setId(id);

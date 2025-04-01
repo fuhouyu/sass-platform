@@ -17,6 +17,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionPageQueryDTO;
@@ -47,6 +51,7 @@ import java.util.List;
 @Tag(name = "权限 web接口")
 @Validated
 @RequiredArgsConstructor
+@LogModule("权限模块")
 public class PermissionController {
 
     private final PermissionService permissionService;
@@ -60,6 +65,7 @@ public class PermissionController {
     @PostMapping
     @Operation(summary = "保存权限dto对象")
     @PreAuthorize("@auth.hasAnyPermission('system:permission:add')")
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> savePermission(@RequestBody PermissionDTO permissionDTO) {
         return ResponseHelper.success(this.permissionService.save(permissionDTO));
     }
@@ -74,6 +80,7 @@ public class PermissionController {
     @PutMapping("/{id}")
     @Operation(summary = "修改权限")
     @PreAuthorize("@auth.hasAnyPermission('system:permission:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> updatePermission(@PathVariable("id") Long id,
                                                @RequestBody PermissionDTO permissionDTO) {
         permissionDTO.setId(id);
@@ -130,6 +137,7 @@ public class PermissionController {
     @DeleteMapping
     @Operation(summary = "根据权限id删除权限")
     @PreAuthorize("@auth.hasAnyPermission('system:permission:delete')")
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> deletePermission(@RequestBody @NotEmpty(message = "未选择要删除的权限") List<Long> idList) {
         this.permissionService.removeByIds(idList);
         return ResponseHelper.success();
@@ -181,9 +189,10 @@ public class PermissionController {
      * @return void
      */
     @PutMapping("/{id}/status")
-    @Operation(summary = "启禁用字典项")
+    @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
     @PreAuthorize("@auth.hasAnyPermission('system:permission:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
         PermissionDTO permissionDTO = new PermissionDTO();

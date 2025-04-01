@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Key, useRef, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
@@ -61,7 +61,7 @@ export const Organization = () => {
     const [form] = Form.useForm();
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
-    const {onLoadData, organizationLazyData} = useOrganizationLazyData();
+    const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
     const language = useLocaleStore((state) => state.language);
 
 
@@ -123,6 +123,10 @@ export const Organization = () => {
             }
         }
     ];
+
+    useEffect(() => {
+        initOrganization().then();
+    }, []);
 
     /**
      * table列选择
