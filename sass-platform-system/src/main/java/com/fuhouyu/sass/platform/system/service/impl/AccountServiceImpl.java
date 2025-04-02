@@ -69,7 +69,6 @@ public class AccountServiceImpl implements AccountService {
         }
         accountDTO.setIsEnabled(true);
         Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
-        entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.accountMapper.insert(entity);
         return new AccountIdDTO(accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
     }
