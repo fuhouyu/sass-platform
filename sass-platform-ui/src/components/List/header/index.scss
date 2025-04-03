@@ -15,7 +15,9 @@
  */
 
 .search-header {
+  display: flex;
   padding: 0.75rem 1rem;
+  align-items: center;
   border-radius: .5rem;
   margin-bottom: 0.9375rem;
   background-color: #ffffff;
@@ -23,6 +25,7 @@
   .search-components {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 
     .search-component {
       display: flex;
@@ -30,12 +33,13 @@
       align-items: center;
       gap: .6rem;
       white-space: nowrap;
+
+      .ant-select-selector {
+        width: 11.25rem;
+      }
     }
   }
 
-  .ant-select-selector {
-    width: 180px !important;
-  }
 
   .search-button {
     font-size: 0.75rem;
