@@ -13,36 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.service;
 
-.search-header {
-  display: flex;
-  padding: 0.75rem 1rem;
-  align-items: center;
-  border-radius: .5rem;
-  margin-bottom: 0.9375rem;
-  background-color: #ffffff;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 
-  .search-components {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    .search-component {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: .6rem;
-      white-space: nowrap;
-
-      .ant-select-selector {
-        width: 11.25rem;
-      }
-    }
-  }
+/**
+ * <p>
+ * 参数配置接口
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/2 23:12
+ */
+public interface ParamConfigService extends BaseService<Long, ParamConfigDTO> {
 
 
-  .search-button {
-    font-size: 0.75rem;
-    margin-left: auto;
-  }
+    /**
+     * 检查配置key是否存在
+     *
+     * @param configKey 配置key
+     * @return true 存在，false不存在
+     */
+    Boolean checkConfigKeyExists(String configKey);
 }

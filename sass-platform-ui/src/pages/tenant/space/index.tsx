@@ -183,13 +183,17 @@ const TenantSpace: React.FC = () => {
 
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
     const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
+    const [countObjects, setCountObjects] = useState<number>(0)
 
 
     /**
-     * 查询租户空间
+     * 初始化数据
      */
-    const queryTenantSpaceInfo = useCallback(async () => {
+    const init = useCallback(async () => {
         setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
+        const number = await resourceApi.countObjects();
+        console.log(number)
+        setCountObjects(number);
     }, []);
 
 
@@ -219,8 +223,8 @@ const TenantSpace: React.FC = () => {
 
 
     useEffect(() => {
-        queryTenantSpaceInfo().then();
-    }, [queryTenantSpaceInfo])
+        init().then();
+    }, [init])
 
 
     /**
@@ -311,7 +315,7 @@ const TenantSpace: React.FC = () => {
                         <Space size={24}>
                             <span>{t('Common.createdAt')}：<strong>{tenantSpace?.createdAt}</strong></span>
                             <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {tableRef?.current?.pageResult?.total} Objects
+                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {countObjects} Objects
                             </span>
                         </Space>
                     </Flex>

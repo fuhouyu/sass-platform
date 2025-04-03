@@ -160,4 +160,16 @@ public class ResourceController {
                                                   Boolean preview) {
         return ResponseHelper.success(this.resourceService.generateSignedUrl(id, preview));
     }
+
+
+    /**
+     * 统计有多少个object
+     *
+     * @return 总数
+     */
+    @GetMapping("/count")
+    @Operation(summary = "资源总数")
+    public BaseResponse<Integer> countObjects() {
+        return ResponseHelper.success(this.resourceService.countObjects());
+    }
 }

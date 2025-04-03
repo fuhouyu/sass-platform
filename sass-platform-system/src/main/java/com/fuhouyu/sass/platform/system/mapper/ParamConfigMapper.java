@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.mapper;
 
-.search-header {
-  display: flex;
-  padding: 0.75rem 1rem;
-  align-items: center;
-  border-radius: .5rem;
-  margin-bottom: 0.9375rem;
-  background-color: #ffffff;
+import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
+import org.apache.ibatis.annotations.Param;
 
-  .search-components {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+/**
+ * <p>
+ * 参数配置mapper
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/2 22:39
+ */
+public interface ParamConfigMapper extends BaseMapper<Long, ParamConfigs> {
 
-    .search-component {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: .6rem;
-      white-space: nowrap;
-
-      .ant-select-selector {
-        width: 11.25rem;
-      }
-    }
-  }
-
-
-  .search-button {
-    font-size: 0.75rem;
-    margin-left: auto;
-  }
+    /**
+     * 通过配置key查询出参数配置
+     *
+     * @param configKey 配置key
+     */
+    ParamConfigs queryByConfigKey(@Param("configKey") String configKey);
 }

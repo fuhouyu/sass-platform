@@ -1034,3 +1034,31 @@ CREATE INDEX idx_operation_log_risk_type ON operation_log (owner_tenant_id, risk
 COMMENT ON index idx_operation_log_module_name IS '模块名称';
 COMMENT ON index idx_operation_log_operation_type IS '操作类型';
 COMMENT ON index idx_operation_log_risk_type IS '风险类型';
+
+
+DROP TABLE IF EXISTS param_configs;
+CREATE TABLE param_configs
+(
+    id                BIGSERIAL    NOT NULL PRIMARY KEY,
+    config_name       VARCHAR(128) NOT NULL,
+    config_key        VARCHAR(256) NOT NULL,
+    config_value      VARCHAR(256) NOT NULL,
+    group_key         VARCHAR(31)  NOT NULL,
+    remark            VARCHAR(512),
+    is_allow_modified BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at        TIMESTAMP    NOT NULL,
+    created_by        VARCHAR(32)  NOT NULL,
+    updated_at        TIMESTAMP    NOT NULL,
+    updated_by        VARCHAR(32)  NOT NULL
+);
+COMMENT ON TABLE param_configs IS '系统参数';
+COMMENT ON COLUMN param_configs.id IS '主键id';
+COMMENT ON COLUMN param_configs.config_name IS '配置名称';
+COMMENT ON COLUMN param_configs.config_key IS '配置key';
+COMMENT ON COLUMN param_configs.config_value IS '配置值';
+COMMENT ON COLUMN param_configs.group_key IS '分组标识';
+COMMENT ON COLUMN param_configs.remark IS '备注';
+COMMENT ON COLUMN param_configs.created_at IS '创建时间';
+COMMENT ON COLUMN param_configs.created_by IS '创建人';
+COMMENT ON COLUMN param_configs.updated_at IS '更新时间';
+COMMENT ON COLUMN param_configs.updated_by IS '更新人';

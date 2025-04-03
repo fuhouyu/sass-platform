@@ -13,36 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.assembler;
 
-.search-header {
-  display: flex;
-  padding: 0.75rem 1rem;
-  align-items: center;
-  border-radius: .5rem;
-  margin-bottom: 0.9375rem;
-  background-color: #ffffff;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-  .search-components {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+/**
+ * <p>
+ * 字典类型转换
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/11/2 19:48
+ */
+@Mapper
+public interface ParamConfigAssembler extends BaseAssembler<ParamConfigs, ParamConfigDTO> {
 
-    .search-component {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: .6rem;
-      white-space: nowrap;
-
-      .ant-select-selector {
-        width: 11.25rem;
-      }
-    }
-  }
-
-
-  .search-button {
-    font-size: 0.75rem;
-    margin-left: auto;
-  }
+    ParamConfigAssembler INSTANCE = Mappers.getMapper(ParamConfigAssembler.class);
 }

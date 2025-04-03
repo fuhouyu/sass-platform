@@ -201,6 +201,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         accountDTO.setUserId(adminUserDetailDTO.getId());
         accountDTO.setIsEnabled(true);
         accountDTO.setUserType(UserTypeEnum.ADMIN);
+        accountDTO.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         try {
             this.accountService.save(accountDTO);
         } catch (Exception e) {

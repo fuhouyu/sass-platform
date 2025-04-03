@@ -39,21 +39,21 @@ const SearchHeader = (searchComponentProps: SearchComponentProps) => {
                         </div>
                     )
                 )}
-                <div className='search-button'>
-                    {(components?.length ?? 0) > 0 &&
-                        <Button type="primary" loading={buttonLoading} icon={<SearchOutlined/>}
-                                onClick={() => {
-                                    if (!onSearchClick) {
-                                        return
-                                    }
-                                    setButtonLoading(true);
-                                    onSearchClick();
-                                    setButtonLoading(false);
-                                }}>{t('Button.search')}</Button>
-                    }
-                </div>
-            </div>
 
+            </div>
+            <div className='search-button'>
+                {(components?.length ?? 0) > 0 &&
+                    <Button type="primary" loading={buttonLoading} icon={<SearchOutlined/>}
+                            onClick={() => {
+                                if (!onSearchClick) {
+                                    return
+                                }
+                                setButtonLoading(true);
+                                onSearchClick();
+                                setButtonLoading(false);
+                            }}>{t('Button.search')}</Button>
+                }
+            </div>
         </div>
     );
 };

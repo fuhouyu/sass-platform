@@ -285,6 +285,11 @@ public class ResourceServiceImpl implements ResourceService {
         return presignedGetObjectRequest.url().toExternalForm();
     }
 
+    @Override
+    public Integer countObjects() {
+        return this.resourceMapper.countObjects();
+    }
+
     /**
      * 检查资源权限
      *

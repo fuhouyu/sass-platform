@@ -66,6 +66,12 @@ class ResourceApi extends DefaultApiImpl<Resource> {
         request.get(`${this.baseUrl}/generate/signed-url/${id}`, {
             params: {preview}
         })
+
+    /**
+     * 获取有多少个对象
+     */
+    countObjects: () => Promise<number> = (): Promise<number> =>
+        request.get(`${this.baseUrl}/count`);
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

@@ -58,23 +58,27 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
 
     @Override
     public void saveLogRecord(LogRecordEntity logRecordEntity) {
-        User user = ContextHolderStrategy.getContext().getUser();
-        Request request = ContextHolderStrategy.getContext().getRequest();
-        Long tenantId = Objects.isNull(user) ?
-                request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID)
-                : user.getTenantId();
+        // 使用虚拟线程
+        Thread.ofVirtual().start(() -> {
+            User user = ContextHolderStrategy.getContext().getUser();
+            Request request = ContextHolderStrategy.getContext().getRequest();
+            Long tenantId = Objects.isNull(user) ?
+                    request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID)
+                    : user.getTenantId();
 
-        OperationLog operationLog = new OperationLog();
+            OperationLog operationLog = new OperationLog();
 
-        BeanUtils.copyProperties(logRecordEntity, operationLog);
-        String requestLocation =
-                request.getAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION);
-        operationLog.setRequestLocation(requestLocation);
-        operationLog.setId(snowflakeIdWorker.nextId());
+            BeanUtils.copyProperties(logRecordEntity, operationLog);
+            String requestLocation =
+                    request.getAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION);
+            operationLog.setRequestLocation(requestLocation);
+            operationLog.setId(snowflakeIdWorker.nextId());
 
-        operationLog.setOwnerTenantId(tenantId);
-        operationLog.setOperationTime(LocalDateTime.parse(logRecordEntity.getOperationTime(), LogRecordEntity.DATE_TIME_FORMATTER));
-        this.operationLogMapper.insert(operationLog);
+            operationLog.setOwnerTenantId(tenantId);
+            operationLog.setOperationTime(LocalDateTime.parse(logRecordEntity.getOperationTime(), LogRecordEntity.DATE_TIME_FORMATTER));
+            this.operationLogMapper.insert(operationLog);
+        });
+
     }
 
     @Override

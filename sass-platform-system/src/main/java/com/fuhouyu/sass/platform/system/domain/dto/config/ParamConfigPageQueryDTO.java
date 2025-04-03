@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.domain.dto.config;
 
-.search-header {
-  display: flex;
-  padding: 0.75rem 1rem;
-  align-items: center;
-  border-radius: .5rem;
-  margin-bottom: 0.9375rem;
-  background-color: #ffffff;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-  .search-components {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    .search-component {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: .6rem;
-      white-space: nowrap;
-
-      .ant-select-selector {
-        width: 11.25rem;
-      }
-    }
-  }
+/**
+ * <p>
+ * 参数配置分页查询的dto对象
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/3 22:23
+ */
+@Data
+@Schema(name = "ParamConfigPageQueryDTO", description = "参数配置查询的dto对象")
+@EqualsAndHashCode(callSuper = true)
+public class ParamConfigPageQueryDTO extends PageQueryDTO {
 
 
-  .search-button {
-    font-size: 0.75rem;
-    margin-left: auto;
-  }
 }

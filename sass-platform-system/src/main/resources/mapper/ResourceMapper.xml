@@ -225,4 +225,12 @@
             r.object_key  LIKE CONCAT(#{prefix}, '%')
         </foreach>
     </select>
+
+    <select id="countObjects" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        <include refid="TableName"/> r
+        WHERE r.is_directory = false
+    </select>
 </mapper>
