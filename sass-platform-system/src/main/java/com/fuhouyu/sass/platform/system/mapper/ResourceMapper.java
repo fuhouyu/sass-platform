@@ -67,5 +67,14 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      * @param prefixList 前缀集合
      * @return 资源集合
      */
+    @TenantQuery
     List<Resources> queryByPrefixList(@Param("prefixList") Collection<String> prefixList);
+
+    /**
+     * 资源总数
+     *
+     * @return 资源总数
+     */
+    @TenantQuery
+    Integer countObjects();
 }

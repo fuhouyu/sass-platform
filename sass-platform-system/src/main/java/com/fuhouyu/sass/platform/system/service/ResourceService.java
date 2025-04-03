@@ -83,4 +83,11 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      */
     String generatePresignerDownloadUrl(Long id);
 
+    /**
+     * 资源总数
+     *
+     * @return 资源总数
+     */
+    Integer countObjects();
+
 }
