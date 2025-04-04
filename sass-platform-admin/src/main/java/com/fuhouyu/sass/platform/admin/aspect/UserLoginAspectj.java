@@ -15,27 +15,36 @@
  */
 package com.fuhouyu.sass.platform.admin.aspect;
 
+import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.sass.platform.admin.constants.AuthenticationConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.cloudflare.TurnstileVerifyRequestDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.cloudflare.TurnstileVerifyResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.properties.CloudflareProperties;
+import com.fuhouyu.sass.platform.system.service.ParamConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -50,36 +59,74 @@ import java.util.Objects;
 @Slf4j
 public class UserLoginAspectj {
 
+    private final CacheService<String, Object> cacheService;
 
     private final CloudflareProperties.Turnstile turnstile;
 
-    public UserLoginAspectj(CloudflareProperties cloudflareProperties) {
+    private final ParamConfigService paramConfigService;
+
+    public UserLoginAspectj(CacheService<String, Object> cacheService,
+                            CloudflareProperties cloudflareProperties,
+                            ParamConfigService paramConfigService) {
+        this.cacheService = cacheService;
         this.turnstile = cloudflareProperties.getTurnstile();
+        this.paramConfigService = paramConfigService;
+    }
+
+    /**
+     * 登录切面
+     */
+    @Pointcut("execution(public * com.fuhouyu.sass.platform.admin.controller.AuthenticationController.adminLogin(..)) || " +
+            "execution(public * com.fuhouyu.sass.platform.admin.controller.AuthenticationController.login(..))")
+    public void loginPointcut() {
+    }
+
+
+    @Around("loginPointcut() && args(userLoginDTO,..)")
+    public Object aroundLoginMethod(ProceedingJoinPoint joinPoint, UserLoginDTO userLoginDTO) throws Throwable {
+        if (!Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
+            return joinPoint.proceed();
+        }
+        Map<String, List<ParamConfigDTO>> paramConfigMap = null;
+        if (userLoginDTO.getAccountType().isPassword()) {
+            // 只有密码才进行检查
+            List<ParamConfigDTO> paramConfigs = paramConfigService.findParamConfigListByGroupKey(AuthenticationConstant.LOGIN_ERROR_GROUP_KEY);
+            paramConfigMap = paramConfigs.stream()
+                    .collect(Collectors.groupingBy(ParamConfigDTO::getConfigKey));
+            this.checkErrorCount(userLoginDTO.getAccount(), paramConfigMap);
+        }
+
+        this.checkCloudFlare(userLoginDTO);
+        try {
+            Object result = joinPoint.proceed();
+            // 登录成功，清除缓存
+            cacheService.delete(AuthenticationConstant.CACHE_USER_LOGIN_ERROR_PREFIX + userLoginDTO.getAccount());
+            return result;
+        } catch (Exception ex) {
+            // 登录的异常处理
+            this.handleLoginError(userLoginDTO, paramConfigMap);
+            return null;
+        }
     }
 
 
     /**
-     * 用户登录切面
-     * @param joinPoint 切面点
-     * @param userLoginDTO 用户登录dto对象
-     * @return obj
-     * @throws Throwable exception
+     * cloudFlare 检查
+     *
+     * @param userLoginDTO 用户登录的dto对象
      */
-    @Around("execution(* com.fuhouyu.sass.platform.admin.controller.AuthenticationController.login(..)) && args(userLoginDTO)")
-    public Object userLoginAspect(ProceedingJoinPoint joinPoint, UserLoginDTO userLoginDTO) throws Throwable {
-        if (!Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
-            return joinPoint.proceed();
-        }
-        // 未启用cloudflare验证直接放行
-        if (!turnstile.getEnabled()) {
+    private void checkCloudFlare(UserLoginDTO userLoginDTO) {
+        // 未启用Cloudflare验证直接放行
+        if (Boolean.FALSE.equals(turnstile.getEnabled())) {
             LoggerUtil.warn(log, "cloudflare turnstile is disabled");
-            return joinPoint.proceed();
+            return;
         }
+        // Cloudflare 验证
         String cloudflareTurnstileToken = userLoginDTO.getCloudflareTurnstileToken();
         if (!StringUtils.hasText(cloudflareTurnstileToken)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "请通过Cloudflare Turnstile验证");
         }
-        // 验证cloudflare
+
         TurnstileVerifyRequestDTO request = new TurnstileVerifyRequestDTO();
         request.setResponse(cloudflareTurnstileToken);
         request.setRemoteIp(ContextHolderStrategy.getContext().getRequest().getRequestIp());
@@ -91,21 +138,111 @@ public class UserLoginAspectj {
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntity(TurnstileVerifyResponseDTO.class);
+
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             LoggerUtil.error(log, "cloudflare验证错误，错误码：{}", responseEntity.getStatusCode());
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR,
-                    "cloudflare验证错误");
+            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "cloudflare验证错误");
         }
+
         TurnstileVerifyResponseDTO responseDTO = responseEntity.getBody();
         if (Objects.isNull(responseDTO)) {
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR,
-                    "cloudflare验证错误,返回结果为空");
+            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "cloudflare验证错误,返回结果为空");
         }
-        if (!responseDTO.getSuccess()) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    responseDTO.getErrorCodes());
+        if (Boolean.FALSE.equals(responseDTO.getSuccess())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, responseDTO.getErrorCodes());
         }
-        // 继续执行原方法
-        return joinPoint.proceed();
+    }
+
+
+    /**
+     * 处理登录错误
+     *
+     * @param userLoginDTO   用户登录的dto对象
+     * @param paramConfigMap 参数配置map对象
+     */
+    private void handleLoginError(UserLoginDTO userLoginDTO,
+                                  Map<String, List<ParamConfigDTO>> paramConfigMap) {
+        if (!userLoginDTO.getAccountType().isPassword()) {
+            return;
+        }
+        // 登录失败逻辑
+
+        Object loginErrorCountCacheValue = cacheService.get(AuthenticationConstant.CACHE_USER_LOGIN_ERROR_PREFIX + userLoginDTO.getAccount());
+        int loginErrorCount = Objects.nonNull(loginErrorCountCacheValue) ? ((Integer) loginErrorCountCacheValue) + 1 : 1;
+
+        int maxLoginErrorCount = Integer.parseInt(getConfigValue(AuthenticationConstant.LOGIN_FAIL_MAX_ATTEMPTS_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_MAX_ATTEMPTS_VALUE, paramConfigMap));
+        int lockTime = Integer.parseInt(getConfigValue(AuthenticationConstant.LOGIN_FAIL_LOCK_DURATION_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_LOCK_DURATION_VALUE, paramConfigMap));
+
+        cacheService.set(AuthenticationConstant.CACHE_USER_LOGIN_ERROR_PREFIX + userLoginDTO.getAccount(), loginErrorCount,
+                lockTime, TimeUnit.MINUTES);
+
+        // 锁定提示语
+        String lockHintMessage = getConfigValue(AuthenticationConstant.LOGIN_ACCOUNT_LOCKED_MESSAGE_KEY,
+                AuthenticationConstant.DEFAULT_ACCOUNT_LOCKED_MESSAGE_VALUE, paramConfigMap);
+
+        if (loginErrorCount >= maxLoginErrorCount) {
+            throw new ServiceException(ResponseStatusEnum.NOT_AUTH, String.format(lockHintMessage, lockTime));
+        }
+
+        int loginFailWarningThreshold = Integer.parseInt(getConfigValue(AuthenticationConstant.LOGIN_FAIL_WARNING_THRESHOLD_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_WARNING_THRESHOLD_VALUE, paramConfigMap));
+
+        if (loginErrorCount >= loginFailWarningThreshold) {
+            String warningMessage = getConfigValue(AuthenticationConstant.LOGIN_FAIL_WARNING_MESSAGE_KEY,
+                    AuthenticationConstant.DEFAULT_LOGIN_FAIL_WARNING_MESSAGE_VALUE, paramConfigMap);
+            throw new ServiceException(ResponseStatusEnum.NOT_AUTH,
+                    String.format(warningMessage, loginErrorCount, (maxLoginErrorCount - loginErrorCount)));
+        }
+
+        String loginErrorMessage = getConfigValue(AuthenticationConstant.LOGIN_FAIL_ERROR_MESSAGE_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_ERROR_MESSAGE_VALUE, paramConfigMap);
+        throw new ServiceException(ResponseStatusEnum.NOT_AUTH, loginErrorMessage);
+    }
+
+    /**
+     * 获取配置值
+     *
+     * @param configKey          配置key
+     * @param defaultConfigValue 配置key不存在时，获取默认的值
+     * @param paramConfigMap     参数配置键值映射
+     * @return 配置值
+     */
+    private String getConfigValue(String configKey, String defaultConfigValue,
+                                  Map<String, List<ParamConfigDTO>> paramConfigMap) {
+        return paramConfigMap.getOrDefault(configKey,
+                        List.of(ParamConfigDTO.builder().configValue(defaultConfigValue).build()))
+                .getFirst().getConfigValue();
+    }
+
+    /**
+     * 检查登录的错误次数
+     *
+     * @param account        账号
+     * @param paramConfigMap 参数配置map
+     */
+    private void checkErrorCount(String account,
+                                 Map<String, List<ParamConfigDTO>> paramConfigMap) {
+        Object o = this.cacheService.get(AuthenticationConstant.CACHE_USER_LOGIN_ERROR_PREFIX + account);
+        if (Objects.isNull(o)) {
+            return;
+        }
+        int loginErrorCount = (Integer) o;
+        // 锁定提示语
+        String lockHintMessage = this.getConfigValue(AuthenticationConstant.LOGIN_ACCOUNT_LOCKED_MESSAGE_KEY,
+                AuthenticationConstant.DEFAULT_ACCOUNT_LOCKED_MESSAGE_VALUE, paramConfigMap);
+
+        int maxLoginErrorCount = Integer.parseInt(getConfigValue(AuthenticationConstant.LOGIN_FAIL_MAX_ATTEMPTS_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_MAX_ATTEMPTS_VALUE, paramConfigMap));
+
+        int lockTime = Integer.parseInt(getConfigValue(AuthenticationConstant.LOGIN_FAIL_LOCK_DURATION_KEY,
+                AuthenticationConstant.DEFAULT_LOGIN_FAIL_LOCK_DURATION_VALUE, paramConfigMap));
+
+        // 登录错误已超过最大次数，抛出异常
+        if (loginErrorCount >= maxLoginErrorCount) {
+            throw new ServiceException(ResponseStatusEnum.NOT_AUTH, String.format(lockHintMessage, lockTime));
+        }
+
     }
 }

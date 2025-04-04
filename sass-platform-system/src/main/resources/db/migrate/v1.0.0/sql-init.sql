@@ -1087,7 +1087,7 @@ CREATE TABLE param_configs
     config_name       VARCHAR(128) NOT NULL,
     config_key        VARCHAR(256) NOT NULL,
     config_value      VARCHAR(256) NOT NULL,
-    group_key         VARCHAR(31)  NOT NULL,
+    group_key VARCHAR(32) NOT NULL,
     remark            VARCHAR(512),
     is_allow_modified BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at        TIMESTAMP    NOT NULL,
@@ -1116,28 +1116,33 @@ COMMENT ON INDEX idx_param_config_group_key IS '参数配置的分组标识和�
 -- 登录失败
 INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
                            updated_at, updated_by)
-VALUES (1, '登录失败警告次数', 'LOGIN_FAIL_WARING_COUNT', '3', 'LOGIN_ERROR', '登录失败警告次数', now(), 'admin', now(),
-        'admin');
-INSERT INTO param_configs
-(id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
- updated_at, updated_by)
-VALUES (2, '登录失败警告', 'LOGIN_FAIL_WARING_MESSAGE', '您已尝试%s次登录失败，%s次后将被锁定！',
-        'LOGIN_ERROR', '登录失败时的警告，超出登录失败警告次数，即触发', now(), 'admin', now(),
-        'admin');
+VALUES (1, '登录失败警告次数限制', 'LOGIN_FAIL_WARNING_THRESHOLD', '3', 'LOGIN_ERROR',
+        '设置登录失败时的警告次数，达到次数后会显示警告信息', now(), 'admin', now(), 'admin');
+
 INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
                            updated_at, updated_by)
-VALUES (3, '登录失败错误提示', 'LOGIN_FAIL_MESSAGE', '3', 'LOGIN_ERROR', '登录失败的错误信息', now(), 'admin', now(),
-        'admin');
+VALUES (2, '登录失败警告信息模板', 'LOGIN_FAIL_WARNING_MESSAGE', '您已尝试%s次登录失败，%s次后将被锁定！', 'LOGIN_ERROR',
+        '登录失败时显示的警告信息模板，%s会被替换为实际的次数', now(), 'admin', now(), 'admin');
+
 INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
                            updated_at, updated_by)
-VALUES (4, '登录失败的最大次数', 'LOGIN_FAIL_MAX_ERROR_COUNT', '5', 'LOGIN_ERROR', '登录失败的最大次数', now(), 'admin',
-        now(),
-        'admin');
+VALUES (3, '登录失败错误提示', 'LOGIN_FAIL_ERROR_MESSAGE', '用户名或密码错误，请重新输入', 'LOGIN_ERROR',
+        '登录失败时显示的错误提示信息', now(), 'admin', now(), 'admin');
+
 INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
                            updated_at, updated_by)
-VALUES (5, '登录失败锁定时间', 'LOGIN_FAIL_LOCKED_TIME', '15', 'LOGIN_ERROR', '登录失败的锁定时间', now(), 'admin',
-        now(),
-        'admin');
+VALUES (4, '登录失败最大尝试次数', 'LOGIN_FAIL_MAX_ATTEMPTS', '5', 'LOGIN_ERROR',
+        '用户登录失败的最大尝试次数，超过此次数后账号将被锁定', now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (5, '登录失败锁定时长', 'LOGIN_FAIL_LOCK_DURATION', '15', 'LOGIN_ERROR', '登录失败后账户被锁定的时长，单位为分钟',
+        now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (6, '账号已被锁定提示', 'LOGIN_ACCOUNT_LOCKED_MESSAGE', '您的账号已被锁定，请在%s分钟后重试！', 'LOGIN_ERROR',
+        '登录失败超过最大尝试次数后，用户看到的提示信息，%s会被替换为锁定时长', now(), 'admin', now(), 'admin');
 
 
 

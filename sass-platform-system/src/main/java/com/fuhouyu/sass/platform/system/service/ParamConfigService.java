@@ -17,6 +17,8 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 参数配置接口
@@ -35,4 +37,12 @@ public interface ParamConfigService extends BaseService<Long, ParamConfigDTO> {
      * @return true 存在，false不存在
      */
     Boolean checkConfigKeyExists(String configKey);
+
+    /**
+     * 通过分组标识查询参数配置
+     *
+     * @param groupKey 分组标识
+     * @return 参数配置dto
+     */
+    List<ParamConfigDTO> findParamConfigListByGroupKey(String groupKey);
 }

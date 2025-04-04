@@ -177,4 +177,12 @@
         <include refid="TableName"/> pc
         WHERE pc.config_key = #{configKey}
     </select>
+
+    <select id="queryByGroupKey" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryAllColumns"/>
+        FROM
+        <include refid="TableName"/> pc
+        WHERE pc.group_key = #{groupKey}
+    </select>
 </mapper>

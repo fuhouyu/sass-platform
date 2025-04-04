@@ -60,4 +60,13 @@ public enum AccountTypeEnum {
 
     public abstract AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO);
 
+
+    /**
+     * 判断是否是密码模式
+     *
+     * @return true 密码密码
+     */
+    public boolean isPassword() {
+        return PASSWORD == this;
+    }
 }

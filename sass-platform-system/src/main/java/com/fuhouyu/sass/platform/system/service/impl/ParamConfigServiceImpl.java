@@ -89,4 +89,9 @@ public class ParamConfigServiceImpl implements ParamConfigService {
     public Boolean checkConfigKeyExists(String configKey) {
         return Objects.nonNull(this.paramConfigMapper.queryByConfigKey(configKey));
     }
+
+    @Override
+    public List<ParamConfigDTO> findParamConfigListByGroupKey(String groupKey) {
+        return PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.queryByGroupKey(groupKey));
+    }
 }

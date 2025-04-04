@@ -117,14 +117,10 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(new RefreshAuthenticationProvider.RefreshAuthenticationToken(refreshToken));
-        } catch (ServiceException e) {
-            throw e;
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 refreshToken 方式登录失败: {} ",
                     refreshToken, e.getMessage(), e);
-            throw new ServiceException(
-                    ResponseStatusEnum.SERVER_ERROR,
-                    "登录失败");
+            throw e;
         }
         return this.doLogin(authentication, null);
     }
@@ -174,19 +170,10 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
-        } catch (ServiceException e) {
-            throw e;
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
                     userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage(), e);
-            if (Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
-                throw new ServiceException(
-                        ResponseStatusEnum.INVALID_PARAM,
-                        "用户名或密码错误");
-            }
-            throw new ServiceException(
-                    ResponseStatusEnum.SERVER_ERROR,
-                    "登录失败");
+            throw e;
 
         }
         return this.doLogin(authentication, authenticationCallback);

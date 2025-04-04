@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -53,6 +54,7 @@ public class UserLoginDTO extends AccountIdDTO {
     private String cloudflareTurnstileToken;
 
     @Schema(name = "tenantId", description = "租户id")
+    @NotNull(message = "租户id未填写")
     private Long tenantId;
 
 }
