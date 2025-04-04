@@ -140,7 +140,7 @@ public class ParamConfigController {
      */
     @GetMapping("/exists")
     @Operation(summary = "检查参数配置编码是否已存在，true 已存在")
-    @Parameter(name = "tenantCode", description = "参数配置编码")
+    @Parameter(name = "configKey", description = "参数配置编码")
     public BaseResponse<Boolean> checkTenantCodeExists(@RequestParam("configKey") String configKey) {
         return ResponseHelper.success(this.paramConfigService.checkConfigKeyExists(configKey));
     }

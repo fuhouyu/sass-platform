@@ -106,6 +106,7 @@ const EnUS = {
         tenantForm: 'Tenant Form',
         tenantSpace: 'Tenant Space',
         updateIcon: 'On click update icon',
+        paramConfig: 'Param Config',
     },
     // 租户
     Tenant: {
@@ -336,6 +337,20 @@ const EnUS = {
         systemName: 'System Name',
         operationTime: 'Operation Time',
         errorMessage: 'Error Message',
+    },
+    ParamConfig: {
+        list: 'Param Config List',
+        add: 'Add Param Config',
+        edit: 'Edit Param Config',
+        name: 'Config Name',
+        namePlaceholder: 'Please enter the configuration name',
+        key: 'Config Key',
+        keyExistsErrorMessage: 'Config Key is exists',
+        keyPlaceholder: 'Please enter the configuration key',
+        value: 'Config Value',
+        valuePlaceholder: 'Please enter the configuration value',
+        groupKey: 'Group Key',
+        groupKeyPlaceholder: 'Please enter the group identifier',
     }
 }
 

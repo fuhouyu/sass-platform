@@ -58,7 +58,7 @@ public class OperationLogController {
      */
     @GetMapping("/page")
     @Operation(summary = "查询操作日志")
-    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:operation-log:list')")
     public BaseResponse<PageResultDTO<OperationLogDTO>> page(OperationLogPageQueryDTO operationLogPageQueryDTO) {
         return ResponseHelper.success(this.operationLogService.page(operationLogPageQueryDTO));
     }
@@ -70,7 +70,7 @@ public class OperationLogController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "日志详情")
-    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:query')")
+    @PreAuthorize("@auth.hasAnyPermission('system:operation-log:query')")
     public BaseResponse<OperationLogDTO> operationLogInfo(@PathVariable("id") Long id) {
         return ResponseHelper.success(this.operationLogService.findById(id));
     }
@@ -82,7 +82,7 @@ public class OperationLogController {
      */
     @GetMapping("/module-list")
     @Operation(summary = "获取模块列表")
-    @PreAuthorize("@auth.hasAnyPermission('system:operationLog:list')")
+    @PreAuthorize("@auth.hasAnyPermission('system:operation-log:list')")
     public BaseResponse<List<String>> moduleList() {
         return ResponseHelper.success(this.operationLogService.getModuleList());
     }

@@ -16,82 +16,54 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {DictType as DictTypeModel} from "@/model/dictType";
-import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    Switch,
-    TableColumnsType,
-    Tooltip
-} from "antd";
+import {ParamConfig as ParamConfigModel} from "@/model/paramConfig";
+import {Button, Form, Input, message, Popconfirm, TableColumnsType} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import React, {useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {IconFont, Modal, PageList, PermissionButton} from "@/components";
-import {dictTypeApi} from '@/apis/dictType';
+import {Modal, PageList, PermissionButton} from "@/components";
+import {paramConfigApi} from '@/apis/paramConfig';
 import TextArea from "antd/es/input/TextArea";
-import {DictTypePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {ParamConfigPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from '@/components/List/table/interface';
-import {Link} from 'react-router-dom';
 
 /**
  * 字典类型
  * @constructor 构造函数
  */
-export const DictType = () => {
+export const ParamConfig = () => {
 
     const {t} = useTranslation();
-    const buttonPermissions = useButton(DictTypePermissionConstant.List);
-    const initForm: DictTypeModel = {
-        displayOrder: 1,
-        isEnabled: true,
-    }
+    const buttonPermissions = useButton(ParamConfigPermissionConstant.List);
     const columns: TableColumnsType = [
         {
-            title: t('DictType.name'),
-            dataIndex: 'dictName',
+            title: t('ParamConfig.name'),
+            dataIndex: 'configName',
             showSorterTooltip: {target: 'full-header'},
             align: "center",
         },
         {
-            title: t('DictType.code'),
-            dataIndex: 'dictCode',
+            title: t('ParamConfig.key'),
+            dataIndex: 'configKey',
             defaultSortOrder: 'descend',
             align: "center",
-            render: (_, record: DictTypeModel) => {
-                return <Link to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
-            }
         },
         {
-            title: t('Common.displayOrder'),
-            dataIndex: 'displayOrder',
+            title: t('ParamConfig.value'),
+            dataIndex: 'configValue',
+            defaultSortOrder: 'descend',
             align: "center",
-            sorter: true,
-            defaultSortOrder: "descend",
-            showSorterTooltip: false
         },
         {
-            title: t('Common.status'),
-            dataIndex: 'isEnabled',
-            align: 'center',
-            render: (_, record: DictTypeModel) => (
-                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
-                    await dictTypeApi.status(record.id!, checked);
-                    await tableRef?.current?.refreshPageList();
-                }}/>
-            )
+            title: t('ParamConfig.groupKey'),
+            dataIndex: 'groupKey',
+            defaultSortOrder: 'descend',
+            align: "center",
         },
-
         {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
@@ -107,11 +79,11 @@ export const DictType = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: "center",
-            render: (_, record: DictTypeModel) => {
+            render: (_, record: ParamConfigModel) => {
                 return (<>
-                    <PermissionButton permissionStr={DictTypePermissionConstant.EDIT}
+                    <PermissionButton permissionStr={ParamConfigPermissionConstant.EDIT}
                                       buttonPermissions={buttonPermissions}>
-                        <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+                        <EditButton onClick={() => openModal(record.id)}/>
                     </PermissionButton>
                 </>)
             }
@@ -123,22 +95,22 @@ export const DictType = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const tableRef = useRef<TableRefType<DictTypeModel>>(null);
+    const tableRef = useRef<TableRefType<ParamConfigModel>>(null);
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-    const [dictTypeQuery, setDictTypeQuery] = useState<Record<string, string>>({...querySearchParams()});
-    const [formInitValues, setFormInitValues] = useState<DictTypeModel>(initForm);
+    const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
+    const [formInitValues, setFormInitValues] = useState<ParamConfigModel>({});
     const language = useLocaleStore((state) => state.language);
     /**
      * 打开模态组
-     * @param dictTypeId 角色id
+     * @param id 角色id
      */
-    const openModal = async (dictTypeId?: string) => {
-        setUpdateId(dictTypeId);
-        if (dictTypeId) {
-            const dictTypeInfo: DictTypeModel = await dictTypeApi.getInfoByIdApi(dictTypeId);
-            setFormInitValues(dictTypeInfo);
+    const openModal = async (id?: string) => {
+        setUpdateId(id);
+        if (id) {
+            const paramConfig: ParamConfigModel = await paramConfigApi.getInfoByIdApi(id);
+            setFormInitValues(paramConfig);
         } else {
-            setFormInitValues(initForm);
+            setFormInitValues({});
         }
         setIsModalOpen(true);
     }
@@ -148,10 +120,10 @@ export const DictType = () => {
      */
     const handleForm = async () => {
         await form.validateFields();
-        const dictType: DictTypeModel = form.getFieldsValue();
+        const paramConfig: ParamConfigModel = form.getFieldsValue();
         setIsModalButtonLoading(true);
         try {
-            await (updateId ? dictTypeApi.editInfoApi(updateId, dictType) : dictTypeApi.saveInfoApi(dictType));
+            await (updateId ? paramConfigApi.editInfoApi(updateId, paramConfig) : paramConfigApi.saveInfoApi(paramConfig));
             message.success(t('Common.success')).then()
             await tableRef?.current?.refreshPageList();
             setIsModalOpen(false);
@@ -164,9 +136,9 @@ export const DictType = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<DictTypeModel> = {
+    const rowSelection: TableRowSelection<ParamConfigModel> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-        getCheckboxProps: (record: DictTypeModel) => ({
+        getCheckboxProps: (record: ParamConfigModel) => ({
             disabled: !record.isAllowModified
         }),
     };
@@ -176,17 +148,17 @@ export const DictType = () => {
             <PageList
                 tableProps={{
                     tableRef: tableRef,
-                    tableName: t('DictType.list'),
+                    tableName: t('ParamConfig.list'),
                     columns: columns,
-                    pageApi: dictTypeApi.pageInfoListApi,
+                    pageApi: paramConfigApi.pageInfoListApi,
                     rowSelection: rowSelection,
                     tableComponents: [
                         <>
-                            <PermissionButton permissionStr={DictTypePermissionConstant.ADD}
+                            <PermissionButton permissionStr={ParamConfigPermissionConstant.ADD}
                                               buttonPermissions={buttonPermissions}>
                                 <AddButton onClick={() => openModal()}/>
                             </PermissionButton>
-                            <PermissionButton permissionStr={DictTypePermissionConstant.DELETE}
+                            <PermissionButton permissionStr={ParamConfigPermissionConstant.DELETE}
                                               buttonPermissions={buttonPermissions}>
                                 <Popconfirm
                                     title={t('Button.delete')}
@@ -194,12 +166,12 @@ export const DictType = () => {
                                     okText={t('Common.yes')}
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
-                                        dictTypeApi.deleteInfoApi(rowKeys as string[]).then();
+                                        paramConfigApi.deleteInfoApi(rowKeys as string[]).then();
                                         await tableRef?.current?.refreshPageList();
                                     }}
                                 >
-                                <DeleteButton
-                                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                    <DeleteButton
+                                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                 </Popconfirm>
                             </PermissionButton>
                         </>
@@ -207,39 +179,35 @@ export const DictType = () => {
                 }}
                 headerSearchProps={{
                     components: [
-                        <><label htmlFor="dictTypeCode">{t('DictType.code')}</label>
+                        <><label htmlFor="configName">{t('ParamConfig.name')}</label>
                             <Input
                                 allowClear
-                                defaultValue={dictTypeQuery.dictTypeCode}
-                                placeholder={t('DictType.codePlaceholder')}
-                                id={'dictTypeCode'}
+                                defaultValue={pageQuery.configName}
+                                placeholder={t('ParamConfig.namePlaceholder')}
+                                id={'configName'}
                                 onChange={(e) => {
-                                    setDictTypeQuery({dictTypeCode: e.target.value})
+                                    setPageQuery({...pageQuery, configName: e.target.value})
                                 }}/>
                         </>,
-                        <>
-                            <span>{t('Common.status')}</span>
-                            <Select
+                        <><label htmlFor="configKey">{t('ParamConfig.key')}</label>
+                            <Input
                                 allowClear
-                                defaultValue={dictTypeQuery.isEnabled}
-                                key={'isEnabled'}
-                                placeholder={t('Common.statusPlaceholder')}
-                                onChange={(value) => dictTypeQuery['isEnabled'] = value}
-                                options={[
-                                    {value: 'true', label: <span>{t('Common.enabled')}</span>},
-                                    {value: 'false', label: <span>{t('Common.disabled')}</span>}
-                                ]}
-                            />
-                        </>
+                                defaultValue={pageQuery.configKey}
+                                placeholder={t('ParamConfig.keyPlaceholder')}
+                                id={'configName'}
+                                onChange={(e) => {
+                                    setPageQuery({...pageQuery, configKey: e.target.value})
+                                }}/>
+                        </>,
                     ],
-                    onSearchClick: () => updateSearchParams(dictTypeQuery)
+                    onSearchClick: () => updateSearchParams(pageQuery)
                 }}
             />
 
             <Modal
                 centered
                 destroyOnClose={true}
-                title={updateId ? t('DictType.edit') : t('DictType.add')}
+                title={updateId ? t('ParamConfig.edit') : t('ParamConfig.add')}
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
@@ -248,7 +216,7 @@ export const DictType = () => {
                     <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
                 ]}
             >
-                <Form<DictTypeModel>
+                <Form<ParamConfigModel>
                     name="modal-form"
                     form={form}
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}
@@ -257,10 +225,10 @@ export const DictType = () => {
                     initialValues={{...formInitValues}}
                 >
                     <Form.Item
-                        label={t('DictType.name')}
-                        name="dictName"
+                        label={t('ParamConfig.name')}
+                        name="configName"
                         validateTrigger="onBlur"
-                        key="dictName"
+                        key="configName"
                         colon={false}
                         required={true}
                         hasFeedback
@@ -268,19 +236,19 @@ export const DictType = () => {
                         rules={[{
                             required: true,
                             type: "string",
-                            message: t('DictType.namePlaceholder'),
+                            message: t('ParamConfig.namePlaceholder'),
                             max: 50,
                         }
                         ]}
                     >
-                        <Input placeholder={t('DictType.namePlaceholder')} maxLength={50}/>
+                        <Input placeholder={t('ParamConfig.namePlaceholder')} maxLength={50}/>
                     </Form.Item>
 
                     <Form.Item
-                        label={t('DictType.code')}
-                        name="dictCode"
+                        label={t('ParamConfig.key')}
+                        name="configKey"
                         validateTrigger="onBlur"
-                        key="dictCode"
+                        key="configKey"
                         colon={false}
                         required={true}
                         validateFirst={true}
@@ -288,7 +256,7 @@ export const DictType = () => {
                         rules={[{
                             required: true,
                             type: "string",
-                            message: t('DictType.codePlaceholder'),
+                            message: t('ParamConfig.keyPlaceholder'),
                             max: 50,
                         },
                             {
@@ -297,53 +265,55 @@ export const DictType = () => {
                                     if (updateId != null || value == null || value == '') {
                                         return;
                                     }
-                                    const exists = await dictTypeApi.checkDictCode(value);
+                                    const exists = await paramConfigApi.checkConfigKeyExists(value);
                                     if (exists) {
-                                        return Promise.reject(new Error(t('DictType.codeExistsErrorMessage')));
+                                        return Promise.reject(new Error(t('ParamConfig.keyExistsErrorMessage')));
                                     }
                                 }
                             }
                         ]}
                     >
                         <Input
-                            suffix={<Tooltip title={t('DictType.codeTips')}>
-                                <IconFont type={'i-tips-hint'}/>
-                            </Tooltip>}
                             disabled={updateId != null}
-                            placeholder={t('DictType.codePlaceholder')}
+                            placeholder={t('ParamConfig.keyPlaceholder')}
                             maxLength={50}/>
                     </Form.Item>
 
                     <Form.Item
-                        label={t('Common.displayOrder')}
-                        name="displayOrder"
+                        label={t('ParamConfig.value')}
+                        name="configValue"
                         validateTrigger="onBlur"
-                        key="displayOrder"
+                        key="configValue"
                         colon={false}
                         required={true}
                         hasFeedback
                         validateFirst={true}
                         rules={[{
                             required: true,
-                            type: "number",
-                            message: t('Common.displayOrderPlaceholder'),
-                        }]}
+                            type: "string",
+                            message: t('ParamConfig.valuePlaceholder'),
+                            max: 50,
+                        },]}
                     >
-                        <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '30%'}}
-                        />
+                        <Input placeholder={t('ParamConfig.valuePlaceholder')}/>
                     </Form.Item>
 
                     <Form.Item
-                        label={t('Common.status')}
-                        name="isEnabled"
-                        key="isEnabled"
+                        label={t('ParamConfig.groupKey')}
+                        name="groupKey"
+                        key="groupKeyd"
                         colon={false}
+                        validateFirst={true}
                         required={true}
+                        rules={[{
+                            required: true,
+                            type: "string",
+                            message: t('ParamConfig.groupKeyPlaceholder'),
+                        },]}
                     >
-                        <Radio.Group>
-                            <Radio value={true}>{t('Common.enabled')}</Radio>
-                            <Radio value={false}>{t('Common.disabled')}</Radio>
-                        </Radio.Group>
+                        <Input
+                            disabled={updateId != null}
+                            placeholder={t('ParamConfig.groupKeyPlaceholder')}/>
                     </Form.Item>
 
                     <Form.Item

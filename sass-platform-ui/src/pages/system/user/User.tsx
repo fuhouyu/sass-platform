@@ -159,7 +159,7 @@ export const User: React.FC = () => {
             }
         }
     ];
-    const [updateUserId, setUpdatedUserId] = useState<string | undefined>();
+    const [updateUserId, setUpdateId] = useState<string | undefined>();
     const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
@@ -192,7 +192,7 @@ export const User: React.FC = () => {
      * @param userId 用户id
      */
     const openModal = async (userId?: string) => {
-        setUpdatedUserId(userId);
+        setUpdateId(userId);
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
         setRoleSelectList(await roleApi.list());
         if (!userId) {

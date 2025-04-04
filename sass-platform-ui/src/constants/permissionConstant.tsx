@@ -211,6 +211,31 @@ class OrganizationPermissionConstant {
     static readonly DELETE_MEMBER: string = 'system:organization:delete-member';
 }
 
+/**
+ * 参数配置常量
+ */
+class ParamConfigPermissionConstant {
+    /**
+     * 列表权限
+     */
+    static readonly List: string = 'system:param-config:list';
+
+    /**
+     * 添加权限
+     */
+    static readonly ADD: string = 'system:param-config:add';
+
+    /**
+     * 修改权限
+     */
+    static readonly EDIT: string = 'system:param-config:edit';
+
+    /**
+     * 删除权限
+     */
+    static readonly DELETE: string = 'system:param-config:delete';
+}
+
 export {
     TenantPermissionConstant,
     UserPermissionConstant,
@@ -218,5 +243,6 @@ export {
     PermissionConstant,
     DictTypePermissionConstant,
     DictItemPermissionConstant,
-    OrganizationPermissionConstant
+    OrganizationPermissionConstant,
+    ParamConfigPermissionConstant
 }

@@ -33,5 +33,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ParamConfigPageQueryDTO extends PageQueryDTO {
 
+    @Schema(name = "configKey", description = "配置key")
+    private String configKey;
+
+    @Schema(name = "configName", description = "配置名称")
+    private String configName;
 
 }
