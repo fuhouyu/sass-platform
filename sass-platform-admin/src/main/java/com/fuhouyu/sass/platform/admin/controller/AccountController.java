@@ -18,6 +18,10 @@ package com.fuhouyu.sass.platform.admin.controller;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UpdatePasswordDTO;
@@ -46,6 +50,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule("用户账号模块")
 public class AccountController {
 
     private final AccountService accountService;
@@ -69,6 +74,8 @@ public class AccountController {
      */
     @PutMapping("/password")
     @Operation(summary = "修改当前用户密码")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE,
+            riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> updatePassword(@RequestBody @Valid UpdatePasswordDTO updatePasswordDTO) {
         this.accountService.updatePassword(updatePasswordDTO);
         return ResponseHelper.success();
@@ -81,6 +88,15 @@ public class AccountController {
      */
     @PostMapping("/bind")
     @Operation(summary = "第三方账号绑定")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE,
+            riskType = RiskTypeEnum.HIGH_LEVEL,
+            content = """
+                    T(String).format('用户绑定第三方平台 [%s] 账号 [%s]', #accountIdDTO.getAccountType(), #accountIdDTO.getAccountId())
+                    """,
+            contentEn = """
+                    T(String).format('User bind third-party platform [%s] account: [%s]', #accountIdDTO.getAccountType(), #accountIdDTO.getAccountId())
+                    """
+    )
     public BaseResponse<Void> bindThirdPartyAccount(@RequestBody AccountIdDTO accountIdDTO) {
         this.accountService.saveThirdPartyAccount(accountIdDTO);
         return ResponseHelper.success();
@@ -95,6 +111,15 @@ public class AccountController {
      */
     @DeleteMapping("/unbind")
     @Operation(summary = "第三方账号取消绑定")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE,
+            riskType = RiskTypeEnum.HIGH_LEVEL,
+            content = """
+                    T(String).format('用户取消绑定第三方平台 [%s] 账号 [%s]', #accountIdDTO.getAccountType(), #accountIdDTO.getAccountId())
+                    """,
+            contentEn = """
+                    T(String).format('User unbind third-party platform [%s] account: [%s]', #accountIdDTO.getAccountType(), #accountIdDTO.getAccountId())
+                    """
+    )
     public BaseResponse<Void> unbindThirdPartyAccount(@RequestBody AccountIdDTO accountIdDTO) {
         this.accountService.removeById(accountIdDTO);
         return ResponseHelper.success();

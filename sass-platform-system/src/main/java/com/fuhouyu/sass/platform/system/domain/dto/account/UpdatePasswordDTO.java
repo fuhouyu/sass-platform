@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -39,13 +41,16 @@ public class UpdatePasswordDTO implements Serializable {
 
     @Schema(name = "oldPassword", description = "旧密码")
     @NotEmpty(message = "旧密码未输入")
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String oldPassword;
 
     @Schema(name = "newPassword", description = "新密码")
     @NotEmpty(message = "新密码密码未输入")
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String newPassword;
 
     @Schema(name = "confirmPassword", description = "确认密码")
     @NotEmpty(message = "确认密码未输入")
+    @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String confirmPassword;
 }
