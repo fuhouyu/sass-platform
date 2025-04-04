@@ -59,6 +59,8 @@ body,
 // 树样式
 .tree-container {
   background-color: #fff;
+  border-radius: .5rem;
+  margin-right: .2rem;
 
   .ant-tree-node-content-wrapper {
     font-size: 1.1rem;

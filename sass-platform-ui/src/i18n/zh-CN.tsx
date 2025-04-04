@@ -148,6 +148,8 @@ const ZhCN = {
         tenantForm: '租户表单',
         tenantSpace: '租户空间',
         operationLogManage: '日志管理',
+        paramConfig: '参数配置',
+
     },
     Account: {
         personal: '个人账号',
@@ -343,9 +345,20 @@ const ZhCN = {
         operationTime: '操作时间',
         operationTimePlaceholder: '请选择操作时间',
         errorMessage: '错误信息',
-
-
-
+    },
+    ParamConfig: {
+        list: '参数配置列表',
+        add: '新增参数配置',
+        edit: '修改参数配置',
+        name: '配置名称',
+        namePlaceholder: '请输入配置名称',
+        key: '配置键',
+        keyExistsErrorMessage: '配置键已存在',
+        keyPlaceholder: '请输入配置键',
+        value: '配置值',
+        valuePlaceholder: '请输入配置值',
+        groupKey: '分组标识',
+        groupKeyPlaceholder: '请输入分组标识'
     }
 }
 

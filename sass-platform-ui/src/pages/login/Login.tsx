@@ -50,7 +50,7 @@ export const Login: React.FC = () => {
     const {fetchLogin} = useUserStore(state => state);
     const {preview} = useResourceAction();
     const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
-    const {userMenus, fetchUserMenus} = useUserStore(state => state);
+    const {fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
     const initTenantList = async () => {
         setTenantList(await tenantApi.list());
@@ -79,7 +79,6 @@ export const Login: React.FC = () => {
             navigate(from);
 
         } catch (err) {
-            setLoginButtonLoading(false);
             setTurnstileToken(undefined);
             if (err instanceof Error) {
                 message.error(err.message).then();
@@ -87,6 +86,8 @@ export const Login: React.FC = () => {
                 message.error('An unknown error occurred').then();
             }
             turnstileRef.current?.reset();
+        } finally {
+            setLoginButtonLoading(false);
         }
     };
 

@@ -100,6 +100,11 @@ export class BaseApiUrlConstant {
      * 操作日志
      */
     static readonly OPERATION_LOG_URL: string = `${BaseApiUrlConstant.VERSION}/log`;
+
+    /**
+     * 参数配置
+     */
+    static readonly PARAM_CONFIG_URL: string = `${BaseApiUrlConstant.VERSION}/param-config`
 }
 
 /**

@@ -18,6 +18,8 @@ package com.fuhouyu.sass.platform.system.mapper;
 import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * 参数配置mapper
@@ -34,4 +36,12 @@ public interface ParamConfigMapper extends BaseMapper<Long, ParamConfigs> {
      * @param configKey 配置key
      */
     ParamConfigs queryByConfigKey(@Param("configKey") String configKey);
+
+    /**
+     * 通过分组标识查询参数标识
+     *
+     * @param groupKey 分组标识
+     * @return 参数配置
+     */
+    List<ParamConfigs> queryByGroupKey(@Param("groupKey") String groupKey);
 }

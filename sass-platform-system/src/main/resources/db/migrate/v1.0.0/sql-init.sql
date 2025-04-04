@@ -498,15 +498,49 @@ VALUES (266, 26, 'Menu.deleteMember', 'system:organization:delete-member', 6, ''
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (27, 2, 'Menu.operationLogManage', 'system:operationLog:list', 4, 'i-caozuorizhi', 'operationLog',
+VALUES (27, 2, 'Menu.operationLogManage', 'system:operation-log:list', 4, 'i-caozuorizhi', 'operationLog',
         'system/operationLog', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (271, 27, 'Menu.query', 'system:operationLog:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+VALUES (271, 27, 'Menu.query', 'system:operation-log:query', 1, '', '', '', '', false, 'BUTTON', false, true, true,
+        true,
         1,
+        false, now(), 'admin', now(), 'admin');
+
+-- 参数配置
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (28, 2, 'Menu.paramConfig', 'system:param-config:list', 5, 'i-canshuguanli', 'paramConfig',
+        'system/paramConfig', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (281, 28, 'Menu.query', 'system:param-config:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (282, 28, 'Menu.add', 'system:param-config:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
+        now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (283, 28, 'Menu.edit', 'system:param-config:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (284, 28, 'Menu.delete', 'system:param-config:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+        true, 1,
         false, now(), 'admin', now(), 'admin');
 
 -- 角色关联的权限
@@ -614,6 +648,16 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 27, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 271, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 28, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 281, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 282, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 283, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 284, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
@@ -1043,7 +1087,7 @@ CREATE TABLE param_configs
     config_name       VARCHAR(128) NOT NULL,
     config_key        VARCHAR(256) NOT NULL,
     config_value      VARCHAR(256) NOT NULL,
-    group_key         VARCHAR(31)  NOT NULL,
+    group_key VARCHAR(32) NOT NULL,
     remark            VARCHAR(512),
     is_allow_modified BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at        TIMESTAMP    NOT NULL,
@@ -1062,3 +1106,43 @@ COMMENT ON COLUMN param_configs.created_at IS '创建时间';
 COMMENT ON COLUMN param_configs.created_by IS '创建人';
 COMMENT ON COLUMN param_configs.updated_at IS '更新时间';
 COMMENT ON COLUMN param_configs.updated_by IS '更新人';
+
+-- 创建索引
+CREATE INDEX idx_param_config_group_key ON param_configs (group_key, config_key);
+COMMENT ON INDEX idx_param_config_group_key IS '参数配置的分组标识和配置key的组合索引';
+
+
+
+-- 登录失败
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (1, '登录失败警告次数限制', 'LOGIN_FAIL_WARNING_THRESHOLD', '3', 'LOGIN_ERROR',
+        '设置登录失败时的警告次数，达到次数后会显示警告信息', now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (2, '登录失败警告信息模板', 'LOGIN_FAIL_WARNING_MESSAGE', '您已尝试%s次登录失败，%s次后将被锁定！', 'LOGIN_ERROR',
+        '登录失败时显示的警告信息模板，%s会被替换为实际的次数', now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (3, '登录失败错误提示', 'LOGIN_FAIL_ERROR_MESSAGE', '用户名或密码错误，请重新输入', 'LOGIN_ERROR',
+        '登录失败时显示的错误提示信息', now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (4, '登录失败最大尝试次数', 'LOGIN_FAIL_MAX_ATTEMPTS', '5', 'LOGIN_ERROR',
+        '用户登录失败的最大尝试次数，超过此次数后账号将被锁定', now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (5, '登录失败锁定时长', 'LOGIN_FAIL_LOCK_DURATION', '15', 'LOGIN_ERROR', '登录失败后账户被锁定的时长，单位为分钟',
+        now(), 'admin', now(), 'admin');
+
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (6, '账号已被锁定提示', 'LOGIN_ACCOUNT_LOCKED_MESSAGE', '您的账号已被锁定，请在%s分钟后重试！', 'LOGIN_ERROR',
+        '登录失败超过最大尝试次数后，用户看到的提示信息，%s会被替换为锁定时长', now(), 'admin', now(), 'admin');
+
+
+
