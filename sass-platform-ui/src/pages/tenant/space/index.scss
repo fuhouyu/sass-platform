@@ -20,12 +20,12 @@
 
 .tenant-space-header {
   display: flex;
-  height: 4.25rem;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   border: 1px solid gray;
   border-radius: 0.25rem;
-  padding: 0 1rem;
+  padding: .5rem 1rem;
 }
 
 .space-bucket-info {

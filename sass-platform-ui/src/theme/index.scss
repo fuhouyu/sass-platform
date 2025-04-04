@@ -20,7 +20,7 @@ $dark-menu-bac: #2D2D2D;
 $dark-main-bgc: #303030;
 $dark-main-border: #161616;
 $dark-aside-border: #1C1D1F;
-
+$dark-antd-modal-header: #353535;
 // modal
 $dark-modal-bac: #2A2A2A;
 
@@ -38,6 +38,7 @@ $dark-button-font-hover-color: #2090FF;
   .layout-header {
     background-color: $dark-container-bgc;
     border-bottom: 1px solid $dark-container-border;
+
     .header-title-divider {
       background-color: $dark-container-bgc;
     }
@@ -134,7 +135,7 @@ $dark-button-font-hover-color: #2090FF;
 // modal
 .dark {
   .ant-modal-header .ant-modal-title {
-    background: $dark-modal-bac;
+    background: $dark-antd-modal-header;
   }
 }
 
@@ -143,5 +144,12 @@ $dark-button-font-hover-color: #2090FF;
   .profile-left, .ant-menu-light, .profile-right, .ant-layout-header {
     background-color: $dark-main-bgc;
     border-right: 1px solid $dark-main-border;
+  }
+}
+
+// 日志
+.dark {
+  .log-item-value {
+    background-color: $dark-main-bgc;
   }
 }
