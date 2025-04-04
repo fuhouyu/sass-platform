@@ -1062,3 +1062,32 @@ COMMENT ON COLUMN param_configs.created_at IS '创建时间';
 COMMENT ON COLUMN param_configs.created_by IS '创建人';
 COMMENT ON COLUMN param_configs.updated_at IS '更新时间';
 COMMENT ON COLUMN param_configs.updated_by IS '更新人';
+
+-- 登录失败
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (1, '登录失败警告次数', 'LOGIN_FAIL_WARING_COUNT', '3', 'LOGIN_ERROR', '登录失败警告次数', now(), 'admin', now(),
+        'admin');
+INSERT INTO param_configs
+(id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+ updated_at, updated_by)
+VALUES (2, '登录失败警告', 'LOGIN_FAIL_WARING_MESSAGE', '您已尝试%s次登录失败，%s次后将被锁定！',
+        'LOGIN_ERROR', '登录失败时的警告，超出登录失败警告次数，即触发', now(), 'admin', now(),
+        'admin');
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (3, '登录失败错误提示', 'LOGIN_FAIL_MESSAGE', '3', 'LOGIN_ERROR', '登录失败的错误信息', now(), 'admin', now(),
+        'admin');
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (4, '登录失败的最大次数', 'LOGIN_FAIL_MAX_ERROR_COUNT', '5', 'LOGIN_ERROR', '登录失败的最大次数', now(), 'admin',
+        now(),
+        'admin');
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (5, '登录失败锁定时间', 'LOGIN_FAIL_LOCKED_TIME', '15', 'LOGIN_ERROR', '登录失败的锁定时间', now(), 'admin',
+        now(),
+        'admin');
+
+
+
