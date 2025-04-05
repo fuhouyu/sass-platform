@@ -211,8 +211,10 @@ public class UserLoginAspectj {
      */
     private String getConfigValue(String configKey, String defaultConfigValue,
                                   Map<String, List<ParamConfigDTO>> paramConfigMap) {
+        ParamConfigDTO paramConfigDTO = new ParamConfigDTO();
+        paramConfigDTO.setConfigValue(defaultConfigValue);
         return paramConfigMap.getOrDefault(configKey,
-                        List.of(ParamConfigDTO.builder().configValue(defaultConfigValue).build()))
+                        List.of(paramConfigDTO))
                 .getFirst().getConfigValue();
     }
 
