@@ -19,6 +19,7 @@ import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.constants.TenantConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.SaveOrEditTenantInfoDTO;
@@ -60,6 +61,8 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
     private final OrganizationService organizationService;
 
     private final AdminUserService adminUserService;
+
+    private final ParamConfigService paramConfigService;
 
     @Override
     public void onApplicationEvent(TenantEvent event) {
@@ -150,11 +153,19 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
                                  long tenantId,
                                  long roleId,
                                  long organizationId) {
+        List<ParamConfigDTO> paramConfigList = this.paramConfigService.findListByGroupKey("TENANT");
+        Optional<ParamConfigDTO> optional = paramConfigList.stream()
+                .filter(config -> Objects.equals(config.getConfigKey(), "DEFAULT_PASSWORD"))
+                .findAny();
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setOwnerTenantId(tenantId);
         accountDTO.setAccount(username);
         accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
-        accountDTO.setCredentials("Aa123123..");
+        if (optional.isEmpty()) {
+            accountDTO.setCredentials("Aa123123..");
+        } else {
+            accountDTO.setCredentials(optional.get().getConfigValue());
+        }
 
         AdminUserDetailDTO adminUserDTO = new AdminUserDetailDTO();
         adminUserDTO.setAccount(accountDTO);

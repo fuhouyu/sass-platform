@@ -1140,5 +1140,10 @@ INSERT INTO param_configs (id, config_name, config_key, config_value, group_key,
 VALUES (6, '账号已被锁定提示', 'LOGIN_ACCOUNT_LOCKED_MESSAGE', '您的账号已被锁定，请在%s分钟后重试！', 'LOGIN_ERROR',
         '登录失败超过最大尝试次数后，用户看到的提示信息，%s会被替换为锁定时长', now(), 'admin', now(), 'admin');
 
+-- 租户创建时默认的参数
+INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
+                           updated_at, updated_by)
+VALUES (7, '租户管理员默认密码', 'DEFAULT_PASSWORD', 'Aa123123..', 'TENANT',
+        '创建租户时的管理员默认密码', now(), 'admin', now(), 'admin');
 
 

@@ -44,5 +44,5 @@ public interface ParamConfigService extends BaseService<Long, ParamConfigDTO> {
      * @param groupKey 分组标识
      * @return 参数配置dto
      */
-    List<ParamConfigDTO> findParamConfigListByGroupKey(String groupKey);
+    List<ParamConfigDTO> findListByGroupKey(String groupKey);
 }
