@@ -24,10 +24,7 @@ import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,7 +69,7 @@ public class TenantInfoController {
     @Operation(summary = "保存租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:add')")
     @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
-    public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
+    public BaseResponse<Long> saveTenant(@RequestBody @Valid SaveOrEditTenantInfoDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.saveTenantDetail(tenantInfoDTO));
     }
 
@@ -88,7 +85,7 @@ public class TenantInfoController {
     @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
-            @RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
+            @RequestBody @Valid SaveOrEditTenantInfoDTO tenantInfoDTO) {
         tenantInfoDTO.setId(id);
         this.tenantInfoService.editDetail(tenantInfoDTO);
         return ResponseHelper.success();

@@ -217,16 +217,14 @@ CREATE TABLE permissions
     created_by      VARCHAR(32)          NOT NULL,
     updated_at      TIMESTAMP            NOT NULL,
     updated_by      VARCHAR(32)          NOT NULL,
-    UNIQUE (permission_code)
+    UNIQUE (owner_tenant_id, permission_code)
 );
 CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
 COMMENT ON INDEX idx_permission_parent_id IS '权限父级id索引';
-CREATE INDEX idx_permission_tenant_id ON permissions (owner_tenant_id, permission_code);
-COMMENT ON INDEX idx_permission_tenant_id IS '租户下的权限编码唯一索引索引';
 
 COMMENT ON TABLE permissions IS '角色表';
 COMMENT ON COLUMN permissions.id IS '角色名称';
-COMMENT ON COLUMN permissions.parent_id IS '父级节点id，-1时为一级菜菜单';
+COMMENT ON COLUMN permissions.parent_id IS '父级节点id，-1时为一级菜单';
 COMMENT ON COLUMN permissions.display_order IS '显示顺序';
 COMMENT ON COLUMN permissions.permission_name IS '权限名称';
 COMMENT ON COLUMN permissions.permission_code IS '权限编码';

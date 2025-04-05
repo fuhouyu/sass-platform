@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.assembler;
 
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -32,4 +33,7 @@ import org.mapstruct.factory.Mappers;
 public interface TenantInfoAssembler extends BaseAssembler<TenantInfo, TenantInfoDTO> {
 
     TenantInfoAssembler INSTANCE = Mappers.getMapper(TenantInfoAssembler.class);
+
+
+    TenantInfoDetailDTO toTenantInfoDetail(TenantInfo tenantInfo);
 }

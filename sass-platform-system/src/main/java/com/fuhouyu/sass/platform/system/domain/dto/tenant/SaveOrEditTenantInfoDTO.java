@@ -17,37 +17,38 @@ package com.fuhouyu.sass.platform.system.domain.dto.tenant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
-import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
- * 租户详情的dto对象
+ * 新增或修改租户的详情dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/5 21:07
+ * @since 2025/4/5 14:04
  */
-@Schema(name = "TenantInfoDetailDTO", description = "租户详情dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TenantInfoDetailDTO extends TenantInfoDTO {
+public class SaveOrEditTenantInfoDTO extends TenantInfoDTO {
 
     @Serial
-    private static final long serialVersionUID = -8912378681465128376L;
+    private static final long serialVersionUID = 8971283681752371653L;
 
-    @Schema(name = "permissionIds", description = "权限id集合")
-    @NotEmpty(message = "权限未选择")
-    private List<Long> permissionIds;
+    @Schema(name = "addPermissionIds", description = "需要添加的权限id")
+    private Set<Long> addPermissionIds;
 
-    @Schema(name = "adminUserRealName", description = "管理员用户账号真实姓名, 仅返回")
-    private String adminUserRealName;
+    @Schema(name = "deletePermissionIds", description = "需要删除的权限id")
+    private Set<Long> deletePermissionIds;
 
     @Schema(name = "tenantSpace", description = "租户空间信息")
     @Valid
     private TenantSpaceDTO tenantSpace;
+
+    public SaveOrEditTenantInfoDTO() {
+        setTenantType("COMPANY");
+    }
 }

@@ -21,10 +21,7 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
@@ -83,9 +80,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         TenantInfo entity = TENANTS_ASSEMBLER.toEntity(tenantInfoDTO);
         entity.setId(id);
         tenantInfoMapper.insert(entity);
-
         tenantInfoDTO.setId(id);
-        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.CREATE));
         return id;
     }
 
@@ -97,7 +92,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                     "租户: %s 不存在", tenantInfoDTO.getTenantCode());
         }
         this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
-        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.UPDATE));
     }
 
     @Override
@@ -127,9 +121,9 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         if (Objects.isNull(tenantInfo)) {
             return null;
         }
-        TenantInfoDTO result = TENANTS_ASSEMBLER.toDTO(tenantInfo);
-        result.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
-        return result;
+        TenantInfoDetailDTO tenantInfoDetail = TENANTS_ASSEMBLER.toTenantInfoDetail(tenantInfo);
+        tenantInfoDetail.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
+        return tenantInfoDetail;
     }
 
     @Override
@@ -150,20 +144,22 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     }
 
     @Override
-    public Long saveTenantDetail(TenantInfoDetailDTO tenantInfoDTO) {
+    public Long saveTenantDetail(SaveOrEditTenantInfoDTO tenantInfoDTO) {
         Long id = this.save(tenantInfoDTO);
         TenantSpaceDTO tenantSpaceDTO = tenantInfoDTO.getTenantSpace();
         tenantSpaceDTO.setTenantId(id);
         this.tenantSpaceService.saveTenantSpace(tenantSpaceDTO);
+        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.CREATE));
         return id;
     }
 
     @Override
-    public void editDetail(TenantInfoDetailDTO tenantInfoDTO) {
+    public void editDetail(SaveOrEditTenantInfoDTO tenantInfoDTO) {
         this.edit(tenantInfoDTO);
         TenantSpaceDTO tenantSpace = tenantInfoDTO.getTenantSpace();
         tenantSpace.setTenantId(tenantInfoDTO.getId());
         this.tenantSpaceService.editTenantSpace(tenantSpace);
+        this.applicationEventPublisher.publishEvent(new TenantEvent(tenantInfoDTO, TenantEventEnum.UPDATE));
     }
 
 

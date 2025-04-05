@@ -18,13 +18,11 @@ package com.fuhouyu.sass.platform.system.domain.dto.tenant;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * <p>
@@ -73,10 +71,6 @@ public class TenantInfoDTO extends BaseDTO {
 
     @Schema(name = "isEnabled", description = "状态：true 启用")
     private Boolean isEnabled;
-
-    @Schema(name = "permissionIds", description = "权限id集合")
-    @NotEmpty(message = "权限未选择")
-    private List<Long> permissionIds;
 
     @Schema(name = "startDate", description = "租户开始日期")
     private LocalDate startDate;

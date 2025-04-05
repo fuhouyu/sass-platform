@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.listener;
 
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.SaveOrEditTenantInfoDTO;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
@@ -38,13 +38,13 @@ public class TenantEvent extends ApplicationEvent {
      *
      * @param tenantInfoDTO dto对象
      */
-    public TenantEvent(TenantInfoDTO tenantInfoDTO, TenantEventEnum tenantEventEnum) {
+    public TenantEvent(SaveOrEditTenantInfoDTO tenantInfoDTO, TenantEventEnum tenantEventEnum) {
         super(tenantInfoDTO);
         this.tenantEventEnum = tenantEventEnum;
     }
 
     @Override
-    public TenantInfoDTO getSource() {
-        return (TenantInfoDTO) super.getSource();
+    public SaveOrEditTenantInfoDTO getSource() {
+        return (SaveOrEditTenantInfoDTO) super.getSource();
     }
 }

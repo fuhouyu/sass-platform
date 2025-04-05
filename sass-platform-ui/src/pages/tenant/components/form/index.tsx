@@ -61,7 +61,9 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const [tenantSpaceForm] = Form.useForm<TenantSpace>();
     const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
-    const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
+    const [permissionIds, setPermissionIds] = useState<React.Key[]>([])
+    const [addPermissionIds, setAddPermissionIds] = useState<React.Key[]>([]);
+    const [deletePermissionIds, setDeletePermissionIds] = useState<React.Key[]>([]);
     const language = useLocaleStore((state) => state.language);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
     const {preview} = useResourceAction();
@@ -123,7 +125,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
         tenant.startDate = startDate?.format(DATE_FORMAT);
         tenant.endDate = endDate?.format(DATE_FORMAT)
         tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
-        tenant.permissionIds = permissionIds;
+        tenant.addPermissionIds = addPermissionIds;
+        tenant.deletePermissionIds = deletePermissionIds;
         await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
         message.success(t('Common.success'));
         callback()
@@ -339,18 +342,25 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                                     onCheck: (checked: {
                                         checked: Key[];
                                         halfChecked: Key[];
-                                    } | Key[]) => {
-                                        if (checked instanceof Array) {
-                                            setPermissionIds(checked);
-                                            return
+                                    } | Key[], info) => {
+                                        const checkedKeys: Key[] = checked instanceof Array ? checked : checked.checked;
+                                        if (info.checked) {
+                                            setAddPermissionIds([...addPermissionIds, ...checkedKeys]);
+                                        } else {
+                                            setDeletePermissionIds([...deletePermissionIds, ...checkedKeys]);
                                         }
-                                        setPermissionIds(checked.checked);
                                     },
                                     titleRender: (menu: Menu) => t(`${menu.permissionName}`),
                                     treeData: permissionTreeData,
 
                                 }}
-                                onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
+                                onSelectedAll={(ids: string[]) => {
+                                    if (ids.length === 0) {
+                                        setDeletePermissionIds([...addPermissionIds]);
+                                    } else {
+                                        setAddPermissionIds([]);
+                                    }
+                                }}
                             />
                         </Form.Item>
                     </Col>

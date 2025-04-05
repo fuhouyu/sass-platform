@@ -134,6 +134,9 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                                     return
                                 }
                                 setPageQuery({...pageQuery, organizationId: selectedKeys[0] as number});
+                                tableRef.current?.refreshPageList({
+                                    pageQuery: pageQuery
+                                })
                             }}
                         />
                     </div>

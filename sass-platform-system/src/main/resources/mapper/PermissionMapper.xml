@@ -352,4 +352,20 @@
         <include refid="TableName"/> p
         WHERE is_deleted = false
     </select>
+
+    <select id="queryBySourceIdsAndTenant" resultMap="BaseResultMap">
+        SELECT
+        <include refid="QueryColumns"/>
+        FROM
+        <include refid="TableName"/>
+        WHERE
+        permission_code IN
+        (
+        SELECT permission_code FROM <include refid="TableName"/> WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        )
+        AND owner_tenant_id = #{tenantId}
+    </select>
 </mapper>

@@ -136,4 +136,13 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      */
     @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryAll();
+
+    /**
+     * 通过原始的权限ids查询出指定租户下的权限
+     *
+     * @param ids      ids
+     * @param tenantId 租户id
+     * @return 权限集合
+     */
+    List<Permissions> queryBySourceIdsAndTenant(@Param("ids") Collection<Long> ids, @Param("tenantId") Long tenantId);
 }

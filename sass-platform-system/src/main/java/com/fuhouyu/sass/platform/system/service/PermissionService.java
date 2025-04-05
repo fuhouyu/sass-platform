@@ -95,4 +95,21 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @param tenantIds 租户ids
      */
     void removeByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 复制原始权限到新的租户id
+     *
+     * @param sourcePermissionList 原始的租户权限集合
+     * @param tenantId             租户id
+     * @return 新增的权限id集合
+     */
+    List<Long> copyPermissionToTenant(List<PermissionDTO> sourcePermissionList, Long tenantId);
+
+    /**
+     * 通过原始的权限id删除租户下的权限
+     *
+     * @param ids      ids
+     * @param tenantId 租户id
+     */
+    void removePermissionForTenant(Collection<Long> ids, Long tenantId);
 }

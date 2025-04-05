@@ -135,14 +135,9 @@ export const Tenant: React.FC = () => {
      * table列选择
      */
     const rowSelection: TableRowSelection<TenantInfo> = {
-        onChange: (selectedRowKeys: React.Key[]) => {
-            console.log(selectedRowKeys)
-            setRowKeys(selectedRowKeys);
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record);
-        }
+        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
+
 
     /**
      * 打开租户表单抽屉
