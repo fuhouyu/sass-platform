@@ -40,7 +40,7 @@ const initPageQuery: PageQuery = {
 
 
 const Table = <T extends object>(tableProps: TableProps<T>) => {
-    const {pageApi, tableName, tableRef, tableComponents} = tableProps;
+    const {pageApi, tableName, tableRef, tableComponents, disableTableHint} = tableProps;
     const {t} = useTranslation();
     const [pageResult, setPageResult] = useState<PageResult<T>>()
     const [searchParams] = useSearchParams();
@@ -108,12 +108,12 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                         }
                     </div>
                 </div>
-                <div className="tips-container">
+                {!disableTableHint && <div className="tips-container">
                     <Space>
                         <InfoCircleFilled className="table-tips-icon"/>
                         <span>{t('Common.listTips')}</span>
                     </Space>
-                </div>
+                </div>}
                 <AntdTable
                     {...tableProps}
                     size={'middle'}

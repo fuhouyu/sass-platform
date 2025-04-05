@@ -215,6 +215,7 @@ export const Organization = () => {
                         <Tree.DirectoryTree
                             showIcon={false}
                             defaultExpandParent={true}
+                            defaultSelectedKeys={[organizationQuery.parentId]}
                             blockNode
                             motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}

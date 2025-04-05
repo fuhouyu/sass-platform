@@ -23,7 +23,6 @@ import './index.scss'
 import {tenantApi} from "@/apis/tenant";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
@@ -135,8 +134,14 @@ export const Tenant: React.FC = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Userinfo> = {
-        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    const rowSelection: TableRowSelection<TenantInfo> = {
+        onChange: (selectedRowKeys: React.Key[]) => {
+            console.log(selectedRowKeys)
+            setRowKeys(selectedRowKeys);
+        },
+        onSelect: (record, selected, selectedRows) => {
+            console.log(record);
+        }
     };
 
     /**
