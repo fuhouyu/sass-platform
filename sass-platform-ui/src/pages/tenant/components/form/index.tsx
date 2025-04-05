@@ -61,7 +61,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const [tenantSpaceForm] = Form.useForm<TenantSpace>();
     const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
-    const [permissionIds, setPermissionIds] = useState<React.Key[]>([])
     const [addPermissionIds, setAddPermissionIds] = useState<React.Key[]>([]);
     const [deletePermissionIds, setDeletePermissionIds] = useState<React.Key[]>([]);
     const language = useLocaleStore((state) => state.language);
@@ -76,7 +75,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
             return
         }
         const res = await tenantApi.getInfoByIdApi(tenantId);
-        setPermissionIds(res.permissionIds ?? []);
+        setAddPermissionIds(res.permissionIds ?? []);
         tenantInfoForm.setFieldsValue({...res});
         setTenantInfo(res);
     }, [tenantId, tenantInfoForm]);
@@ -338,7 +337,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                             <FormTree<Menu>
                                 formTreeProps={{
                                     fieldNames: {key: 'id'},
-                                    checkedKeys: permissionIds,
+                                    checkedKeys: addPermissionIds,
                                     onCheck: (checked: {
                                         checked: Key[];
                                         halfChecked: Key[];
