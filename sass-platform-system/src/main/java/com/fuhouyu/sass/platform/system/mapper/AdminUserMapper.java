@@ -24,6 +24,7 @@ import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -83,4 +84,11 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      */
     @TenantQuery
     AdminUserDetailDTO queryDetailById(Long id);
+
+    /**
+     * 通过租户ids删除用户
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

@@ -25,7 +25,6 @@ import {
     InputNumber,
     message,
     Radio,
-    Select,
     Space,
     Steps,
     Tooltip
@@ -139,7 +138,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
             if (selectedRows.length === 0) {
                 return
             }
-            tenantInfoForm.setFieldValue('adminUserId', selectedRows[0].id);
             tenantInfoForm.setFieldValue('adminUserRealName', selectedRows[0].realName);
         },
     }
@@ -169,7 +167,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                     name="tenant-form"
                     form={tenantInfoForm}
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 5 : 7}}
-                    wrapperCol={{span: 18}}
                     autoComplete="off"
                     initialValues={{
                         isEnabled: true,
@@ -254,34 +251,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
-                            hidden
-                            name={['adminUserId']}
-                            key="adminUserId"
-                        >
-                            <Input hidden/>
-                        </Form.Item>
-                        <Form.Item
-                            label={t('Tenant.adminUser')}
-                            name={['adminUserRealName']}
-                            validateTrigger="onBlur"
-                            key="adminUserRealName"
-                            colon={false}
-                            required={true}
-                            hasFeedback
-                            rules={[{required: true, message: t('Tenant.adminUserPlaceholder')}]}
-                        >
-                            <Select
-                                onDropdownVisibleChange={() => false}
-                                allowClear
-                                onClick={() => setIsChooseUserModalOpen(true)}
-                                notFoundContent={null}
-                                placeholder={t('Tenant.adminUserPlaceholder')}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col className={'form-item-col'} span={12}>
-                        <Form.Item
                             label={t('Tenant.contactPerson')}
                             name="contactPerson"
                             validateTrigger="onBlur"
@@ -327,6 +296,23 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
+                            name="dateRange"
+                            label={t('Tenant.startAndEndDate')}
+                            colon={false}
+                            hasFeedback={true}
+                        >
+                            <DatePicker.RangePicker
+                                placeholder={[t('Tenant.startDatePlaceholder'), t('Tenant.endDatePlaceholder')]}
+                                disabledDate={(current) => current && current < dayjs().subtract(1, 'day')}
+                                format="YYYY-MM-DD"
+                            />
+                        </Form.Item>
+                    </Col>
+
+                    <Col className={'form-item-col'} span={24}>
+                        <Form.Item
+                            labelAlign={'left'}
+                            labelCol={{offset: 0}}
                             label={t('Tenant.permissions')}
                             key="permissionIds"
                             name='permissionIds'
@@ -354,27 +340,14 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                                 }}
                                 onSelectedAll={(ids: string[]) => {
+                                    console.log(ids)
                                     if (ids.length === 0) {
                                         setDeletePermissionIds([...addPermissionIds]);
+                                        setAddPermissionIds([])
                                     } else {
-                                        setAddPermissionIds([]);
+                                        setAddPermissionIds(ids);
                                     }
                                 }}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col className={'form-item-col'} span={12}>
-                        <Form.Item
-                            name="dateRange"
-                            label={t('Tenant.startAndEndDate')}
-                            colon={false}
-                            hasFeedback={true}
-                        >
-                            <DatePicker.RangePicker
-                                placeholder={[t('Tenant.startDatePlaceholder'), t('Tenant.endDatePlaceholder')]}
-                                disabledDate={(current) => current && current < dayjs().subtract(1, 'day')}
-                                format="YYYY-MM-DD"
                             />
                         </Form.Item>
                     </Col>
@@ -384,8 +357,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                     }}>
                         <Form.Item
                             label={t('Common.remark')}
-                            labelCol={{span: 2}}
-                            wrapperCol={{span: 22}}
+                            labelCol={{span: 2, offset: 0}}
+                            // wrapperCol={{span: 10}}
                             name="remark"
                             key="remark"
                             colon={false}

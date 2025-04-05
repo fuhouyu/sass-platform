@@ -44,9 +44,6 @@ public class TenantInfoDetailDTO extends TenantInfoDTO {
     @NotEmpty(message = "权限未选择")
     private List<Long> permissionIds;
 
-    @Schema(name = "adminUserRealName", description = "管理员用户账号真实姓名, 仅返回")
-    private String adminUserRealName;
-
     @Schema(name = "tenantSpace", description = "租户空间信息")
     @Valid
     private TenantSpaceDTO tenantSpace;

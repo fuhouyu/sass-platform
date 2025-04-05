@@ -18,9 +18,13 @@ package com.fuhouyu.sass.platform.system.listener;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.constants.TenantConstant;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.SaveOrEditTenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +59,8 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
 
     private final OrganizationService organizationService;
 
+    private final AdminUserService adminUserService;
+
     @Override
     public void onApplicationEvent(TenantEvent event) {
         switch (event.getTenantEventEnum()) {
@@ -79,9 +85,12 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
         // 新增角色
         Long roleId = roleService.createTenantDefaultRole(tenantId, targetPermissionIds);
         // 组织配置
-        this.organizationService.createTenantDefaultOrganization(tenantInfoDTO);
+        Long organizationId = this.organizationService.createTenantDefaultOrganization(tenantInfoDTO);
+        // 创建用户
+        Long userId = this.createAdminUser(tenantInfoDTO.getContactPerson(),
+                tenantId, roleId, organizationId);
         // 管理员配置
-        this.userHasRoleService.saveOrUpdateUserRole(tenantInfoDTO.getAdminUserId(), List.of(roleId));
+        this.userHasRoleService.saveOrUpdateUserRole(userId, List.of(roleId));
     }
 
 
@@ -126,5 +135,44 @@ public class TenantEventListener implements ApplicationListener<TenantEvent> {
                     "选择权限有误，请刷新页面后重新选择");
         }
         return list;
+    }
+
+    /**
+     * 创建管理员用户
+     *
+     * @param username       用户名
+     * @param tenantId       租户id
+     * @param roleId         角色id
+     * @param organizationId 组织id
+     * @return 用户id
+     */
+    private long createAdminUser(String username,
+                                 long tenantId,
+                                 long roleId,
+                                 long organizationId) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setOwnerTenantId(tenantId);
+        accountDTO.setAccount(username);
+        accountDTO.setAccountType(AccountTypeEnum.PASSWORD.name());
+        accountDTO.setCredentials("Aa123123..");
+
+        AdminUserDetailDTO adminUserDTO = new AdminUserDetailDTO();
+        adminUserDTO.setAccount(accountDTO);
+        UserPositionDTO userPositionDTO = new UserPositionDTO();
+        userPositionDTO.setOrganizationId(organizationId);
+        userPositionDTO.setPositionName("系统所有者");
+        userPositionDTO.setIsMain(true);
+        userPositionDTO.setOrderInOrganization(1L);
+
+        adminUserDTO.setUserPosition(userPositionDTO);
+        adminUserDTO.setRoleIds(List.of(roleId));
+
+        adminUserDTO.setUsername(username);
+        adminUserDTO.setRealName(username);
+        adminUserDTO.setNickname(username);
+        adminUserDTO.setGender("UNKNOWN");
+        adminUserDTO.setOwnerTenantId(tenantId);
+
+        return this.adminUserService.saveUser(adminUserDTO);
     }
 }

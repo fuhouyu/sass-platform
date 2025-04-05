@@ -69,6 +69,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     private final TenantSpaceService tenantSpaceService;
 
+    private final AdminUserService adminUserService;
+
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
         TenantInfo existsTenant = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
@@ -138,9 +140,10 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public TenantInfoDetailDTO findDetailById(Long id) {
-        TenantInfoDetailDTO tenantInfoDetailDTO = this.tenantInfoMapper.queryDetailById(id);
-        tenantInfoDetailDTO.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
-        return tenantInfoDetailDTO;
+        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        TenantInfoDetailDTO tenantInfoDetail = TENANTS_ASSEMBLER.toTenantInfoDetail(tenantInfo);
+        tenantInfoDetail.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
+        return tenantInfoDetail;
     }
 
     @Override
@@ -186,5 +189,6 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         this.roleService.removeByTenantIds(tenantIds);
         this.permissionService.removeByTenantIds(tenantIds);
         this.organizationService.removeOrganizationByTenantIds(tenantIds);
+        this.adminUserService.removeByTenantIds(tenantIds);
     }
 }

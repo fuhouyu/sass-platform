@@ -18,6 +18,8 @@ package com.fuhouyu.sass.platform.system.service;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
 
+import java.util.Collection;
+
 /**
  * <p>
  * 用户接口
@@ -65,4 +67,11 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param userDTO 用户dto对象
      */
     void editUser(AdminUserDetailDTO userDTO);
+
+    /**
+     * 通过租户ids，删除当前租户下的所有账号
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

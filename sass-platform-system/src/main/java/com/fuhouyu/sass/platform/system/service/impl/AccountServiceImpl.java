@@ -154,6 +154,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void removeByTenantIds(Collection<Long> tenantIds) {
+        this.accountMapper.deleteByTenantIds(tenantIds);
+    }
+
+    @Override
     public void saveThirdPartyAccount(AccountIdDTO accountIdDTO) {
         // TODO 目前这里只会有weLink，先临时处理，后面需要抽到accountTypeEnum中
         WeLinkLoginUserDTO weLinkLoginUserDTO = this.weLinkService.login(accountIdDTO.getAccount());

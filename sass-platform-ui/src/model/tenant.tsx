@@ -44,8 +44,6 @@ export interface TenantInfo extends BaseModel {
     addPermissionIds?: Key[];
     // 要被删除的权限ids
     deletePermissionIds?: Key[];
-    // 管理员用户id
-    adminUserId?: string;
     // 管理员用户真实姓名
     adminUserRealName?: string;
     // 租户空间

@@ -250,4 +250,12 @@
         LEFT JOIN user_positions up ON u.id = up.user_id
         WHERE u.id = #{id}
     </select>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM <include refid="TableName"/>   u
+        WHERE u.owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" separator="," item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
 </mapper>

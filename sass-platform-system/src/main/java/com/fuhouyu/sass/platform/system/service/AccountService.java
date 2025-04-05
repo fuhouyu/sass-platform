@@ -88,4 +88,10 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      */
     AccountDTO findAccountByUserIdAndType(Long userId, AccountTypeEnum accountTypeEnum);
 
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

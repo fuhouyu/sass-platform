@@ -334,17 +334,6 @@
         </foreach>
     </delete>
 
-    <select id="queryAttachTenantPermissionListByParentId" resultMap="BaseResultMap">
-        SELECT
-        <include refid="QueryColumns"/>
-        FROM
-        tenant_has_permission thp
-        LEFT JOIN <include refid="TableName"/> p ON p.id = thp.permission_id
-        WHERE parent_id = #{parentId}
-        AND is_deleted = false
-        ORDER BY display_order
-    </select>
-
     <select id="queryAll" resultMap="BaseResultMap">
         SELECT
         <include refid="QueryColumns"/>

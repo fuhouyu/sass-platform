@@ -59,8 +59,9 @@ public interface OrganizationService extends BaseService<Long, OrganizationDTO> 
      * 创建默认的组织
      *
      * @param tenantInfoDTO 租户dto对象
+     * @return 租户id
      */
-    void createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO);
+    Long createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO);
 
     /**
      * 通过租户id进行删除

@@ -43,9 +43,6 @@ public class TenantInfoDTO extends BaseDTO {
     @Schema(name = "id", description = "主键id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
-    @Schema(name = "adminUserId", description = "管理员账号id", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long adminUserId;
-
     @Schema(name = "tenantCode", description = "租户编码", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "租户编码未输入")
     private String tenantCode;

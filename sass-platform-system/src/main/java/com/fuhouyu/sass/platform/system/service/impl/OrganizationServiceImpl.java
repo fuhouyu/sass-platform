@@ -26,7 +26,6 @@ import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationPage
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import com.fuhouyu.sass.platform.system.mapper.OrganizationMapper;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;
@@ -147,7 +146,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO) {
+    public Long createTenantDefaultOrganization(TenantInfoDTO tenantInfoDTO) {
         Organizations organizations = new Organizations();
         long id = snowflakeIdWorker.nextId();
         organizations.setId(id);
@@ -161,15 +160,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organizations.setDisplayOrder(1);
         organizations.setOwnerTenantId(tenantInfoDTO.getId());
         this.organizationMapper.insert(organizations);
-
-        // 关联职务
-        UserPositionDTO userPositionDTO = new UserPositionDTO();
-        userPositionDTO.setOrganizationId(id);
-        userPositionDTO.setPositionName("管理员");
-        userPositionDTO.setIsMain(true);
-        userPositionDTO.setOrderInOrganization(1L);
-
-        this.userPositionService.saveUserPosition(tenantInfoDTO.getAdminUserId(), userPositionDTO);
+        return id;
     }
 
 

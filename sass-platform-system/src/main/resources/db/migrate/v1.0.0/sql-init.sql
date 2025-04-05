@@ -18,7 +18,6 @@ DROP TABLE IF EXISTS tenant_info;
 CREATE TABLE tenant_info
 (
     id             BIGINT PRIMARY KEY    NOT NULL,
-    admin_user_id BIGINT                NOT NULL,
     tenant_code    VARCHAR(64)           NOT NULL,
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
@@ -41,7 +40,6 @@ CREATE TABLE tenant_info
 
 COMMENT ON TABLE tenant_info IS '租户表';
 COMMENT ON COLUMN tenant_info.id IS '主键id';
-COMMENT ON COLUMN tenant_info.admin_user_id IS '管理员id';
 COMMENT ON COLUMN tenant_info.tenant_code IS '租户编码';
 COMMENT ON COLUMN tenant_info.tenant_name IS '租户名称';
 COMMENT ON COLUMN tenant_info.tenant_type IS '租户类型字典项';
@@ -61,10 +59,10 @@ COMMENT ON COLUMN tenant_info.updated_by IS '更新人';
 
 
 -- 内置租户
-INSERT INTO tenant_info(id, admin_user_id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
+INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, created_at,
                         created_by, updated_at, updated_by, is_platform)
-VALUES (1, 1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
+VALUES (1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
         now(), 'admin', true);
 
 -- 租户权限
@@ -1036,7 +1034,7 @@ CREATE TABLE operation_log
     operation_type   VARCHAR(50)  NOT NULL,
     content       VARCHAR(1024),
     content_en    VARCHAR(1024),
-    error_message VARCHAR(1024),
+    error_message text,
     is_success    BOOLEAN NOT NULL,
     risk_type        VARCHAR(50)  NOT NULL,
     system_name      VARCHAR(100) NOT NULL,

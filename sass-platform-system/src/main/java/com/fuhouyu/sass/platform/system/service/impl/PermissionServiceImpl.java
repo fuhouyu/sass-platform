@@ -161,7 +161,6 @@ public class PermissionServiceImpl implements PermissionService {
     public List<PermissionDTO> getPermissionList(Long parentId) {
         Long currentParentId = Optional.ofNullable(parentId).orElse(-1L);
         List<Permissions> list = this.permissionMapper.queryListByParentId(currentParentId);
-        list.addAll(this.permissionMapper.queryAttachTenantPermissionListByParentId(currentParentId));
         return PERMISSION_ASSEMBLER.toDTO(list);
     }
 

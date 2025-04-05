@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
@@ -63,8 +65,14 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
         AccountIdDTO accountIdDTO = new AccountIdDTO(account, AccountTypeEnum.valueOf(accountType));
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO, tenantId);
         if (Objects.isNull(accountDTO)) {
-            return null;
+            if (Objects.equals(accountType, AccountTypeEnum.PASSWORD.name())) {
+                throw new ServiceException(ResponseStatusEnum.NOT_FOUND, "当前账号不属于该租户");
+            } else {
+                return null;
+            }
+
         }
+        // 如果是密码，抛出异常
         Collection<? extends GrantedAuthority> simpleGrantedAuthorities =
                 this.permissionService.findUserSimpleGrantedAuthorities(tenantId, accountDTO.getUserId());
         UserAccountDetails userDetail = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
