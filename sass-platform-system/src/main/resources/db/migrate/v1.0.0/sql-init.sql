@@ -22,18 +22,18 @@ CREATE TABLE tenant_info
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
     remark         VARCHAR(256),
-    icon          BIGINT,
+    icon        BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
-    start_date    DATE,
-    end_date      DATE,
+    start_date  DATE,
+    end_date    DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_platform   BOOLEAN DEFAULT FALSE NOT NULL,
+    is_platform BOOLEAN DEFAULT FALSE NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at    TIMESTAMP             NOT NULL,
-    created_by    VARCHAR(64)           NOT NULL,
-    updated_at    TIMESTAMP             NOT NULL,
-    updated_by    VARCHAR(64)           NOT NULL,
+    created_at  TIMESTAMP             NOT NULL,
+    created_by  VARCHAR(64)           NOT NULL,
+    updated_at  TIMESTAMP             NOT NULL,
+    updated_by  VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -539,6 +539,21 @@ VALUES (284, 28, 'Menu.delete', 'system:param-config:delete', 4, '', '', '', '',
         true, 1,
         false, now(), 'admin', now(), 'admin');
 
+-- 系统监控
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (4, -1, 'Menu.systemMonitor', 'system-monitor', 4, 'i-yunjiankong', 'monitor', null, '', false, 'DIR', false,
+        true, false,
+        true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (41, 4, 'Menu.serverMonitor', 'system:server-monitor:list', 4, 'i-fuwujiankong', 'server',
+        'monitor/server', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
+
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
 CREATE TABLE role_has_permission
@@ -654,6 +669,10 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 283, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 284, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 4, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 41, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
@@ -1108,7 +1127,6 @@ CREATE INDEX idx_param_config_group_key ON param_configs (group_key, config_key)
 COMMENT ON INDEX idx_param_config_group_key IS '参数配置的分组标识和配置key的组合索引';
 
 
-
 -- 登录失败
 INSERT INTO param_configs (id, config_name, config_key, config_value, group_key, remark, created_at, created_by,
                            updated_at, updated_by)
@@ -1147,3 +1165,41 @@ VALUES (7, '租户管理员默认密码', 'DEFAULT_PASSWORD', 'Aa123123..', 'TEN
         '创建租户时的管理员默认密码', now(), 'admin', now(), 'admin');
 
 
+-- 用户登录记录
+DROP TABLE IF EXISTS user_login_record;
+CREATE TABLE user_login_record
+(
+    id             BIGSERIAL PRIMARY KEY,
+    user_id        BIGINT      NOT NULL,
+    username       VARCHAR(50) NOT NULL,
+    login_ip       VARCHAR(45) NOT NULL,
+    login_location VARCHAR(100),
+    browser        VARCHAR(50),
+    os             VARCHAR(50),
+    user_agent     TEXT,
+    login_time     TIMESTAMP   NOT NULL,
+    logout_time    TIMESTAMP,
+    status         VARCHAR(32) NOT NULL,
+    token          VARCHAR(100)
+);
+
+-- 添加字段备注（COMMENT）
+COMMENT ON TABLE user_login_record IS '用户登录记录表';
+
+COMMENT ON COLUMN user_login_record.id IS '主键，自增ID';
+COMMENT ON COLUMN user_login_record.user_id IS '用户ID';
+COMMENT ON COLUMN user_login_record.username IS '用户名';
+COMMENT ON COLUMN user_login_record.login_ip IS '登录IP地址';
+COMMENT ON COLUMN user_login_record.login_location IS '登录地点（根据IP解析）';
+COMMENT ON COLUMN user_login_record.browser IS '浏览器名称';
+COMMENT ON COLUMN user_login_record.os IS '操作系统';
+COMMENT ON COLUMN user_login_record.user_agent IS 'User-Agent 原始信息';
+COMMENT ON COLUMN user_login_record.login_time IS '登录时间';
+COMMENT ON COLUMN user_login_record.logout_time IS '登出时间（退出或过期）';
+COMMENT ON COLUMN user_login_record.status IS '登录状态（0成功，1失败，2超时，3被踢出）';
+COMMENT ON COLUMN user_login_record.message IS '登录结果信息（如失败原因）';
+COMMENT ON COLUMN user_login_record.token IS 'Token 或会话ID（哈希或UUID）';
+
+
+CREATE INDEX idx_user_login_record_id ON user_login_record (user_id);
+COMMENT ON INDEX idx_user_login_record_id IS '用户id索引';
