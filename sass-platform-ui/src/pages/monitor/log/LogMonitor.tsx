@@ -35,11 +35,11 @@ export const LogMonitor: FC = () => {
     const {t} = useTranslation();
 
     const onMessage = (e: MessageEvent) => {
-        const logLine = e.data
-            .slice(1, -1)
-            .replace(/\\t/g, '\t');
-
-        setLogs(prev => [...prev, logLine]);
+        const data = JSON.parse(e.data);
+        if (data === 'heartbeat') {
+            return;
+        }
+        setLogs(prev => [...prev, data]);
         setLoading(false);
     }
     useEffect(() => {
