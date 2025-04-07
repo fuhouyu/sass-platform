@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Drawer, Input, Popconfirm, Switch, TableColumnsType} from "antd";
+import {Button, Drawer, Input, Popconfirm, Space, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -32,6 +32,7 @@ import {TableRefType} from "@components/List/table/interface.tsx";
 import TenantForm from "./components/form";
 import {permissionApi} from "@/apis/permission.tsx";
 import {Menu} from "@/model/menu.tsx";
+import {ReloadOutlined} from "@ant-design/icons";
 
 /**
  * 租户组件
@@ -114,10 +115,18 @@ export const Tenant: React.FC = () => {
             width: 240,
             fixed: 'right',
             render: (_, record: TenantInfo) => {
-                return (<PermissionButton buttonPermissions={buttonPermissions}
-                                          permissionStr={TenantPermissionConstant.EDIT}>
-                    <EditButton onClick={() => openDrawer(record.id)}/>
-                </PermissionButton>)
+                return (
+                    <>
+                        <Space>
+                            <Button icon={<ReloadOutlined/>} color="pink" variant={'outlined'}>重置密码</Button>
+                            <PermissionButton buttonPermissions={buttonPermissions}
+                                              permissionStr={TenantPermissionConstant.EDIT}>
+                                <EditButton onClick={() => openDrawer(record.id)}/>
+                            </PermissionButton>
+                        </Space>
+                    </>
+
+                )
             }
         }
     ];
