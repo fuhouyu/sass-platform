@@ -85,15 +85,16 @@ public class ServerMonitorController {
     @NoAuth
     @Parameter(name = "logLevel", description = "日志级别")
     public Flux<String> log(@RequestParam(value = "logLevel", required = false, defaultValue = "info") String logLevel) {
-        List<String> lastLines = this.logMonitorService.readHistoryLogFile(logLevel, 100);
-        return Flux.create(sink -> {
+        List<String> lastLines = this.logMonitorService.readHistoryLogFile(logLevel, 1000);
+        Flux<String> heartbeat = Flux.interval(Duration.ofSeconds(30))
+                .map(i -> "heartbeat");
+        return Flux.<String>create(sink -> {
             lastLines.forEach(sink::next);
             TailerListener listener = new TailerListenerAdapter() {
                 @Override
                 public void handle(String line) {
                     sink.next(line);
                 }
-
                 @Override
                 public void handle(Exception ex) {
                     sink.error(ex);
@@ -101,7 +102,7 @@ public class ServerMonitorController {
             };
             this.logMonitorService.listenerLog(listener, logLevel, tailer -> sink.onCancel(tailer::close));
 
-        }, FluxSink.OverflowStrategy.BUFFER);
+        }, FluxSink.OverflowStrategy.BUFFER).mergeWith(heartbeat);
 
     }
 
