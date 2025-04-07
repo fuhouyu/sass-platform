@@ -77,7 +77,7 @@ public class AccountController {
     @LogRecord(operationType = OperationTypeEnum.UPDATE,
             riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> updatePassword(@RequestBody @Valid UpdatePasswordDTO updatePasswordDTO) {
-        this.accountService.updatePassword(updatePasswordDTO);
+        this.accountService.editPassword(updatePasswordDTO);
         return ResponseHelper.success();
     }
 

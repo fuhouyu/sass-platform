@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,19 +42,21 @@ public class TenantHasPermissionServiceImpl implements TenantHasPermissionServic
     private final TenantHasPermissionMapper tenantHasPermissionMapper;
 
     @Override
-    public void saveOrUpdateTenantPermission(Long tenantId, Collection<Long> permissionIds) {
-        // 先删除所有
-        tenantHasPermissionMapper.delete(tenantId, null);
-        if (CollectionUtils.isEmpty(permissionIds)) {
+    public void saveOrUpdateTenantPermission(Long tenantId, Collection<Long> addPermissionIds,
+                                             Collection<Long> deletePermissionIds) {
+        if (!CollectionUtils.isEmpty(deletePermissionIds)) {
+            tenantHasPermissionMapper.delete(tenantId, deletePermissionIds);
+        }
+        if (CollectionUtils.isEmpty(addPermissionIds)) {
             return;
         }
-        List<TenantHasPermission> list = new ArrayList<>(permissionIds.size());
-        for (Long permissionId : permissionIds) {
-            TenantHasPermission tenantHasPermission = new TenantHasPermission();
-            tenantHasPermission.setPermissionId(permissionId);
-            tenantHasPermission.setTenantId(tenantId);
-            list.add(tenantHasPermission);
-        }
+        List<TenantHasPermission> list = addPermissionIds.stream()
+                .map(permissionId -> {
+                    TenantHasPermission tenantHasPermission = new TenantHasPermission();
+                    tenantHasPermission.setPermissionId(permissionId);
+                    tenantHasPermission.setTenantId(tenantId);
+                    return tenantHasPermission;
+                }).toList();
         this.tenantHasPermissionMapper.insertBatch(list);
 
     }

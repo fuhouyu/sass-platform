@@ -91,7 +91,7 @@ public class ParamConfigServiceImpl implements ParamConfigService {
     }
 
     @Override
-    public List<ParamConfigDTO> findParamConfigListByGroupKey(String groupKey) {
+    public List<ParamConfigDTO> findListByGroupKey(String groupKey) {
         return PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.queryByGroupKey(groupKey));
     }
 }

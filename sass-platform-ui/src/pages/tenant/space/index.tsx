@@ -192,7 +192,6 @@ const TenantSpace: React.FC = () => {
     const init = useCallback(async () => {
         setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
         const number = await resourceApi.countObjects();
-        console.log(number)
         setCountObjects(number);
     }, []);
 

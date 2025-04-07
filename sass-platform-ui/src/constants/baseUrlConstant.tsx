@@ -105,6 +105,16 @@ export class BaseApiUrlConstant {
      * 参数配置
      */
     static readonly PARAM_CONFIG_URL: string = `${BaseApiUrlConstant.VERSION}/param-config`
+
+    /**
+     * 服务监控
+     */
+    static readonly SERVER_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/server`
+
+    /**
+     * 日志监控
+     */
+    static readonly LOG_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/log`
 }
 
 /**

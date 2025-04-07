@@ -36,6 +36,7 @@ import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -73,9 +74,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         this.validUsernameExists(userinfoDTO.getUsername());
         long id = snowflakeIdWorker.nextId();
         AdminUsers entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         entity.setId(id);
-        entity.setOwnerTenantId(tenantId);
+        if (Objects.isNull(entity.getOwnerTenantId())) {
+            entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        }
         this.adminUserMapper.insert(entity);
         return id;
     }
@@ -125,6 +127,15 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (Objects.nonNull(account) && Objects.nonNull(account.getCredentials())) {
             this.accountService.edit(account);
         }
+    }
+
+    @Override
+    public void removeByTenantIds(Collection<Long> tenantIds) {
+        if (CollectionUtils.isEmpty(tenantIds)) {
+            return;
+        }
+        this.adminUserMapper.deleteByTenantIds(tenantIds);
+        this.accountService.removeByTenantIds(tenantIds);
     }
 
     @Override
@@ -201,7 +212,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         accountDTO.setUserId(adminUserDetailDTO.getId());
         accountDTO.setIsEnabled(true);
         accountDTO.setUserType(UserTypeEnum.ADMIN);
-        accountDTO.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        if (Objects.isNull(accountDTO.getOwnerTenantId())) {
+            accountDTO.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        }
+        accountDTO.encodeCredentials();
         try {
             this.accountService.save(accountDTO);
         } catch (Exception e) {

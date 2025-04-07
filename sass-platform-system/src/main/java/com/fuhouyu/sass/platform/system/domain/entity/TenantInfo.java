@@ -45,11 +45,6 @@ public class TenantInfo extends BaseEntity {
     private Long id;
 
     /**
-     * 管理员账号id
-     */
-    private Long adminUserId;
-
-    /**
      * 租户编码
      */
     private String tenantCode;

@@ -23,13 +23,16 @@ import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
+import com.fuhouyu.sass.platform.system.utils.SpringContextHolderUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * <p>
@@ -76,4 +79,14 @@ public class AccountDTO extends BaseDTO {
     @Schema(name = "ownerTenantId", description = "所属的租户id")
     private Long ownerTenantId;
 
+    /**
+     * 编码凭证
+     */
+    public void encodeCredentials() {
+        if (Objects.isNull(this.credentials)) {
+            return;
+        }
+        PasswordEncoder passwordEncoder = SpringContextHolderUtil.getBean(PasswordEncoder.class);
+        this.credentials = passwordEncoder.encode(credentials);
+    }
 }

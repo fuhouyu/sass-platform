@@ -64,6 +64,11 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
      * 组件数组
      */
     tableComponents?: React.ReactNode[];
+
+    /**
+     * 关闭表格提示
+     */
+    disableTableHint?: boolean;
 }
 
 export interface RefreshPageProps<T> {
@@ -77,5 +82,5 @@ export interface RefreshPageProps<T> {
     /**
      * 分页查询对象
      */
-    pageQuery?: Record<string, string | undefined>;
+    pageQuery?: Record<string, string | undefined> | PageQuery;
 }

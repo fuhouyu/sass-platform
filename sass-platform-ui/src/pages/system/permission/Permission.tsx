@@ -169,19 +169,21 @@ export const Permission: React.FC = () => {
         }),
     };
 
+    /**
+     * 初始化权限
+     */
+    const initPermission = async () => {
+        setLazyTreeData([{
+            ...mainPermission,
+            children: await permissionApi.getPermissionListApi()
+        }]);
+    }
 
     /**
      * 左侧菜单树
      */
     useEffect(() => {
-        // 先查询出一级菜单
-        permissionApi.getPermissionListApi()
-            .then((res: Menu[]) => {
-                setLazyTreeData([{
-                    ...mainPermission,
-                    children: res
-                }]);
-            });
+        initPermission().then();
     }, [t]);
 
 
@@ -289,14 +291,12 @@ export const Permission: React.FC = () => {
 
     return (
         <>
-            {/*<Input*/}
-            {/*    className='search-input'*/}
-            {/*    placeholder={t('Permission.namePlaceholder')} allowClear/>*/}
             <Splitter>
                 <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree.DirectoryTree
+                        {lazyTreeData && <Tree.DirectoryTree
                             defaultExpandParent={true}
+                            defaultSelectedKeys={[permissionQuery.parentId ?? -1]}
                             showIcon={false}
                             blockNode
                             motion={false}
@@ -306,7 +306,7 @@ export const Permission: React.FC = () => {
                             treeData={lazyTreeData}
                             titleRender={(menu: Menu) => t(`${menu.permissionName}`)}
                             onSelect={onSelectTree}
-                        />
+                        />}
                     </div>
                 </Splitter.Panel>
                 <Splitter.Panel>
@@ -348,8 +348,8 @@ export const Permission: React.FC = () => {
                                             await permissionTreeSelect();
                                         }}
                                     >
-                                    <DeleteButton
-                                        disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                                        <DeleteButton
+                                            disabled={rowKeys === undefined || rowKeys.length === 0}/>
                                     </Popconfirm>
                                 </PermissionButton>
                             </>

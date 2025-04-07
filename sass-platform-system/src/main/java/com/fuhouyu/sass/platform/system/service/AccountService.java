@@ -77,7 +77,7 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      *
      * @param updatePasswordDTO 密码dto对象
      */
-    void updatePassword(UpdatePasswordDTO updatePasswordDTO);
+    void editPassword(UpdatePasswordDTO updatePasswordDTO);
 
     /**
      * 通过用户id和账号类型查询账号
@@ -88,4 +88,10 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      */
     AccountDTO findAccountByUserIdAndType(Long userId, AccountTypeEnum accountTypeEnum);
 
+    /**
+     * 通过租户id进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void removeByTenantIds(Collection<Long> tenantIds);
 }

@@ -25,7 +25,6 @@ import {
     InputNumber,
     message,
     Radio,
-    Select,
     Space,
     Steps,
     Tooltip
@@ -61,7 +60,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const [tenantSpaceForm] = Form.useForm<TenantSpace>();
     const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
     const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
-    const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
+    const [addPermissionIds, setAddPermissionIds] = useState<React.Key[]>([]);
+    const [deletePermissionIds, setDeletePermissionIds] = useState<React.Key[]>([]);
     const language = useLocaleStore((state) => state.language);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
     const {preview} = useResourceAction();
@@ -74,7 +74,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
             return
         }
         const res = await tenantApi.getInfoByIdApi(tenantId);
-        setPermissionIds(res.permissionIds ?? []);
+        setAddPermissionIds(res.permissionIds ?? []);
         tenantInfoForm.setFieldsValue({...res});
         setTenantInfo(res);
     }, [tenantId, tenantInfoForm]);
@@ -123,7 +123,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
         tenant.startDate = startDate?.format(DATE_FORMAT);
         tenant.endDate = endDate?.format(DATE_FORMAT)
         tenant.tenantSpace = {...tenantSpaceForm.getFieldsValue()}
-        tenant.permissionIds = permissionIds;
+        tenant.addPermissionIds = addPermissionIds;
+        tenant.deletePermissionIds = deletePermissionIds;
         await (tenantId ? tenantApi.editInfoApi(tenantId, tenant) : tenantApi.saveInfoApi(tenant));
         message.success(t('Common.success'));
         callback()
@@ -137,7 +138,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
             if (selectedRows.length === 0) {
                 return
             }
-            tenantInfoForm.setFieldValue('adminUserId', selectedRows[0].id);
             tenantInfoForm.setFieldValue('adminUserRealName', selectedRows[0].realName);
         },
     }
@@ -167,7 +167,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                     name="tenant-form"
                     form={tenantInfoForm}
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 5 : 7}}
-                    wrapperCol={{span: 18}}
                     autoComplete="off"
                     initialValues={{
                         isEnabled: true,
@@ -252,34 +251,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
-                            hidden
-                            name={['adminUserId']}
-                            key="adminUserId"
-                        >
-                            <Input hidden/>
-                        </Form.Item>
-                        <Form.Item
-                            label={t('Tenant.adminUser')}
-                            name={['adminUserRealName']}
-                            validateTrigger="onBlur"
-                            key="adminUserRealName"
-                            colon={false}
-                            required={true}
-                            hasFeedback
-                            rules={[{required: true, message: t('Tenant.adminUserPlaceholder')}]}
-                        >
-                            <Select
-                                onDropdownVisibleChange={() => false}
-                                allowClear
-                                onClick={() => setIsChooseUserModalOpen(true)}
-                                notFoundContent={null}
-                                placeholder={t('Tenant.adminUserPlaceholder')}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col className={'form-item-col'} span={12}>
-                        <Form.Item
                             label={t('Tenant.contactPerson')}
                             name="contactPerson"
                             validateTrigger="onBlur"
@@ -325,38 +296,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                     <Col className={'form-item-col'} span={12}>
                         <Form.Item
-                            label={t('Tenant.permissions')}
-                            key="permissionIds"
-                            name='permissionIds'
-                            colon={false}
-                            required={true}
-                            hasFeedback={true}
-                        >
-                            <FormTree<Menu>
-                                formTreeProps={{
-                                    fieldNames: {key: 'id'},
-                                    checkedKeys: permissionIds,
-                                    onCheck: (checked: {
-                                        checked: Key[];
-                                        halfChecked: Key[];
-                                    } | Key[]) => {
-                                        if (checked instanceof Array) {
-                                            setPermissionIds(checked);
-                                            return
-                                        }
-                                        setPermissionIds(checked.checked);
-                                    },
-                                    titleRender: (menu: Menu) => t(`${menu.permissionName}`),
-                                    treeData: permissionTreeData,
-
-                                }}
-                                onSelectedAll={(ids: string[]) => setPermissionIds(ids)}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col className={'form-item-col'} span={12}>
-                        <Form.Item
                             name="dateRange"
                             label={t('Tenant.startAndEndDate')}
                             colon={false}
@@ -370,13 +309,56 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                         </Form.Item>
                     </Col>
 
+                    <Col className={'form-item-col'} span={24}>
+                        <Form.Item
+                            labelAlign={'left'}
+                            labelCol={{offset: 0}}
+                            label={t('Tenant.permissions')}
+                            key="permissionIds"
+                            name='permissionIds'
+                            colon={false}
+                            required={true}
+                            hasFeedback={true}
+                        >
+                            <FormTree<Menu>
+                                formTreeProps={{
+                                    fieldNames: {key: 'id'},
+                                    checkedKeys: addPermissionIds,
+                                    onCheck: (checked: {
+                                        checked: Key[];
+                                        halfChecked: Key[];
+                                    } | Key[], info) => {
+                                        const checkedKeys: Key[] = checked instanceof Array ? checked : checked.checked;
+                                        if (info.checked) {
+                                            setAddPermissionIds([...addPermissionIds, ...checkedKeys]);
+                                        } else {
+                                            setDeletePermissionIds([...deletePermissionIds, ...checkedKeys]);
+                                        }
+                                    },
+                                    titleRender: (menu: Menu) => t(`${menu.permissionName}`),
+                                    treeData: permissionTreeData,
+
+                                }}
+                                onSelectedAll={(ids: string[]) => {
+                                    console.log(ids)
+                                    if (ids.length === 0) {
+                                        setDeletePermissionIds([...addPermissionIds]);
+                                        setAddPermissionIds([])
+                                    } else {
+                                        setAddPermissionIds(ids);
+                                    }
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+
                     <Col className={'form-item-col'} span={24} style={{
                         paddingTop: '1rem',
                     }}>
                         <Form.Item
                             label={t('Common.remark')}
-                            labelCol={{span: 2}}
-                            wrapperCol={{span: 22}}
+                            labelCol={{span: 2, offset: 0}}
+                            // wrapperCol={{span: 10}}
                             name="remark"
                             key="remark"
                             colon={false}

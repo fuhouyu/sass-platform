@@ -90,7 +90,7 @@ public class UserLoginAspectj {
         Map<String, List<ParamConfigDTO>> paramConfigMap = null;
         if (userLoginDTO.getAccountType().isPassword()) {
             // 只有密码才进行检查
-            List<ParamConfigDTO> paramConfigs = paramConfigService.findParamConfigListByGroupKey(AuthenticationConstant.LOGIN_ERROR_GROUP_KEY);
+            List<ParamConfigDTO> paramConfigs = paramConfigService.findListByGroupKey(AuthenticationConstant.LOGIN_ERROR_GROUP_KEY);
             paramConfigMap = paramConfigs.stream()
                     .collect(Collectors.groupingBy(ParamConfigDTO::getConfigKey));
             this.checkErrorCount(userLoginDTO.getAccount(), paramConfigMap);
@@ -211,8 +211,10 @@ public class UserLoginAspectj {
      */
     private String getConfigValue(String configKey, String defaultConfigValue,
                                   Map<String, List<ParamConfigDTO>> paramConfigMap) {
+        ParamConfigDTO paramConfigDTO = new ParamConfigDTO();
+        paramConfigDTO.setConfigValue(defaultConfigValue);
         return paramConfigMap.getOrDefault(configKey,
-                        List.of(ParamConfigDTO.builder().configValue(defaultConfigValue).build()))
+                        List.of(paramConfigDTO))
                 .getFirst().getConfigValue();
     }
 

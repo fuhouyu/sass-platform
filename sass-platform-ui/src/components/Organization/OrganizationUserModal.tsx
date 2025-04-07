@@ -14,44 +14,51 @@
  * limitations under the License.
  */
 
-import {Button, Col, Input, Row, Table, TableColumnsType, Tag, Tree} from "antd";
+import {Button, Input, Splitter, TableColumnsType, Tag, Tree} from "antd";
 import {userApi} from "@/apis/adminUser.tsx";
-import React, {Key, useCallback, useEffect, useState} from "react";
+import React, {Key, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Userinfo} from "@/model/user.tsx";
-import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
+import {PageQuery} from "@/model/pageQuery.tsx";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {DownOutlined} from "@ant-design/icons";
 import {OrganizationUserModalProps} from "@components/Organization/interface.tsx";
 import './index.scss'
-import {Modal} from "@/components";
+import {Modal, PageList} from "@/components";
+import {Organization} from "@/model/organization.tsx";
+import {TableRefType} from "@components/List/table/interface.tsx";
 
 export const OrganizationUserModal = (organizationUserProps: OrganizationUserModalProps) => {
 
     const {t} = useTranslation();
     const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
     const {isModalOpen, setIsModalOpen, rowSelection} = organizationUserProps;
+    const tableRef = useRef<TableRefType<Userinfo>>(null);
     const columns: TableColumnsType = [
         {
             title: t('User.username'),
             align: 'center',
             dataIndex: 'username',
+            width: 120,
             showSorterTooltip: {target: 'full-header'},
         },
         {
             title: t('User.realName'),
             align: 'center',
             dataIndex: 'realName',
+            width: 120,
             defaultSortOrder: 'descend',
         },
         {
             title: t('Position.name'),
             align: 'center',
+            width: 120,
             dataIndex: ['userPosition', 'positionName'],
         },
         {
             title: t('Position.isMain'),
             align: 'center',
+            width: 120,
             dataIndex: ['userPosition', 'isMain'],
             render: (isMain: boolean) => (
                 isMain ?
@@ -69,18 +76,13 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
         pageNum: 1,
         pageSize: 10,
     });
-    const [pageResult, setPageResult] = useState<PageResult<Userinfo>>();
 
-    const pageQueryCallback = useCallback(async () => {
-        setPageResult(await userApi.pageInfoListApi(pageQuery));
-    }, [pageQuery]);
 
     useEffect(() => {
         if (isModalOpen) {
             initOrganization().then();
-            pageQueryCallback().then();
         }
-    }, [isModalOpen, pageQueryCallback])
+    }, [isModalOpen])
 
     /**
      * 关闭组织用户modal
@@ -88,7 +90,6 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
     const closeOrganizationUserModal = () => {
         setIsModalOpen(false);
         rowSelection?.onChange?.([], [], {type: "all"})
-        setPageResult(undefined);
     }
 
 
@@ -97,9 +98,13 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
             title={t('Organization.chooseMember')}
             open={isModalOpen}
             destroyOnClose
-            width={900}
-            styles={{body: {height: '44.5vh'}}}
+            width={'60%'}
             onCancel={closeOrganizationUserModal}
+            styles={{
+                body: {
+                    height: '40vh'
+                }
+            }}
             footer={[
                 <Button key='onOrganizationUserAddOk' type="primary" onClick={() => {
                     closeOrganizationUserModal();
@@ -109,10 +114,13 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                         onClick={() => closeOrganizationUserModal()}>{t('Button.cancel')}</Button>
             ]}
         >
-            <Row gutter={24} className={'main-container'}>
-                <Col span={6} className={'tree-container organization-tree'}>
+
+            <Splitter style={{height: '100%'}}>
+                <Splitter.Panel className={'tree-container organization-user-modal'} defaultSize="15%" min="10%"
+                                max="70%">
                     <div className='tree-info'>
-                        <Tree.DirectoryTree
+
+                        <Tree.DirectoryTree<Organization>
                             defaultExpandParent={true}
                             blockNode
                             showIcon={false}
@@ -126,33 +134,41 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                                     return
                                 }
                                 setPageQuery({...pageQuery, organizationId: selectedKeys[0] as number});
+                                tableRef.current?.refreshPageList({
+                                    pageQuery: pageQuery
+                                })
                             }}
                         />
                     </div>
-                </Col>
-                <Col span={18}>
-                    <div className={'organization-user-search'}>
-                        <label htmlFor="username">{t('User.username')}</label>
-                        <Input placeholder={t('User.usernamePlaceholder')} id={'username'}
-                               onChange={(e) => {
-                                   setPageQuery({...pageQuery, username: e.target.value})
-                               }}/>
-                    </div>
-                    <Table<Userinfo>
-                        rowKey={'id'}
-                        bordered
-                        rowSelection={{...rowSelection, type: 'radio', columnWidth: 48}}
-                        columns={columns}
-                        dataSource={pageResult?.list}
-                        pagination={{
-                            total: pageResult?.total,
-                            hideOnSinglePage: false,
-                            showSizeChanger: true,
-                            defaultPageSize: pageResult?.pageSize ?? 10,
+                </Splitter.Panel>
+                <Splitter.Panel className={'organization-user-info'}>
+                    <PageList
+                        tableProps={{
+                            disableTableHint: true,
+                            tableRef: tableRef,
+                            tableName: t('User.list'),
+                            columns: columns,
+                            pageApi: userApi.pageInfoListApi,
+                            rowSelection: rowSelection,
+                        }}
+                        headerSearchProps={{
+                            components: [
+                                <><label htmlFor="username">{t('User.username')}</label>
+                                    <Input
+                                        allowClear
+                                        placeholder={t('User.usernamePlaceholder')} id={'username'}
+                                        onChange={(e) => {
+                                            setPageQuery({...pageQuery, username: e.target.value})
+                                        }}/>
+                                </>,
+                            ],
+                            onSearchClick: () => tableRef.current?.refreshPageList({
+                                pageQuery: pageQuery
+                            })
                         }}
                     />
-                </Col>
-            </Row>
+                </Splitter.Panel>
+            </Splitter>
         </Modal>
     )
 }

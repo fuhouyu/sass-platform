@@ -374,6 +374,7 @@ export const User: React.FC = () => {
                             defaultExpandParent={true}
                             showIcon={false}
                             blockNode
+                            defaultCheckedKeys={[userQuery.organizationId]}
                             fieldNames={{key: 'id', title: 'organizationName'}}
                             switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}

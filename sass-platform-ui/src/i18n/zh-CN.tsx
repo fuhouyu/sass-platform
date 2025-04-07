@@ -120,7 +120,9 @@ const ZhCN = {
         endDatePlaceholder: '请选择结束日期',
         expiration: '有效期',
         permanent: '永久',
-
+        resetPassword: '重置密码',
+        resetPasswordConfirm: '确定重置租户管理员密码？',
+        resetPasswordSuccess: '密码已重置为默认密码',
 
     },
     // 菜单
@@ -149,6 +151,9 @@ const ZhCN = {
         tenantSpace: '租户空间',
         operationLogManage: '日志管理',
         paramConfig: '参数配置',
+        systemMonitor: '系统监控',
+        serverMonitor: '服务监控',
+        logMonitor: '日志监控',
 
     },
     Account: {
@@ -359,6 +364,30 @@ const ZhCN = {
         valuePlaceholder: '请输入配置值',
         groupKey: '分组标识',
         groupKeyPlaceholder: '请输入分组标识'
+    },
+    Monitor: {
+        jvmMonitorTitle: 'JVM 内存监控',
+        jvmMonitorSubTitle: '最近60秒',
+        systemInfo: '系统信息',
+        operationSystem: '操作系统',
+        systemArch: '系统架构',
+        startTime: '启动时间',
+        runTime: '运行时间',
+        systemMonitor: '系统监控',
+        cpuCoreNum: 'CPU 核心数',
+        cpuUsageRate: 'CPU 使用率',
+        memoryUsageRate: '内存使用率',
+        totalMemory: '总内存',
+        jvmInfo: 'JVM 信息',
+        jvmMaxMemory: '最大内存',
+        jvmFreeMemory: '空闲内存',
+        jdkVersion: 'JDK 版本',
+        projectDir: '项目地址',
+        jvmHeapMemory: 'JVM 堆内存',
+        jvmUsedMemory: '已使用内存',
+    },
+    LogMonitor: {
+        title: '实时日志',
     }
 }
 

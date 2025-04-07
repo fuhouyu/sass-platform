@@ -17,10 +17,12 @@ package com.fuhouyu.sass.platform.system.domain.dto.tenant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.util.List;
 
 /**
  * <p>
@@ -38,8 +40,9 @@ public class TenantInfoDetailDTO extends TenantInfoDTO {
     @Serial
     private static final long serialVersionUID = -8912378681465128376L;
 
-    @Schema(name = "adminUserRealName", description = "管理员用户账号真实姓名, 仅返回")
-    private String adminUserRealName;
+    @Schema(name = "permissionIds", description = "权限id集合")
+    @NotEmpty(message = "权限未选择")
+    private List<Long> permissionIds;
 
     @Schema(name = "tenantSpace", description = "租户空间信息")
     @Valid

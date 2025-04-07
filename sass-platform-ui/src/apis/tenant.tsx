@@ -45,6 +45,12 @@ class TenantApi extends DefaultApiImpl<TenantInfo> {
      * 租户列表
      */
     list: () => Promise<TenantInfo[]> = (): Promise<TenantInfo[]> => request.get(`${this.baseUrl}/list`);
+
+    /**
+     * 重置密码
+     * @param id 租户id
+     */
+    resetPassword: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/${id}/reset`);
 }
 
 export const tenantApi: TenantApi = new TenantApi()

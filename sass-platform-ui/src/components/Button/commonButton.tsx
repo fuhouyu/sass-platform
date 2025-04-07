@@ -15,10 +15,10 @@
  */
 
 import {Button} from "antd";
-import {IconFont} from "@/components";
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {ButtonProps} from "antd/es/button/button";
+import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 
 
 /**
@@ -32,7 +32,9 @@ export const AddButton = (buttonProps: ButtonProps) => {
     return (
         <Button className="add-button"
                 {...buttonProps}
-                icon={<IconFont type="i-add"/>}
+                color={'primary'}
+                variant="filled"
+                icon={<PlusOutlined/>}
         >
             {t('Button.add')}
         </Button>
@@ -49,7 +51,9 @@ export const DeleteButton = (buttonProps: ButtonProps) => {
     return (
         <Button className="del-button"
                 {...buttonProps}
-                icon={<IconFont type="i-delete"/>}>
+                color="danger"
+                variant="filled"
+                icon={<DeleteOutlined/>}>
             {t('Button.delete')}
         </Button>
     )
@@ -66,7 +70,9 @@ export const EditButton = (buttonProps: ButtonProps) => {
     return (
         <Button className="edit-button"
                 {...buttonProps}
-                icon={<IconFont type="i-edit"/>}>
+                color={'green'}
+                variant={'outlined'}
+                icon={<EditOutlined/>}>
             {t('Button.edit')}
         </Button>
     )

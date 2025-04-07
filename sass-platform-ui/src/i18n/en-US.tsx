@@ -107,6 +107,9 @@ const EnUS = {
         tenantSpace: 'Tenant Space',
         updateIcon: 'On click update icon',
         paramConfig: 'Param Config',
+        systemMonitor: 'System Monitor',
+        serverMonitor: 'Server Monitor',
+        logMonitor: 'Log Monitor',
     },
     // 租户
     Tenant: {
@@ -144,6 +147,9 @@ const EnUS = {
         authenticationRead: 'Authentication Read',
         expiration: 'Expiration',
         permanent: 'Permanent',
+        resetPassword: 'Reset Password',
+        resetPasswordConfirm: 'Confirm to reset the tenant administrator password?',
+        resetPasswordSuccess: 'The password has been reset to the default password.',
     },
     // 权限
     Permission: {
@@ -351,7 +357,32 @@ const EnUS = {
         valuePlaceholder: 'Please enter the configuration value',
         groupKey: 'Group Key',
         groupKeyPlaceholder: 'Please enter the group identifier',
+    },
+    Monitor: {
+        jvmMonitorTitle: 'JVM Memory Monitoring',
+        jvmMonitorSubTitle: 'Last 60 Seconds',
+        systemInfo: 'System Information',
+        operationSystem: 'Operating System',
+        systemArch: 'System Architecture',
+        startTime: 'Start Time',
+        runTime: 'Run Time',
+        systemMonitor: 'System Monitor',
+        cpuCoreNum: 'CPU Core Count',
+        cpuUsageRate: 'CPU Usage Rate',
+        memoryUsageRate: 'Memory Usage Rate',
+        totalMemory: 'Total Memory',
+        jvmInfo: 'JVM Information',
+        jvmMaxMemory: 'Max Memory',
+        jvmFreeMemory: 'Free Memory',
+        jdkVersion: 'JDK Version',
+        projectDir: 'Project Directory',
+        jvmHeapMemory: 'JVM Heap Memory',
+        jvmUsedMemory: 'Used Memory',
+    },
+    LogMonitor: {
+        title: "Real-time Logs"
     }
+
 }
 
 export {

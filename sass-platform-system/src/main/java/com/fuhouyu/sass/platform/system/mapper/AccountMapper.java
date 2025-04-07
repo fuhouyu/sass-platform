@@ -67,4 +67,11 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      */
     @TenantQuery
     Accounts queryAccountByUserIdAndType(@Param("userId") Long userId, @Param("accountType") String accountType);
+
+    /**
+     * 通过租户ids进行删除
+     *
+     * @param tenantIds 租户ids
+     */
+    void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
 }

@@ -38,10 +38,12 @@ export interface TenantInfo extends BaseModel {
     contactInfo?: string;
     // 是否启用
     isEnabled?: boolean;
-    // 权限id集合
+    // 后端返回的权限ids
     permissionIds?: Key[];
-    // 管理员用户id
-    adminUserId?: string;
+    // 要添加的权限ids
+    addPermissionIds?: Key[];
+    // 要被删除的权限ids
+    deletePermissionIds?: Key[];
     // 管理员用户真实姓名
     adminUserRealName?: string;
     // 租户空间

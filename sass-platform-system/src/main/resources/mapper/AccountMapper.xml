@@ -191,4 +191,12 @@
         WHERE user_id = #{userId}
         AND account_type = #{accountType}
     </select>
+
+    <delete id="deleteByTenantIds">
+        DELETE FROM <include refid="TableName"/>   a
+        WHERE a.owner_tenant_id IN
+        <foreach collection="tenantIds" open="(" close=")" separator="," item="tenantId">
+            #{tenantId}
+        </foreach>
+    </delete>
 </mapper>

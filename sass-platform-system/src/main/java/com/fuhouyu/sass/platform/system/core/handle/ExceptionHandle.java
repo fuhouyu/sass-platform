@@ -24,6 +24,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 
 /**
  * <p>
@@ -38,9 +39,27 @@ import org.springframework.web.context.request.ServletWebRequest;
 public class ExceptionHandle {
 
 
+    /**
+     * 授权异常
+     *
+     * @param request 请求
+     * @param e       异常
+     * @return 包装后的异常信息
+     */
     @ExceptionHandler(AuthorizationDeniedException.class)
     public BaseResponse<Void> exceptionHandle(ServletWebRequest request, Exception e) {
-        LoggerUtil.debug(log, "请求地址:{}, 异常信息:{}", request.getRequest().getRequestURI(), e.getMessage());
+        LoggerUtil.error(log, "请求地址:{}, 异常信息:{}", request.getRequest().getRequestURI(), e.getMessage());
         return ResponseHelper.failed(ResponseStatusEnum.NOT_AUTH);
+    }
+
+    /**
+     * 异步请求不可达
+     *
+     * @param request 请求
+     * @param e       异常信息
+     */
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    public void exceptionHandle(ServletWebRequest request, AsyncRequestNotUsableException e) {
+        LoggerUtil.warn(log, "请求地址:{}, AsyncRequestNotUsableException 异常信息:{}", request.getRequest().getRequestURI(), e.getMessage());
     }
 }

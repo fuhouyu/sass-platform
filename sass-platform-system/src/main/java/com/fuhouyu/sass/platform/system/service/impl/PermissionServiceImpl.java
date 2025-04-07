@@ -161,7 +161,6 @@ public class PermissionServiceImpl implements PermissionService {
     public List<PermissionDTO> getPermissionList(Long parentId) {
         Long currentParentId = Optional.ofNullable(parentId).orElse(-1L);
         List<Permissions> list = this.permissionMapper.queryListByParentId(currentParentId);
-        list.addAll(this.permissionMapper.queryAttachTenantPermissionListByParentId(currentParentId));
         return PERMISSION_ASSEMBLER.toDTO(list);
     }
 
@@ -193,6 +192,56 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void removeByTenantIds(Collection<Long> tenantIds) {
         this.permissionMapper.deleteByTenantIds(tenantIds);
+    }
+
+    @Override
+    public List<Long> copyPermissionToTenant(List<PermissionDTO> sourcePermissionList, Long tenantId) {
+        if (CollectionUtils.isEmpty(sourcePermissionList)) {
+            return null;
+        }
+        // 映射 oldId -> newId
+        Map<Long, Long> idMap = new HashMap<>();
+
+        // 第一步：先生成新的 id 映射
+        for (PermissionDTO original : sourcePermissionList) {
+            Long oldId = original.getId();
+            Long newId = snowflakeIdWorker.nextId();
+            idMap.put(oldId, newId);
+        }
+        // 第二步：复制内容，并替换 parentId
+        List<Permissions> targetPermissionList = new ArrayList<>();
+        for (PermissionDTO original : sourcePermissionList) {
+            Permissions entity = PERMISSION_ASSEMBLER.toEntity(original);
+            // 设置新id
+            entity.setId(idMap.get(original.getId()));
+
+            // 替换父id
+            Long oldParentId = original.getParentId();
+            if (oldParentId != -1) {
+                entity.setParentId(idMap.get(oldParentId));
+            }
+            entity.setOwnerTenantId(tenantId);
+            entity.setIsAllowModified(true);
+            targetPermissionList.add(entity);
+        }
+
+        this.permissionMapper.insertBatch(targetPermissionList);
+        return targetPermissionList.stream().map(Permissions::getId).toList();
+    }
+
+    @Override
+    public void removePermissionForTenant(Collection<Long> ids, Long tenantId) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        List<Permissions> permissionsList = this.permissionMapper.queryBySourceIdsAndTenant(ids, tenantId);
+        if (CollectionUtils.isEmpty(permissionsList)) {
+            return;
+        }
+        List<Long> deletePermissionIds = permissionsList.stream()
+                .map(Permissions::getId).toList();
+        this.roleHasPermissionService.removeByPermissionIds(deletePermissionIds);
+        this.permissionMapper.deleteByIds(deletePermissionIds);
     }
 
     /**

@@ -16,14 +16,13 @@
 
 
 import React, {useRef, useState} from "react";
-import {Drawer, Input, Popconfirm, Switch, TableColumnsType} from "antd";
+import {Button, Drawer, Input, message, Popconfirm, Space, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {tenantApi} from "@/apis/tenant";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.tsx";
@@ -33,6 +32,7 @@ import {TableRefType} from "@components/List/table/interface.tsx";
 import TenantForm from "./components/form";
 import {permissionApi} from "@/apis/permission.tsx";
 import {Menu} from "@/model/menu.tsx";
+import {ReloadOutlined} from "@ant-design/icons";
 
 /**
  * 租户组件
@@ -115,10 +115,33 @@ export const Tenant: React.FC = () => {
             width: 240,
             fixed: 'right',
             render: (_, record: TenantInfo) => {
-                return (<PermissionButton buttonPermissions={buttonPermissions}
+                return (
+                    <>
+
+
+                        <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
-                    <EditButton onClick={() => openDrawer(record.id)}/>
-                </PermissionButton>)
+                            <Space>
+                                <Popconfirm
+                                    title={t('Tenant.resetPassword')}
+                                    description={t('Tenant.resetPasswordConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        await tenantApi.resetPassword(record.id!);
+                                        message.success('密码重置成功');
+                                    }}
+                                >
+                                    <Button icon={<ReloadOutlined/>} color="pink"
+                                            variant={'outlined'}>{t('Tenant.resetPassword')}</Button>
+                                </Popconfirm>
+                                <EditButton onClick={() => openDrawer(record.id)}/>
+                            </Space>
+                        </PermissionButton>
+
+                    </>
+
+                )
             }
         }
     ];
@@ -135,9 +158,10 @@ export const Tenant: React.FC = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Userinfo> = {
+    const rowSelection: TableRowSelection<TenantInfo> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
+
 
     /**
      * 打开租户表单抽屉

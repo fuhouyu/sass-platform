@@ -32,10 +32,12 @@ public interface TenantHasPermissionService {
      * 保存或更新关联关系
      *
      * @param tenantId      租户id
-     * @param permissionIds 权限id集合
+     * @param addPermissionIds 添加的权限ids
+     * @param deletePermissionIds 删除的权限ids
      */
     void saveOrUpdateTenantPermission(Long tenantId,
-                                      Collection<Long> permissionIds);
+                                      Collection<Long> addPermissionIds,
+                                      Collection<Long> deletePermissionIds);
 
     /**
      * 删除关联关系

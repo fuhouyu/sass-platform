@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -24,10 +26,7 @@ import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,7 +71,7 @@ public class TenantInfoController {
     @Operation(summary = "保存租户")
     @PreAuthorize("@auth.hasAnyPermission('tenant:add')")
     @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
-    public BaseResponse<Long> saveTenant(@RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
+    public BaseResponse<Long> saveTenant(@RequestBody @Valid SaveOrEditTenantInfoDTO tenantInfoDTO) {
         return ResponseHelper.success(tenantInfoService.saveTenantDetail(tenantInfoDTO));
     }
 
@@ -88,7 +87,7 @@ public class TenantInfoController {
     @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Long> editTenant(
             @PathVariable("id") Long id,
-            @RequestBody @Valid TenantInfoDetailDTO tenantInfoDTO) {
+            @RequestBody @Valid SaveOrEditTenantInfoDTO tenantInfoDTO) {
         tenantInfoDTO.setId(id);
         this.tenantInfoService.editDetail(tenantInfoDTO);
         return ResponseHelper.success();
@@ -186,14 +185,32 @@ public class TenantInfoController {
     @PutMapping("/{id}/status")
     @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
-    @PreAuthorize("@auth.hasAnyPermission('system:tenant:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:edit')")
     @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
+        if (Objects.equals(id, ContextHolderStrategy.getContext().getUser().getTenantId())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前租户禁止修改");
+        }
         TenantInfoDTO tenantInfoDTO = new TenantInfoDTO();
         tenantInfoDTO.setId(id);
         tenantInfoDTO.setIsEnabled(enabled);
         this.tenantInfoService.edit(tenantInfoDTO);
+        return ResponseHelper.success();
+    }
+
+
+    /**
+     * 重置租户管理员密码
+     *
+     * @param id 租户id
+     * @return void
+     */
+    @GetMapping("/{id}/reset")
+    @Operation(summary = "重置租户管理员密码")
+    public BaseResponse<Void> resetPassword(@PathVariable("id") Long id) {
+        this.tenantInfoService.resetPassword(id);
         return ResponseHelper.success();
     }
 
