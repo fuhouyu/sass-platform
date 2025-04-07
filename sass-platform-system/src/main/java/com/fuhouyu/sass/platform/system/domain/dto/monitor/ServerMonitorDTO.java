@@ -47,8 +47,7 @@ public class ServerMonitorDTO implements Serializable {
     private JvmInfoDTO jvmInfo;
 
 
-    public ServerMonitorDTO() {
-        SystemInfo systemInfo = new SystemInfo();
+    public ServerMonitorDTO(SystemInfo systemInfo) {
         HardwareAbstractionLayer hardware = systemInfo.getHardware();
         this.cpuInfo = new CpuInfoDTO(hardware.getProcessor());
         this.memoryInfo = new MemoryInfoDTO(hardware.getMemory());

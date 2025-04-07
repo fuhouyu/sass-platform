@@ -36,7 +36,7 @@ import java.math.RoundingMode;
 @Schema(name = "CpuInfoDTO", description = "cpu详情")
 public class CpuInfoDTO implements Serializable {
 
-    private static final int DEFAULT_DELAY = 1000;
+    private static final int DEFAULT_DELAY = 800;
 
     @Serial
     private static final long serialVersionUID = 961283758712536423L;
