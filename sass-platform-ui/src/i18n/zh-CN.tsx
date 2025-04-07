@@ -152,7 +152,9 @@ const ZhCN = {
         operationLogManage: '日志管理',
         paramConfig: '参数配置',
         systemMonitor: '系统监控',
-        serverMonitor: '服务监控'
+        serverMonitor: '服务监控',
+        logMonitor: '日志监控',
+
     },
     Account: {
         personal: '个人账号',
@@ -383,6 +385,9 @@ const ZhCN = {
         projectDir: '项目地址',
         jvmHeapMemory: 'JVM 堆内存',
         jvmUsedMemory: '已使用内存',
+    },
+    LogMonitor: {
+        title: '实时日志',
     }
 }
 

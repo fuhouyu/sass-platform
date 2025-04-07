@@ -110,6 +110,11 @@ export class BaseApiUrlConstant {
      * 服务监控
      */
     static readonly SERVER_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/server`
+
+    /**
+     * 日志监控
+     */
+    static readonly LOG_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/log`
 }
 
 /**

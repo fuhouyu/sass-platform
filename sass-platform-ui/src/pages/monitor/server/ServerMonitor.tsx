@@ -19,11 +19,10 @@ import React, {FC, useEffect, useState} from "react";
 import './index.scss'
 import ReactECharts from 'echarts-for-react';
 import {Card, Flex, List, Space} from "antd";
-import {EventSourcePolyfill} from 'event-source-polyfill';
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {getAccessToken} from "@/utils";
 import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
 import {useTranslation} from "react-i18next";
+import {sseClient} from "@/utils/sse.tsx";
 
 interface MemoryData {
     timestamps: string[];
@@ -174,35 +173,34 @@ export const ServerMonitor: FC = () => {
     });
 
     useEffect(() => {
-        const eventSource = new EventSourcePolyfill(`${import.meta.env.VITE_API_URL ?? '/api'}${BaseApiUrlConstant.SERVER_MONITOR}`, {
-            headers: {
-                'Authorization': `Bearer ${getAccessToken()}`
-            }
-        });
-        eventSource.addEventListener("message", function (e) {
-            const data: ServerMonitorModel = JSON.parse(e.data) as ServerMonitorModel;
-            setServerMonitor(data);
-            if (data.jvmInfo) {
-                const {timestamp, usedMemoryBytes, freeMemoryBytes, maxMemoryBytes} = data.jvmInfo;
-                // 转换为 MB 单位
-                const currentTime = new Date(parseInt(timestamp!)).toLocaleTimeString();
 
-                setMemoryData(prev => {
-                    // 保留最近60秒的数据 (假设每秒一个数据点)
-                    const newTimestamps = [...prev.timestamps, currentTime!].slice(-60);
-                    const newUsedMemory = [...prev.usedMemory, (usedMemoryBytes && usedMemoryBytes / 1024 / 1024) ?? 0].slice(-60);
-                    const newFreeMemory = [...prev.freeMemory, (freeMemoryBytes && freeMemoryBytes / 1024 / 1024) ?? 0].slice(-60);
+        sseClient.connect(BaseApiUrlConstant.SERVER_MONITOR,
+            {
+                onMessage: (e) => {
+                    const data: ServerMonitorModel = JSON.parse(e.data) as ServerMonitorModel;
+                    setServerMonitor(data);
+                    if (data.jvmInfo) {
+                        const {timestamp, usedMemoryBytes, freeMemoryBytes, maxMemoryBytes} = data.jvmInfo;
+                        // 转换为 MB 单位
+                        const currentTime = new Date(parseInt(timestamp!)).toLocaleTimeString();
 
-                    return {
-                        timestamps: newTimestamps,
-                        maxMemory: maxMemoryBytes && (maxMemoryBytes / 1024 / 1024),
-                        usedMemory: newUsedMemory,
-                        freeMemory: newFreeMemory
-                    };
-                });
-            }
-        });
-        return () => eventSource.close();
+                        setMemoryData(prev => {
+                            // 保留最近60秒的数据 (假设每秒一个数据点)
+                            const newTimestamps = [...prev.timestamps, currentTime!].slice(-60);
+                            const newUsedMemory = [...prev.usedMemory, (usedMemoryBytes && usedMemoryBytes / 1024 / 1024) ?? 0].slice(-60);
+                            const newFreeMemory = [...prev.freeMemory, (freeMemoryBytes && freeMemoryBytes / 1024 / 1024) ?? 0].slice(-60);
+
+                            return {
+                                timestamps: newTimestamps,
+                                maxMemory: maxMemoryBytes && (maxMemoryBytes / 1024 / 1024),
+                                usedMemory: newUsedMemory,
+                                freeMemory: newFreeMemory
+                            };
+                        });
+                    }
+                }
+            })
+        return () => sseClient.disconnect();
     }, [])
 
 

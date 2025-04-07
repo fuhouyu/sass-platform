@@ -553,7 +553,13 @@ VALUES (41, 4, 'Menu.serverMonitor', 'system:server-monitor:list', 4, 'i-fuwujia
         'monitor/server', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
-
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (42, 4, 'Menu.logMonitor', 'system:log-monitor:list', 4, 'i-caozuorizhi', 'log',
+        'monitor/log', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
 CREATE TABLE role_has_permission
@@ -673,6 +679,8 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 4, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 41, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 42, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

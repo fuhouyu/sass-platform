@@ -108,7 +108,8 @@ const EnUS = {
         updateIcon: 'On click update icon',
         paramConfig: 'Param Config',
         systemMonitor: 'System Monitor',
-        serverMonitor: 'Server Monitor'
+        serverMonitor: 'Server Monitor',
+        logMonitor: 'Log Monitor',
     },
     // 租户
     Tenant: {
@@ -377,6 +378,9 @@ const EnUS = {
         projectDir: 'Project Directory',
         jvmHeapMemory: 'JVM Heap Memory',
         jvmUsedMemory: 'Used Memory',
+    },
+    LogMonitor: {
+        title: "Real-time Logs"
     }
 
 }

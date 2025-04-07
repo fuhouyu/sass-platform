@@ -13,43 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-.ant-layout, .ant-layout-has-sider, .ant-layout-content, .layout-content {
+$log-text-color: #00ff00;
+.log-container {
   height: 100%;
-  padding: 0;
-  overflow-y: hidden;
-}
-
-.layout-content {
-  padding: 0 1rem;
 
 }
 
-// 分隔线
-.ant-divider {
-  margin: 0;
+.log-content {
+  height: 100%;
+  overflow-y: auto;
+  background-color: #000000;
+  padding: 0.625rem;
+  color: $log-text-color;
+  position: relative;
 }
 
-.ant-layout-sider-has-trigger {
-  padding: 0;
-}
-
-.upload-container {
-  width: 25rem;
-  margin: 0 1.875rem;
-}
-
-.upload-content {
-  margin: 0 1.875rem 2rem 1.875rem;
-  padding: 0.9375rem 0.3125rem;
-  border-bottom: 1px solid rgb(226, 226, 226);
-}
-
-.upload-headItem {
-  font-size: 14px;
-  font-weight: bold;
-  width: 270px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+.log-text {
+  white-space: pre-wrap;
 }
