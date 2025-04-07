@@ -15,12 +15,12 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
-import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.monitor.ServerMonitorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +54,7 @@ public class ServerMonitorController {
      */
     @GetMapping
     @Operation(summary = "服务监控")
-    @NoAuth
+    @PreAuthorize("@auth.hasAllPermission('system:server-monitor:list')")
     public Flux<ServerMonitorDTO> monitor() {
         return Flux.interval(Duration.ofSeconds(1))
                 .concatMap(i -> Mono.fromCallable(ServerMonitorDTO::new));
