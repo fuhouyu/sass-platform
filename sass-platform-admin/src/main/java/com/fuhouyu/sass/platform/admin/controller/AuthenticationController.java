@@ -22,8 +22,9 @@ import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.RefreshTokenDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -90,15 +91,15 @@ public class AuthenticationController {
     /**
      * 通过刷新令牌，更新token
      *
-     * @param refreshToken 刷新令牌
+     * @param refreshTokenDTO 刷新令牌dto对象
      * @return 用户信息
      */
     @PutMapping("/refresh-token")
     @Operation(summary = "通过刷新令牌更新token")
     @Parameter(name = "refreshToken", description = "刷新令牌")
     @NoAuth
-    public BaseResponse<UserTokenDTO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
-        return ResponseHelper.success(this.userAccountService.refreshToken(refreshToken));
+    public BaseResponse<UserTokenDTO> refreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO) {
+        return ResponseHelper.success(this.userAccountService.refreshToken(refreshTokenDTO.getRefreshToken()));
     }
 
     /**
