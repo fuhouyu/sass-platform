@@ -146,6 +146,9 @@ const EnUS = {
         authenticationRead: 'Authentication Read',
         expiration: 'Expiration',
         permanent: 'Permanent',
+        resetPassword: 'Reset Password',
+        resetPasswordConfirm: 'Confirm to reset the tenant administrator password?',
+        resetPasswordSuccess: 'The password has been reset to the default password.',
     },
     // 权限
     Permission: {

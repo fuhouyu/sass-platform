@@ -64,9 +64,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountIdDTO save(AccountDTO accountDTO) {
-        if (Objects.nonNull(accountDTO.getCredentials())) {
-            accountDTO.setCredentials(passwordEncoder.encode(accountDTO.getCredentials()));
-        }
         accountDTO.setIsEnabled(true);
         Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
         this.accountMapper.insert(entity);
@@ -135,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+    public void editPassword(UpdatePasswordDTO updatePasswordDTO) {
         if (!Objects.equals(updatePasswordDTO.getNewPassword(), updatePasswordDTO.getConfirmPassword())) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "两次输入的密码不一致");
         }

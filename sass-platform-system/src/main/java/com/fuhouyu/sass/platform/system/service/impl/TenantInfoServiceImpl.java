@@ -20,9 +20,13 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.TenantInfoAssembler;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
+import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
@@ -36,6 +40,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -70,6 +75,10 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final TenantSpaceService tenantSpaceService;
 
     private final AdminUserService adminUserService;
+
+    private final AccountService accountService;
+
+    private final ParamConfigService paramConfigService;
 
     @Override
     public Long save(TenantInfoDTO tenantInfoDTO) {
@@ -174,6 +183,28 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                 .tenantName(res.getTenantName())
                 .tenantCode(res.getTenantCode())
                 .icon(res.getIcon()).build()).toList();
+    }
+
+    @Override
+    public void resetPassword(Long id) {
+        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        if (Objects.isNull(tenantInfo)) {
+            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
+                    "当前租户不存在");
+        }
+        String contactPerson = tenantInfo.getContactPerson();
+        AccountDTO accountDTO = this.accountService.findById(new AccountIdDTO(contactPerson, AccountTypeEnum.PASSWORD), id);
+        List<ParamConfigDTO> paramConfigList = this.paramConfigService.findListByGroupKey("TENANT");
+        Optional<ParamConfigDTO> optional = paramConfigList.stream()
+                .filter(config -> Objects.equals(config.getConfigKey(), "DEFAULT_PASSWORD"))
+                .findAny();
+        if (optional.isEmpty()) {
+            accountDTO.setCredentials("Aa123123..");
+        } else {
+            accountDTO.setCredentials(optional.get().getConfigValue());
+        }
+        accountDTO.encodeCredentials();
+        this.accountService.edit(accountDTO);
     }
 
     /**

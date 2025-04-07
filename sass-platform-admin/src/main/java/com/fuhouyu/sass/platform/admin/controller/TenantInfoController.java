@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.admin.controller;
 
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -183,14 +185,32 @@ public class TenantInfoController {
     @PutMapping("/{id}/status")
     @Operation(summary = "修改状态")
     @Parameter(name = "enabled", description = "true 启用 false 禁用")
-    @PreAuthorize("@auth.hasAnyPermission('system:tenant:edit')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:edit')")
     @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
     public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
                                          @RequestParam("enabled") Boolean enabled) {
+        if (Objects.equals(id, ContextHolderStrategy.getContext().getUser().getTenantId())) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+                    "当前租户禁止修改");
+        }
         TenantInfoDTO tenantInfoDTO = new TenantInfoDTO();
         tenantInfoDTO.setId(id);
         tenantInfoDTO.setIsEnabled(enabled);
         this.tenantInfoService.edit(tenantInfoDTO);
+        return ResponseHelper.success();
+    }
+
+
+    /**
+     * 重置租户管理员密码
+     *
+     * @param id 租户id
+     * @return void
+     */
+    @GetMapping("/{id}/reset")
+    @Operation(summary = "重置租户管理员密码")
+    public BaseResponse<Void> resetPassword(@PathVariable("id") Long id) {
+        this.tenantInfoService.resetPassword(id);
         return ResponseHelper.success();
     }
 

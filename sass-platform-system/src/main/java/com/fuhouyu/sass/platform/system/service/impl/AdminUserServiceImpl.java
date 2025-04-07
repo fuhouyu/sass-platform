@@ -215,7 +215,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (Objects.isNull(accountDTO.getOwnerTenantId())) {
             accountDTO.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         }
-
+        accountDTO.encodeCredentials();
         try {
             this.accountService.save(accountDTO);
         } catch (Exception e) {

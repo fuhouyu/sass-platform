@@ -120,7 +120,9 @@ const ZhCN = {
         endDatePlaceholder: '请选择结束日期',
         expiration: '有效期',
         permanent: '永久',
-
+        resetPassword: '重置密码',
+        resetPasswordConfirm: '确定重置租户管理员密码？',
+        resetPasswordSuccess: '密码已重置为默认密码',
 
     },
     // 菜单

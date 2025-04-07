@@ -71,4 +71,11 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @return 租户列表
      */
     List<BasicTenantDTO> findTenantList();
+
+    /**
+     * 重置密码
+     *
+     * @param id 主键id
+     */
+    void resetPassword(Long id);
 }

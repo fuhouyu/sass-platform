@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Button, Drawer, Input, Popconfirm, Space, Switch, TableColumnsType} from "antd";
+import {Button, Drawer, Input, message, Popconfirm, Space, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -117,13 +117,28 @@ export const Tenant: React.FC = () => {
             render: (_, record: TenantInfo) => {
                 return (
                     <>
-                        <Space>
-                            <Button icon={<ReloadOutlined/>} color="pink" variant={'outlined'}>重置密码</Button>
-                            <PermissionButton buttonPermissions={buttonPermissions}
-                                              permissionStr={TenantPermissionConstant.EDIT}>
+
+
+                        <PermissionButton buttonPermissions={buttonPermissions}
+                                          permissionStr={TenantPermissionConstant.EDIT}>
+                            <Space>
+                                <Popconfirm
+                                    title={t('Tenant.resetPassword')}
+                                    description={t('Tenant.resetPasswordConfirm')}
+                                    okText={t('Common.yes')}
+                                    cancelText={t('Common.no')}
+                                    onConfirm={async () => {
+                                        await tenantApi.resetPassword(record.id!);
+                                        message.success('密码重置成功');
+                                    }}
+                                >
+                                    <Button icon={<ReloadOutlined/>} color="pink"
+                                            variant={'outlined'}>{t('Tenant.resetPassword')}</Button>
+                                </Popconfirm>
                                 <EditButton onClick={() => openDrawer(record.id)}/>
-                            </PermissionButton>
-                        </Space>
+                            </Space>
+                        </PermissionButton>
+
                     </>
 
                 )
