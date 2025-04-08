@@ -30,9 +30,9 @@ class OnlyOfficeApi {
      * @param id 主键id
      * @param mode mode
      */
-    view: ({id, mode}: { id: string, mode: 'VIEW' | 'EDIT' }) => Promise<OnlyOfficeModal> = ({id, mode}: {
+    view: ({id, mode}: { id: string, mode: string }) => Promise<OnlyOfficeModal> = ({id, mode}: {
         id: string,
-        mode: 'VIEW' | 'EDIT'
+        mode: string
     }): Promise<OnlyOfficeModal> =>
         request.get(`${this._baseUrl}/${id}`, {params: {mode}});
 

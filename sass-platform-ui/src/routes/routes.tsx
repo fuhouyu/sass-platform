@@ -24,6 +24,7 @@ import {getAccessToken} from "@/utils";
 import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import Office from "@/pages/office";
 
 
 /**
@@ -54,6 +55,11 @@ export const commonRoutes: DataRouteObject[] = [
                 Component: UserProfile,
             }
         ]
+    },
+    {
+        id: 'office-preview',
+        path: `${BaseUrlConstant.OFFICE_URL}/:id`,
+        Component: Office
     },
     {
         id: 'login',

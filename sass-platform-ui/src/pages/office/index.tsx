@@ -14,26 +14,6 @@
  * limitations under the License.
  */
 
+import {Office} from "@/pages/office/Office.tsx";
 
-export interface ResourceViewProps {
-
-    /**
-     * 主键id
-     */
-    id: string;
-
-    /**
-     * mimeType
-     */
-    mimeType: string;
-
-    /**
-     * 资源类型
-     */
-    type: string;
-
-    /**
-     * 是否是公开资源
-     */
-    isPublic: boolean;
-}
+export default Office;

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import {DocumentEditor} from "@onlyoffice/document-editor-react";
-import {ResourceViewProps} from "@components/ResourceView/interface.tsx";
-import React, {useCallback, useEffect} from "react";
-import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
-import {OnlyOffice} from "@/model/office.tsx";
+import React, {FC, useCallback, useEffect} from "react";
+import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
+import {message} from "antd";
+import {OnlyOffice} from "@/model/office.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
+import {DocumentEditor} from "@onlyoffice/document-editor-react";
 
 function onLoadComponentError(errorCode: number, errorDescription: string) {
     switch (errorCode) {
@@ -38,22 +39,28 @@ function onLoadComponentError(errorCode: number, errorDescription: string) {
     }
 }
 
-export const OfficeView = (resourceView: ResourceViewProps) => {
-    const userinfo = useUserStore(state => state.userinfo);
+
+export const Office: FC = () => {
+    const {id} = useParams();
+    const [params] = useSearchParams();
+    const {userinfo, fetchUserinfo} = useUserStore(state => state);
     const [officeView, setOfficeView] = React.useState<OnlyOffice>({} as OnlyOffice)
     const {preview} = useResourceAction();
     const language = useLocaleStore(state => state.language);
 
+    if (!id) {
+        message.error("没有找到该资源").then();
+        return <div></div>;
+    }
     const initOfficeView = useCallback(async () => {
-        const onlyOffice: OnlyOffice = await onlyOfficeApi.view({...resourceView});
+        const onlyOffice: OnlyOffice = await onlyOfficeApi.view({id: id, mode: params.get('mode') || 'VIEW'});
         setOfficeView(onlyOffice);
-    }, [resourceView]);
-
+    }, [])
 
     useEffect(() => {
+        fetchUserinfo().then();
         initOfficeView().then();
     }, [initOfficeView])
-
 
     return (
         officeView.config &&

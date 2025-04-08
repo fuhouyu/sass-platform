@@ -16,7 +16,6 @@
 
 import React, {useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
-import {OfficeView} from "@components/ResourceView/officeView.tsx";
 import {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {ImageView} from "@components/ResourceView/imageView.tsx";
 import "./index.scss"
@@ -51,8 +50,6 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
     }
 
     switch (resourceView.type) {
-        case ResourceTypeEnum.OFFICE:
-            return <OfficeView {...resourceView}/>;
         case ResourceTypeEnum.IMAGE:
             return <ImageView viewUrl={viewUrl}/>;
         case ResourceTypeEnum.VIDEO:
