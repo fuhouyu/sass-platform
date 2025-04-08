@@ -56,8 +56,11 @@ import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import useResourceType, {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
-
+type ResourcePreview = {
+    type: ResourceTypeEnum
+} & Resource;
 const TenantSpace: React.FC = () => {
 
     const {t} = useTranslation();
@@ -70,7 +73,7 @@ const TenantSpace: React.FC = () => {
     const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
     const [countObjects, setCountObjects] = useState<number>(0)
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
-    const [selectFile, setSelectFile] = useState<Resource>();
+    const [selectFile, setSelectFile] = useState<ResourcePreview>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
     const [previewMode, setPreviewMode] = useState<'EDIT' | 'VIEW'>('VIEW');
 
@@ -243,7 +246,10 @@ const TenantSpace: React.FC = () => {
             return
         }
         setShowFileDetail(true);
-        setSelectFile(record);
+        setSelectFile({
+            ...record,
+            type: parseResourceType(record.mimeType).type,
+        });
     }
 
     /**
@@ -300,17 +306,19 @@ const TenantSpace: React.FC = () => {
         {
             icon: <EditOutlined/>, text: t('Resource.editor'),
             onClick: () => {
-                if (selectFile) {
-                    setPreviewModal(true);
-                    setPreviewMode('EDIT')
-                }
+                window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=EDIT`)
             },
         },
         {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
-            onClick: () => selectFile &&
-                setPreviewModal(true),
+            onClick: () => {
+                if (selectFile?.type === ResourceTypeEnum.OFFICE) {
+                    window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=VIEW`)
+                    return
+                }
+                setPreviewModal(true);
+            },
         },
     ];
 
@@ -385,7 +393,7 @@ const TenantSpace: React.FC = () => {
                         dataSource={fileActions}
                         renderItem={(item) => {
                             if (item.text === t('Resource.editor')) {
-                                if (!(parseResourceType(selectFile?.mimeType ?? '').type === ResourceTypeEnum.OFFICE)) {
+                                if (!(selectFile?.type === ResourceTypeEnum.OFFICE)) {
                                     return null;
                                 }
                             }
@@ -429,8 +437,7 @@ const TenantSpace: React.FC = () => {
                 mimeType={selectFile?.mimeType ?? ''}
                 id={selectFile?.id ?? ''}
                 isPublic={selectFile?.isPublic ?? false}
-                type={parseResourceType(selectFile?.mimeType ?? '').type}
-                mode={previewMode}/>
+                type={selectFile?.type ?? ''}/>
         </Modal>
 
     </>)

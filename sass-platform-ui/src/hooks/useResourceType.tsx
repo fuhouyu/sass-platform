@@ -73,6 +73,11 @@ const useResourceType = () => {
                             type: ResourceTypeEnum.OFFICE,
                             icon: <IconFont type={'i-excel'}/>,
                         }
+                    case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                        return {
+                            type: ResourceTypeEnum.OFFICE,
+                            icon: <IconFont type={'i-excel'}/>,
+                        }
                     case "msword":
                         return {
                             type: ResourceTypeEnum.OFFICE,

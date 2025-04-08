@@ -145,4 +145,9 @@ export class BaseUrlConstant {
      * 租户空间
      */
     static readonly TENANT_SPACE_URL: string = '/tenant-space';
+
+    /**
+     * office预览
+     */
+    static readonly OFFICE_URL: string = '/office/preview';
 }
