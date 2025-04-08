@@ -41,7 +41,9 @@ class AuthenticationApi {
      * @param refreshToken 刷新令牌
      */
     refreshTokenApi = (refreshToken: string): Promise<UserToken> =>
-        request.put(`${baseAuthUrl}/refresh-token?refreshToken=${refreshToken}`)
+        request.put(`${baseAuthUrl}/refresh-token`, {
+            refreshToken
+        })
 
     /**
      * 登录的

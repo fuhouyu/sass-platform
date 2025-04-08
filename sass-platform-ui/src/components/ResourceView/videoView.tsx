@@ -22,42 +22,38 @@ import 'video.js/dist/video-js.css';
 import './index.scss';
 import {Flex} from "antd";
 
-
 const VideoView = ({options}: { options: AnyObject }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<Player | null>(null); // 明确类型为 Player | null
+    const playerRef = useRef<Player | null>(null);
 
     useEffect(() => {
-        const videoElement = document.getElementById('video-js') as Element;
-        if (!playerRef.current) {
+        if (videoRef.current && !playerRef.current) {
+            // 初始化播放器一次
+            playerRef.current = videojs(videoRef.current, options);
+            playerRef.current.addClass('vjs-lime');
 
-
-            playerRef.current = videojs(videoElement, options, () => {
-                videojs.log('player is ready');
-            });
-
-        } else {
-            const player = playerRef.current;
-            player.autoplay(options.autoplay);
-            player.src(options.sources);
         }
         return () => {
-
-            if (videoElement) {
-                videoElement.parentNode?.removeChild(videoElement);
-
+            if (playerRef.current) {
+                playerRef.current.dispose();
+                playerRef.current = null;
             }
+        };
+    }, []);
 
-
+    useEffect(() => {
+        if (playerRef.current) {
+            // 当 options 改变，仅更新 src
+            playerRef.current.autoplay(options.autoplay ?? false);
+            playerRef.current.src(options.sources ?? []);
         }
-    }, [options]);
+    }, [options.autoplay, options.sources]);
 
     return (
-        <Flex justify={"center"} align={"center"} className={'view-container'}>
+        <Flex justify="center" align="center" className="view-container">
             <video
-                id={'video-js'}
                 ref={videoRef}
-                className=" video-js  view-container vjs-big-play-centered"
+                className="video-js view-container vjs-big-play-centered"
             />
         </Flex>
     );

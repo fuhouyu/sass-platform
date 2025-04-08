@@ -40,6 +40,7 @@ import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
 import {
     DownloadOutlined,
+    EditOutlined,
     EyeOutlined,
     FolderOutlined,
     LeftOutlined,
@@ -52,7 +53,7 @@ import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
-import useResourceType from "@/hooks/useResourceType.tsx";
+import useResourceType, {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
 
@@ -66,6 +67,13 @@ const TenantSpace: React.FC = () => {
     const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const {generateSignedUrl} = useResourceAction();
+    const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
+    const [countObjects, setCountObjects] = useState<number>(0)
+    const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
+    const [selectFile, setSelectFile] = useState<Resource>();
+    const [previewModal, setPreviewModal] = useState<boolean>(false);
+    const [previewMode, setPreviewMode] = useState<'EDIT' | 'VIEW'>('VIEW');
+
 
 
     const columns: TableColumnsType<Resource> = [
@@ -180,11 +188,7 @@ const TenantSpace: React.FC = () => {
         return breadcrumbItems
     };
 
-
     const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
-    const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
-    const [countObjects, setCountObjects] = useState<number>(0)
-
 
     /**
      * 初始化数据
@@ -233,9 +237,6 @@ const TenantSpace: React.FC = () => {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
     };
 
-    const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
-    const [selectFile, setSelectFile] = useState<Resource>();
-    const [previewModal, setPreviewModal] = useState<boolean>(false);
     const onTableRowClick = (record: Resource) => {
         if (record.isDirectory) {
             breadcrumbClick(record.objectKey)
@@ -295,6 +296,15 @@ const TenantSpace: React.FC = () => {
         {
             icon: <DownloadOutlined/>, text: t('Resource.download'),
             onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
+        },
+        {
+            icon: <EditOutlined/>, text: t('Resource.editor'),
+            onClick: () => {
+                if (selectFile) {
+                    setPreviewModal(true);
+                    setPreviewMode('EDIT')
+                }
+            },
         },
         {
             icon: <EyeOutlined/>,
@@ -373,11 +383,16 @@ const TenantSpace: React.FC = () => {
                         header={<span><strong>Actions: </strong></span>}
                         bordered
                         dataSource={fileActions}
-                        renderItem={(item) => (
-                            <List.Item onClick={item.onClick}>
+                        renderItem={(item) => {
+                            if (item.text === t('Resource.editor')) {
+                                if (!(parseResourceType(selectFile?.mimeType ?? '').type === ResourceTypeEnum.OFFICE)) {
+                                    return null;
+                                }
+                            }
+                            return <List.Item onClick={item.onClick}>
                                 {item.icon} {item.text}
-                            </List.Item>
-                        )}
+                            </List.Item>;
+                        }}
                     />
                     <h3>{t('Resource.info')}</h3>
                     <Divider/>
@@ -415,7 +430,7 @@ const TenantSpace: React.FC = () => {
                 id={selectFile?.id ?? ''}
                 isPublic={selectFile?.isPublic ?? false}
                 type={parseResourceType(selectFile?.mimeType ?? '').type}
-                mode={'VIEW'}/>
+                mode={previewMode}/>
         </Modal>
 
     </>)

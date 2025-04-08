@@ -315,6 +315,7 @@ const ZhCN = {
         type: '文件类型',
         preview: '预览',
         download: '下载',
+        editor: '编辑',
         uploadSuccess: '上传成功',
         uploadError: '上传失败',
         uploadFile: '上传文件',
