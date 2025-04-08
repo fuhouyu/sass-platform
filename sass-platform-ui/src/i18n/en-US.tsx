@@ -310,6 +310,7 @@ const EnUS = {
         type: 'File Type',
         preview: 'Preview',
         download: 'Download',
+        editor: 'Editor',
         uploadSuccess: 'Upload Success',
         uploadError: 'Upload Error',
         uploadFile: 'Upload File',
