@@ -56,16 +56,35 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         case ResourceTypeEnum.IMAGE:
             return <ImageView viewUrl={viewUrl}/>;
         case ResourceTypeEnum.VIDEO:
-            return <VideoView options={{
-                autoplay: true,
-                controls: true,
-                sources: [
-                    {
-                        src: viewUrl,
-                        type: 'video/mp4'
-                    }
-                ]
-            }}/>;
+            return <VideoView
+                key={viewUrl} // 让 React 确认是播放新的视频（只有换源时才换）
+                options={{
+                    controls: true,
+                    responsive: true,
+                    preload: 'auto',
+                    html5: {
+                        hls: {
+                            overrideNative: true,
+                            limitRenditionByPlayerDimensions: true,
+                            useDevicePixelRatio: true
+                            // bandwidth: 16777216,
+                        },
+                        nativeAudioTracks: false,
+                        nativeVideoTracks: false,
+                        useBandwidthFromLocalStorage: true
+                    },
+                    controlBar: {
+                        pictureInPictureToggle: false
+                    },
+                    sources: [
+                        {
+                            src: viewUrl,
+                            type: 'video/mp4',
+                            withCredentials: false,
+                        },
+                    ],
+                }}
+            />
         case ResourceTypeEnum.YAML:
             return <YamlView resourceId={resourceView.id}/>;
         default:
