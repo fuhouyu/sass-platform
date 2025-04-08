@@ -79,11 +79,13 @@ public class AuthFilter implements ParseHttpRequest {
     @Override
     public Request parseRequest(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         Request parseRequest = ParseHttpRequest.super.parseRequest(request, response);
-        Ip2Region ip2Region = ip2RegionTemplate.searchIp(parseRequest.getRequestIp());
         List<String> locationList = new ArrayList<>(5);
+        Ip2Region ip2Region = ip2RegionTemplate.searchIp(parseRequest.getRequestIp());
         locationList.add(ip2Region.getCountry());
+        locationList.add(ip2Region.getRegion());
         locationList.add(ip2Region.getProvince());
         locationList.add(ip2Region.getCity());
+        locationList.add(ip2Region.getIsp());
         locationList.removeIf(s -> Objects.isNull(s) || Objects.equals(s, "0"));
         String location = String.join("/", locationList);
         parseRequest.putAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION,
