@@ -1205,7 +1205,6 @@ COMMENT ON COLUMN user_login_record.user_agent IS 'User-Agent 原始信息';
 COMMENT ON COLUMN user_login_record.login_time IS '登录时间';
 COMMENT ON COLUMN user_login_record.logout_time IS '登出时间（退出或过期）';
 COMMENT ON COLUMN user_login_record.status IS '登录状态（0成功，1失败，2超时，3被踢出）';
-COMMENT ON COLUMN user_login_record.message IS '登录结果信息（如失败原因）';
 COMMENT ON COLUMN user_login_record.token IS 'Token 或会话ID（哈希或UUID）';
 
 
