@@ -91,9 +91,6 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     @Schema(name = "isAllowModified", description = "是否允许修改", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isAllowModified;
 
-    @Schema(name = "isSystemd", description = "是否系统权限", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean isSystemd;
-
     @Schema(name = "isVisible", description = "是否显示", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isVisible;
 
