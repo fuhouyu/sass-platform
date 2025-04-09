@@ -91,4 +91,14 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param tenantIds 租户ids
      */
     void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
+
+    /**
+     * 查询当前用户在组织下的详情
+     *
+     * @param id             主键id
+     * @param organizationId 组织id
+     * @return 用户详情
+     */
+    @TenantQuery
+    AdminUserDetailDTO findDetailByIdAndOrganizationId(@Param("id") Long id, @Param("organizationId") Long organizationId);
 }

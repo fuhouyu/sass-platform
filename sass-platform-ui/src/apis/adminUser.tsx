@@ -36,6 +36,15 @@ class AdminUserApi extends DefaultApiImpl<Userinfo> {
     checkUsernameExistsApi = (username: string): Promise<boolean> => {
         return request.get(`${baseUserUrl}/exists?username=${username}`, {})
     }
+
+    /**
+     * 获取详情
+     * @param id 主键id
+     * @param organizationId 组织id
+     */
+    getDetailByIdApi = (id: string, organizationId: string): Promise<Userinfo> => {
+        return request.get(`${this.baseUrl}/${id}?organizationId=${organizationId}`);
+    };
 }
 
 export const userApi: AdminUserApi = new AdminUserApi()

@@ -81,11 +81,13 @@ public class AdminUserController {
      *
      * @return 用户详情dto对象
      */
-    @Operation(summary = "用户详情")
+    @Operation(summary = "查询当前用户在组织下的详情")
     @GetMapping("/{id}")
     @PreAuthorize("@auth.hasAnyPermission('system:user:query')")
-    public BaseResponse<AdminUserDetailDTO> userDetailById(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.adminUserService.findDetailById(id));
+    @Parameter(name = "organizationId", description = "组织id")
+    public BaseResponse<AdminUserDetailDTO> userDetailById(@PathVariable("id") Long id,
+                                                           @RequestParam("organizationId") Long organizationId) {
+        return ResponseHelper.success(this.adminUserService.findDetailByIdAndOrganizationId(id, organizationId));
     }
 
     /**

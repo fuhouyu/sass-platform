@@ -258,4 +258,17 @@
             #{tenantId}
         </foreach>
     </delete>
+
+    <select id="findDetailByIdAndOrganizationId" resultMap="UserDetailResultMap">
+        SELECT
+        <include refid="QueryAllColumns"/>,
+        up.organization_id,
+        up.order_in_organization,
+        up.position_name,
+        up.is_main
+        FROM <include refid="TableName"/>   u
+        LEFT JOIN user_positions up ON u.id = up.user_id
+        WHERE u.id = #{id}
+        AND up.organization_id = #{organizationId}
+    </select>
 </mapper>

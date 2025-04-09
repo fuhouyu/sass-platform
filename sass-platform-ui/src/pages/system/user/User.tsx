@@ -199,7 +199,7 @@ export const User: React.FC = () => {
             setIsModalOpen(true);
             return;
         }
-        const userinfo = await userApi.getInfoByIdApi(userId);
+        const userinfo = await userApi.getDetailByIdApi(userId, userQuery.organizationId);
         setFormInitValues(userinfo);
         setIsModalOpen(true);
     }

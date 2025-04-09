@@ -139,6 +139,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public AdminUserDetailDTO findDetailByIdAndOrganizationId(Long id, Long organizationId) {
+        return this.adminUserMapper.findDetailByIdAndOrganizationId(id, organizationId);
+    }
+
+    @Override
     public AdminUserDTO findById(Long userId) {
         AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
         return USERS_ASSEMBLER.toDTO(adminUsers);
