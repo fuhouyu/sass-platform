@@ -19,10 +19,12 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AccountResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.utils.SpringContextHolderUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -60,7 +62,9 @@ public class AccountDTO extends BaseDTO {
 
     @JsonProperty("credentials")
     @JsonAlias({"password", "credentials"})
-    @NotEmpty(message = "用户密码未填写", groups = ValidGroups.SaveGroup.class)
+    @NotEmpty(groups = ValidGroups.SaveGroup.class)
+    @ParamErrorResponse(using = AccountResponseStatusEnum.class,
+            value = "PASSWORD_NOT_NULL")
     @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String credentials;
 

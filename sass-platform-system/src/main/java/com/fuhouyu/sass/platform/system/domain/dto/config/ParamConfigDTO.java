@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.config;
 
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.ParamConfigResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -45,22 +47,32 @@ public class ParamConfigDTO extends BaseDTO {
 
     @Schema(name = "configName", description = "配置名称")
     @NotEmpty(message = "配置名称未输入")
+    @ParamErrorResponse(using = ParamConfigResponseStatusEnum.class,
+            value = "CONFIG_NAME_NOT_NULL")
     private String configName;
 
     @Schema(name = "configKey", description = "配置key")
     @NotEmpty(message = "配置键未输入")
+    @ParamErrorResponse(using = ParamConfigResponseStatusEnum.class,
+            value = "CONFIG_KEY_NOT_NULL")
     private String configKey;
 
     @Schema(name = "configValue", description = "配置value")
     @NotEmpty(message = "配置值未输入")
+    @ParamErrorResponse(using = ParamConfigResponseStatusEnum.class,
+            value = "CONFIG_VALUE_NOT_NULL")
     private String configValue;
 
     @Schema(name = "groupKey", description = "分组标识")
     @NotEmpty(message = "分组标识未输入")
+    @ParamErrorResponse(using = ParamConfigResponseStatusEnum.class,
+            value = "GROUP_KEY_NOT_NULL")
     private String groupKey;
 
     @Schema(name = "remark", description = "备注")
     @Length(max = 500, message = "超出最大字符限制")
+    @ParamErrorResponse(using = ParamConfigResponseStatusEnum.class,
+            value = "REMARK_LENGTH_TOO_LONG")
     private String remark;
 
     @Schema(name = "isAllowModified", description = "是否允许修改")

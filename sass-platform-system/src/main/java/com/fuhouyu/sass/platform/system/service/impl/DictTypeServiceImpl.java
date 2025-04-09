@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -24,6 +23,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypeDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictType;
+import com.fuhouyu.sass.platform.system.enums.response.DictTypeResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.DictTypeMapper;
 import com.fuhouyu.sass.platform.system.service.DictTypeService;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ public class DictTypeServiceImpl implements DictTypeService {
     public Long save(DictTypeDTO dto) {
         long id = snowflakeIdWorker.nextId();
         if (Objects.equals(Boolean.TRUE, this.checkDictCodeExists(dto.getDictCode()))) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(DictTypeResponseStatusEnum.DICT_TYPE_CODE_EXISTS,
                     String.format("字典编码 [%s] 已存在", dto.getDictCode()));
         }
         DictType entity = DICT_TYPE_ASSEMBLER.toEntity(dto);

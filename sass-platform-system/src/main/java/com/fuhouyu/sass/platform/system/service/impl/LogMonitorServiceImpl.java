@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import cn.hutool.core.util.SystemPropsUtil;
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.sass.platform.system.enums.response.LogMonitorResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.LogMonitorService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -80,8 +80,7 @@ public class LogMonitorServiceImpl implements LogMonitorService {
                 result.addFirst(line);
             }
         } catch (IOException e) {
-            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
-                    "日志文件不存在");
+            throw new ServiceException(LogMonitorResponseStatusEnum.LOG_FILE_NOT_FOUND);
         }
         return result;
     }

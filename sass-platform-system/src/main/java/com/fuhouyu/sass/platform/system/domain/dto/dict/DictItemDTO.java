@@ -15,7 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.dict;
 
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.DictItemResponseStatusEnum;
+import com.fuhouyu.sass.platform.system.enums.response.DictTypeResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -45,29 +48,41 @@ public class DictItemDTO extends BaseDTO {
     private Long id;
 
     @Schema(name = "dictCode", description = "字典编码", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "字典编码未填写")
+    @NotEmpty
+    @ParamErrorResponse(using = DictTypeResponseStatusEnum.class,
+            value = "DICT_TYPE_CODE_NOT_NULL")
     private String dictCode;
 
     @Schema(name = "itemName", description = "字典项名称", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "字典项名称未填写")
+    @NotEmpty
+    @ParamErrorResponse(using = DictItemResponseStatusEnum.class,
+            value = "DICT_ITEM_NAME_NOT_NULL")
     private String itemName;
 
     @Schema(name = "itemCode", description = "字典项编码", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "字典项编码未填写")
+    @NotEmpty
+    @ParamErrorResponse(using = DictItemResponseStatusEnum.class,
+            value = "DICT_ITEM_CODE_NOT_NULL")
     private String itemCode;
 
     @Schema(name = "isAllowModified", description = "是否允许修改，仅返回")
     private Boolean isAllowModified;
 
     @Schema(name = "isEnabled", description = "状态：启用/禁用", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "状态未选择")
+    @NotNull
+    @ParamErrorResponse(using = DictItemResponseStatusEnum.class,
+            value = "STATUS_NOT_NULL")
     private Boolean isEnabled;
 
     @Schema(name = "displayOrder", description = "排序", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "排序未输入")
+    @NotNull
+    @ParamErrorResponse(using = DictItemResponseStatusEnum.class,
+            value = "DISPLAY_ORDER_NOT_NULL")
     private Integer displayOrder;
 
     @Schema(name = "remark", description = "备注")
-    @Length(max = 255, message = "备注超出最大字数限制255")
+    @Length(max = 255)
+    @ParamErrorResponse(using = DictItemResponseStatusEnum.class,
+            value = "REMARK_LENGTH_TOO_LONG")
     private String remark;
 }

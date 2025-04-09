@@ -33,6 +33,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenReq
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
+import com.fuhouyu.sass.platform.system.enums.response.ResourceResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
@@ -301,8 +302,7 @@ public class ResourceServiceImpl implements ResourceService {
         Resources resources = this.resourceMapper.queryById(id);
         if (Objects.isNull(resources)) {
             LoggerUtil.warn(log, "资源不存在, id: {}", id);
-            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
-                    "资源文件不存在");
+            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
         }
         if (!resources.getIsPublic()) {
             if (Objects.isNull(ContextHolderStrategy.getContext().getUser()) ||

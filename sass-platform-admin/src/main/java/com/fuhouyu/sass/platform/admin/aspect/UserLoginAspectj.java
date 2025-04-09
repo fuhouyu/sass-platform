@@ -27,6 +27,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.cloudflare.TurnstileVerifyRes
 import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.properties.CloudflareProperties;
 import com.fuhouyu.sass.platform.system.service.ParamConfigService;
 import lombok.extern.slf4j.Slf4j;
@@ -124,7 +125,7 @@ public class UserLoginAspectj {
         // Cloudflare 验证
         String cloudflareTurnstileToken = userLoginDTO.getCloudflareTurnstileToken();
         if (!StringUtils.hasText(cloudflareTurnstileToken)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "请通过Cloudflare Turnstile验证");
+            throw new ServiceException(AuthenticationResponseStatusEnum.CLOUDFLARE_TURNSTILE_VERIFY_FAIL);
         }
 
         TurnstileVerifyRequestDTO request = new TurnstileVerifyRequestDTO();
@@ -141,12 +142,12 @@ public class UserLoginAspectj {
 
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             LoggerUtil.error(log, "cloudflare验证错误，错误码：{}", responseEntity.getStatusCode());
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "cloudflare验证错误");
+            throw new ServiceException(AuthenticationResponseStatusEnum.CLOUDFLARE_TURNSTILE_VERIFY_FAIL);
         }
 
         TurnstileVerifyResponseDTO responseDTO = responseEntity.getBody();
         if (Objects.isNull(responseDTO)) {
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "cloudflare验证错误,返回结果为空");
+            throw new ServiceException(AuthenticationResponseStatusEnum.CLOUDFLARE_TURNSTILE_VERIFY_FAIL);
         }
         if (Boolean.FALSE.equals(responseDTO.getSuccess())) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, responseDTO.getErrorCodes());

@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.function.Callback;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -39,6 +38,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.AdminUserService;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
@@ -129,21 +129,17 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserTokenDTO loginBindThirdParty(ThirdPartyBindPlatformDTO thirdPartyBindPlatformDTO) {
         String thirdPartyUserId = (String) this.cacheService.get(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
         if (Objects.isNull(thirdPartyUserId)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "用户绑定信息已过期");
+            throw new ServiceException(AuthenticationResponseStatusEnum.THIRD_PARTY_ACCOUNT_BIND_EXPIRE);
         }
         AccountDTO account = this.accountService.findById(new AccountIdDTO(thirdPartyUserId, AccountTypeEnum.WELINK));
         if (Objects.nonNull(account)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前第三方账号已绑定");
+            throw new ServiceException(AuthenticationResponseStatusEnum.THIRD_PARTY_ACCOUNT_BINDING);
         }
 
         UserTokenDTO userTokenDTO = this.login(thirdPartyBindPlatformDTO);
         Long userId = ContextHolderStrategy.getContext().getUser().getId();
         // 保存第三方账号信息
         AccountDTO accountDTO = new AccountDTO();
-        AccountDTO weLinkAccount = this.accountService.findAccountByUserIdAndType(userId, AccountTypeEnum.WELINK);
-        if (Objects.nonNull(weLinkAccount)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前账号已绑定WeLink账号，请解绑后重试");
-        }
         accountDTO.setAccount(thirdPartyUserId);
         // 目前只有weLink
         accountDTO.setAccountType(AccountTypeEnum.WELINK.name());

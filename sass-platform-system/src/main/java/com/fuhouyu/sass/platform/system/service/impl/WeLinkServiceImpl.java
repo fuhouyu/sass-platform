@@ -21,6 +21,7 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkAccessTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.ThirdPartyPlatformResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,7 @@ public class WeLinkServiceImpl implements WeLinkService {
         WeLinkAccessTokenDTO weLinkAccessTokenDTO = responseEntity.getBody();
         if (!responseEntity.getStatusCode().is2xxSuccessful() || Objects.isNull(weLinkAccessTokenDTO)) {
             log.error("获取accessToken失败，错误码：{}，错误信息：{}", responseEntity.getStatusCode(), weLinkAccessTokenDTO);
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "获取accessToken失败");
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WELINK_ACCESS_TOKEN_ERROR);
         }
         this.checkCodeMessage(weLinkAccessTokenDTO.getCode(), weLinkAccessTokenDTO.getMessage());
         cacheService.set(WE_LINK_ACCESS_TOKEN, weLinkAccessTokenDTO.getAccessToken(), weLinkAccessTokenDTO.getExpiresIn(), TimeUnit.SECONDS);
@@ -97,7 +98,7 @@ public class WeLinkServiceImpl implements WeLinkService {
         WeLinkLoginUserDTO weLinkLoginUserDTO = responseEntity.getBody();
         if (!responseEntity.getStatusCode().is2xxSuccessful() || Objects.isNull(weLinkLoginUserDTO)) {
             log.error("通过code登录失败，错误码：{}", responseEntity.getStatusCode());
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "weLink登录失败");
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WELINK_LOGIN_ERROR);
         }
         this.checkCodeMessage(weLinkLoginUserDTO.getCode(), weLinkLoginUserDTO.getMessage());
         return weLinkLoginUserDTO;

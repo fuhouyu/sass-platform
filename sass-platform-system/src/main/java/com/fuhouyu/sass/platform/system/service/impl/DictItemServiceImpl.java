@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -24,6 +23,8 @@ import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictItem;
+import com.fuhouyu.sass.platform.system.enums.response.DictItemResponseStatusEnum;
+import com.fuhouyu.sass.platform.system.enums.response.DictTypeResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.DictItemMapper;
 import com.fuhouyu.sass.platform.system.service.DictItemService;
 import com.fuhouyu.sass.platform.system.service.DictTypeService;
@@ -82,11 +83,11 @@ public class DictItemServiceImpl implements DictItemService {
     @Override
     public Long save(DictItemDTO dto) {
         if (!dictTypeService.checkDictCodeExists(dto.getDictCode())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(DictTypeResponseStatusEnum.DICT_TYPE_NOT_EXISTS,
                     String.format("字典类型 [%s] 不存在", dto.getDictCode()));
         }
         if (this.checkItemCodeExists(dto.getDictCode(), dto.getItemCode())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(DictItemResponseStatusEnum.DICT_ITEM_CODE_EXISTS,
                     String.format("字典项编码 [%s] 已存在", dto.getItemCode()));
         }
         long id = snowflakeIdWorker.nextId();

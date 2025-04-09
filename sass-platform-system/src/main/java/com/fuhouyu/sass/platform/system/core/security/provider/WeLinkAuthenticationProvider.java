@@ -25,7 +25,7 @@ import com.fuhouyu.sass.platform.system.constants.CacheConstant;
 import com.fuhouyu.sass.platform.system.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
-import com.fuhouyu.sass.platform.system.enums.WebResponseStatusEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.EqualsAndHashCode;
@@ -96,8 +96,7 @@ public class WeLinkAuthenticationProvider implements AuthenticationProvider {
             response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, String.format("%s", HttpRequestHeaderConstant.USER_BIND_TOKEN));
             cacheService.set(CacheConstant.USER_BIND_TOKEN + temporaryToken, weLinkLoginUserDTO.getUserId(),
                     3, TimeUnit.MINUTES);
-            throw new ServiceException(WebResponseStatusEnum.USER_NOT_BIND,
-                    "当前WeLink用户未绑定账号，请先进行绑定账号后操作");
+            throw new ServiceException(AuthenticationResponseStatusEnum.WELINK_NOT_BIND);
         }
     }
 
