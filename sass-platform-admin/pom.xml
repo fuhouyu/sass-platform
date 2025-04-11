@@ -60,6 +60,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>executable-jar</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
