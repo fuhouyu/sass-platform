@@ -15,8 +15,12 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.permission;
 
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.PermissionResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,15 +50,27 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     private Long parentId;
 
     @Schema(name = "permissionName", description = "权限名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotEmpty
+    @ParamErrorResponse(using = PermissionResponseStatusEnum.class,
+            value = "PERMISSION_NAME_NOT_NULL")
     private String permissionName;
 
     @Schema(name = "permissionType", description = "权限类型", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotEmpty
+    @ParamErrorResponse(using = PermissionResponseStatusEnum.class,
+            value = "PERMISSION_TYPE_NOT_NULL")
     private String permissionType;
 
     @Schema(name = "permissionCode", description = "权限编码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotEmpty
+    @ParamErrorResponse(using = PermissionResponseStatusEnum.class,
+            value = "PERMISSION_CODE_NOT_NULL")
     private String permissionCode;
 
     @Schema(name = "displayOrder", description = "显示顺序", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull
+    @ParamErrorResponse(using = PermissionResponseStatusEnum.class,
+            value = "DISPLAY_ORDER_NOT_NULL")
     private Integer displayOrder;
 
     @Schema(name = "icon", description = "icon", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -75,9 +91,6 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     @Schema(name = "isAllowModified", description = "是否允许修改", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isAllowModified;
 
-    @Schema(name = "isSystemd", description = "是否系统权限", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean isSystemd;
-
     @Schema(name = "isVisible", description = "是否显示", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isVisible;
 
@@ -85,6 +98,9 @@ public class PermissionDTO extends BaseDTO implements Serializable {
     private Boolean isLeaf;
 
     @Schema(name = "isEnabled", description = "启禁用状态：true启用")
+    @NotNull
+    @ParamErrorResponse(using = PermissionResponseStatusEnum.class,
+            value = "STATUS_NOT_NULL")
     private Boolean isEnabled;
 
     public PermissionDTO() {

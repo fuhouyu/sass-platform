@@ -16,7 +16,7 @@
 
 import axios, {AxiosInstance} from "axios";
 import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
-import {message} from "antd";
+import {message, notification} from "antd";
 import {UserBind} from "@/model/authentication.tsx";
 import {authenticationApi} from "@/apis/authentication.tsx";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
@@ -28,7 +28,27 @@ const request: AxiosInstance = axios.create({
     timeout: 10000,
 });
 
+/**
+ * 请求参数错误
+ */
+interface ParamError {
+    /**
+     * 错误码
+     */
+    code: number;
+    /**
+     * 错误消息
+     */
+    message: string;
+    /**
+     * 错误等级
+     */
+    errorLevel: string;
+}
+
+
 request.interceptors.request.use(function (config) {
+
     // 在发送请求之前做些什么
     const {url, params, headers} = config;
     if (!params) {
@@ -78,6 +98,33 @@ request.interceptors.response.use(async function (response) {
         return
     }
     // 如果是1001，表示用户需要绑定
+    if (response.data.code === 400) {
+        const paramErrors = response.data.data as ParamError[];
+        paramErrors.forEach(({code, message, errorLevel}) => {
+            // 根据 errorLevel 判断通知的类型
+            if (errorLevel === 'ERROR') {
+                notification.error({
+                    showProgress: true,
+                    message: '错误',
+                    description: message,
+                });
+            } else if (errorLevel === 'WARNING') {
+                notification.warning({
+                    showProgress: true,
+                    message: '警告',
+                    description: message,
+                });
+            } else if (errorLevel === 'INFO') {
+                notification.info({
+                    showProgress: true,
+                    message: '信息',
+                    description: message,
+                });
+            }
+        });
+        return Promise.reject(new Error('参数错误，请检查表单输入.'));
+
+    }
     if (response.data.code === 1001) {
         const isUserBind = response.headers['x-user-bind']; // 是否绑定账号
         const userBindToken = response.headers['x-user-bind-temporary-token']; // 绑定账号临时token
@@ -88,6 +135,7 @@ request.interceptors.response.use(async function (response) {
             } as UserBind;
         }
     }
+
     if (response.data.message) {
         const error = new Error(response.data.message);
         await message.error(error.message);

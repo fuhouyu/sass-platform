@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.assembler.AccountsAssembler;
@@ -27,6 +26,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.AccountId;
 import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AccountResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.AccountMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.WeLinkService;
@@ -134,12 +134,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void editPassword(UpdatePasswordDTO updatePasswordDTO) {
         if (!Objects.equals(updatePasswordDTO.getNewPassword(), updatePasswordDTO.getConfirmPassword())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "两次输入的密码不一致");
+            throw new ServiceException(AccountResponseStatusEnum.CONFIRM_PASSWORD_VERIFY_FAIL);
         }
         Accounts account = this.accountMapper.queryAccountByUserIdAndType(ContextHolderStrategy.getContext().getUser().getId(),
                 AccountTypeEnum.PASSWORD.name());
         if (!passwordEncoder.matches(updatePasswordDTO.getOldPassword(), account.getCredentials())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "原始密码不正确");
+            throw new ServiceException(AccountResponseStatusEnum.ORIGINAL_PASSWORD_VERIFY_FAIL);
         }
         account.setCredentials(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
         this.accountMapper.update(account);

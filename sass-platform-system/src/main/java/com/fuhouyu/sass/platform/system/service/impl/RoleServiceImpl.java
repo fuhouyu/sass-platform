@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -25,6 +24,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RolePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Roles;
+import com.fuhouyu.sass.platform.system.enums.response.RoleResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.RoleMapper;
 import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
 import com.fuhouyu.sass.platform.system.service.RoleService;
@@ -109,7 +109,7 @@ public class RoleServiceImpl implements RoleService {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);
         if (Objects.nonNull(roles)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(RoleResponseStatusEnum.ROLE_CODE_ALREADY_EXISTS,
                     "角色编码: %s 已存在", roleCode);
         }
         long id = snowflakeIdWorker.nextId();
@@ -145,8 +145,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleDTO findById(Long id) {
         Roles roles = this.roleMapper.queryById(id);
         if (Objects.isNull(roles)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "角色不存在");
+            throw new ServiceException(RoleResponseStatusEnum.ROLE_NOT_EXISTS);
         }
         RoleDTO roleDTO = ROLES_ASSEMBLER.toDTO(roles);
         roleDTO.setPermissionIds(this.roleHasPermissionService.findPermissionIdsByRoleId(id));

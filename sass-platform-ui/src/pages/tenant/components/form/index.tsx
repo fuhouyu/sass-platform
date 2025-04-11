@@ -183,13 +183,11 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                                 hasFeedback
                             >
                                 <S3Upload
-                                    uploadProps={{
-                                        prefix: 'user-avatar',
-                                        isPublic: true,
-                                        onUploadSuccess: async (resourceId) => {
-                                            setTenantInfo({...tenantInfo, icon: resourceId})
-                                            message.success(t('Common.success'));
-                                        },
+                                    isPublic={true}
+                                    showUploadList={false}
+
+                                    onUploadSuccess={async (resourceId) => {
+                                        setTenantInfo({...tenantInfo, icon: resourceId})
                                     }}
                                 >
                                     <Tooltip
@@ -358,7 +356,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                         <Form.Item
                             label={t('Common.remark')}
                             labelCol={{span: 2, offset: 0}}
-                            // wrapperCol={{span: 10}}
                             name="remark"
                             key="remark"
                             colon={false}

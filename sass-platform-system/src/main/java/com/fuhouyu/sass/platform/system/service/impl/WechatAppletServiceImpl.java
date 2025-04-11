@@ -23,6 +23,7 @@ import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletPhoneInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.OpenPlatformTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.ThirdPartyPlatformResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.properties.OpenPlatformProperties;
 import com.fuhouyu.sass.platform.system.service.WechatAppletService;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,7 @@ public class WechatAppletServiceImpl implements WechatAppletService {
                 .body(String.class);
         if (Objects.isNull(responseStr)) {
             log.error("通过code: {} 获取微信小程序session失败, 返回结果为空", code);
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "微信小程序登录失败");
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WECHAT_APPLET_LOGIN_ERROR);
         }
         WechatAppletSessionDTO wechatAppletSessionDTO = JacksonUtil.readValue(responseStr, WechatAppletSessionDTO.class);
         if (Objects.isNull(wechatAppletSessionDTO.getErrCode())) {
@@ -112,7 +113,7 @@ public class WechatAppletServiceImpl implements WechatAppletService {
                 .body(String.class);
         if (Objects.isNull(responseStr)) {
             log.error("获取accessToken失败，返回为null");
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR);
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WECHAT_APPLET_ACCESS_TOKEN_ERROR);
         }
         ObjectNode responseValueNode = JacksonUtil.readValue(responseStr, ObjectNode.class);
         accessToken = responseValueNode.get("access_token").asText();
@@ -137,11 +138,11 @@ public class WechatAppletServiceImpl implements WechatAppletService {
                 .toEntity(ObjectNode.class);
         if (Objects.isNull(responseEntity.getBody())) {
             log.error("通过code: {} 获取手机号失败, 返回结果为空", code);
-            throw new ServiceException(ResponseStatusEnum.SERVER_ERROR, "获取用户手机号失败");
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WECHAT_APPLET_PHONE_ERROR);
         }
         ObjectNode objectNode = responseEntity.getBody();
         if (!Objects.equals(objectNode.get("errcode").asInt(), 0)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, objectNode.get("errmsg").asText());
+            throw new ServiceException(ThirdPartyPlatformResponseStatusEnum.WECHAT_APPLET_PHONE_ERROR, objectNode.get("errmsg").asText());
         }
         return JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(objectNode.get("phone_info"), WechatAppletPhoneInfoDTO.class));
     }

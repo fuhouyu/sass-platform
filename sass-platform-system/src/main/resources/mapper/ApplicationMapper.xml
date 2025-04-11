@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2025 fuhouyu.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.ApplicationMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Applications" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+        <result column="client_id" property="clientId"/>
+        <result column="client_secret" property="clientSecret"/>
+        <result column="client_name" property="clientName"/>
+        <result column="icon" property="icon"/>
+        <result column="remark" property="remark"/>
+        <result column="redirect_uris" property="redirectUris"/>
+        <result column="scopes" property="scopes"/>
+        <result column="grant_types" property="grantTypes"/>
+        <result column="access_token_validity" property="accessTokenValidity"/>
+        <result column="refresh_token_validity" property="refreshTokenValidity"/>
+        <result column="published" property="published"/>
+        <result column="ip_whitelist" property="ipWhitelist"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="owner_tenant_id" property="ownerTenantId"/>
+    </resultMap>
+
+
+    <sql id="TableName">
+        applications
+    </sql>
+
+    <sql id="InsertColumns">
+            client_id,
+            client_secret,
+            client_name,
+            icon,
+            remark,
+            redirect_uris,
+            scopes,
+            grant_types,
+            access_token_validity,
+            refresh_token_validity,
+            published,
+            ip_whitelist,
+            is_enabled,
+            is_deleted,
+            owner_tenant_id,
+            created_at,
+            created_by,
+            updated_at,
+            updated_by
+    </sql>
+
+    <sql id="QueryAllColumns">
+            a.client_id,
+            a.client_secret,
+            a.client_name,
+            a.icon,
+            a.remark,
+            a.redirect_uris,
+            a.scopes,
+            a.grant_types,
+            a.access_token_validity,
+            a.refresh_token_validity,
+            a.published,
+            a.ip_whitelist,
+            a.is_enabled,
+            a.is_deleted,
+            a.owner_tenant_id,
+            a.created_at,
+            a.created_by,
+            a.updated_at,
+            a.updated_by
+    </sql>
+
+    <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Users">
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumns"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{clientId},
+            #{clientSecret},
+            #{clientName},
+            #{icon},
+            #{remark},
+            #{redirectUris},
+            #{scopes},
+            #{grantTypes},
+            #{accessTokenValidity},
+            #{refreshTokenValidity},
+            #{published},
+            #{ipWhitelist},
+            #{isEnabled},
+            #{isDeleted},
+            #{ownerTenantId},
+            #{createdAt},
+            #{createdBy},
+            #{updatedAt},
+            #{updatedBy}
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List" >
+        INSERT INTO
+        <include refid="TableName"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="InsertColumns"/>
+        </trim>
+        VALUES
+        <foreach collection="list" separator="," item="entity">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{entity.clientId},
+                #{entity.clientSecret},
+                #{entity.clientName},
+                #{entity.icon},
+                #{entity.remark},
+                #{entity.redirectUris},
+                #{entity.scopes},
+                #{entity.grantTypes},
+                #{entity.accessTokenValidity},
+                #{entity.refreshTokenValidity},
+                #{entity.published},
+                #{entity.ipWhitelist},
+                #{entity.isEnabled},
+                #{entity.isDeleted},
+                #{entity.ownerTenantId},
+                #{entity.createdAt},
+                #{entity.createdBy},
+                #{entity.updatedAt},
+                #{entity.updatedBy}
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Users">
+        UPDATE
+        <include refid="TableName"/>
+        SET
+       <if test="clientName != null and clientName != ''">
+           client_name = #{clientName},
+       </if>
+        <if test="clientSecret != null">
+            client_secret = #{clientSecret},
+        </if>
+        <if test="icon != null">
+            icon = #{icon},
+        </if>
+        <if test="remark != null">
+            remark = #{remark},
+        </if>
+        <if test="redirectUris != null and redirectUris != ''">
+            redirect_uris = #{redirectUris},
+        </if>
+        <if test="scopes != null and scopes != ''">
+            scopes = #{scopes},
+        </if>
+        <if test="grantTypes != null">
+            grant_types = #{grantTypes},
+        </if>
+        <if test="accessTokenValidity != null">
+            access_token_validity = #{accessTokenValidity},
+        </if>
+        <if test="refreshTokenValidity != null">
+            refresh_token_validity = #{refreshTokenValidity},
+        </if>
+        <if test="published != null">
+            published = #{published},
+        </if>
+        <if test="ipWhitelist != null ">
+            ip_whitelist = #{ipWhitelist},
+        </if>
+        <if test="isEnabled != null">
+            is_enabled = #{isEnabled},
+        </if>
+        updated_at = #{updatedAt},
+        updated_by = #{updatedBy}
+        WHERE client_id  = #{clientId}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM <include refid="TableName"/>
+        WHERE client_id  = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.Set">
+        DELETE FROM <include refid="TableName"/>
+        WHERE client_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="QueryAllColumns"/>
+        FROM <include refid="TableName"/> a
+        WHERE a.client_id  = #{clientId}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT <include refid="QueryAllColumns"/>
+        FROM <include refid="TableName"/> a
+        WHERE a.client_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="QueryAllColumns"/>
+        FROM
+        <include refid="TableName"/> a
+        <where>
+            <if test="pageQuery.clientName != null and pageQuery.clientName != ''">
+                client_name LIKE CONCAT('%', #{pageQuery.clientName}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

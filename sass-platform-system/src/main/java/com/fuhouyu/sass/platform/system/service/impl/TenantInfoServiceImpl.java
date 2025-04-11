@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -28,6 +27,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;
+import com.fuhouyu.sass.platform.system.enums.response.TenantResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.listener.TenantEvent;
 import com.fuhouyu.sass.platform.system.mapper.TenantInfoMapper;
 import com.fuhouyu.sass.platform.system.service.*;
@@ -84,8 +84,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     public Long save(TenantInfoDTO tenantInfoDTO) {
         TenantInfo existsTenant = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
         if (Objects.nonNull(existsTenant)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "租户编码:%s 已存在", existsTenant.getTenantCode());
+            throw new ServiceException(TenantResponseStatusEnum.TENANT_CODE_ALREADY_EXISTS);
         }
         long id = snowflakeIdWorker.nextId();
         TenantInfo entity = TENANTS_ASSEMBLER.toEntity(tenantInfoDTO);
@@ -99,8 +98,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     public void edit(TenantInfoDTO tenantInfoDTO) {
         TenantInfo tenantInfo = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
         if (Objects.isNull(tenantInfo)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "租户: %s 不存在", tenantInfoDTO.getTenantCode());
+            throw new ServiceException(TenantResponseStatusEnum.TENANT_NOT_EXISTS);
         }
         this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
     }
@@ -116,8 +114,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     public int removeByIds(Collection<Long> ids) {
         Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         if (ids.contains(tenantId)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "当前登录的租户不允许删除操作！");
+            throw new ServiceException(TenantResponseStatusEnum.TENANT_NO_PERMISSION);
         }
         this.doRemoveTenantAttach(ids);
         int count = this.tenantInfoMapper.deleteByIds(ids);
@@ -189,8 +186,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     public void resetPassword(Long id) {
         TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
         if (Objects.isNull(tenantInfo)) {
-            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
-                    "当前租户不存在");
+            throw new ServiceException(TenantResponseStatusEnum.TENANT_NOT_EXISTS);
         }
         String contactPerson = tenantInfo.getContactPerson();
         AccountDTO accountDTO = this.accountService.findById(new AccountIdDTO(contactPerson, AccountTypeEnum.PASSWORD), id);

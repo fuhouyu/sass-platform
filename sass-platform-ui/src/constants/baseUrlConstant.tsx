@@ -109,12 +109,17 @@ export class BaseApiUrlConstant {
     /**
      * 服务监控
      */
-    static readonly SERVER_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/server`
+    static readonly SERVER_MONITOR_URL: string = `${BaseApiUrlConstant.VERSION}/monitor/server`
 
     /**
      * 日志监控
      */
-    static readonly LOG_MONITOR: string = `${BaseApiUrlConstant.VERSION}/monitor/log`
+    static readonly LOG_MONITOR_URL: string = `${BaseApiUrlConstant.VERSION}/monitor/log`
+
+    /**
+     * 应用管理
+     */
+    static readonly APPLICATION_MANAGE_URL: string = `${BaseApiUrlConstant.VERSION}/application`;
 }
 
 /**

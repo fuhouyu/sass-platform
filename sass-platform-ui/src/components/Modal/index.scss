@@ -17,6 +17,7 @@
 .modal-container {
   .ant-modal-content {
     padding: 0;
+
   }
 
   .ant-modal-title {
@@ -43,7 +44,9 @@
   }
 
   .ant-modal-body {
-    padding: 1.25rem 1.5rem !important;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
   }
 
   .ant-modal-close {

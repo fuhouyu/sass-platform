@@ -74,4 +74,13 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param tenantIds 租户ids
      */
     void removeByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 查询当前用户在组织下的详情
+     *
+     * @param id             主键id
+     * @param organizationId 组织id
+     * @return 用户详情dto
+     */
+    AdminUserDetailDTO findDetailByIdAndOrganizationId(Long id, Long organizationId);
 }

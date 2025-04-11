@@ -43,7 +43,7 @@ export const LogMonitor: FC = () => {
         setLoading(false);
     }
     useEffect(() => {
-        sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR}?logLevel=${defaultLogLevel}`, {
+        sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR_URL}?logLevel=${defaultLogLevel}`, {
             onMessage: e => onMessage(e),
         })
 
@@ -63,7 +63,7 @@ export const LogMonitor: FC = () => {
                   onChange={(value: string) => {
                       setLogs([])
                       updateSearchParams({logLevel: value})
-                      sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR}?logLevel=${value}`, {
+                      sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR_URL}?logLevel=${value}`, {
                           onMessage: (e) => onMessage(e),
                       });
                   }}

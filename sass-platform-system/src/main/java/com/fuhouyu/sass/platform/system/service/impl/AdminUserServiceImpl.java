@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -28,6 +27,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.UserResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.AdminUserMapper;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.AdminUserService;
@@ -139,6 +139,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public AdminUserDetailDTO findDetailByIdAndOrganizationId(Long id, Long organizationId) {
+        return this.adminUserMapper.findDetailByIdAndOrganizationId(id, organizationId);
+    }
+
+    @Override
     public AdminUserDTO findById(Long userId) {
         AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
         return USERS_ASSEMBLER.toDTO(adminUsers);
@@ -162,8 +167,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public int removeById(Long id) {
         User user = ContextHolderStrategy.getContext().getUser();
         if (id.equals(user.getId())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "不允许操作当前登录账号: %s", user.getUsername());
+            throw new ServiceException(UserResponseStatusEnum.USER_NO_PERMISSION);
         }
         return this.adminUserMapper.deleteById(id);
     }
@@ -172,8 +176,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public int removeByIds(Collection<Long> ids) {
         User user = ContextHolderStrategy.getContext().getUser();
         if (ids.contains(user.getId())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "不允许操作当前登录账号: %s", user.getUsername());
+            throw new ServiceException(UserResponseStatusEnum.USER_NO_PERMISSION);
         }
         int deleteUserCount = this.adminUserMapper.deleteByIds(ids);
         this.accountService.removeByUserIds(ids);
@@ -196,7 +199,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private void validUsernameExists(String username) {
         AdminUsers adminUsers = this.adminUserMapper.queryByUsername(username);
         if (Objects.nonNull(adminUsers)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(UserResponseStatusEnum.USER_ALREADY_EXISTS,
                     "%s 用户名已存在", username);
         }
     }
@@ -220,7 +223,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             this.accountService.save(accountDTO);
         } catch (Exception e) {
             LoggerUtil.error(log, "用户账号注册失败: {}", accountDTO, e);
-            throw new IllegalArgumentException("用户注册失败");
+            throw new ServiceException(UserResponseStatusEnum.USER_REGISTER_ERROR);
         }
     }
 }

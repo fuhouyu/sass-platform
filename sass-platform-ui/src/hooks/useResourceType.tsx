@@ -69,20 +69,21 @@ const useResourceType = () => {
                 // 处理常见的 office 文档类型
                 switch (subtype) {
                     case "vnd.openxmlformats-officedocument.presentationml.presentation":
-                        return {
-                            type: ResourceTypeEnum.OFFICE,
-                            icon: <IconFont type={'i-excel'}/>,
-                        }
                     case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
                         return {
                             type: ResourceTypeEnum.OFFICE,
                             icon: <IconFont type={'i-excel'}/>,
                         }
                     case "msword":
+                    case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    case "vnd.oasis.opendocument.text":
+                    case "word":
+                    case "doc":
+                    case "docx":
                         return {
                             type: ResourceTypeEnum.OFFICE,
                             icon: <IconFont type={'i-word'}/>,
-                        }
+                        };
                     case "excel":
                         return {
                             type: ResourceTypeEnum.OFFICE,

@@ -16,7 +16,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import "./index.scss"
-import {Avatar, Button, Divider, Form, Input, message, Select, Space} from "antd";
+import {Avatar, Button, Divider, Form, Input, Select, Space} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserAuthentication} from "@/model/authentication";
 import useAuth from "@/hooks/useAuth";
@@ -78,14 +78,6 @@ export const Login: React.FC = () => {
             }
             navigate(from);
 
-        } catch (err) {
-            setTurnstileToken(undefined);
-            if (err instanceof Error) {
-                message.error(err.message).then();
-            } else {
-                message.error('An unknown error occurred').then();
-            }
-            turnstileRef.current?.reset();
         } finally {
             setLoginButtonLoading(false);
         }

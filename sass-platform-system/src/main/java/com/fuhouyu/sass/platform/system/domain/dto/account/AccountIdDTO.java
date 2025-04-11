@@ -16,9 +16,11 @@
 package com.fuhouyu.sass.platform.system.domain.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -41,15 +43,19 @@ public class AccountIdDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 5142354211238415241L;
 
-    @NotBlank(message = "登录标识未填写")
+    @NotEmpty
     @Schema(name = "account", description = """
             登录标识，如用户名，刷新令牌等
             """, requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonAlias({"account", "identify", "username"})
+    @ParamErrorResponse(using = AuthenticationResponseStatusEnum.class,
+            enumName = "ACCOUNT_NOT_NULL")
     private String account;
 
-    @NotNull(message = "登录类型未选择")
+    @NotNull
     @Schema(name = "accountType", description = "账号类型", defaultValue = "PASSWORD", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ParamErrorResponse(using = AuthenticationResponseStatusEnum.class,
+            enumName = "ACCOUNT_TYPE_NOT_NULL")
     private AccountTypeEnum accountType;
 
     public AccountIdDTO() {

@@ -16,7 +16,9 @@
 package com.fuhouyu.sass.platform.system.domain.dto.account;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
+import com.fuhouyu.sass.platform.system.enums.response.AccountResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -40,17 +42,23 @@ public class UpdatePasswordDTO implements Serializable {
     private static final long serialVersionUID = 5712354211236541231L;
 
     @Schema(name = "oldPassword", description = "旧密码")
-    @NotEmpty(message = "旧密码未输入")
+    @NotEmpty
     @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
+    @ParamErrorResponse(using = AccountResponseStatusEnum.class,
+            value = "OLD_PASSWORD_NOT_NULL")
     private String oldPassword;
 
     @Schema(name = "newPassword", description = "新密码")
-    @NotEmpty(message = "新密码密码未输入")
+    @NotEmpty
     @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
+    @ParamErrorResponse(using = AccountResponseStatusEnum.class,
+            value = "NEW_PASSWORD_NOT_NULL")
     private String newPassword;
 
     @Schema(name = "confirmPassword", description = "确认密码")
-    @NotEmpty(message = "确认密码未输入")
+    @NotEmpty
+    @ParamErrorResponse(using = AccountResponseStatusEnum.class,
+            value = "CONFIRM_PASSWORD_NOT_NULL")
     @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String confirmPassword;
 }

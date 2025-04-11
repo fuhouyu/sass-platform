@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.tenant;
 
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.TenantResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -45,10 +47,14 @@ public class TenantInfoDTO extends BaseDTO {
 
     @Schema(name = "tenantCode", description = "租户编码", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "租户编码未输入")
+    @ParamErrorResponse(using = TenantResponseStatusEnum.class,
+            value = "TENANT_CODE_NOT_NULL")
     private String tenantCode;
 
     @Schema(name = "tenantName", description = "租户名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "租户名称未输入")
+    @ParamErrorResponse(using = TenantResponseStatusEnum.class,
+            value = "TENANT_NAME_NOT_NULL")
     private String tenantName;
 
     @Schema(name = "tenantType", description = "租户类型", requiredMode = Schema.RequiredMode.REQUIRED)

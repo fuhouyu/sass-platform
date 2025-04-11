@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -27,6 +26,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTree
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
+import com.fuhouyu.sass.platform.system.enums.response.OrganizationResponseStatusEnums;
 import com.fuhouyu.sass.platform.system.mapper.OrganizationMapper;
 import com.fuhouyu.sass.platform.system.service.OrganizationService;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
@@ -62,8 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Long save(OrganizationDTO dto) {
         if (this.checkOrganizationCodeExists(dto.getOrganizationCode())) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "组织编码: %s 已存在，请重新输入", dto.getOrganizationCode());
+            throw new ServiceException(OrganizationResponseStatusEnums.ORGANIZATION_CODE_EXISTS);
         }
         long id = snowflakeIdWorker.nextId();
         Organizations entity = ORGANIZATIONS_ASSEMBLER.toEntity(dto);
@@ -183,8 +182,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         Organizations parentOrganization = this.organizationMapper.queryById(parentId);
         if (Objects.isNull(parentOrganization)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "父级组织不存在，请重新选择");
+            throw new ServiceException(OrganizationResponseStatusEnums.PARENT_ORGANIZATION_NOT_EXISTS);
         }
         // 如果当前父级为叶子节点，进行修改
         if (parentOrganization.getIsLeaf()) {

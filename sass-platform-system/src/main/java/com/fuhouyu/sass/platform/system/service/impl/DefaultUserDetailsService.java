@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
@@ -25,6 +24,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
+import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +66,7 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
         AccountDTO accountDTO = this.accountService.findById(accountIdDTO, tenantId);
         if (Objects.isNull(accountDTO)) {
             if (Objects.equals(accountType, AccountTypeEnum.PASSWORD.name())) {
-                throw new ServiceException(ResponseStatusEnum.NOT_FOUND, "当前账号不属于该租户");
+                throw new ServiceException(AuthenticationResponseStatusEnum.USER_NOT_IN_TENANT);
             } else {
                 return null;
             }

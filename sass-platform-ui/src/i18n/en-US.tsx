@@ -110,6 +110,8 @@ const EnUS = {
         systemMonitor: 'System Monitor',
         serverMonitor: 'Server Monitor',
         logMonitor: 'Log Monitor',
+        applicationCenter: 'Application Center',
+        applicationManage: 'Application Manage',
     },
     // 租户
     Tenant: {
@@ -382,6 +384,45 @@ const EnUS = {
     },
     LogMonitor: {
         title: "Real-time Logs"
+    },
+    Application: {
+        list: 'Application List',
+        add: 'Add Application',
+        edit: 'Edit Application',
+        icon: {
+            label: "Application Icon",
+            tips: {
+                suffix: "1. Allowed file types: <strong>{{types}}</strong>",
+                size: "2. File size must not exceed <strong>{{size}}</strong>",
+                count: "3. Maximum upload count is <strong>{{count}}</strong>"
+            }
+        },
+        iconPlaceholder: 'Please select the application icon',
+        clientName: 'Application Name',
+        clientNamePlaceholder: 'Please enter the application name',
+        clientId: 'Application ID',
+        clientIdTips: 'Client ID, unique under the current tenant',
+        clientIdPlaceholder: 'Please enter the application ID',
+        clientSecret: 'Application Secret',
+        clientSecretTips: 'Click the button on the right to generate the client key.',
+        clientSecretGenerate: 'Generate Client Secret Key',
+        redirectUris: 'Redirect URIs',
+        redirectUrisPlaceholder: 'Please enter the redirect URIs',
+        redirectUrisErrorMessage: 'Callback address format error',
+        scopes: 'Scopes',
+        scopesPlaceholder: 'Please enter the scopes',
+        grantTypes: 'Grant Types',
+        grantTypesPlaceholder: 'Please select the grant types',
+        accessTokenValidity: 'Access Token Validity',
+        accessTokenValidityPlaceholder: 'Please enter the access token validity',
+        refreshTokenValidity: 'Refresh Token Validity',
+        refreshTokenValidityPlaceholder: 'Please enter the refresh token validity',
+        published: 'Published',
+        publishedPlaceholder: 'Please select whether to publish',
+        ipWhitelist: 'IP Whitelist',
+        ipWhitelistPlaceholder: 'Please enter the IP whitelist',
+        isEnabled: 'Enabled',
+        isEnabledPlaceholder: 'Please select whether to enable',
     }
 
 }

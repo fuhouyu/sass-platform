@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, {useCallback, useEffect} from "react";
-import {message, Upload as AntdUpload} from "antd";
+import React from "react";
+import {notification, Upload as AntdUpload} from "antd";
 import {ChecksumAlgorithm, S3Client} from "@aws-sdk/client-s3";
 import {Upload as s3Upload} from "@aws-sdk/lib-storage";
 import {resourceApi} from "@/apis/resource.tsx";
@@ -26,22 +26,31 @@ import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {useTranslation} from "react-i18next";
 
-export const S3Upload: React.FC<{
-    uploadProps: S3UploadProps,
-    children: React.ReactNode
-}> = ({uploadProps, children}: { uploadProps: S3UploadProps, children: React.ReactNode }) => {
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
+
+export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
+    const {prefix, isPublic, children, showUploadFloatButton, onUploadSuccess} = uploadProps;
     const {t} = useTranslation();
-    const [uploadFiles, setUploadFiles] = React.useState<RcFile[]>([]);
     const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
+    const [totalProgress, setTotalProgress] = React.useState(0);
+    const [api, contextHolder] = notification.useNotification();
+
+    const uploadNotification = (type: NotificationType, message: string) => {
+        api[type]({
+            message: t('Resource.uploadFile'),
+            description: message,
+        });
+    };
+
 
     /**
      * 生成sts的Token
      */
-    const generateStsToken = useCallback(async () => {
+    const generateStsToken = async (uploadFile: RcFile) => {
         const stsTokenResponse = await resourceApi.generateStsToken({
-            prefix: uploadProps.prefix,
-            fileNames: uploadFiles.map(file => file.webkitRelativePath),
+            prefix: prefix,
+            fileNames: [uploadFile.webkitRelativePath]
         });
         const s3Client = new S3Client({
             region: stsTokenResponse.region,
@@ -54,7 +63,7 @@ export const S3Upload: React.FC<{
             },
         });
         return {stsTokenResponse, s3Client};
-    }, [uploadFiles, uploadProps.prefix])
+    }
 
     /**
      * 文件上传
@@ -62,16 +71,18 @@ export const S3Upload: React.FC<{
      * @param stsTokenResponse stsToken响应
      * @param file 需要上传的文件
      */
-    const doFileUpload = useCallback(async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
+    const doFileUpload = async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath];
-        storeUploadFiles({
-            id: file.uid,
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            progress: 0
-        });
+        if (showUploadFloatButton) {
+            storeUploadFiles({
+                id: file.uid,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                progress: 0
+            });
+        }
         const upload = new s3Upload({
             client: s3Client,
             params: {
@@ -82,90 +93,67 @@ export const S3Upload: React.FC<{
                 ChecksumAlgorithm: ChecksumAlgorithm.CRC32,
             },
         });
+
         upload.on("httpUploadProgress", (progress: Progress) => {
             const {loaded, total} = progress;
             let percentage = 100;
             if (loaded && total) {
                 percentage = Math.round((loaded / total) * 100);
             }
-            storeUploadFiles({
-                id: file.uid,
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                progress: percentage
-            });
+            setTotalProgress(percentage);
+            if (showUploadFloatButton) {
+                storeUploadFiles({
+                    id: file.uid,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    progress: percentage
+                });
+            }
         });
+
+
         const response = await upload.done();
         const resourceId = await resourceApi.saveInfoApi({
-            businessName: uploadProps.prefix,
+            businessName: prefix,
             eTag: JSON.parse(response.ETag!),
             name: file.name,
             size: file.size,
             mimeType: file.type,
-            isPublic: uploadProps.isPublic,
+            isPublic: isPublic,
             isDirectory: false,
             version: 1,
             objectKey: objectKey,
         });
 
-        uploadProps.onUploadSuccess?.(resourceId);
+        onUploadSuccess?.(resourceId);
         const success = `${file.name} ${t('Resource.uploadSuccess')}`;
-        message.success(success);
-    }, [storeUploadFiles, t, uploadProps])
-
-    const fileUploadHandle = useCallback(async () => {
-        try {
-            // 批量上传
-            const {stsTokenResponse, s3Client} = await generateStsToken();
-            uploadFiles.forEach((uploadFile) => doFileUpload(s3Client, stsTokenResponse, uploadFile))
-        } catch (e) {
-            console.log(e);
-            message.error('文件上传失败');
-        } finally {
-            setUploadFiles([]);
-        }
-    }, [doFileUpload, generateStsToken, uploadFiles])
-
-
-    useEffect(() => {
-        if (uploadFiles.length === 0) {
-            return;
-        }
-        // 上传文件
-        fileUploadHandle().then();
-        return () => setUploadFiles([]);
-    }, [fileUploadHandle, uploadFiles])
-
-    /**
-     * 设置文件处理，返回false 表示不使用默认上传行为
-     * @param file 文件
-     * @param fileList 文件集合
-     */
-    const fileHandle = (file: RcFile, fileList: RcFile[]) => {
-        const beforeUpload = uploadProps.beforeUpload;
-        let isUpload = true;
-        if (beforeUpload) {
-            isUpload = beforeUpload(file, fileList) as boolean;
-        }
-        if (isUpload) {
-            if (uploadProps.directory) {
-                setUploadFiles(fileList);
-            } else {
-                setUploadFiles([file]);
-            }
-        }
-        return false;
+        uploadNotification('success', success);
     }
+
     return (
-        <AntdUpload
-            {...uploadProps}
-            beforeUpload={fileHandle}
-            className={'avatar-uploader'}
-            showUploadList={false}
-        >
-            {children}
-        </AntdUpload>
+        <>
+            {contextHolder}
+            <AntdUpload
+                {...uploadProps}
+                customRequest={async (options) => {
+                    const {file, onSuccess, onProgress, onError} = options;
+                    // 验证通过，进行上传
+                    const rcFile = file as RcFile;
+                    onProgress?.({percent: totalProgress})
+                    generateStsToken(rcFile).then(async ({stsTokenResponse, s3Client}) => {
+                        await doFileUpload(s3Client, stsTokenResponse, rcFile);
+                        onSuccess?.({}, rcFile);
+                    }).catch((e) => {
+                        console.log(e);
+                        onError?.(e, rcFile);
+                        uploadNotification('error', `${rcFile.name} ${t('Resource.uploadError')}`);
+                    });
+                }}
+            >
+                {children === undefined ? <span>{t('Resource.uploadFile')}</span> : children}
+            </AntdUpload>
+        </>
 
     )
 

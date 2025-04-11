@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
@@ -26,6 +25,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
+import com.fuhouyu.sass.platform.system.enums.response.PermissionResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.PermissionMapper;
 import com.fuhouyu.sass.platform.system.service.PermissionService;
 import com.fuhouyu.sass.platform.system.service.RoleHasPermissionService;
@@ -81,7 +81,7 @@ public class PermissionServiceImpl implements PermissionService {
         String permissionCode = dto.getPermissionCode();
         Permissions permissions = this.permissionMapper.queryByPermissionCode(permissionCode);
         if (Objects.nonNull(permissions)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "权限编码:%s 已存在", permissionCode);
+            throw new ServiceException(PermissionResponseStatusEnum.PERMISSION_CODE_ALREADY_EXISTS);
         }
 
         Permissions entity = PERMISSION_ASSEMBLER.toEntity(dto);
@@ -128,7 +128,7 @@ public class PermissionServiceImpl implements PermissionService {
                 .filter(p -> !p.getIsAllowModified())
                 .toList();
         if (!CollectionUtils.isEmpty(notAllowModifiedList)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
+            throw new ServiceException(PermissionResponseStatusEnum.NO_PERMISSION,
                     String.format("以下权限: [%s] 禁止删除，请重新选择后重试！",
                             notAllowModifiedList.stream()
                                     .map(Permissions::getPermissionName)
@@ -256,8 +256,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
         Permissions parentPermission = this.permissionMapper.queryById(parentId);
         if (Objects.isNull(parentPermission)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "父级权限不存在，请重新选择父级权限");
+            throw new ServiceException(PermissionResponseStatusEnum.PARENT_PERMISSION_NOT_FOUND);
         }
         // 如果当前父级为叶子节点，进行修改
         if (parentPermission.getIsLeaf()) {

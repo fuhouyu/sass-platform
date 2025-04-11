@@ -15,13 +15,14 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.role;
 
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.RoleResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Collection;
 
@@ -44,26 +45,37 @@ public class RoleDTO extends BaseDTO {
 
     @Schema(name = "roleName", description = "角色名称")
     @NotEmpty(message = "角色名称未填写")
-    @Length(max = 64, message = "角色名称超出最大字数限制64")
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "ROLE_NAME_NOT_NULL")
     private String roleName;
 
     @Schema(name = "roleCode", description = "角色编码")
     @NotEmpty(message = "角色编码未填写")
-    @Length(max = 64, message = "角色编码超出最大字数限制64")
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "ROLE_CODE_NOT_NULL")
     private String roleCode;
 
     @Schema(name = "displayOrder", description = "显示顺序")
     @NotNull(message = "显示顺序未填写")
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "DISPLAY_CODE_NOT_NULL")
     private Integer displayOrder;
 
     @Schema(name = "dataScope", description = "数据权限")
     @NotEmpty(message = "数据权限未填写")
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "DATA_SCOPE_NOT_NULL")
     private String dataScope;
 
     @Schema(name = "isEnabled", description = "状态：true 启用")
+    @NotNull
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "STATUS_NOT_NULL")
     private Boolean isEnabled;
 
     @Schema(name = "permissionIds", description = "权限id集合")
     @NotEmpty(message = "权限未选择")
+    @ParamErrorResponse(using = RoleResponseStatusEnum.class,
+            value = "PERMISSION_NOT_NULL")
     private Collection<Long> permissionIds;
 }

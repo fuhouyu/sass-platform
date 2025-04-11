@@ -75,7 +75,6 @@ const TenantSpace: React.FC = () => {
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<ResourcePreview>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
-    const [previewMode, setPreviewMode] = useState<'EDIT' | 'VIEW'>('VIEW');
 
 
 
@@ -265,12 +264,11 @@ const TenantSpace: React.FC = () => {
             {
                 label: (
                     <S3Upload
-                        uploadProps={{
-                            isPublic: false,
-                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource,
-                        }
-                        }
+                        isPublic={false}
+                        showUploadList={false}
+                        showUploadFloatButton
+                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string)}
+                        onUploadSuccess={queryResource}
                     >
                         {t('Resource.uploadFile')}
                     </S3Upload>
@@ -281,13 +279,11 @@ const TenantSpace: React.FC = () => {
             {
                 label: (
                     <S3Upload
-                        uploadProps={{
-                            directory: true,
-                            isPublic: false,
-                            prefix: breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string),
-                            onUploadSuccess: queryResource,
-                        }
-                        }
+                        directory
+                        isPublic={false}
+                        showUploadList={false}
+                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string)}
+                        onUploadSuccess={queryResource}
                     >
                         {t('Resource.uploadFolder')}
                     </S3Upload>

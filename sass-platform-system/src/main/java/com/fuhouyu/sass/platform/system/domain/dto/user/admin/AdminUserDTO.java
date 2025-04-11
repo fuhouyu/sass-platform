@@ -16,7 +16,9 @@
 package com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
+import com.fuhouyu.sass.platform.system.enums.response.UserResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.EqualsAndHashCode;
@@ -49,7 +51,9 @@ public class AdminUserDTO extends BaseDTO {
     private Long id;
 
     @Schema(name = "username", description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "用户名未填写")
+    @NotEmpty
+    @ParamErrorResponse(using = UserResponseStatusEnum.class,
+            enumName = "USERNAME_NOT_NULL")
     private String username;
 
     @Schema(name = "realName", description = "真实姓名")
