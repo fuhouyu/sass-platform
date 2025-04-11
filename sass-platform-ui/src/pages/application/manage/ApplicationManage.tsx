@@ -139,7 +139,7 @@ export const ApplicationManage: FC = () => {
                     url: preview(icon),
                 }]);
             }
-            setFormInitValues(applicationInfo);
+            setFormInitValues({...applicationInfo});
         } else {
             setFormInitValues(initForm);
         }
@@ -154,6 +154,7 @@ export const ApplicationManage: FC = () => {
         const application: ApplicationModel = form.getFieldsValue();
         setIsModalButtonLoading(true);
         try {
+            application.icon = iconFiles![0].uid as unknown as number
             await (updateId ? applicationApi.editInfoApi(updateId, application) : applicationApi.saveInfoApi(application));
             message.success(t('Common.success')).then()
             await tableRef?.current?.refreshPageList();
@@ -256,7 +257,7 @@ export const ApplicationManage: FC = () => {
                     name="modal-form"
                     form={form}
 
-                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 6}}
+                    labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 9}}
                     clearOnDestroy={true}
                     autoComplete="off"
                     initialValues={{...formInitValues}}
@@ -295,10 +296,12 @@ export const ApplicationManage: FC = () => {
                                 hasFeedback
                                 rules={[{
                                     type: "string",
+                                    required: true,
                                     message: t('Application.clientIdPlaceholder'),
                                     max: 50,
                                 },
                                     {
+                                        required: true,
                                         validator: async (_, clientId: string) => {
                                             if (updateId != null || clientId == null || clientId == '') {
                                                 return;
@@ -312,6 +315,7 @@ export const ApplicationManage: FC = () => {
                                 ]}
                             >
                                 <Input
+                                    disabled={updateId !== undefined}
                                     suffix={<Tooltip title={t('Application.clientIdTips')}>
                                         <IconFont type={'i-tips-hint'}/>
                                     </Tooltip>}
@@ -539,15 +543,12 @@ export const ApplicationManage: FC = () => {
                                 name='icon'
                                 valuePropName={'fileList'}
                                 getValueProps={(resourceId) => {
-                                    if (resourceId) {
-                                        return {
-                                            uid: resourceId,
-                                            name: 'icon.png',
-                                            status: 'done',
-                                            url: preview(resourceId),
-                                        };
-                                    }
-                                    return {}
+                                    return {
+                                        uid: resourceId,
+                                        name: 'icon.png',
+                                        status: 'done',
+                                        url: preview(resourceId),
+                                    };
                                 }}
                                 extra={
                                     <div className={'icon-extra'}>
@@ -577,22 +578,28 @@ export const ApplicationManage: FC = () => {
                                 validateFirst={true}
                                 rules={[{
                                     required: true,
-                                    type: "array",
+                                    type: "object",
                                     message: t('Application.iconPlaceholder'),
                                 }]}
                             >
                                 <S3Upload
+                                    onRemove={_ => setIconFiles(undefined)}
                                     prefix={'application-icon'}
                                     isPublic
                                     defaultFileList={iconFiles && iconFiles}
                                     accept={'image/*'}
                                     maxCount={1}
                                     showUploadList
-                                    onUploadSuccess={(resourceId) => {
-                                        form.setFieldValue('icon', resourceId)
-                                        return
+                                    onUploadSuccess={async (resourceId) => {
+                                        setIconFiles([{
+                                            uid: resourceId,
+                                            name: 'icon.png',
+                                            status: 'done',
+                                            url: preview(resourceId),
+                                        }]);
                                     }}
                                     listType="picture-card">
+                                    {iconFiles && null}
                                 </S3Upload>
                             </Form.Item>
 

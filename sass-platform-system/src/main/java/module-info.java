@@ -105,10 +105,27 @@ module sass.platform.system {
     opens com.fuhouyu.sass.platform.system.service.impl to spring.core;
     opens com.fuhouyu.sass.platform.system.core.security.provider to spring.core;
     opens com.fuhouyu.sass.platform.system.utils to spring.core;
-    opens com.fuhouyu.sass.platform.system.domain.dto to com.esotericsoftware.kryo.kryo5, spring.core;
-    opens com.fuhouyu.sass.platform.system.domain.dto.account to com.esotericsoftware.kryo.kryo5, spring.core;
-    opens com.fuhouyu.sass.platform.system.domain.dto.user to com.esotericsoftware.kryo.kryo5, spring.core;
-    opens com.fuhouyu.sass.platform.system.domain.dto.user.admin to com.esotericsoftware.kryo.kryo5, spring.core;
+
+    opens com.fuhouyu.sass.platform.system.domain.dto to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.organization to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.tenant to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.page to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.role to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.monitor to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.welink to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.office to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.config to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.cloudflare to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.user to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.user.admin to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.wechat to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.log to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.application to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.account to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.resource to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.permission to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.domain.dto.dict to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+
     opens com.fuhouyu.sass.platform.system.domain.entity to spring.core;
 
 }

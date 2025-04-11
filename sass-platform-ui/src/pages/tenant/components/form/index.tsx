@@ -188,7 +188,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                                     onUploadSuccess={async (resourceId) => {
                                         setTenantInfo({...tenantInfo, icon: resourceId})
-                                        message.success(t('Common.success'));
                                     }}
                                 >
                                     <Tooltip

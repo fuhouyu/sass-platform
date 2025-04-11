@@ -43,6 +43,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
         });
     };
 
+
     /**
      * 生成sts的Token
      */
@@ -150,7 +151,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                     });
                 }}
             >
-                {children ?? <span>{t('Resource.uploadFile')}</span>}
+                {children === undefined ? <span>{t('Resource.uploadFile')}</span> : children}
             </AntdUpload>
         </>
 
