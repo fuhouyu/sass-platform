@@ -31,6 +31,7 @@ import {
     Radio,
     Row,
     Select,
+    Space,
     Switch,
     TableColumnsType,
     Tooltip
@@ -45,6 +46,9 @@ import {applicationApi} from "@/apis/application.tsx";
 import {CommonConstant} from "@/constants/commonConstant";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {UploadFileStatus} from "antd/lib/upload/interface";
+import {useDictItem} from "@/hooks/useDictItem.tsx";
+import {AnyObject} from "antd/es/_util/type";
+import TextArea from "antd/es/input/TextArea";
 
 export const ApplicationManage: FC = () => {
 
@@ -121,6 +125,9 @@ export const ApplicationManage: FC = () => {
         status?: UploadFileStatus,
         url?: string
     }[] | undefined>([]);
+
+    const {findDictItems} = useDictItem(["GRANT_TYPE"]);
+
 
     /**
      * 打开模态组
@@ -256,7 +263,6 @@ export const ApplicationManage: FC = () => {
                 <Form<ApplicationModel>
                     name="modal-form"
                     form={form}
-
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 9}}
                     clearOnDestroy={true}
                     autoComplete="off"
@@ -335,13 +341,33 @@ export const ApplicationManage: FC = () => {
                                 rules={[{
                                     required: true,
                                     type: "string",
-                                    message: t('Application.clientSecretPlaceholder'),
+                                    message: t('Application.clientSecretTips'),
                                     max: 50,
                                 }]}
                             >
-                                <Input
-                                    placeholder={t('Application.clientIdPlaceholder')}
-                                    maxLength={50}/>
+                                <Space.Compact style={{width: '100%'}}>
+                                    <Form.Item
+                                        name="clientSecret"
+                                        noStyle
+                                    >
+                                        <Input
+                                            disabled
+                                            maxLength={50}
+                                            placeholder={t('Application.clientSecretTips')}
+                                        />
+                                    </Form.Item>
+                                    <Button
+                                        type="primary"
+                                        onClick={async () => {
+                                            const secretKey = await applicationApi.generateClientSecret();
+                                            form.setFieldValue('clientSecret', secretKey);
+                                            // ⚠️ 不需要 resetFields，这会清空再回填导致刷新问题
+                                        }}
+                                    >
+                                        {t('Application.clientSecretGenerate')}
+                                    </Button>
+                                </Space.Compact>
+
                             </Form.Item>
 
 
@@ -401,9 +427,15 @@ export const ApplicationManage: FC = () => {
                                 ]}
                             >
                                 <Select
-                                    mode="tags"
+                                    mode="multiple"
                                     filterOption={false}
                                     placeholder={t('Application.grantTypesPlaceholder')}
+                                    options={findDictItems('GRANT_TYPE').map(dictItem => {
+                                        return {
+                                            value: dictItem.itemCode,
+                                            label: dictItem.itemName
+                                        }
+                                    })}
                                 />
                             </Form.Item>
 
@@ -530,6 +562,20 @@ export const ApplicationManage: FC = () => {
                                     <Radio value={false}>{t('Common.disabled')}</Radio>
                                 </Radio.Group>
                             </Form.Item>
+
+                            <Form.Item
+                                label={t('Common.remark')}
+                                name="remark"
+                                key="remark"
+                                colon={false}
+                            >
+                                <TextArea className="remark"
+                                          style={{
+                                              height: '10rem',
+                                          }}
+                                          placeholder={t('Common.remark')} showCount maxLength={500}/>
+                            </Form.Item>
+
                         </Col>
 
                         <Col span={12}>
@@ -580,13 +626,16 @@ export const ApplicationManage: FC = () => {
                                     required: true,
                                     type: "object",
                                     message: t('Application.iconPlaceholder'),
+                                    validator: async (_, resourceId: AnyObject) => {
+                                        return resourceId === null || resourceId === undefined;
+                                    }
                                 }]}
                             >
                                 <S3Upload
                                     onRemove={_ => setIconFiles(undefined)}
                                     prefix={'application-icon'}
                                     isPublic
-                                    defaultFileList={iconFiles && iconFiles}
+                                    defaultFileList={iconFiles}
                                     accept={'image/*'}
                                     maxCount={1}
                                     showUploadList

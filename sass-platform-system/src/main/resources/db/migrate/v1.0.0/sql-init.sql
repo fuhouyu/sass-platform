@@ -832,6 +832,13 @@ INSERT INTO dict_type
  created_by, updated_at, updated_by)
 VALUES (3, '日志类型', 'OPERATION_LOG_TYPE', 3, true, false, false, '日志操作类型', 1, now(), 'admin', now(), 'admin');
 
+INSERT INTO dict_type
+(id, dict_name, dict_code, display_order, is_enabled, is_deleted, is_allow_modified, remark, owner_tenant_id,
+ created_at,
+ created_by, updated_at, updated_by)
+VALUES (4, '授权类型', 'GRANT_TYPE', 4, true, false, false, '应用授权类型', 1, now(), 'admin', now(), 'admin');
+
+
 
 
 DROP TABLE IF EXISTS dict_item;
@@ -909,6 +916,17 @@ INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_ena
                       owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
 VALUES (11, 'OPERATION_LOG_TYPE', '删除', 'DELETE', 6, true, false, false, 1, '删除', now(), 'admin', now(), 'admin');
 
+-- 授权类型
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (12, 'GRANT_TYPE', '密码', 'PASSWORD', 1, true, false, false, 1, '登录', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (13, 'GRANT_TYPE', 'WELINK', 'WELINK', 2, true, false, false, 1, '登出', now(), 'admin', now(), 'admin');
+INSERT INTO dict_item(id, dict_code, item_name, item_code, display_order, is_enabled, is_deleted, is_allow_modified,
+                      owner_tenant_id, remark, created_at, created_by, updated_at, updated_by)
+VALUES (14, 'GRANT_TYPE', '微信小程序', 'WECHAT_APPLET', 3, true, false, false, 1, '查询', now(), 'admin', now(),
+        'admin');
 
 
 DROP TABLE IF EXISTS organizations;

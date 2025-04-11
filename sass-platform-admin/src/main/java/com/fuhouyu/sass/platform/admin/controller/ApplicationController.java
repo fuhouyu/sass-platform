@@ -172,5 +172,15 @@ public class ApplicationController {
         return ResponseHelper.success();
     }
 
+    /**
+     * 生成客户端秘钥
+     *
+     * @return 客户端秘钥
+     */
+    @GetMapping("/secret/generate")
+    @Operation(summary = "生成客户端秘钥")
+    public BaseResponse<String> generateClientSecret() {
+        return ResponseHelper.success(this.applicationService.generateClientSecret());
+    }
 
 }

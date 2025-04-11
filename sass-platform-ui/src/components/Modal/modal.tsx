@@ -28,6 +28,7 @@ export const Modal: React.FC<ModalProps> = (modalProps: ModalProps) => {
                 fontSize: '1.5rem',
                 color: 'white'
             }}/>}
+            centered
             destroyOnClose
             className={'modal-container'}
         >

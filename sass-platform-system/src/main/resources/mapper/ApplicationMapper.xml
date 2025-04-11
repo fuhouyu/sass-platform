@@ -152,6 +152,9 @@
        <if test="clientName != null and clientName != ''">
            client_name = #{clientName},
        </if>
+        <if test="clientSecret != null">
+            client_secret = #{clientSecret},
+        </if>
         <if test="icon != null">
             icon = #{icon},
         </if>

@@ -50,9 +50,20 @@ class ApplicationApi extends DefaultApiImpl<Application> {
         request.put(`${this.baseUrl}/status?clientId=${id}&enabled=${enabled}`)
 
 
+    /**
+     * 修改应用
+     * @param id 应用id
+     * @param info 应用信息
+     */
     editInfoApi = (id: string, info: Application): Promise<void> => {
         return request.put(`${this.baseUrl}`, {...info, id});
     };
+
+    /**
+     * 生成客户端密钥
+     */
+    generateClientSecret: () => Promise<string> = (): Promise<string> =>
+        request.get(`${this.baseUrl}/secret/generate`);
 }
 
 export const applicationApi: ApplicationApi = new ApplicationApi(BaseApiUrlConstant.APPLICATION_MANAGE_URL);

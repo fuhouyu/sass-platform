@@ -356,7 +356,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                         <Form.Item
                             label={t('Common.remark')}
                             labelCol={{span: 2, offset: 0}}
-                            // wrapperCol={{span: 10}}
                             name="remark"
                             key="remark"
                             colon={false}

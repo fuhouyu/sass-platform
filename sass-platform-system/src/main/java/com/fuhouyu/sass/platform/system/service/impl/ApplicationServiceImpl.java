@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -76,5 +78,13 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Function<PageQueryDTO, List<ApplicationDTO>> getPageResult() {
         return p -> APPLICATIONS_ASSEMBLER.toDTO(this.applicationMapper.queryList(p));
+    }
+
+    @Override
+    public String generateClientSecret() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] bytes = new byte[24];
+        secureRandom.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }

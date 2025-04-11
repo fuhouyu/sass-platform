@@ -26,4 +26,12 @@ import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationDTO;
  * @since 2025/4/9 20:32
  */
 public interface ApplicationService extends BaseService<String, ApplicationDTO> {
+
+    /**
+     * 生成客户端密钥
+     *
+     * @return 客户端密钥
+     */
+    String generateClientSecret();
+
 }
