@@ -13,32 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.mapper;
 
-
-import {UploadProps} from "antd/lib";
+import com.fuhouyu.sass.platform.system.domain.entity.Applications;
 
 /**
- * S3UploadProps
+ * <p>
+ * 应用mapper映射
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/9 19:57
  */
-export interface S3UploadProps extends UploadProps {
-    /**
-     * 前缀
-     */
-    prefix?: string;
+public interface ApplicationMapper extends BaseMapper<String, Applications> {
 
-    /**
-     * 是否是公共访问资源
-     */
-    isPublic: boolean;
-
-    /**
-     * 上传成功回调
-     * @param resourceId 资源id
-     */
-    onUploadSuccess?: (resourceId: string) => void;
-
-    /**
-     * 显示上传悬浮按钮
-     */
-    showUploadFloatButton?: boolean;
 }

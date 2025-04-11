@@ -236,6 +236,34 @@ class ParamConfigPermissionConstant {
     static readonly DELETE: string = 'system:param-config:delete';
 }
 
+
+/**
+ * 应用常量
+ */
+class ApplicationPermissionConstant {
+    /**
+     * 列表权限
+     */
+    static readonly List: string = 'application:list';
+
+    /**
+     * 添加权限
+     */
+    static readonly ADD: string = 'application:add';
+
+    /**
+     * 修改权限
+     */
+    static readonly EDIT: string = 'application:edit';
+
+    /**
+     * 删除权限
+     */
+    static readonly DELETE: string = 'application:delete';
+
+}
+
+
 export {
     TenantPermissionConstant,
     UserPermissionConstant,
@@ -244,5 +272,6 @@ export {
     DictTypePermissionConstant,
     DictItemPermissionConstant,
     OrganizationPermissionConstant,
-    ParamConfigPermissionConstant
+    ParamConfigPermissionConstant,
+    ApplicationPermissionConstant
 }

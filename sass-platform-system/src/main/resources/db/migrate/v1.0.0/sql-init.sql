@@ -560,6 +560,47 @@ VALUES (42, 4, 'Menu.logMonitor', 'system:log-monitor:list', 4, 'i-caozuorizhi',
         'monitor/log', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
+
+-- 应用管理
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (5, -1, 'Menu.applicationCenter', 'application-center', 5, 'i-icon-yingyong', 'application', null, '', false,
+        'DIR', false,
+        true, false,
+        true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (51, 5, 'Menu.applicationManage', 'application:list', 1, 'i-yingyongguanli', 'manage',
+        'application/manage', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (511, 51, 'Menu.query', 'application:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (512, 51, 'Menu.add', 'application:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
+        now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (513, 51, 'Menu.edit', 'application:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (514, 51, 'Menu.delete', 'application:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true,
+        true, 1,
+        false, now(), 'admin', now(), 'admin');
+
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
 CREATE TABLE role_has_permission
@@ -681,6 +722,18 @@ INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 41, now(), 'admin');
 INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
 VALUES (1, 42, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 5, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 51, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 511, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 512, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 513, now(), 'admin');
+INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+VALUES (1, 514, now(), 'admin');
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts
@@ -1210,3 +1263,51 @@ COMMENT ON COLUMN user_login_record.token IS 'Token 或会话ID（哈希或UUID�
 
 CREATE INDEX idx_user_login_record_id ON user_login_record (user_id);
 COMMENT ON INDEX idx_user_login_record_id IS '用户id索引';
+
+-- 应用
+DROP TABLE IF EXISTS applications;
+CREATE TABLE applications
+(
+    client_id              VARCHAR(64)           NOT NULL PRIMARY KEY,
+    client_secret          VARCHAR(255)          NOT NULL,
+    client_name            VARCHAR(255)          NOT NULL,
+    icon                   BIGINT,
+    remark                 VARCHAR(512),
+    redirect_uris          VARCHAR(512)          NOT NULL,
+    scopes                 VARCHAR(512)          NOT NULL,
+    grant_types            VARCHAR(512)          NOT NULL,
+    access_token_validity  INTEGER               NOT NULL,
+    refresh_token_validity INTEGER               NOT NULL,
+    published              BOOLEAN DEFAULT FALSE,
+    ip_whitelist           VARCHAR(512),
+    is_enabled             BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_deleted             BOOLEAN DEFAULT FALSE NOT NULL,
+    owner_tenant_id        BIGINT,
+    created_at             TIMESTAMP             NOT NULL,
+    created_by             VARCHAR(64)           NOT NULL,
+    updated_at             TIMESTAMP             NOT NULL,
+    updated_by             VARCHAR(64)           NOT NULL
+);
+
+-- 添加注释
+COMMENT ON TABLE applications IS '应用表';
+
+COMMENT ON COLUMN applications.client_id IS '客户端唯一标识';
+COMMENT ON COLUMN applications.client_secret IS '客户端密钥（加密存储）';
+COMMENT ON COLUMN applications.client_name IS '客户端名称';
+COMMENT ON COLUMN applications.icon IS 'icon';
+COMMENT ON COLUMN applications.remark IS '应用描述';
+COMMENT ON COLUMN applications.redirect_uris IS '回调地址，多个用逗号分隔';
+COMMENT ON COLUMN applications.scopes IS '授权范围，多个用逗号分隔';
+COMMENT ON COLUMN applications.grant_types IS '支持的授权类型';
+COMMENT ON COLUMN applications.access_token_validity IS '访问令牌有效期（秒）';
+COMMENT ON COLUMN applications.refresh_token_validity IS '刷新令牌有效期（秒）';
+COMMENT ON COLUMN applications.is_enabled IS '状态 true 启用 false 禁用';
+COMMENT ON COLUMN applications.is_deleted IS 'true 删除 false 正常';
+COMMENT ON COLUMN applications.published IS '是否上架：TRUE=已上架，FALSE=未上架';
+COMMENT ON COLUMN applications.ip_whitelist IS 'IP 白名单（多个以逗号分隔）';
+COMMENT ON COLUMN applications.owner_tenant_id IS '租户ID，用于多租户支持';
+COMMENT ON COLUMN applications.created_at IS '创建时间';
+COMMENT ON COLUMN applications.created_by IS '创建人';
+COMMENT ON COLUMN applications.updated_at IS '更新时间';
+COMMENT ON COLUMN applications.updated_by IS '更新人';

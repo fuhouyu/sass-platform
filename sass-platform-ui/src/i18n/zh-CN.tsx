@@ -44,7 +44,7 @@ const ZhCN = {
         pageLoading: '页面加载中....',
         updateAvatar: '更新头像',
         pageNotfound: '页面不存在',
-        backHome: '回到首页'
+        backHome: '回到首页',
     },
     // button
     Button: {
@@ -154,6 +154,8 @@ const ZhCN = {
         systemMonitor: '系统监控',
         serverMonitor: '服务监控',
         logMonitor: '日志监控',
+        applicationCenter: '应用中心',
+        applicationManage: '应用管理',
 
     },
     Account: {
@@ -389,6 +391,44 @@ const ZhCN = {
     },
     LogMonitor: {
         title: '实时日志',
+    },
+    Application: {
+        list: '应用列表',
+        add: '新增应用',
+        edit: '修改应用',
+        icon: {
+            label: "应用图标",
+            tips: {
+                suffix: "1、文件后缀名可为 <strong>{{types}}</strong>",
+                size: "2、文件大小不得大于 <strong>{{size}}</strong>",
+                count: "3、最多可上传数量为 <strong>{{count}}</strong>"
+            }
+        },
+        iconPlaceholder: '请上传应用图标',
+        clientName: '应用名称',
+        clientNamePlaceholder: '请输入应用名称',
+        clientId: '应用ID',
+        clientIdTips: '客户端id，当前租户下唯一',
+        clientIdPlaceholder: '请输入应用ID',
+        clientSecret: '应用密钥',
+        clientSecretPlaceholder: '请输入应用密钥',
+        redirectUris: '回调地址',
+        redirectUrisPlaceholder: '请输入回调地址',
+        redirectUrisErrorMessage: '回调地址格式错误',
+        scopes: '授权范围',
+        scopesPlaceholder: '请输入授权范围',
+        grantTypes: '授权类型',
+        grantTypesPlaceholder: '请选择授权类型',
+        accessTokenValidity: '访问令牌有效期',
+        accessTokenValidityPlaceholder: '请输入访问令牌有效期',
+        refreshTokenValidity: '刷新令牌有效期',
+        refreshTokenValidityPlaceholder: '请输入刷新令牌有效期',
+        published: '是否上架',
+        publishedPlaceholder: '请选择是否上架',
+        ipWhitelist: 'IP白名单',
+        ipWhitelistPlaceholder: '请输入IP白名单',
+        isEnabled: '是否启用',
+        isEnabledPlaceholder: '请选择是否启用',
     }
 }
 

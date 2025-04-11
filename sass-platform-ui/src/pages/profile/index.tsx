@@ -77,14 +77,13 @@ export const UserProfile: React.FC = () => {
                 <div style={{textAlign: 'center'}}>
 
                     <S3Upload
-                        uploadProps={{
-                            prefix: 'user-avatar',
-                            isPublic: true,
-                            beforeUpload,
-                            onUploadSuccess: async (resourceId) => {
-                                await fetchEditUserinfo({...userinfo, avatar: resourceId});
-                                message.success(t('User.updateAvatarSuccess'));
-                            },
+                        accept={'image/*'}
+                        prefix={"user-avatar"}
+                        isPublic={true}
+                        showUploadList={false}
+                        beforeUpload={beforeUpload}
+                        onUploadSuccess={async (resourceId) => {
+                            await fetchEditUserinfo({...userinfo, avatar: resourceId});
                         }}
                     >
                         <Tooltip
@@ -154,6 +153,6 @@ export const UserProfile: React.FC = () => {
             </div>
         </Layout>
 
-    )
+    );
 }
 

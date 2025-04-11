@@ -14,31 +14,6 @@
  * limitations under the License.
  */
 
+import {ApplicationManage} from "@/pages/application/manage/ApplicationManage.tsx";
 
-import {UploadProps} from "antd/lib";
-
-/**
- * S3UploadProps
- */
-export interface S3UploadProps extends UploadProps {
-    /**
-     * 前缀
-     */
-    prefix?: string;
-
-    /**
-     * 是否是公共访问资源
-     */
-    isPublic: boolean;
-
-    /**
-     * 上传成功回调
-     * @param resourceId 资源id
-     */
-    onUploadSuccess?: (resourceId: string) => void;
-
-    /**
-     * 显示上传悬浮按钮
-     */
-    showUploadFloatButton?: boolean;
-}
+export default ApplicationManage;

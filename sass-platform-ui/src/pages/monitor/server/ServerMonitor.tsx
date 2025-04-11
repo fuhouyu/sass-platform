@@ -174,7 +174,7 @@ export const ServerMonitor: FC = () => {
 
     useEffect(() => {
 
-        sseClient.connect(BaseApiUrlConstant.SERVER_MONITOR,
+        sseClient.connect(BaseApiUrlConstant.SERVER_MONITOR_URL,
             {
                 onMessage: (e) => {
                     const data: ServerMonitorModel = JSON.parse(e.data) as ServerMonitorModel;
