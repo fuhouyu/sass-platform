@@ -122,8 +122,6 @@ export const Tenant: React.FC = () => {
                 const flag = record.id === tenant?.id
                 return (
                     <>
-
-
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
                             <Space>
@@ -169,6 +167,9 @@ export const Tenant: React.FC = () => {
      */
     const rowSelection: TableRowSelection<TenantInfo> = {
         onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+        getCheckboxProps: (record: TenantInfo) => ({
+            disabled: tenant?.id === record.id
+        }),
     };
 
 
@@ -204,7 +205,8 @@ export const Tenant: React.FC = () => {
                                           permissionStr={TenantPermissionConstant.ADD}>
                             <AddButton onClick={() => openDrawer(undefined)}/>
                         </PermissionButton>
-                        <PermissionButton buttonPermissions={buttonPermissions}
+                        <PermissionButton
+                            buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.DELETE}>
                             <Popconfirm
                                 title={t('Button.delete')}
@@ -216,7 +218,8 @@ export const Tenant: React.FC = () => {
                                     await tableRef?.current?.refreshPageList();
                                 }}
                             >
-                                <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0}
+                                <DeleteButton
+                                    disabled={rowKeys === undefined || rowKeys.length === 0}
                                 />
                             </Popconfirm>
                         </PermissionButton>
