@@ -67,7 +67,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
         name: string,
         status?: UploadFileStatus,
         url?: string
-    }[] | undefined>([]);
+    }[] | undefined>(undefined);
 
     /**
      * 初始化应用
