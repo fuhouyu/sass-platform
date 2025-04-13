@@ -145,7 +145,6 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                         await doFileUpload(s3Client, stsTokenResponse, rcFile);
                         onSuccess?.({}, rcFile);
                     }).catch((e) => {
-                        console.log(e);
                         onError?.(e, rcFile);
                         uploadNotification('error', `${rcFile.name} ${t('Resource.uploadError')}`);
                     });
