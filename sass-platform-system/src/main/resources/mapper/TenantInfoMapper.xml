@@ -204,10 +204,11 @@
         </where>
     </select>
 
-    <select id="queryAllList" resultMap="BaseResultMap">
+    <select id="queryEffectiveTenantList" resultMap="BaseResultMap">
         SELECT
         <include refid="QueryColumns"/>
         FROM <include refid="TableName"/> ti
         WHERE is_deleted = false
+        AND (#{now} between ti.start_date AND ti.end_date OR (ti.start_date IS NULL AND ti.end_date IS NULL))
     </select>
 </mapper>

@@ -37,6 +37,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -174,7 +175,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public List<BasicTenantDTO> findTenantList() {
-        List<TenantInfo> list = this.tenantInfoMapper.queryAllList();
+        List<TenantInfo> list = this.tenantInfoMapper.queryEffectiveTenantList(LocalDate.now());
         return list.stream().map(res -> BasicTenantDTO.builder()
                 .id(res.getId())
                 .tenantName(res.getTenantName())
