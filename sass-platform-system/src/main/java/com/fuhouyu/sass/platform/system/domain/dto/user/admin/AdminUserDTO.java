@@ -68,6 +68,9 @@ public class AdminUserDTO extends BaseDTO {
     @Schema(name = "gender", description = "性别")
     private String gender;
 
+    @Schema(name = "isEnabled", description = "是否启用")
+    private Boolean isEnabled;
+
     @Schema(name = "avatar", description = "头像的资源id")
     private Long avatar;
 

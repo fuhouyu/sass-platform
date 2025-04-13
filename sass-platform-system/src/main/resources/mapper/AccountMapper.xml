@@ -199,4 +199,11 @@
             #{tenantId}
         </foreach>
     </delete>
+
+    <update id="updateAccountStatusByUserId">
+        UPDATE
+        <include refid="TableName"/>
+        SET is_enabled = #{enabled}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>

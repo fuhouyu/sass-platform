@@ -74,6 +74,11 @@ public class AdminUsers extends BaseEntity {
     private Long avatar;
 
     /**
+     * 启禁用状态
+     */
+    private Boolean isEnabled;
+
+    /**
      * 登录时间
      */
     private LocalDateTime loginDate;

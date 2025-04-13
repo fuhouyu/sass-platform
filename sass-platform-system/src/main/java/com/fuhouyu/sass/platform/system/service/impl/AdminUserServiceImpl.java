@@ -144,6 +144,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public void editUserStatus(Long id, Boolean enabled) {
+        AdminUsers adminUsers = new AdminUsers();
+        adminUsers.setIsEnabled(enabled);
+        adminUsers.setId(id);
+        this.accountService.editAccountStatusByUserId(id, enabled);
+        this.adminUserMapper.update(adminUsers);
+    }
+
+    @Override
     public AdminUserDTO findById(Long userId) {
         AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
         return USERS_ASSEMBLER.toDTO(adminUsers);

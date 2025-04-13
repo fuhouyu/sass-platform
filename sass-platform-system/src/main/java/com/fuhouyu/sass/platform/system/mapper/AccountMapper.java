@@ -74,4 +74,12 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param tenantIds 租户ids
      */
     void deleteByTenantIds(@Param("tenantIds") Collection<Long> tenantIds);
+
+    /**
+     * 通过用户id对账号进行启用或者禁用
+     *
+     * @param userId  用户id
+     * @param enabled 启禁用状态
+     */
+    void updateAccountStatusByUserId(@Param("userId") Long userId, @Param("enabled") Boolean enabled);
 }

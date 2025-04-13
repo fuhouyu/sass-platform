@@ -75,6 +75,11 @@ public enum AuthenticationResponseStatusEnum implements BaseResponseStatus {
      * 验证码验证失败
      */
     CLOUDFLARE_TURNSTILE_VERIFY_FAIL(100204, "验证失败，请重新验证"),
+
+    /**
+     * 当前账号被禁用
+     */
+    USER_ACCOUNT_DISABLED(100301, "当前账号被禁用"),
     ;
 
 
