@@ -33,6 +33,7 @@ import TenantForm from "./components/form";
 import {permissionApi} from "@/apis/permission.tsx";
 import {Menu} from "@/model/menu.tsx";
 import {ReloadOutlined} from "@ant-design/icons";
+import {useUserStore} from "@/store";
 
 /**
  * 租户组件
@@ -43,6 +44,7 @@ export const Tenant: React.FC = () => {
     const {t} = useTranslation();
     const tableRef = useRef<TableRefType<TenantInfo>>(null);
     const [updateId, setUpdatedId] = useState<string | undefined>();
+    const {tenant} = useUserStore(state => state);
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -79,7 +81,9 @@ export const Tenant: React.FC = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (_, record: TenantInfo) => (
-                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                <Switch
+                    disabled={tenant?.id === record.id}
+                    defaultChecked={record.isEnabled} onChange={async (checked) => {
                     await tenantApi.status(record.id!, checked);
                     await tableRef?.current?.refreshPageList();
                 }}/>
@@ -115,6 +119,7 @@ export const Tenant: React.FC = () => {
             width: 240,
             fixed: 'right',
             render: (_, record: TenantInfo) => {
+                const flag = record.id === tenant?.id
                 return (
                     <>
 
@@ -132,10 +137,14 @@ export const Tenant: React.FC = () => {
                                         message.success('密码重置成功');
                                     }}
                                 >
-                                    <Button icon={<ReloadOutlined/>} color="pink"
+                                    <Button
+                                        disabled={flag}
+                                        icon={<ReloadOutlined/>} color="pink"
                                             variant={'outlined'}>{t('Tenant.resetPassword')}</Button>
                                 </Popconfirm>
-                                <EditButton onClick={() => openDrawer(record.id)}/>
+                                <EditButton
+                                    disabled={flag}
+                                    onClick={() => openDrawer(record.id)}/>
                             </Space>
                         </PermissionButton>
 

@@ -28,7 +28,6 @@ CREATE TABLE tenant_info
     start_date  DATE,
     end_date    DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_platform BOOLEAN DEFAULT FALSE NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
     created_at  TIMESTAMP             NOT NULL,
     created_by  VARCHAR(64)           NOT NULL,
@@ -50,7 +49,6 @@ COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
 COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
 COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
-COMMENT ON COLUMN tenant_info.is_platform IS '是否平台';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_info.created_by IS '创建人';
