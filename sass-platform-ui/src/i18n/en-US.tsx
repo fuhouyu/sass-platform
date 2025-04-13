@@ -429,6 +429,7 @@ const EnUS = {
         publishedPlaceholder: 'Please select whether to publish',
         ipWhitelist: 'IP Whitelist',
         ipWhitelistPlaceholder: 'Please enter the IP whitelist',
+        ipWhitelistErrorMessage: 'IP whitelist format error',
         isEnabled: 'Enabled',
         isEnabledPlaceholder: 'Please select whether to enable',
     }

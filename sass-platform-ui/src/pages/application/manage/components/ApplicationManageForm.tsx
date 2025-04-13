@@ -22,12 +22,11 @@ import {applicationApi} from "@/apis/application.tsx";
 import {IconFont, S3Upload} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {AnyObject} from "antd/es/_util/type";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useLocaleStore} from "@/store";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import {UploadFileStatus} from "antd/lib/upload/interface";
-import {TableRefType} from "@components/List/table/interface.tsx";
 
 
 export interface ApplicationManageFormProps {
@@ -59,7 +58,6 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
     const [form] = Form.useForm();
     const {findDictItems} = useDictItem(["GRANT_TYPE"]);
     const language = useLocaleStore((state) => state.language);
-    const tableRef = useRef<TableRefType<ApplicationModel>>(null);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
 
     const [iconFiles, setIconFiles] = useState<{
@@ -103,8 +101,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
         try {
             application.icon = iconFiles![0].uid as unknown as number
             await (props.updateId ? applicationApi.editInfoApi(props.updateId, application) : applicationApi.saveInfoApi(application));
-            message.success(t('Common.success')).then()
-            await tableRef?.current?.refreshPageList();
+            await message.success(t('Common.success'))
             props.onClose();
         } finally {
             setIsModalButtonLoading(false)
@@ -139,6 +136,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
                 labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 9}}
                 clearOnDestroy={true}
                 autoComplete="off"
+                initialValues={initForm}
             >
 
                 <Row gutter={24}>

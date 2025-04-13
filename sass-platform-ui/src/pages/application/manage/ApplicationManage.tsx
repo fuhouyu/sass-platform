@@ -168,9 +168,10 @@ export const ApplicationManage: FC = () => {
             <ApplicationManageForm
                 isOpen={isModalOpen}
                 updateId={updateId}
-                onClose={() => {
+                onClose={async () => {
                     setIsModalOpen(false);
-                    setUpdatedId(undefined)
+                    setUpdatedId(undefined);
+                    await tableRef?.current?.refreshPageList();
                 }}
             />
 

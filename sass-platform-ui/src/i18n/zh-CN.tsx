@@ -436,6 +436,7 @@ const ZhCN = {
         publishedPlaceholder: '请选择是否上架',
         ipWhitelist: 'IP白名单',
         ipWhitelistPlaceholder: '请输入IP白名单',
+        ipWhitelistErrorMessage: 'IP白名单格式错误',
         isEnabled: '是否启用',
         isEnabledPlaceholder: '请选择是否启用',
     }
