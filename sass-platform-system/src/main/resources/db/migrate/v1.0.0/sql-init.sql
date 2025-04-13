@@ -59,9 +59,9 @@ COMMENT ON COLUMN tenant_info.updated_by IS '更新人';
 -- 内置租户
 INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, created_at,
-                        created_by, updated_at, updated_by, is_platform)
+                        created_by, updated_at, updated_by)
 VALUES (1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
-        now(), 'admin', true);
+        now(), 'admin');
 
 -- 租户权限
 DROP TABLE IF EXISTS tenant_has_permission;
