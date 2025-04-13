@@ -8,7 +8,7 @@ on:
 permissions: read-all
 
 jobs:
-  public-java:
+  publish-java:
     runs-on: ubuntu-latest
     steps:
       - name: "Cache Maven Repos"
@@ -27,7 +27,7 @@ jobs:
           java-version: '21'
       - name: Build with Maven
         run: |
-          mvn --batch-mode clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
+          mvn --batch-mode -U clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
           mv sass-platform-admin/target/sass-platform-admin-*.jar sass-platform-admin.jar
       - name: Scp Jar File
         uses: appleboy/scp-action@v0.1.7
