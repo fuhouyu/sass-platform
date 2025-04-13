@@ -11,6 +11,13 @@
         <result column="request_param" jdbcType="VARCHAR" property="requestParam"/>
         <result column="response_data" jdbcType="VARCHAR" property="responseData"/>
         <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
+        <result column="os" jdbcType="VARCHAR" property="os"/>
+        <result column="browser" jdbcType="VARCHAR" property="browser"/>
+        <result column="browser_version" jdbcType="VARCHAR" property="browserVersion"/>
+        <result column="is_mobile" jdbcType="BOOLEAN" property="isMobile"/>
+        <result column="engine" jdbcType="VARCHAR" property="engine"/>
+        <result column="platform" jdbcType="VARCHAR" property="platform"/>
+        <result column="cost_time" jdbcType="BIGINT" property="costTime"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
         <result column="error_message" jdbcType="VARCHAR" property="errorMessage"/>
         <result column="content_en" jdbcType="VARCHAR" property="contentEn"/>
@@ -38,6 +45,13 @@
         operation_type,
         content,
         content_en,
+        os,
+        browser,
+        browser_version,
+        is_mobile,
+        engine,
+        platform,
+        cost_time,
         is_success,
         error_message,
         risk_type,
@@ -48,22 +62,58 @@
     </sql>
 
     <insert id="insert" parameterType="com.fuhouyu.sass.platform.system.domain.entity.OperationLog">
-        insert into <include refid="TableName"/> (id, module_name, request_uri,
-                                   request_method, request_param,
-                                   request_ip,
-                                   request_location,
-                                   response_data,
-                                   operation_type, content, content_en,
-                                   is_success, risk_type, system_name,
-        owner_tenant_id,
-                                   operation_user, operation_time, error_message)
-        values (#{id,jdbcType=BIGINT}, #{moduleName,jdbcType=VARCHAR}, #{requestUri,jdbcType=VARCHAR},
-                #{requestMethod,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR},
-                #{requestIp}, #{requestLocation},
+        insert into
+        <include refid="TableName"/>
+        (id,
+         module_name,
+         request_uri,
+         request_method,
+         request_param,
+         request_ip,
+         request_location,
+         response_data,
+         operation_type,
+         os,
+         browser,
+         browser_version,
+         is_mobile,
+         engine,
+         platform,
+        cost_time,
+         content,
+         content_en,
+         is_success,
+         risk_type,
+         system_name,
+         owner_tenant_id,
+         operation_user,
+         operation_time,
+         error_message)
+        values (#{id,jdbcType=BIGINT},
+                #{moduleName,jdbcType=VARCHAR},
+                #{requestUri,jdbcType=VARCHAR},
+                #{requestMethod,jdbcType=VARCHAR},
+                #{requestParam,jdbcType=VARCHAR},
+                #{requestIp},
+                #{requestLocation},
                 #{responseData,jdbcType=VARCHAR},
-                #{operationType,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{contentEn,jdbcType=VARCHAR},
-                #{isSuccess,jdbcType=BOOLEAN}, #{riskType,jdbcType=VARCHAR}, #{systemName,jdbcType=VARCHAR},#{ownerTenantId},
-                #{operationUser,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}, #{errorMessage})
+                #{operationType,jdbcType=VARCHAR},
+                #{os,jdbcType=BOOLEAN},
+                #{browser,jdbcType=VARCHAR},
+                #{browserVersion,jdbcType=VARCHAR},
+                #{isMobile,jdbcType=VARCHAR},
+                #{engine,jdbcType=VARCHAR},
+                #{platform,jdbcType=VARCHAR},
+                #{costTime,jdbcType=BIGINT},
+                #{content,jdbcType=VARCHAR},
+                #{contentEn,jdbcType=VARCHAR},
+                #{isSuccess,jdbcType=BOOLEAN},
+                #{riskType,jdbcType=VARCHAR},
+                #{systemName,jdbcType=VARCHAR},
+                #{ownerTenantId},
+                #{operationUser,jdbcType=VARCHAR},
+                #{operationTime,jdbcType=TIMESTAMP},
+                #{errorMessage})
     </insert>
 
     <select id="queryList" resultMap="BaseResultMap">

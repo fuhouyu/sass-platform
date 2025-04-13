@@ -69,19 +69,16 @@ export const OperationLog = () => {
             title: t('OperationLog.requestIp'),
             dataIndex: 'requestIp',
             align: "center",
-            showSorterTooltip: false
         },
         {
             title: t('OperationLog.requestLocation'),
             dataIndex: 'requestLocation',
             align: "center",
-            showSorterTooltip: false
         },
         {
             title: t('OperationLog.riskType'),
             dataIndex: 'riskType',
             align: "center",
-            showSorterTooltip: false,
             render: (riskType: string) => {
                 switch (riskType) {
                     case 'LOW_LEVEL':
@@ -101,10 +98,37 @@ export const OperationLog = () => {
             }
         },
         {
+            title: t('OperationLog.costTime'),
+            dataIndex: 'costTime',
+            align: "center",
+            render: (costTime: number) => {
+                return `${costTime} ${t('OperationLog.costTimeUnit')}`
+            }
+        },
+        {
+            title: t('OperationLog.platform'),
+            dataIndex: 'platform',
+            align: "center"
+        },
+        {
+            title: t('OperationLog.os'),
+            dataIndex: 'os',
+            align: "center"
+        },
+        {
+            title: t('OperationLog.browser'),
+            dataIndex: 'browser',
+            align: "center"
+        },
+        {
+            title: t('OperationLog.engine'),
+            dataIndex: 'engine',
+            align: "center"
+        },
+        {
             title: t('OperationLog.operationUser'),
             dataIndex: 'operationUser',
             align: "center",
-            showSorterTooltip: false
         },
         {
             title: t('OperationLog.operationTime'),

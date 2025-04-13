@@ -91,6 +91,41 @@ public class OperationLog implements Serializable {
     private String systemName;
 
     /**
+     * 操作系统
+     */
+    private String os;
+
+    /**
+     * 浏览器
+     */
+    private String browser;
+
+    /**
+     * 浏览器版本
+     */
+    private String browserVersion;
+
+    /**
+     * 是否移动端
+     */
+    private Boolean isMobile;
+
+    /**
+     * 引擎
+     */
+    private String engine;
+
+    /**
+     * 平台
+     */
+    private String platform;
+
+    /**
+     * 耗时
+     */
+    private Long costTime;
+
+    /**
      * 错误信息
      */
     private String errorMessage;

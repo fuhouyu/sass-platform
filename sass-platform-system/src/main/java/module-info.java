@@ -64,6 +64,7 @@ module sass.platform.system {
     requires spring.security.oauth2.core;
     requires spring.tx;
     requires spring.web;
+    requires cn.hutool.http;
 
     exports com.fuhouyu.sass.platform.system.assembler;
     exports com.fuhouyu.sass.platform.system.constants;

@@ -1130,6 +1130,13 @@ CREATE TABLE operation_log
     operation_type   VARCHAR(50)  NOT NULL,
     content       VARCHAR(1024),
     content_en    VARCHAR(1024),
+    os              VARCHAR(64)           NOT NULL,
+    browser         VARCHAR(64)           NOT NULL,
+    browser_version VARCHAR(64)           NOT NULL,
+    is_mobile       BOOLEAN DEFAULT FALSE NOT NULL,
+    engine          VARCHAR(64)           NOT NULL,
+    platform        VARCHAR(64)           NOT NULL,
+    cost_time       BIGINT  DEFAULT 0     NOT NULL,
     error_message text,
     is_success    BOOLEAN NOT NULL,
     risk_type        VARCHAR(50)  NOT NULL,
@@ -1153,7 +1160,13 @@ COMMENT ON COLUMN operation_log.operation_type IS '操作类型';
 COMMENT ON COLUMN operation_log.content IS '日志内容(中文)';
 COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
 COMMENT ON COLUMN operation_log.operation_user IS '操作人';
-COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
+COMMENT ON COLUMN operation_log.os IS '操作时间';
+COMMENT ON COLUMN operation_log.browser IS '浏览器';
+COMMENT ON COLUMN operation_log.browser_version IS '浏览器版本';
+COMMENT ON COLUMN operation_log.is_mobile IS '是否移动端';
+COMMENT ON COLUMN operation_log.engine IS '引擎';
+COMMENT ON COLUMN operation_log.platform IS '平台';
+COMMENT ON COLUMN operation_log.cost_time IS '耗时';
 COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
 COMMENT ON COLUMN operation_log.error_message IS '错误信息';
 COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';
