@@ -127,7 +127,9 @@ export const Permission: React.FC = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (_, record: Menu) => (
-                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                <Switch
+                    disabled={!record.isAllowModified}
+                    defaultChecked={record.isEnabled} onChange={async (checked) => {
                     await permissionApi.status(record.id!, checked);
                     await tableRef?.current?.refreshPageList();
                 }}/>

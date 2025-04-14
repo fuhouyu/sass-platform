@@ -83,4 +83,12 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @return 用户详情dto
      */
     AdminUserDetailDTO findDetailByIdAndOrganizationId(Long id, Long organizationId);
+
+    /**
+     * 修改用户状态
+     *
+     * @param id      主键id
+     * @param enabled true 启用 false 禁用
+     */
+    void editUserStatus(Long id, Boolean enabled);
 }

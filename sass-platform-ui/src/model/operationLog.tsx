@@ -74,6 +74,41 @@ export interface OperationLog {
     operationType?: string;
 
     /**
+     * 操作系统
+     */
+    os?: string;
+
+    /**
+     * 浏览器
+     */
+    browser?: string;
+
+    /**
+     * 浏览器版本
+     */
+    browserVersion?: string;
+
+    /**
+     * 是否手机
+     */
+    isMobile?: boolean;
+
+    /**
+     * 引擎
+     */
+    engine?: string;
+
+    /**
+     * 平台
+     */
+    platform?: string;
+
+    /**
+     * 耗时
+     */
+    costTime?: number;
+
+    /**
      * 日志内容(中文)
      */
     content?: string;

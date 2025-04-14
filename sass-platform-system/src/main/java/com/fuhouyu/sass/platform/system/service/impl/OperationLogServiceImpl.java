@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
@@ -65,6 +67,9 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
             Long tenantId = Objects.isNull(user) ?
                     request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID)
                     : user.getTenantId();
+            String userAgentString = ContextHolderStrategy.getContext().getRequest().getUserAgent();
+            UserAgent userAgent = UserAgentUtil.parse(userAgentString);
+
 
             OperationLog operationLog = new OperationLog();
 
@@ -73,6 +78,12 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
                     request.getAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION);
             operationLog.setRequestLocation(requestLocation);
             operationLog.setId(snowflakeIdWorker.nextId());
+            operationLog.setBrowser(userAgent.getBrowser().getName());
+            operationLog.setBrowserVersion(userAgent.getBrowser().getVersion(userAgentString));
+            operationLog.setOs(userAgent.getOs().getName());
+            operationLog.setEngine(userAgent.getEngine().getName());
+            operationLog.setIsMobile(userAgent.isMobile());
+            operationLog.setPlatform(userAgent.getPlatform().getName());
 
             operationLog.setOwnerTenantId(tenantId);
             operationLog.setOperationTime(LocalDateTime.parse(logRecordEntity.getOperationTime(), LogRecordEntity.DATE_TIME_FORMATTER));

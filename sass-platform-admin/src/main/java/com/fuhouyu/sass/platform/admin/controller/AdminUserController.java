@@ -183,4 +183,21 @@ public class AdminUserController {
         return ResponseHelper.success(Objects.nonNull(this.adminUserService.findByUsername(username)));
     }
 
+    /**
+     * 修改状态
+     *
+     * @param id      主键id
+     * @param enabled true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "修改状态")
+    @Parameter(name = "enabled", description = "true 启用 false 禁用")
+    @PreAuthorize("@auth.hasAnyPermission('system:user:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.MIDDLE_LEVEL)
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("enabled") Boolean enabled) {
+        this.adminUserService.editUserStatus(id, enabled);
+        return ResponseHelper.success();
+    }
 }

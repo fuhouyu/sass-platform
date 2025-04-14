@@ -64,6 +64,8 @@ const EnUS = {
     },
     // 登录
     Login: {
+        title: 'Tenant Management System',
+        tips: 'Please select a tenant to access the corresponding admin panel.',
         loginTitlePrefix: '',
         loginTitleSuffix: 'Login',
         usernamePlaceholder: 'Please input your username',
@@ -346,6 +348,14 @@ const EnUS = {
         systemName: 'System Name',
         operationTime: 'Operation Time',
         errorMessage: 'Error Message',
+        costTime: 'Cost Time',
+        costTimeUnit: 'ms',
+        os: 'OS',
+        browser: 'Browser',
+        browserVersion: 'Browser Version',
+        platform: 'Platform',
+        engine: 'Engine',
+        mobile: 'Mobile',
     },
     ParamConfig: {
         list: 'Param Config List',
@@ -421,6 +431,7 @@ const EnUS = {
         publishedPlaceholder: 'Please select whether to publish',
         ipWhitelist: 'IP Whitelist',
         ipWhitelistPlaceholder: 'Please enter the IP whitelist',
+        ipWhitelistErrorMessage: 'IP whitelist format error',
         isEnabled: 'Enabled',
         isEnabledPlaceholder: 'Please select whether to enable',
     }

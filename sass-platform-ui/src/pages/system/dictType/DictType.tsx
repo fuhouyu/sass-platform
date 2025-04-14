@@ -85,7 +85,9 @@ export const DictType = () => {
             dataIndex: 'isEnabled',
             align: 'center',
             render: (_, record: DictTypeModel) => (
-                <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+                <Switch
+                    disabled={!record.isAllowModified}
+                    defaultChecked={record.isEnabled} onChange={async (checked) => {
                     await dictTypeApi.status(record.id!, checked);
                     await tableRef?.current?.refreshPageList();
                 }}/>

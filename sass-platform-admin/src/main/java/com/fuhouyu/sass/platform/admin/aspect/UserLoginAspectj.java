@@ -103,6 +103,9 @@ public class UserLoginAspectj {
             // 登录成功，清除缓存
             cacheService.delete(AuthenticationConstant.CACHE_USER_LOGIN_ERROR_PREFIX + userLoginDTO.getAccount());
             return result;
+        } catch (ServiceException e) {
+            // 如果是服务异常，直接抛出
+            throw e;
         } catch (Exception ex) {
             // 登录的异常处理
             this.handleLoginError(userLoginDTO, paramConfigMap);

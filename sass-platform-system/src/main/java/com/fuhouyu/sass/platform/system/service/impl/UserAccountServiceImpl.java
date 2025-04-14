@@ -46,6 +46,7 @@ import com.fuhouyu.sass.platform.system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -166,6 +167,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(userLoginDTO.getAccountType().getAuthenticationToken(userLoginDTO));
+        } catch (DisabledException e) {
+            // 账号被禁用
+            throw new ServiceException(AuthenticationResponseStatusEnum.USER_ACCOUNT_DISABLED);
         } catch (Exception e) {
             LoggerUtil.error(log, "用户: {} 使用 {} 方式登录失败: {} ",
                     userLoginDTO.getAccount(), userLoginDTO.getAccountType(), e.getMessage(), e);

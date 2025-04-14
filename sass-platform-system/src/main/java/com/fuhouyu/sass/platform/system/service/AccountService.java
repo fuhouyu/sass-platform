@@ -94,4 +94,12 @@ public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
      * @param tenantIds 租户ids
      */
     void removeByTenantIds(Collection<Long> tenantIds);
+
+    /**
+     * 通过用户id修改账号状态
+     *
+     * @param userId  用户id
+     * @param enabled 启禁用状态
+     */
+    void editAccountStatusByUserId(Long userId, Boolean enabled);
 }

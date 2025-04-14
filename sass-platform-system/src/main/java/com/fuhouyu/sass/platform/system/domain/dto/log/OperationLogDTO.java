@@ -64,6 +64,30 @@ public class OperationLogDTO implements Serializable {
     @Schema(name = "systemName", description = "系统名称")
     private String systemName;
 
+    /**
+     * 操作系统
+     */
+    @Schema(name = "os", description = "操作系统")
+    private String os;
+
+    @Schema(name = "browser", description = "浏览器")
+    private String browser;
+
+    @Schema(name = "browserVersion", description = "浏览器版本")
+    private String browserVersion;
+
+    @Schema(name = "isMobile", description = "isMobile")
+    private Boolean isMobile;
+
+    @Schema(name = "engine", description = "engine")
+    private String engine;
+
+    @Schema(name = "platform", description = "平台")
+    private String platform;
+
+    @Schema(name = "costTime", description = "耗时")
+    private Long costTime;
+
     @Schema(name = "operationUser", description = "操作人")
     private String operationUser;
 

@@ -65,6 +65,10 @@ export interface Userinfo extends BaseModel {
      */
     loginDate?: string;
     /**
+     * 是否启用
+     */
+    isEnabled?: boolean;
+    /**
      * 登录ip
      */
     loginIp?: string;

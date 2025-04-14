@@ -41,7 +41,6 @@ public enum TenantResponseStatusEnum implements BaseResponseStatus {
      */
     TENANT_CODE_NOT_NULL(220102, "租户编码不能为空"),
 
-
     /**
      * 租户编码已存在
      */

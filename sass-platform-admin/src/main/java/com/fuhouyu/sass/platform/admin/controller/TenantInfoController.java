@@ -27,6 +27,7 @@ import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
+import com.fuhouyu.sass.platform.system.enums.response.TenantResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -92,7 +93,7 @@ public class TenantInfoController {
         this.tenantInfoService.editDetail(tenantInfoDTO);
         return ResponseHelper.success();
     }
-    
+
     /**
      * 租户列表
      *
@@ -131,6 +132,9 @@ public class TenantInfoController {
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的租户")
                                                   List<Long> ids) {
+        if (ids.contains(ContextHolderStrategy.getContext().getUser().getTenantId())) {
+            throw new ServiceException(TenantResponseStatusEnum.TENANT_NO_PERMISSION);
+        }
         int count = this.tenantInfoService.removeByIds(ids);
         return ResponseHelper.success(count > 0);
     }
@@ -160,7 +164,6 @@ public class TenantInfoController {
     public BaseResponse<List<BasicTenantDTO>> tenantList() {
         return ResponseHelper.success(this.tenantInfoService.findTenantList());
     }
-
 
 
     /**

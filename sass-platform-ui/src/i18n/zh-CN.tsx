@@ -64,6 +64,8 @@ const ZhCN = {
     },
     // 登录
     Login: {
+        title: '租户后台管理系统',
+        tips: '请选择一个租户以登录对应的后台管理系统',
         usernamePlaceholder: '请输入用户名',
         usernameEmptyMessage: '请输入用户名',
         passwordEmptyMessage: '请输入用户密码',
@@ -353,6 +355,14 @@ const ZhCN = {
         operationTime: '操作时间',
         operationTimePlaceholder: '请选择操作时间',
         errorMessage: '错误信息',
+        costTime: '耗时',
+        costTimeUnit: '毫秒',
+        os: '操作系统',
+        browser: '浏览器',
+        browserVersion: '浏览器版本',
+        platform: '平台',
+        engine: '引擎',
+        mobile: '移动端',
     },
     ParamConfig: {
         list: '参数配置列表',
@@ -428,6 +438,7 @@ const ZhCN = {
         publishedPlaceholder: '请选择是否上架',
         ipWhitelist: 'IP白名单',
         ipWhitelistPlaceholder: '请输入IP白名单',
+        ipWhitelistErrorMessage: 'IP白名单格式错误',
         isEnabled: '是否启用',
         isEnabledPlaceholder: '请选择是否启用',
     }

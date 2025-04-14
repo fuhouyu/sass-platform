@@ -24,6 +24,7 @@
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
         <result column="avatar" property="avatar" jdbcType="BIGINT"/>
+        <result column="is_enabled" property="isEnabled" jdbcType="BIGINT"/>
         <result column="owner_tenant_id" property="ownerTenantId" jdbcType="BIGINT"/>
         <result column="login_date" property="loginDate" jdbcType="TIMESTAMP"/>
         <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
@@ -45,6 +46,7 @@
         email,
         gender,
         avatar,
+        is_enabled,
         login_date,
         login_ip,
         owner_tenant_id,
@@ -63,6 +65,7 @@
         u.email,
         u.gender,
         u.avatar,
+        u.is_enabled,
         u.login_date,
         u.login_ip,
         u.owner_tenant_id,
@@ -87,6 +90,7 @@
             #{email},
             #{gender},
             #{avatar},
+            #{isEnabled},
             #{loginDate},
             #{loginIp},
             #{ownerTenantId},
@@ -114,6 +118,7 @@
                 #{entity.email},
                 #{entity.gender},
                 #{entity.avatar},
+                #{entity.isEnabled},
                 #{entity.loginDate},
                 #{entity.loginIp},
                 #{entity.ownerTenantId},
@@ -150,6 +155,9 @@
         </if>
         <if test="loginIp != null and loginIp != ''">
             login_ip = #{loginIp},
+        </if>
+        <if test="isEnabled != null">
+            is_enabled = #{isEnabled},
         </if>
         updated_at = #{updatedAt},
         updated_by = #{updatedBy}

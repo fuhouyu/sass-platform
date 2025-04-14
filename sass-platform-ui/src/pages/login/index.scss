@@ -14,34 +14,15 @@
  * limitations under the License.
  */
 
-/* 左侧背景样式 */
+// 容器
 .container {
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url('@assets/images/background.webp') center/cover no-repeat;
+  width: 100%;
+  background: linear-gradient(135deg, #e6f0ff 0%, #f5f9ff 30%, #d4e5ff 70%, #e5f0ff 100%);
   opacity: 90%;
 }
 
-.login-container {
-  width: 25rem;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 1rem;
-}
-
-// 标题头
-.title {
-  text-align: center;
-  margin: 0 auto 0 auto;
-
-  span {
-    color: #0d53ff;
-    margin: 0 0.25rem;
-  }
-}
-
+// 语言切换
 .switch-language-button {
   position: relative;
   top: 0.5rem;
@@ -51,33 +32,8 @@
   box-shadow: 0 0 0 0;
 }
 
-.login-form {
-  width: 25rem;
-  margin-top: 1.875rem;
-  padding: 1.25rem 1.5625rem 0 1.5625rem;
 
-  .ant-input {
-    height: 2.5rem;
-    line-height: 2.5rem;
-    padding: 0 0.75rem;
-  }
-
-  .cloudflare-turnstile {
-    span {
-      color: rgb(89, 89, 89);
-    }
-  }
-
-  .login-button-container {
-    button {
-      height: 3.25rem;
-      line-height: 3.25rem;
-      font-size: 1rem;
-    }
-  }
-}
-
-
+// 第三方登录分隔线
 .other-login-divider {
   margin: 0 0 0.7rem 0;
 
@@ -89,6 +45,7 @@
   }
 }
 
+// 第三方登录
 .other-login-methods {
   display: flex;
   justify-content: center;
@@ -101,15 +58,98 @@
   }
 }
 
+// 租户选择框
 .tenant-choose-container {
   height: 3.125rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
 
-  .tenant-choose {
-    padding: .3rem 0;
+.login-left {
+  display: flex;
+  flex: 7;
+  width: 100%;
+  height: 100%;
+
+  // logo
+  .logo-container {
+    padding-left: .5rem;
+
+    p {
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+  }
+
+  //  svg
+  .login-svg {
+    max-height: 70vh;
   }
 }
 
+.login-right {
+  flex: 3;
+  width: 100%;
+  height: 100%;
+  //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f5f6fa; /* 浅灰带点蓝 */
 
 
+  // 登录常用工具
+  .login-tools {
+    padding: 0 .8rem .8rem .8rem;
+    margin-left: auto;
+  }
 
+  .login-title {
+    margin-bottom: 1rem;
 
+    h1 {
+      margin-bottom: 0;
+    }
+
+    span {
+      color: #71727B;
+    }
+  }
+
+  // 登录表单
+  .login-form-container {
+    width: 100%;
+    height: 100%;
+    padding: 4rem 2rem;
+
+    // cloudflare验证码
+    .cloudflare-turnstile {
+      span {
+        color: rgb(89, 89, 89);
+      }
+    }
+
+    // 输入框
+    .ant-input {
+      height: 2.5rem;
+      line-height: 2.5rem;
+      padding: 0 0.75rem;
+    }
+
+    // 登录按钮
+    .login-button-container {
+      button {
+        height: 3.25rem;
+        line-height: 3.25rem;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    flex: 1; /* 占满整个容器 */
+  }
+}

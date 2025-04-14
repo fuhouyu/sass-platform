@@ -28,7 +28,6 @@ CREATE TABLE tenant_info
     start_date  DATE,
     end_date    DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_platform BOOLEAN DEFAULT FALSE NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
     created_at  TIMESTAMP             NOT NULL,
     created_by  VARCHAR(64)           NOT NULL,
@@ -50,7 +49,6 @@ COMMENT ON COLUMN tenant_info.contact_info IS '联系方式';
 COMMENT ON COLUMN tenant_info.start_date IS '租户有效开始日期';
 COMMENT ON COLUMN tenant_info.end_date IS '租户有效结束日期';
 COMMENT ON COLUMN tenant_info.is_enabled IS '状态：true 启用，false禁用';
-COMMENT ON COLUMN tenant_info.is_platform IS '是否平台';
 COMMENT ON COLUMN tenant_info.is_deleted IS '删除标记: false 未删除';
 COMMENT ON COLUMN tenant_info.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_info.created_by IS '创建人';
@@ -61,9 +59,9 @@ COMMENT ON COLUMN tenant_info.updated_by IS '更新人';
 -- 内置租户
 INSERT INTO tenant_info(id, tenant_code, tenant_name, tenant_type, remark, icon, contact_person,
                         contact_info, created_at,
-                        created_by, updated_at, updated_by, is_platform)
+                        created_by, updated_at, updated_by)
 VALUES (1, 'platform_tenant', '平台租户', 'COMPANY', '平台租户', null, 'fuhouyu', 'fuhouyu@live.cn', now(), 'admin',
-        now(), 'admin', true);
+        now(), 'admin');
 
 -- 租户权限
 DROP TABLE IF EXISTS tenant_has_permission;
@@ -1132,6 +1130,13 @@ CREATE TABLE operation_log
     operation_type   VARCHAR(50)  NOT NULL,
     content       VARCHAR(1024),
     content_en    VARCHAR(1024),
+    os              VARCHAR(64)           NOT NULL,
+    browser         VARCHAR(64)           NOT NULL,
+    browser_version VARCHAR(64)           NOT NULL,
+    is_mobile       BOOLEAN DEFAULT FALSE NOT NULL,
+    engine          VARCHAR(64)           NOT NULL,
+    platform        VARCHAR(64)           NOT NULL,
+    cost_time       BIGINT  DEFAULT 0     NOT NULL,
     error_message text,
     is_success    BOOLEAN NOT NULL,
     risk_type        VARCHAR(50)  NOT NULL,
@@ -1155,7 +1160,13 @@ COMMENT ON COLUMN operation_log.operation_type IS '操作类型';
 COMMENT ON COLUMN operation_log.content IS '日志内容(中文)';
 COMMENT ON COLUMN operation_log.content_en IS '日志内容(英文)';
 COMMENT ON COLUMN operation_log.operation_user IS '操作人';
-COMMENT ON COLUMN operation_log.operation_time IS '操作时间';
+COMMENT ON COLUMN operation_log.os IS '操作时间';
+COMMENT ON COLUMN operation_log.browser IS '浏览器';
+COMMENT ON COLUMN operation_log.browser_version IS '浏览器版本';
+COMMENT ON COLUMN operation_log.is_mobile IS '是否移动端';
+COMMENT ON COLUMN operation_log.engine IS '引擎';
+COMMENT ON COLUMN operation_log.platform IS '平台';
+COMMENT ON COLUMN operation_log.cost_time IS '耗时';
 COMMENT ON COLUMN operation_log.is_success IS '操作状态(true/false)';
 COMMENT ON COLUMN operation_log.error_message IS '错误信息';
 COMMENT ON COLUMN operation_log.owner_tenant_id IS '所属的租户id';

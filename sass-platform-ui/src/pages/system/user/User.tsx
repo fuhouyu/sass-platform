@@ -32,6 +32,7 @@ import {
     Select,
     Space,
     Splitter,
+    Switch,
     TableColumnsType,
     Tag,
     Tree,
@@ -82,17 +83,24 @@ export const User: React.FC = () => {
             defaultSortOrder: 'descend',
         },
         {
-            title: t('User.nickname'),
-            align: 'center',
-            dataIndex: 'nickname',
-        },
-        {
             title: t('User.gender'),
             align: 'center',
             dataIndex: 'gender',
-            render: (_, record: Userinfo) => {
-                return findDictItemName('GENDER', record.gender);
+            render: (gender: string) => {
+                return findDictItemName('GENDER', gender);
             }
+        },
+        {
+            title: t('Common.status'),
+            dataIndex: 'isEnabled',
+            align: 'center',
+            render: (_, record: Userinfo) => (
+                <Switch
+                    defaultChecked={record.isEnabled} onChange={async (checked) => {
+                    await userApi.status(record.id!, checked);
+                    await tableRef?.current?.refreshPageList();
+                }}/>
+            )
         },
         {
             title: t('User.loginDate'),
@@ -145,7 +153,7 @@ export const User: React.FC = () => {
                     <Space>
                         <PermissionButton permissionStr={UserPermissionConstant.EDIT}
                                           buttonPermissions={buttonPermissions}>
-                            <EditButton onClick={() => openModal(record.id)}/>
+                            <EditButton onClick={() => openModal(record)}/>
                         </PermissionButton>
                         <PermissionButton permissionStr={UserPermissionConstant.EDIT}
                                           buttonPermissions={buttonPermissions}>
@@ -189,18 +197,17 @@ export const User: React.FC = () => {
 
     /**
      * 打开模态组
-     * @param userId 用户id
+     * @param userinfo 用户信息
      */
-    const openModal = async (userId?: string) => {
-        setUpdateId(userId);
+    const openModal = async (userinfo?: Userinfo) => {
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
         setRoleSelectList(await roleApi.list());
-        if (!userId) {
+        setUpdateId(userinfo?.id)
+        if (!userinfo) {
             setIsModalOpen(true);
             return;
         }
-        const userinfo = await userApi.getDetailByIdApi(userId, userQuery.organizationId);
-        setFormInitValues(userinfo);
+        setFormInitValues(await userApi.getDetailByIdApi(userinfo.id!, userinfo.userPosition?.organizationId as string));
         setIsModalOpen(true);
     }
 

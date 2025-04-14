@@ -16,7 +16,9 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
+import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -38,9 +40,9 @@ public interface TenantInfoMapper extends BaseMapper<Long, TenantInfo> {
     TenantInfo queryByTenantCode(String tenantCode);
 
     /**
-     * 查询所有
+     * 查询有效的租户
      *
-     * @return 所有的租户列表
+     * @return 租户列表
      */
-    List<TenantInfo> queryAllList();
+    List<TenantInfo> queryEffectiveTenantList(@Param("now") LocalDate now);
 }

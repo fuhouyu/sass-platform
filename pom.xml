@@ -77,10 +77,10 @@
 
         <!--命令行-->
         <test-arg-line>
-            --add-opens java.base/java.util=ALL-UNNAMED
+            --add-opens java.base/java.util=ALL-UNNAMED,spring-core
         </test-arg-line>
         <jar-arg-line>
-            java.base/java.util=ALL-UNNAMED
+            java.base/java.util=ALL-UNNAMED,spring-core
         </jar-arg-line>
     </properties>
 
@@ -277,4 +277,11 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
 </project>

@@ -8,14 +8,9 @@ on:
 permissions: read-all
 
 jobs:
-  public-java:
+  publish-java:
     runs-on: ubuntu-latest
     steps:
-      - name: "Set up JDK 21"
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
       - name: "Cache Maven Repos"
         uses: actions/cache@v4
         with:
@@ -23,27 +18,16 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-      - name: Checkout base framework repository
+      - name: "Checkout"
         uses: actions/checkout@v4
+      - name: "Set up JDK 21"
+        uses: actions/setup-java@v4
         with:
-          repository: fuhouyu/base-framework.git
-          path: base-framework
-          ref: develop
-
-      # Step 3: Build and install the dependency
-      - name: Build and install base framework dependency
-        run: |
-          cd base-framework
-          mvn clean install -DskipTests
-
-      - uses: actions/checkout@v4
-        name: Checkout Sass Platform repository
-        with:
-          fetch-depth: 0
+          distribution: 'temurin'
+          java-version: '21'
       - name: Build with Maven
         run: |
-          mvn clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
+          mvn --batch-mode -U clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
           mv sass-platform-admin/target/sass-platform-admin-*.jar sass-platform-admin.jar
       - name: Scp Jar File
         uses: appleboy/scp-action@v0.1.7
