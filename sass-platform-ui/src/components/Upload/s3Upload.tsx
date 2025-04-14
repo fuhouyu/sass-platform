@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import {notification, Upload as AntdUpload} from "antd";
+import {Upload as AntdUpload} from "antd";
 import {ChecksumAlgorithm, S3Client} from "@aws-sdk/client-s3";
 import {Upload as s3Upload} from "@aws-sdk/lib-storage";
 import {resourceApi} from "@/apis/resource.tsx";
@@ -25,8 +25,7 @@ import {StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {useTranslation} from "react-i18next";
-
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
+import {NotificationType, useNotification} from "@/hooks/useNotification.tsx";
 
 
 export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
@@ -34,10 +33,11 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
     const {t} = useTranslation();
     const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
     const [totalProgress, setTotalProgress] = React.useState(0);
-    const [api, contextHolder] = notification.useNotification();
+    const {notificationMessage, contextHolder} = useNotification();
 
     const uploadNotification = (type: NotificationType, message: string) => {
-        api[type]({
+        notificationMessage({
+            type: type,
             message: t('Resource.uploadFile'),
             description: message,
         });
