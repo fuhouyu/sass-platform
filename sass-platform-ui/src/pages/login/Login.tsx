@@ -35,6 +35,7 @@ import {parseRoutes} from "@/hooks/useRoutes.tsx";
 import Icon from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 
+
 /**
  * 登录组件
  * @constructor
@@ -88,11 +89,22 @@ export const Login: React.FC = () => {
 
     return (
         <Flex className="container">
-            <div className={'login-left'}>
+            <Flex className={'login-left'} vertical>
+                <Flex className={'logo-container'} align={'center'}>
+                    <img
+                        width={42}
+                        height={42}
+                        src={'/logo/logo.png'} alt="logo"
+                        style={{mixBlendMode: 'multiply'}}
+                    />
+                    <p>Sass Platform</p>
+                </Flex>
                 <Icon
+                    className={'login-svg'}
+                    component={LoginSvg}
+                />
+            </Flex>
 
-                    component={LoginSvg}/>
-            </div>
             <div className={'login-right'}>
                 <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
                     {LanguageSwitcherButton}
