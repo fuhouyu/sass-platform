@@ -35,6 +35,7 @@ import {parseRoutes} from "@/hooks/useRoutes.tsx";
 import Icon from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 
+
 /**
  * 登录组件
  * @constructor
@@ -55,15 +56,13 @@ export const Login: React.FC = () => {
     const [tenantId, setTenantId] = useState<string>();
     const {fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
-    const initTenantList = async () => {
-        setTenantList(await tenantApi.list());
-    }
+
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
         }
-        initTenantList().then();
+        tenantApi.list().then(res => setTenantList(res))
     }, [isAuth, navigate]);
     const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
@@ -88,11 +87,22 @@ export const Login: React.FC = () => {
 
     return (
         <Flex className="container">
-            <div className={'login-left'}>
+            <Flex className={'login-left'} vertical>
+                <Flex className={'logo-container'} align={'center'}>
+                    <img
+                        width={42}
+                        height={42}
+                        src={'/logo/logo.png'} alt="logo"
+                        style={{mixBlendMode: 'multiply'}}
+                    />
+                    <p>Sass Platform</p>
+                </Flex>
                 <Icon
+                    className={'login-svg'}
+                    component={LoginSvg}
+                />
+            </Flex>
 
-                    component={LoginSvg}/>
-            </div>
             <div className={'login-right'}>
                 <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
                     {LanguageSwitcherButton}
@@ -107,6 +117,7 @@ export const Login: React.FC = () => {
                             prefix={<IconFont type={'i-zuhuguanli'}/>}
                             className={'tenant-choose-container'}
                             onSelect={(value: string) => setTenantId(value)}
+                            placeholder={t('Login.chooseTenantPlaceholder')}
                             options={tenantList?.map(tenantInfo => {
                                 return {
                                     value: tenantInfo.id,
