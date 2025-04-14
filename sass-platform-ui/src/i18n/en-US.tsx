@@ -64,6 +64,8 @@ const EnUS = {
     },
     // 登录
     Login: {
+        title: 'Tenant Management System',
+        tips: 'Please select a tenant to access the corresponding admin panel.',
         loginTitlePrefix: '',
         loginTitleSuffix: 'Login',
         usernamePlaceholder: 'Please input your username',

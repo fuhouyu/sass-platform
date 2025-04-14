@@ -35,6 +35,11 @@ export interface UserAuthentication {
      * cloudflare 验证的token
      */
     cloudflareTurnstileToken?: string;
+
+    /**
+     * 租户id
+     */
+    tenantId?: string;
 }
 
 
