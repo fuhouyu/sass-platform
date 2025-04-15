@@ -115,7 +115,7 @@
 
   // 登录表单
   .login-form-container {
-    width: 100%;
+    width: 85%;
     height: 100%;
     padding: 4rem 2rem;
 
@@ -140,6 +140,12 @@
         line-height: 3.25rem;
         font-size: 1rem;
       }
+    }
+  }
+
+  // copyright
+  .foot-copyright {
+    a {
     }
   }
 }

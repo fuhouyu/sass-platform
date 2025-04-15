@@ -103,11 +103,11 @@ export const Login: React.FC = () => {
                 />
             </Flex>
 
-            <div className={'login-right'}>
+            <Flex className={'login-right'} vertical>
                 <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
                     {LanguageSwitcherButton}
                 </Flex>
-                <Flex justify={'center'}>
+                <Flex flex={8} justify={'space-between'} align={'center'} vertical>
                     <div className={'login-form-container'}>
                         <div className={'login-title'}>
                             <h1>{t('Login.title')}</h1>
@@ -205,8 +205,15 @@ export const Login: React.FC = () => {
                             }
                         </div>
                     </div>
+                    <footer className={'foot-copyright'}>
+                        <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
+                    </footer>
+                    {/*<p className={'foot-copyright'}>*/}
+                    {/*    Copyright © 2024-2025 fuhouyu.*/}
+                    {/*</p>*/}
                 </Flex>
-            </div>
+
+            </Flex>
         </Flex>
     );
 }
