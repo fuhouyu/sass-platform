@@ -34,6 +34,7 @@ import {parseRoutes} from "@/hooks/useRoutes.tsx";
 
 import Icon from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 /**
@@ -41,6 +42,7 @@ import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
  * @constructor
  */
 export const Login: React.FC = () => {
+    usePageTitle('Menu.login');
     const navigate = useNavigate();
     const turnstileRef = useRef<TurnstileInstance | null>(null);
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);

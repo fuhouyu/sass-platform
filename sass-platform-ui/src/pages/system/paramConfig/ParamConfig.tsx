@@ -30,13 +30,14 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from '@/components/List/table/interface';
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 /**
  * 字典类型
  * @constructor 构造函数
  */
 export const ParamConfig = () => {
-
+    usePageTitle('Menu.paramConfig');
     const {t} = useTranslation();
     const buttonPermissions = useButton(ParamConfigPermissionConstant.List);
     const columns: TableColumnsType = [

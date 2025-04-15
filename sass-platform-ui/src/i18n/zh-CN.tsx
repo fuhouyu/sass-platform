@@ -130,7 +130,8 @@ const ZhCN = {
     },
     // 菜单
     Menu: {
-        main: '权限列表',
+        login: '登录',
+        office: '在线文档',
         home: '主页',
         resourceList: '资源列表',
         query: '详情',

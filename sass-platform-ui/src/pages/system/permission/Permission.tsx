@@ -47,6 +47,7 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 /**
@@ -75,7 +76,7 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 }
 
 export const Permission: React.FC = () => {
-
+    usePageTitle('Menu.permissionManage');
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
 
     const {t} = useTranslation();

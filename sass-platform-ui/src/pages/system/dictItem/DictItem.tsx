@@ -43,13 +43,14 @@ import {DictItemPermissionConstant} from "@/constants/permissionConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {dictTypeApi} from '@/apis/dictType';
 import {TableRefType} from '@/components/List/table/interface';
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 /**
  * 字典项
  * @constructor 构造函数
  */
 export const DictItem = () => {
-
+    usePageTitle('Menu.dictItem');
     const {t} = useTranslation();
     const buttonPermissions = useButton(DictItemPermissionConstant.List);
     const columns: TableColumnsType = [

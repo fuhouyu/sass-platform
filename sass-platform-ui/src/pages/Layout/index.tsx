@@ -45,7 +45,7 @@ export const LayoutMain = () => {
         if (router?.routes[0]?.children) {
             router.routes[0].children.push(...parseRoutes(menus));
         }
-    }, [fetchUserMenus, router])
+    }, [fetchUserMenus, router?.routes, userMenus])
     useEffect(() => {
         if (!accessToken) {
             navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});

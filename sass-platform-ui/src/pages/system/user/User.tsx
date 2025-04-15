@@ -62,9 +62,11 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 export const User: React.FC = () => {
+    usePageTitle('Menu.userManage');
     const buttonPermissions = useButton(UserPermissionConstant.List);
     const organizationButtonPermissions = useButton(OrganizationPermissionConstant.List);
     const {t} = useTranslation();

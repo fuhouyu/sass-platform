@@ -26,6 +26,7 @@ import {CheckCircleOutlined, CloseCircleOutlined, CopyOutlined, EyeOutlined} fro
 import {operationLogApi} from '@/apis/operationLog';
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import dayjs from "dayjs";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 /**
@@ -33,7 +34,7 @@ import dayjs from "dayjs";
  * @constructor 构造函数
  */
 export const OperationLog = () => {
-
+    usePageTitle('Menu.operationLogManage');
     const {t} = useTranslation();
 
     const columns: TableColumnsType = [

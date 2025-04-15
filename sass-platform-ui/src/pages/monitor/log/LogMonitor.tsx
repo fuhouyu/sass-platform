@@ -23,10 +23,12 @@ import './index.scss'
 import {MessageEvent} from "event-source-polyfill";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {useTranslation} from "react-i18next";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 const {Text} = Typography;
 
 export const LogMonitor: FC = () => {
+    usePageTitle('Menu.logMonitor');
     const [logs, setLogs] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const listRef = useRef<HTMLDivElement>(null);
