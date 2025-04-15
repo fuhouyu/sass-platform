@@ -102,8 +102,43 @@ $dark-button-font-hover-color: #2090FF;
 
 // 登录
 .dark {
-  .login-container, .qrcode-container {
+  .login-left {
+    background: radial-gradient(
+                    circle at 50px 50px,
+                    #3a4f75 0%, /* 着重色高亮区域 */
+                    #1e2a44 30%, /* 过渡到深色 */
+                    #121c30 60%,
+                    #0b1220 85%,
+                    #050a15 100%
+    );
+    color: $dark-font-color;
+    font-family: "Segoe UI", sans-serif;
+
+  }
+
+  .login-right {
     background-color: $dark-container-bgc;
+
+    // 工具
+    .login-tools {
+      background-color: $dark-container-border;
+
+      button {
+        color: $dark-font-color;
+      }
+    }
+
+    .login-title {
+      color: $dark-font-color;
+    }
+
+    .qrcode-title {
+      color: $dark-font-color;
+
+      span {
+        color: #007bff;
+      }
+    }
   }
 }
 

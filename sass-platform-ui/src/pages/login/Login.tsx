@@ -32,9 +32,10 @@ import {tenantApi} from "@/apis/tenant.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {parseRoutes} from "@/hooks/useRoutes.tsx";
 
-import Icon from "@ant-design/icons";
+import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 
 /**
@@ -58,13 +59,20 @@ export const Login: React.FC = () => {
     const [tenantId, setTenantId] = useState<string>();
     const {fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
+    const {theme, changeTheme} = useThemeStore();
+    const [themeIcon, setThemeIcon] = useState(
+        theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
+    );
 
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
         }
-        tenantApi.list().then(res => setTenantList(res))
+        tenantApi.list().then(res => {
+            setTenantId(res[0].id);
+            setTenantList(res);
+        })
     }, [isAuth, navigate]);
     const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
@@ -106,8 +114,15 @@ export const Login: React.FC = () => {
             </Flex>
 
             <Flex className={'login-right'} vertical>
-                <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
+                <Flex className={'login-tools'}>
                     {LanguageSwitcherButton}
+                    <Button
+                        type={'text'}
+                        onClick={() => {
+                            const newTheme = theme === 'light' ? 'dark' : 'light';
+                            changeTheme(newTheme);
+                            setThemeIcon(newTheme === 'light' ? <MoonOutlined/> : <SunOutlined/>);
+                        }}>{themeIcon}</Button>
                 </Flex>
                 <Flex flex={8} justify={'space-between'} align={'center'} vertical>
                     <div className={'login-form-container'}>
@@ -116,6 +131,7 @@ export const Login: React.FC = () => {
                             <span>{t('Login.tips')}</span>
                         </div>
                         <Select
+                            value={tenantId}
                             prefix={<IconFont type={'i-zuhuguanli'}/>}
                             className={'tenant-choose-container'}
                             onSelect={(value: string) => setTenantId(value)}

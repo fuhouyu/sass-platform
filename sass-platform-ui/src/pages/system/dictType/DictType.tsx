@@ -70,7 +70,8 @@ export const DictType = () => {
             defaultSortOrder: 'descend',
             align: "center",
             render: (_, record: DictTypeModel) => {
-                return <Link to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
+                return <Link className={'link-dict-item'}
+                             to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
             }
         },
         {

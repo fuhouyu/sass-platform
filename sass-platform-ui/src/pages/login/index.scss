@@ -24,9 +24,6 @@
 
 // 语言切换
 .switch-language-button {
-  position: relative;
-  top: 0.5rem;
-  left: .3rem;
   border: 0;
   background-color: #fff;
   box-shadow: 0 0 0 0;
@@ -92,13 +89,25 @@
   width: 100%;
   height: 100%;
   //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-color: #f5f6fa; /* 浅灰带点蓝 */
+  background-color: #FFFFFF; /* 浅灰带点蓝 */
 
 
   // 登录常用工具
   .login-tools {
-    padding: 0 .8rem .8rem .8rem;
-    margin-left: auto;
+    width: 12%;
+    margin: .5rem .5rem .5rem auto;
+    padding: 0 0.5rem;
+    align-items: center;
+    align-content: center;
+    background-color: #F5F5F5;
+    border-radius: 1.5rem;
+    vertical-align: baseline;
+
+    button {
+      justify-items: center;
+      border: 0;
+      box-shadow: 0 0 0 0;
+    }
   }
 
   .login-title {

@@ -32,7 +32,7 @@ interface ThemeAction {
 }
 
 const getTheme = (): string => {
-    const currentTheme = localStorage.getItem(CommonConstant.THEME_KEY) ?? 'light';
+    const currentTheme = localStorage.getItem(CommonConstant.THEME_KEY) ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     if (currentTheme === 'dark') {
         document.body.classList.add('dark');
     } else {
