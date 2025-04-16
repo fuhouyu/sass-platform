@@ -19,7 +19,7 @@ import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/in
 import './index.scss'
 import {InfoCircleFilled} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {useCallback, useEffect, useImperativeHandle, useState} from "react";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {useLocation, useSearchParams} from "react-router-dom";
 import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
@@ -46,28 +46,6 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     const [searchParams] = useSearchParams();
     const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [scrollY, setScrollY] = useState<number>(500); // 默认初始值
-
-    useEffect(() => {
-        const calcScrollHeight = () => {
-            if (!containerRef.current) return;
-
-            const windowHeight = window.innerHeight;
-            const containerTop = containerRef.current.getBoundingClientRect().top;
-
-            // 保留 5% 间距：windowHeight * 0.05
-            const maxTableHeight = windowHeight - containerTop - windowHeight * 0.04;
-
-            setScrollY(maxTableHeight);
-        };
-
-        // 初次加载和窗口变化时重新计算
-        calcScrollHeight();
-        window.addEventListener('resize', calcScrollHeight);
-        return () => window.removeEventListener('resize', calcScrollHeight);
-    }, []);
 
 
     /**
@@ -100,7 +78,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
      */
     const onChange: AntdTableProps['onChange'] = (pagination: TablePaginationConfig, _: Record<string, FilterValue | null>, sorters: SorterResult | SorterResult[]) => {
         const sorter = Array.isArray(sorters) ? sorters[0] : sorters;
-        let isAsc = true;
+        let isAsc = undefined;
         if (sorter.order) {
             isAsc = sorter.order.toLowerCase() === 'ascend';
         }
@@ -115,7 +93,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
 
     return (
         <>
-            <Flex className="table-container" vertical ref={containerRef}>
+            <Flex className="table-container" vertical>
                 <div className="title-line">
                     {tableName &&
                         <span className="title">
@@ -138,10 +116,10 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 </div>}
                 <AntdTable
                     {...tableProps}
-                    size={'middle'}
+                    // size={'middle'}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
-                    scroll={{y: scrollY}}
+                    scroll={{y: 450}}
 
                     dataSource={pageResult?.list}
                     pagination={{

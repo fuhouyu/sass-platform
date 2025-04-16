@@ -180,7 +180,7 @@ const TenantResource: React.FC = () => {
             title: t('Common.action'),
             dataIndex: 'action',
             align: 'center',
-            width: 120,
+            width: 240,
             fixed: 'right',
             render: (_: AnyObject, record: Resource) => {
                 if (record.isDirectory) {
