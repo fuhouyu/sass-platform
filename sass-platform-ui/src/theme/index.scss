@@ -119,6 +119,10 @@ $dark-button-font-hover-color: #2090FF;
   .login-right {
     background-color: $dark-container-bgc;
 
+    .foot-copyright {
+      color: $dark-font-color;
+    }
+
     // 工具
     .login-tools {
       background-color: $dark-container-border;
