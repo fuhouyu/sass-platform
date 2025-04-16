@@ -56,7 +56,7 @@ export const LayoutMain = () => {
     return (
         <Layout className={'layout-container'}>
             <LayoutHeader/>
-            <Content>
+            <Content className={'layout-content'}>
                 <Layout>
                     <LayoutMenu/>
                     {uploadFiles.length > 0 ? <FloatButtonGroup

@@ -27,9 +27,13 @@ export interface NotificationProps extends ArgsProps {
  */
 export function useNotification() {
     const [api, contextHolder] = notification.useNotification();
+
     const notificationMessage = (props: NotificationProps) => {
+        const {duration} = props ?? 3
         api[props.type]({
-            ...props
+            ...props,
+            duration,
+            showProgress: true
         });
     }
 

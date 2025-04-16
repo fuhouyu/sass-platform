@@ -34,7 +34,7 @@ import {
     Tag
 } from "antd";
 import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
@@ -60,6 +60,8 @@ import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.tsx";
 import {useButton} from "@/hooks/useButton.tsx";
+import {AnyObject} from "antd/es/_util/type";
+import {useNotification} from "@/hooks/useNotification.tsx";
 
 type ResourcePreview = {
     type: ResourceTypeEnum
@@ -79,7 +81,7 @@ const TenantResource: React.FC = () => {
     const [selectFile, setSelectFile] = useState<ResourcePreview>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
     const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
-
+    const {notificationMessage, contextHolder} = useNotification();
 
     const columns: TableColumnsType<Resource> = [
         {
@@ -172,6 +174,47 @@ const TenantResource: React.FC = () => {
                 return <span>{record.updatedBy}</span>
             }
         },
+        {
+            title: t('Common.action'),
+            dataIndex: 'action',
+            align: 'center',
+            width: 120,
+            fixed: 'right',
+            render: (_: AnyObject, record: Resource) => {
+                if (record.isDirectory) {
+                    return <span>-</span>
+                }
+                const label = record.isPublic ? t('Resource.setPrivate') : t('Resource.setPublic');
+                const icon = record.isPublic ? <LockOutlined/> : <EyeOutlined/>;
+                const successTips = record.isPublic ? t('Resource.setPrivateTips') : t('Resource.setPublicSuccessTips');
+                return (<>
+                    <PermissionButton buttonPermissions={buttonPermissions}
+                                      permissionStr={TenantResourcePermissionConstant.EDIT}>
+                        <Button
+                            color={record.isPublic ? 'pink' : 'cyan'}
+                            variant={'solid'}
+                            icon={icon}
+                            disabled={record.isDirectory}
+                            onClick={async (event) => {
+                                event.stopPropagation();
+                                await resourceApi.status(record.id!, !record.isPublic);
+                                notificationMessage({
+                                    type: 'success',
+                                    message: label,
+                                    description: <Trans
+                                        i18nKey={successTips}
+                                        values={{name: record.name}}
+                                        components={{strong: <span className="highlight"/>}}
+                                    />
+                                });
+                                await tableRef.current?.refreshPageList();
+                            }}>
+                            {label}
+                        </Button>
+                    </PermissionButton>
+                </>)
+            }
+        }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
@@ -326,6 +369,7 @@ const TenantResource: React.FC = () => {
     ];
 
     return (<>
+        {contextHolder}
         <Card>
             <div className={'tenant-space-header'}>
                 <Flex gap={8}>

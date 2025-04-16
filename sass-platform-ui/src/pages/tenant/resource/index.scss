@@ -16,6 +16,7 @@
 
 .ant-card-body {
   padding: 0;
+  overflow: auto;
 }
 
 .tenant-space-header {
@@ -25,7 +26,7 @@
   align-items: center;
   border: 1px solid gray;
   border-radius: 0.25rem;
-  padding: .5rem 1rem;
+  padding: .3rem 1rem;
 }
 
 .space-bucket-info {

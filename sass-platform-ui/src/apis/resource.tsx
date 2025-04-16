@@ -72,6 +72,15 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      */
     countObjects: () => Promise<number> = (): Promise<number> =>
         request.get(`${this.baseUrl}/count`);
+
+
+    /**
+     * 切换资源访问的状态
+     * @param id id
+     * @param isPublic 公开访问/私有访问
+     */
+    status: (id: string, isPublic: boolean) => Promise<void> = (id: string, isPublic: boolean): Promise<void> =>
+        request.put(`${this.baseUrl}/${id}/status?public=${isPublic}`)
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);
