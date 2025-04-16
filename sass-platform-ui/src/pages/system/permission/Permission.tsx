@@ -355,7 +355,7 @@ export const Permission: React.FC = () => {
                 title={updateId ? t('Permission.edit') : t('Permission.add')}
                 open={isModalOpen}
                 onCancel={() => closeModal()}
-                width={750}
+                width={800}
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}

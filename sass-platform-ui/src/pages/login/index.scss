@@ -94,9 +94,9 @@
 
   // 登录常用工具
   .login-tools {
-    width: 12%;
+    width: fit-content;
     margin: .5rem .5rem .5rem auto;
-    padding: 0 0.5rem;
+    padding: 0 0.8rem;
     align-items: center;
     align-content: center;
     background-color: #F5F5F5;
@@ -129,7 +129,10 @@
     padding: 4rem 2rem;
 
     // cloudflare验证码
-    .cloudflare-turnstile {
+    .cloudflare-turnstile-container {
+      .cloudflare-turnstile {
+        color: indianred;
+      }
       span {
         color: rgb(89, 89, 89);
       }

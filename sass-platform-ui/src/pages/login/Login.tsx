@@ -173,14 +173,14 @@ export const Login: React.FC = () => {
                                                     placeholder={t('Login.passwordPlaceholder')}/>
                                 </Form.Item>
                                 {import.meta.env.VITE_CLOUDFLARE_SITE_KEY &&
-                                    <Form.Item className={'cloudflare-turnstile'}>
+                                    <Form.Item className={'cloudflare-turnstile-container'}>
                                         <label>
                                             <span>{t('Login.cloudflareTurnstileVerify')}</span>
                                         </label>
                                         <Turnstile
                                             ref={turnstileRef}
                                             options={{
-                                                theme: 'light',
+                                                theme: theme as 'light' | 'dark' | 'auto',
                                                 size: 'flexible',
                                             }}
                                             siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
@@ -226,9 +226,6 @@ export const Login: React.FC = () => {
                     <footer className={'foot-copyright'}>
                         <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
                     </footer>
-                    {/*<p className={'foot-copyright'}>*/}
-                    {/*    Copyright © 2024-2025 fuhouyu.*/}
-                    {/*</p>*/}
                 </Flex>
 
             </Flex>
