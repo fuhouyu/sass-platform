@@ -1,12 +1,45 @@
 spring:
   application:
     name: sass-admin
+  # h2 数据库配置
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:/tmp/h2/tenant_admin
+    username: username
+    password: password
+    type: com.alibaba.druid.pool.DruidDataSource
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:db/migrate/v1.0.0/sql-init.sql
+  h2:
+    console:
+      enabled: true
 base:
   framework:
-    kms-national:
-      sm2:
-        auto-generate: true
     database:
       transaction-expression: execution(* com.fuhouyu.sass.platform.system..service.*Service.*(..))
+    # ip解析
+    ip2region:
+      enabled: true
+      db-path: classpath:ip2region.xdb
+    # 缓存配置
+    cache:
+      service:
+        cache-service-type: caffeine
+    # oss 配置
+    s3:
+      access-key-id: ak
+      secret-key: sk
+      endpoint: http://localhost
+    # 日志配置
+    log-record:
+      enabled: true
+      system-name: sass-platform
+jasypt:
+  encryptor:
+    password: 1
 mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mapper/*.xml

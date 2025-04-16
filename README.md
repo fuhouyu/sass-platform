@@ -22,7 +22,7 @@ mvn clean install -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests
 git clone -b develop https://github.com/fuhouyu/sass-platform.git
 cd sass-platform
 mvn clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Plocal
-java -Dspring.profiles.active=local  -jar sass-platform-admin/target/sass-platform-admin-1.0.0-SNAPSHOT.jar 
+java -jar sass-platform-admin/target/sass-platform-admin-1.0.0-SNAPSHOT.jar 
 ```
 
 ### 前端服务
