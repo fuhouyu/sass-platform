@@ -114,8 +114,6 @@ export const Login: React.FC = () => {
             </Flex>
 
             <Flex className={'login-right'} vertical>
-                <Flex className={'login-tools'}>
-            <div className={'login-right'}>
                 <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
                     {LanguageSwitcherButton}
                     <Button
@@ -192,8 +190,10 @@ export const Login: React.FC = () => {
                                 }
 
                                 <Form.Item className={'login-button-container'}>
-                                    <Button disabled={import.meta.env.VITE_CLOUDFLARE_SITE_KEY && !turnstileToken} block
-                                            type="primary" htmlType="submit" loading={loginButtonLoading}>
+                                    <Button
+                                        disabled={import.meta.env.VITE_CLOUDFLARE_SITE_KEY && !turnstileToken}
+                                        block
+                                        type="primary" htmlType="submit" loading={loginButtonLoading}>
                                         {t('Login.loginButton')}
                                     </Button>
                                 </Form.Item>
@@ -229,7 +229,6 @@ export const Login: React.FC = () => {
                         <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
                     </footer>
                 </Flex>
-
             </Flex>
         </Flex>
     );
