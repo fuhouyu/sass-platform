@@ -139,7 +139,7 @@ public class ResourceController {
      */
     @GetMapping("/page")
     @Operation(summary = "分页查询资源信息，需要租户空间权限")
-    @PreAuthorize("@auth.hasAnyPermission('tenant-space:resource-list')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:list')")
     public BaseResponse<PageResultDTO<ResourceDTO>> listResourceByTenantId(ResourcePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.resourceService.pageList(pageQueryDTO));
     }
@@ -169,7 +169,30 @@ public class ResourceController {
      */
     @GetMapping("/count")
     @Operation(summary = "资源总数")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:list')")
     public BaseResponse<Integer> countObjects() {
         return ResponseHelper.success(this.resourceService.countObjects());
+    }
+
+
+    /**
+     * 修改公开/私有资源
+     *
+     * @param id       主键id
+     * @param isPublic true / false
+     * @return void
+     */
+    @PutMapping("/{id}/status")
+    @Operation(summary = "设置资源的公开/私有访问")
+    @Parameter(name = "public", description = "true 公开 false 私用")
+    @PreAuthorize("@auth.hasAnyPermission('system:role:edit')")
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.HIGH_LEVEL)
+    public BaseResponse<Void> editStatus(@PathVariable("id") Long id,
+                                         @RequestParam("public") Boolean isPublic) {
+        ResourceDTO resourceDTO = new ResourceDTO();
+        resourceDTO.setId(id);
+        resourceDTO.setIsPublic(isPublic);
+        this.resourceService.edit(resourceDTO);
+        return ResponseHelper.success();
     }
 }

@@ -30,10 +30,11 @@ export const AddButton = (buttonProps: ButtonProps) => {
     const {t} = useTranslation();
 
     return (
-        <Button className="add-button"
+        <Button
+            className="add-button"
                 {...buttonProps}
-                color={'primary'}
-                variant="filled"
+            color={'green'}
+            variant="solid"
                 icon={<PlusOutlined/>}
         >
             {t('Button.add')}
@@ -49,10 +50,10 @@ export const AddButton = (buttonProps: ButtonProps) => {
 export const DeleteButton = (buttonProps: ButtonProps) => {
     const {t} = useTranslation();
     return (
-        <Button className="del-button"
+        <Button
                 {...buttonProps}
                 color="danger"
-                variant="filled"
+                variant={'solid'}
                 icon={<DeleteOutlined/>}>
             {t('Button.delete')}
         </Button>
@@ -70,8 +71,8 @@ export const EditButton = (buttonProps: ButtonProps) => {
     return (
         <Button className="edit-button"
                 {...buttonProps}
-                color={'green'}
-                variant={'outlined'}
+                color={'cyan'}
+                variant={'solid'}
                 icon={<EditOutlined/>}>
             {t('Button.edit')}
         </Button>

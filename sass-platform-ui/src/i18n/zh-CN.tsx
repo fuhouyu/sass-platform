@@ -108,7 +108,6 @@ const ZhCN = {
         bucketName: '空间名称',
         bucketNamePlaceholder: '请输入空间名称',
         bucketNameExistsErrorMessage: '空间名称已存在',
-        enterSpace: '点击进入租户空间',
         spaceAcl: '空间权限',
         spaceAclPlaceholder: '请选择空间权限',
         capacity: '容量',
@@ -138,6 +137,13 @@ const ZhCN = {
         add: '新增',
         edit: '修改',
         delete: '删除',
+        tenantCenter: '租户中心',
+        resourceManage: '资源管理',
+        resource: {
+            preview: '预览',
+            download: '下载',
+            officeEdit: '编辑',
+        },
         systemManage: '系统管理',
         tenantManage: '租户管理',
         userManage: '用户管理',
@@ -315,6 +321,7 @@ const ZhCN = {
     // 资源
     Resource: {
         list: '资源列表',
+        search: '开始输入以筛选资源中的对象',
         info: '资源详情',
         name: '文件名',
         size: '文件大小',
@@ -330,7 +337,11 @@ const ZhCN = {
         rootPath: '根目录',
         access: '访问权限',
         public: '公开',
-        private: '私有'
+        private: '私有',
+        setPublic: '设为公开',
+        setPublicSuccessTips: '资源 <strong>{{name}}</strong> 已设为公开，可以通过链接直接访问。',
+        setPrivate: '设为私有',
+        setPrivateTips: '资源 <strong>{{name}}</strong> 已设为私有，需要授权后访问。',
     },
     OperationLog: {
         list: '日志列表',

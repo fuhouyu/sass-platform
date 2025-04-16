@@ -244,7 +244,7 @@ COMMENT ON COLUMN permissions.updated_by IS '更新人';
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (2, -1, 'Menu.systemManage', 'system', 3, 'i-xitongshezhi', 'system', null, '', false, 'DIR', false, true, false,
+VALUES (2, -1, 'Menu.systemManage', 'system', 2, 'i-xitongshezhi', 'system', null, '', false, 'DIR', false, true, false,
         true, 1, false, now(), 'admin', now(), 'admin');
 -- 权限管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
@@ -392,52 +392,83 @@ VALUES (224, 22, 'Menu.delete', 'system:role:delete', 4, '', '', '', '', false, 
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (1, -1, 'Menu.tenantManage', 'tenant:list', 2, 'i-zuhuguanli', 'tenant', 'tenant', '', false, 'MENU', false,
+VALUES (1, -1, 'Menu.tenantCenter', 'tenant', 1, 'i-zuhuguanli', 'tenant', null, '', false, 'MENU', false,
         true,
         false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (11, 1, 'Menu.query', 'tenant:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (11, 1, 'Menu.tenantManage', 'tenant:list', 1, 'i-zuhuguanli', 'manage', 'manage', '', false, 'MENU', false,
+        true,
+        false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (111, 11, 'Menu.query', 'tenant:query', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (12, 1, 'Menu.add', 'tenant:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
+VALUES (112, 11, 'Menu.add', 'tenant:add', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1, false,
         now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (13, 1, 'Menu.edit', 'tenant:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (113, 11, 'Menu.edit', 'tenant:edit', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (14, 1, 'Menu.delete', 'tenant:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (114, 11, 'Menu.delete', 'tenant:delete', 5, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
--- 租户空间
+-- 资源管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (3, -1, 'Menu.tenantSpace', 'tenant:space:list', 6, '', 'tenant-space', 'tenant/space', '', false, 'DIR', false,
-        false, false, true, 1,
+VALUES (12, 1, 'Menu.resourceManage', 'tenant:resource:list', 2, 'i-cunchu', 'resource', 'tenant/resource', '', false,
+        'DIR', false,
+        true, false, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (31, 3, 'Menu.query', 'tenant-space:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (121, 12, 'Menu.query', 'tenant:resource:query', 1, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (32, 3, 'Menu.resourceList', 'tenant-space:resource-list', 2, '', '', '', '', false, 'BUTTON', false, true, true,
-        true, 1,
+VALUES (122, 12, 'Menu.add', 'tenant:resource:add', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+        false,
+        now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (123, 12, 'Menu.edit', 'tenant:resource:edit', 3, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (33, 3, 'Menu.delete', 'tenant-space:delete', 2, '', '', '', '', false, 'BUTTON', false, true, true, true, 1,
+VALUES (124, 12, 'Menu.delete', 'tenant:resource:delete', 4, '', '', '', '', false, 'BUTTON', false, true, true, true,
+        1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (125, 12, 'Menu.resource.preview', 'tenant:resource:preview', 6, '', '', '', '', false, 'BUTTON', false, true,
+        true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (126, 12, 'Menu.resource.download', 'tenant:resource:download', 7, '', '', '', '', false, 'BUTTON', false, true,
+        true, true, 1,
+        false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (127, 12, 'Menu.resource.officeEdit', 'tenant:resource:office-edit', 8, '', '', '', '', false, 'BUTTON', false,
+        true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
 
 
@@ -615,123 +646,133 @@ COMMENT ON COLUMN role_has_permission.role_id IS '角色id';
 COMMENT ON COLUMN role_has_permission.permission_id IS '权限id';
 COMMENT ON COLUMN role_has_permission.created_at IS '创建时间';
 COMMENT ON COLUMN role_has_permission.created_by IS '创建人';
-
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 2, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 23, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 21, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 24, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 25, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 22, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 1, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 26, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 234, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 251, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 223, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 222, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 243, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 254, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 253, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 212, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 242, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 241, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 214, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 232, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 221, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 233, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 252, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 12, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 213, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 211, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 244, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 11, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 14, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 231, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 13, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 232, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 233, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 234, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 21, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 211, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 212, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 213, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 214, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 24, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 241, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 242, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 243, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 244, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 25, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 251, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 252, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 253, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 254, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 22, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 221, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 222, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 223, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 224, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 1, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 11, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 111, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 112, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 113, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 114, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 12, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 121, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 122, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 123, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 124, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 125, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 126, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 127, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 26, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 261, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 262, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 263, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 264, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 265, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 266, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 3, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 31, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 32, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
-VALUES (1, 33, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 27, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 271, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 28, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 281, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 282, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 283, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 284, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 4, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 41, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 42, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 5, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 51, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 511, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 512, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 513, now(), 'admin');
-INSERT INTO role_has_permission(role_id, permission_id, created_at, created_by)
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 514, now(), 'admin');
+
 DROP TABLE IF EXISTS accounts;
 -- 账号表
 CREATE TABLE accounts

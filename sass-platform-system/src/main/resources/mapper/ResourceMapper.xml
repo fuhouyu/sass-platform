@@ -195,6 +195,9 @@
             <if test="pageQuery.prefix == null or pageQuery.prefix == ''">
               AND r.parent_id = -1
             </if>
+            <if test="pageQuery.name != null and pageQuery.name != ''">
+               AND r.name LIKE CONCAT('%',#{pageQuery.name}, '%')
+            </if>
         </where>
     </select>
 

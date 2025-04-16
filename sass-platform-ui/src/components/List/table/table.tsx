@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Space, Table as AntdTable, TableProps as AntdTableProps} from "antd";
+import {Flex, Space, Table as AntdTable, TableProps as AntdTableProps} from "antd";
 import {RefreshPageProps, TableProps} from "@components/List/table/interface";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
 import {InfoCircleFilled} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {useCallback, useEffect, useImperativeHandle, useState} from "react";
+import {useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {useLocation, useSearchParams} from "react-router-dom";
 import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
@@ -46,6 +46,28 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     const [searchParams] = useSearchParams();
     const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scrollY, setScrollY] = useState<number>(500); // 默认初始值
+
+    useEffect(() => {
+        const calcScrollHeight = () => {
+            if (!containerRef.current) return;
+
+            const windowHeight = window.innerHeight;
+            const containerTop = containerRef.current.getBoundingClientRect().top;
+
+            // 保留 5% 间距：windowHeight * 0.05
+            const maxTableHeight = windowHeight - containerTop - windowHeight * 0.04;
+
+            setScrollY(maxTableHeight);
+        };
+
+        // 初次加载和窗口变化时重新计算
+        calcScrollHeight();
+        window.addEventListener('resize', calcScrollHeight);
+        return () => window.removeEventListener('resize', calcScrollHeight);
+    }, []);
 
 
     /**
@@ -93,7 +115,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
 
     return (
         <>
-            <div className="table-container">
+            <Flex className="table-container" vertical ref={containerRef}>
                 <div className="title-line">
                     {tableName &&
                         <span className="title">
@@ -119,6 +141,8 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     size={'middle'}
                     rowKey={tableProps.rowKey ?? 'id'}
                     onChange={onChange}
+                    scroll={{y: scrollY}}
+
                     dataSource={pageResult?.list}
                     pagination={{
                         defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
@@ -129,7 +153,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     }}
                     showSorterTooltip={{target: 'sorter-icon'}}
                 />
-            </div>
+            </Flex>
         </>
     )
 }

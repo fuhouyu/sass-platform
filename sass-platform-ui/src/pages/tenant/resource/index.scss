@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-.ant-card-body {
-  padding: 0 !important;
-}
+
 
 .tenant-space-header {
   display: flex;
@@ -25,7 +23,18 @@
   align-items: center;
   border: 1px solid gray;
   border-radius: 0.25rem;
-  padding: .5rem 1rem;
+  padding: .3rem 1rem;
+}
+
+// 资源搜索头
+.resource-search-container {
+  padding-bottom: .5rem;
+  width: 100%;
+
+  .resource-search-input {
+    cursor: text;
+    width: 40%;
+  }
 }
 
 .space-bucket-info {
@@ -103,7 +112,7 @@
 }
 
 .ant-modal-body {
-  padding: 2rem 0 2rem 0 !important;
+  padding: 2rem 0 2rem 0;
   height: 100%;
 }
 

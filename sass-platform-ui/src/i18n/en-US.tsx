@@ -94,6 +94,13 @@ const EnUS = {
         add: 'Add',
         edit: 'Edit',
         delete: 'Delete',
+        tenantCenter: 'Tenant Center',
+        resourceManage: 'Resource Manage',
+        resource: {
+            preview: 'Preview',
+            download: 'Download',
+            officeEdit: 'Editor',
+        },
         systemManage: 'System Manage',
         tenantManage: 'Tenant Manage',
         userManage: 'User Manage',
@@ -140,7 +147,6 @@ const EnUS = {
         space: 'Tenant Space',
         bucketName: 'Space Name',
         bucketNamePlaceholder: 'Please input Space Name',
-        enterSpace: 'Click to Enter tenant space',
         bucketNameExistsErrorMessage: 'Space Name is exists',
         spaceAcl: 'Space Acl',
         spaceAclPlaceholder: 'Please choose Space Acl',
@@ -309,6 +315,7 @@ const EnUS = {
     // 资源
     Resource: {
         list: 'Resource List',
+        search: 'Start typing to filter objects in the resource',
         info: 'Resource Info',
         name: 'File Name',
         size: 'File Size',
@@ -324,7 +331,11 @@ const EnUS = {
         rootPath: 'Root Path',
         access: 'Access Permission',
         public: 'Public',
-        private: 'Private'
+        private: 'Private',
+        setPublic: 'Set Public',
+        setPrivate: 'Set Private',
+        setPublicSuccessTips: "Resource <strong>{{name}}</strong> has been set to public and can be accessed directly via the link.",
+        setPrivateTips: "Resource <strong>{{name}}</strong> has been set to private and requires authorization for access."
     },
     OperationLog: {
         list: 'Operation Log List',

@@ -58,12 +58,14 @@ public class PageQueryDTO implements Serializable {
     private String sortColumn;
 
     public PageQueryDTO() {
+        this(1, 10);
     }
 
     public PageQueryDTO(Integer pageNum, Integer pageSize) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        this.isAsc = true;
+        this.sortColumn = "updated_at";
+        this.isAsc = false;
     }
 
     /**

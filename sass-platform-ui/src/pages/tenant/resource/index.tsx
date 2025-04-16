@@ -25,6 +25,7 @@ import {
     Drawer,
     Dropdown,
     Flex,
+    Input,
     List,
     MenuProps,
     Modal,
@@ -33,8 +34,8 @@ import {
     TableColumnsType,
     Tag
 } from "antd";
-import {IconFont, PageList, S3Upload} from "@/components";
-import {useTranslation} from "react-i18next";
+import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
+import {Trans, useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
@@ -45,6 +46,7 @@ import {
     FolderOutlined,
     LeftOutlined,
     LockOutlined,
+    SearchOutlined,
     UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -58,12 +60,16 @@ import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useButton} from "@/hooks/useButton.tsx";
+import {AnyObject} from "antd/es/_util/type";
+import {useNotification} from "@/hooks/useNotification.tsx";
 
 type ResourcePreview = {
     type: ResourceTypeEnum
 } & Resource;
-const TenantSpace: React.FC = () => {
-    usePageTitle('Menu.tenantSpace');
+const TenantResource: React.FC = () => {
+    usePageTitle('Menu.resourceManage');
     const {t} = useTranslation();
 
     const tableRef = useRef<TableRefType<Resource>>(null);
@@ -76,8 +82,8 @@ const TenantSpace: React.FC = () => {
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<ResourcePreview>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
-
-
+    const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
+    const {notificationMessage, contextHolder} = useNotification();
 
     const columns: TableColumnsType<Resource> = [
         {
@@ -170,6 +176,47 @@ const TenantSpace: React.FC = () => {
                 return <span>{record.updatedBy}</span>
             }
         },
+        {
+            title: t('Common.action'),
+            dataIndex: 'action',
+            align: 'center',
+            width: 120,
+            fixed: 'right',
+            render: (_: AnyObject, record: Resource) => {
+                if (record.isDirectory) {
+                    return <span>-</span>
+                }
+                const label = record.isPublic ? t('Resource.setPrivate') : t('Resource.setPublic');
+                const icon = record.isPublic ? <LockOutlined/> : <EyeOutlined/>;
+                const successTips = record.isPublic ? t('Resource.setPrivateTips') : t('Resource.setPublicSuccessTips');
+                return (<>
+                    <PermissionButton buttonPermissions={buttonPermissions}
+                                      permissionStr={TenantResourcePermissionConstant.EDIT}>
+                        <Button
+                            color={record.isPublic ? 'pink' : 'cyan'}
+                            variant={'solid'}
+                            icon={icon}
+                            disabled={record.isDirectory}
+                            onClick={async (event) => {
+                                event.stopPropagation();
+                                await resourceApi.status(record.id!, !record.isPublic);
+                                notificationMessage({
+                                    type: 'success',
+                                    message: label,
+                                    description: <Trans
+                                        i18nKey={successTips}
+                                        values={{name: record.name}}
+                                        components={{strong: <span className="highlight"/>}}
+                                    />
+                                });
+                                await tableRef.current?.refreshPageList();
+                            }}>
+                            {label}
+                        </Button>
+                    </PermissionButton>
+                </>)
+            }
+        }
     ]
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
@@ -297,16 +344,20 @@ const TenantSpace: React.FC = () => {
 
     const fileActions = [
         {
-            icon: <DownloadOutlined/>, text: t('Resource.download'),
+            key: TenantResourcePermissionConstant.DOWNLOAD,
+            icon: <DownloadOutlined/>,
+            text: t('Resource.download'),
             onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
         },
         {
+            key: TenantResourcePermissionConstant.OFFICE_EDIT,
             icon: <EditOutlined/>, text: t('Resource.editor'),
             onClick: () => {
                 window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=EDIT`)
             },
         },
         {
+            key: TenantResourcePermissionConstant.PREVIEW,
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
             onClick: () => {
@@ -320,6 +371,18 @@ const TenantSpace: React.FC = () => {
     ];
 
     return (<>
+        {contextHolder}
+        <Flex className={'resource-search-container'} justify={'center'} align={'center'}>
+            <Input
+                className={'resource-search-input'}
+                prefix={<SearchOutlined/>}
+                placeholder={t('Resource.search')}
+                value={querySearchParams().name}
+                onChange={(e) => updateSearchParams({
+                    name: e.target.value
+                })}
+            />
+        </Flex>
         <Card>
             <div className={'tenant-space-header'}>
                 <Flex gap={8}>
@@ -394,9 +457,14 @@ const TenantSpace: React.FC = () => {
                                     return null;
                                 }
                             }
-                            return <List.Item onClick={item.onClick}>
-                                {item.icon} {item.text}
-                            </List.Item>;
+                            console.log(buttonPermissions)
+                            return <PermissionButton buttonPermissions={buttonPermissions}
+                                                     permissionStr={item.key}>
+                                <List.Item onClick={item.onClick}>
+                                    {item.icon} {item.text}
+                                </List.Item>
+                            </PermissionButton>
+
                         }}
                     />
                     <h3>{t('Resource.info')}</h3>
@@ -440,4 +508,4 @@ const TenantSpace: React.FC = () => {
     </>)
 }
 
-export default TenantSpace;
+export default TenantResource;
