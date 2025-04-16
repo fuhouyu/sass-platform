@@ -20,7 +20,7 @@ import {useCallback, useEffect} from "react";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher.tsx";
 import {useUserStore} from "@/store";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Button, Divider, Dropdown, Flex, MenuProps, Segmented, Space, Tooltip} from "antd";
+import {Avatar, Divider, Dropdown, Flex, MenuProps, Segmented, Space} from "antd";
 import {LogoutOutlined, MoonOutlined, SunOutlined, UserOutlined} from "@ant-design/icons";
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
@@ -76,13 +76,10 @@ export const LayoutHeader = () => {
         <>
             <Header className="layout-header">
                 <div className={'header-title-container'}>
-                    <Tooltip className="platform-title" title={t('Tenant.enterSpace')} placement={'right'}>
-                        <Button type={'link'} onClick={() => navigate(BaseUrlConstant.TENANT_SPACE_URL)}>
-                            <h2>
-                                {tenant?.tenantName}
-                            </h2>
-                        </Button>
-                    </Tooltip>
+
+                    <h3 className="platform-title">
+                        {tenant?.tenantName}
+                    </h3>
 
                     <Divider className={'header-title-divider'} type="vertical"/>
                 </div>

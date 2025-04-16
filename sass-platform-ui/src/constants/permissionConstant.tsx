@@ -240,6 +240,50 @@ class ParamConfigPermissionConstant {
 /**
  * 应用常量
  */
+class TenantResourcePermissionConstant {
+    /**
+     * 列表权限
+     */
+    static readonly List: string = 'tenant:resource:list';
+
+    /**
+     * 添加权限
+     */
+    static readonly ADD: string = 'tenant:resource:add';
+
+    /**
+     * 修改权限
+     */
+    static readonly EDIT: string = 'tenant:resource:edit';
+
+    /**
+     * 删除权限
+     */
+    static readonly DELETE: string = 'tenant:resource:delete';
+
+    /**
+     * 预览
+     */
+    static readonly PREVIEW: string = "tenant:resource:preview";
+
+    /**
+     * 下载
+     */
+    static readonly DOWNLOAD: string = "tenant:resource:download";
+
+
+    /**
+     * 在线编译
+     */
+    static readonly OFFICE_EDIT: string = "tenant:resource:office-edit";
+
+}
+
+
+
+/**
+ * 应用常量
+ */
 class ApplicationPermissionConstant {
     /**
      * 列表权限
@@ -273,5 +317,6 @@ export {
     DictItemPermissionConstant,
     OrganizationPermissionConstant,
     ParamConfigPermissionConstant,
-    ApplicationPermissionConstant
+    ApplicationPermissionConstant,
+    TenantResourcePermissionConstant
 }

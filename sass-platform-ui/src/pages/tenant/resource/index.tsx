@@ -33,7 +33,7 @@ import {
     TableColumnsType,
     Tag
 } from "antd";
-import {IconFont, PageList, S3Upload} from "@/components";
+import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
 import {useTranslation} from "react-i18next";
 import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -58,12 +58,14 @@ import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {useButton} from "@/hooks/useButton.tsx";
 
 type ResourcePreview = {
     type: ResourceTypeEnum
 } & Resource;
-const TenantSpace: React.FC = () => {
-    usePageTitle('Menu.tenantSpace');
+const TenantResource: React.FC = () => {
+    usePageTitle('Menu.resourceManage');
     const {t} = useTranslation();
 
     const tableRef = useRef<TableRefType<Resource>>(null);
@@ -76,7 +78,7 @@ const TenantSpace: React.FC = () => {
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<ResourcePreview>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
-
+    const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
 
 
     const columns: TableColumnsType<Resource> = [
@@ -297,16 +299,20 @@ const TenantSpace: React.FC = () => {
 
     const fileActions = [
         {
-            icon: <DownloadOutlined/>, text: t('Resource.download'),
+            key: TenantResourcePermissionConstant.DOWNLOAD,
+            icon: <DownloadOutlined/>,
+            text: t('Resource.download'),
             onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
         },
         {
+            key: TenantResourcePermissionConstant.OFFICE_EDIT,
             icon: <EditOutlined/>, text: t('Resource.editor'),
             onClick: () => {
                 window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=EDIT`)
             },
         },
         {
+            key: TenantResourcePermissionConstant.PREVIEW,
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
             onClick: () => {
@@ -394,9 +400,14 @@ const TenantSpace: React.FC = () => {
                                     return null;
                                 }
                             }
-                            return <List.Item onClick={item.onClick}>
-                                {item.icon} {item.text}
-                            </List.Item>;
+                            console.log(buttonPermissions)
+                            return <PermissionButton buttonPermissions={buttonPermissions}
+                                                     permissionStr={item.key}>
+                                <List.Item onClick={item.onClick}>
+                                    {item.icon} {item.text}
+                                </List.Item>
+                            </PermissionButton>
+
                         }}
                     />
                     <h3>{t('Resource.info')}</h3>
@@ -440,4 +451,4 @@ const TenantSpace: React.FC = () => {
     </>)
 }
 
-export default TenantSpace;
+export default TenantResource;

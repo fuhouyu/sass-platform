@@ -24,6 +24,7 @@ import {Menu as UserMenus, MenuType} from "@/model/menu.tsx";
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu} from "antd";
 import './index.scss'
+import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 
 export const LayoutMenu = () => {
     const navigate = useNavigate();
@@ -36,7 +37,8 @@ export const LayoutMenu = () => {
             title: t('Menu.home'),
             label: t('Menu.home'),
             icon:
-                <IconFont type="i-zhuye" style={{fontSize: '1rem'}}/>
+                <IconFont type="i-zhuye" style={{fontSize: '1rem'}}/>,
+
         }
     ]
 
@@ -45,19 +47,21 @@ export const LayoutMenu = () => {
     const menuItems: MenuProps[] = useMenuTree(userMenus, [MenuType.BUTTON]) as MenuProps[]
     menuItems.unshift(...commonMenus);
 
-    // 点击菜单时进行跳转
-    const onMenuClick = ({keyPath}: { keyPath: string[] }) => {
-        const toPath = keyPath.reverse().join('/');
-        navigate(toPath);
-    }
-
     return (
         <>
-            <Sider className={'layout-main-sider'} theme={"light"} collapsible collapsed={collapsed}
+            <Sider className={'layout-main-sider'} theme={"light"}
+                   collapsible
+                   collapsed={collapsed}
+                   trigger={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                    onCollapse={(value) => setCollapsed(value)}>
                 <Divider/>
-                <Menu className="layout-menu" defaultSelectedKeys={['1']} mode="inline"
-                      items={menuItems} onClick={onMenuClick}/>
+                <Menu className="layout-menu"
+                      defaultSelectedKeys={['home']}
+                      mode="inline"
+
+                      items={menuItems} onClick={({key}) => {
+                    navigate(key);
+                }}/>
             </Sider>
         </>
     )

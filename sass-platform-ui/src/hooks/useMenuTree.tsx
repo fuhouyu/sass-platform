@@ -27,12 +27,12 @@ export type MenuTreeType = {
     id?: string | undefined;
     key: string;
     children?: MenuTreeType[] | undefined | null;
-    icon?: ReactNode
+    icon?: ReactNode;
 } & (MenuProps | TreeDataNode);
 
 export function useMenuTree(menus: Menu[], excludeType?: MenuType[]): MenuTreeType[] {
     const {t} = useTranslation();
-    const convertMenuItem = useCallback((permissionInterfaces: Menu[]): (MenuTreeType[] | undefined | null) => {
+    const convertMenuItem = useCallback((permissionInterfaces: Menu[], parentPath?: string | undefined): (MenuTreeType[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
         }
@@ -40,14 +40,15 @@ export function useMenuTree(menus: Menu[], excludeType?: MenuType[]): MenuTreeTy
             if (!item.isVisible || excludeType?.includes(item.permissionType!)) {
                 return undefined;
             }
+            const routePath = parentPath ? parentPath + '/' + item.routePath : item.routePath
             return {
                 id: item.id,
-                key: item.routePath ?? item.id!,
+                key: routePath,
                 title: t(`${item.permissionName}`),
                 label: t(`${item.permissionName}`),
                 icon: item.icon ?
                     <IconFont type={item.icon} style={{fontSize: '1rem'}}/> : undefined,
-                children: item.children ? convertMenuItem(item.children) : undefined
+                children: item.children ? convertMenuItem(item.children, routePath) : undefined,
             };
         }).filter(Boolean) as MenuTreeType[];
         return menus.length > 0 ? menus : null;

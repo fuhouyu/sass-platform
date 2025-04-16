@@ -139,7 +139,7 @@ public class ResourceController {
      */
     @GetMapping("/page")
     @Operation(summary = "分页查询资源信息，需要租户空间权限")
-    @PreAuthorize("@auth.hasAnyPermission('tenant-space:resource-list')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:list')")
     public BaseResponse<PageResultDTO<ResourceDTO>> listResourceByTenantId(ResourcePageQueryDTO pageQueryDTO) {
         return ResponseHelper.success(this.resourceService.pageList(pageQueryDTO));
     }
@@ -169,6 +169,7 @@ public class ResourceController {
      */
     @GetMapping("/count")
     @Operation(summary = "资源总数")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:list')")
     public BaseResponse<Integer> countObjects() {
         return ResponseHelper.success(this.resourceService.countObjects());
     }
