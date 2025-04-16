@@ -25,6 +25,7 @@ import {
     Drawer,
     Dropdown,
     Flex,
+    Input,
     List,
     MenuProps,
     Modal,
@@ -45,6 +46,7 @@ import {
     FolderOutlined,
     LeftOutlined,
     LockOutlined,
+    SearchOutlined,
     UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -370,6 +372,17 @@ const TenantResource: React.FC = () => {
 
     return (<>
         {contextHolder}
+        <Flex className={'resource-search-container'} justify={'center'} align={'center'}>
+            <Input
+                className={'resource-search-input'}
+                prefix={<SearchOutlined/>}
+                placeholder={t('Resource.search')}
+                value={querySearchParams().name}
+                onChange={(e) => updateSearchParams({
+                    name: e.target.value
+                })}
+            />
+        </Flex>
         <Card>
             <div className={'tenant-space-header'}>
                 <Flex gap={8}>

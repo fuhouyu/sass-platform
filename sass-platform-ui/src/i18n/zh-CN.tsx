@@ -321,6 +321,7 @@ const ZhCN = {
     // 资源
     Resource: {
         list: '资源列表',
+        search: '开始输入以筛选资源中的对象',
         info: '资源详情',
         name: '文件名',
         size: '文件大小',
@@ -341,7 +342,6 @@ const ZhCN = {
         setPublicSuccessTips: '资源 <strong>{{name}}</strong> 已设为公开，可以通过链接直接访问。',
         setPrivate: '设为私有',
         setPrivateTips: '资源 <strong>{{name}}</strong> 已设为私有，需要授权后访问。',
-
     },
     OperationLog: {
         list: '日志列表',

@@ -315,6 +315,7 @@ const EnUS = {
     // 资源
     Resource: {
         list: 'Resource List',
+        search: 'Start typing to filter objects in the resource',
         info: 'Resource Info',
         name: 'File Name',
         size: 'File Size',

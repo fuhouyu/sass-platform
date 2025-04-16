@@ -40,4 +40,7 @@ public class ResourcePageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "prefix", description = "前缀")
     private String prefix;
+
+    @Schema(name = "name", description = "名称模糊搜索")
+    private String name;
 }
