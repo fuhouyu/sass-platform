@@ -43,8 +43,10 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@/components/List/table/interface";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 export const Role: React.FC = () => {
+    usePageTitle('Menu.roleManage');
     const {t} = useTranslation();
     const buttonPermissions = useButton(RolePermissionConstant.List);
     const initForm: RoleModel = {

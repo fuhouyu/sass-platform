@@ -16,8 +16,10 @@
 
 
 import React from "react";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 export const Home: React.FC = () => {
+    usePageTitle('Menu.home');
     return (
         <>
 

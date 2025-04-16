@@ -62,9 +62,11 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 export const User: React.FC = () => {
+    usePageTitle('Menu.userManage');
     const buttonPermissions = useButton(UserPermissionConstant.List);
     const organizationButtonPermissions = useButton(OrganizationPermissionConstant.List);
     const {t} = useTranslation();
@@ -375,15 +377,14 @@ export const User: React.FC = () => {
     return (
         <>
             <Splitter>
-                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
+                <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree.DirectoryTree<Organization>
+                        <Tree<Organization>
                             defaultExpandParent={true}
                             showIcon={false}
                             blockNode
                             defaultCheckedKeys={[userQuery.organizationId]}
                             fieldNames={{key: 'id', title: 'organizationName'}}
-                            switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={organizationLazyData}
                             onSelect={(selectedKeys: Key[]) => {
@@ -840,6 +841,7 @@ export const User: React.FC = () => {
                                 <Select
                                     mode="multiple"
                                     notFoundContent={null}
+                                    suffixIcon={null}
                                     disabled={formInitValues.realName != null}
                                     allowClear
                                     onClick={() => setIsChooseUserModalOpen(true)}

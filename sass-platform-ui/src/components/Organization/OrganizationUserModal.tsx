@@ -21,12 +21,12 @@ import {useTranslation} from "react-i18next";
 import {Userinfo} from "@/model/user.tsx";
 import {PageQuery} from "@/model/pageQuery.tsx";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
-import {DownOutlined} from "@ant-design/icons";
 import {OrganizationUserModalProps} from "@components/Organization/interface.tsx";
 import './index.scss'
 import {Modal, PageList} from "@/components";
 import {Organization} from "@/model/organization.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 export const OrganizationUserModal = (organizationUserProps: OrganizationUserModalProps) => {
 
@@ -72,9 +72,12 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
             )
         },
     ];
+    const {querySearchParams} = useRouteSearchParams();
+    const params = querySearchParams();
     const [pageQuery, setPageQuery] = useState<PageQuery>({
         pageNum: 1,
         pageSize: 10,
+        organizationId: params.organizationId
     });
 
 
@@ -82,6 +85,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
         if (isModalOpen) {
             initOrganization().then();
         }
+        return () => setPageQuery({} as PageQuery)
     }, [isModalOpen])
 
     /**
@@ -116,27 +120,26 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
         >
 
             <Splitter style={{height: '100%'}}>
-                <Splitter.Panel className={'tree-container organization-user-modal'} defaultSize="15%" min="10%"
+                <Splitter.Panel className={'tree-container organization-user-modal'} defaultSize="20%" min="20%"
                                 max="70%">
                     <div className='tree-info'>
 
-                        <Tree.DirectoryTree<Organization>
+                        <Tree<Organization>
                             defaultExpandParent={true}
                             blockNode
                             showIcon={false}
                             motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}
-                            switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
+                            defaultSelectedKeys={[params.organizationId]}
                             treeData={organizationLazyData}
                             onSelect={(selectedKeys: Key[]) => {
-                                if (!selectedKeys) {
-                                    return
+                                let organizationId = undefined;
+                                if (selectedKeys.length > 0) {
+                                    organizationId = selectedKeys[0].toLocaleString();
                                 }
-                                setPageQuery({...pageQuery, organizationId: selectedKeys[0] as number});
-                                tableRef.current?.refreshPageList({
-                                    pageQuery: pageQuery
-                                })
+                                setPageQuery({...pageQuery, organizationId})
+                                tableRef.current?.refreshPageList({pageQuery: {...pageQuery, organizationId}});
                             }}
                         />
                     </div>
@@ -163,7 +166,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                                 </>,
                             ],
                             onSearchClick: () => tableRef.current?.refreshPageList({
-                                pageQuery: pageQuery
+                                pageQuery: {...pageQuery}
                             })
                         }}
                     />

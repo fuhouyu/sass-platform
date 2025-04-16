@@ -66,6 +66,7 @@ const ZhCN = {
     Login: {
         title: '租户后台管理系统',
         tips: '请选择一个租户以登录对应的后台管理系统',
+        chooseTenantPlaceholder: '请选择租户',
         usernamePlaceholder: '请输入用户名',
         usernameEmptyMessage: '请输入用户名',
         passwordEmptyMessage: '请输入用户密码',
@@ -129,7 +130,8 @@ const ZhCN = {
     },
     // 菜单
     Menu: {
-        main: '权限列表',
+        login: '登录',
+        office: '在线文档',
         home: '主页',
         resourceList: '资源列表',
         query: '详情',

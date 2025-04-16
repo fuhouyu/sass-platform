@@ -36,7 +36,6 @@ import {AnyObject} from "antd/es/_util/type";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
 import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
-import {DownOutlined} from "@ant-design/icons";
 import {OrganizationPermissionConstant} from "@/constants/permissionConstant.tsx";
 import {organizationApi} from "@/apis/organization.tsx";
 import './index.scss'
@@ -46,9 +45,11 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
 import {TableRefType} from "@/components/List/table/interface";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 export const Organization = () => {
+    usePageTitle('Menu.organizationManage');
     const [treeSelectData, setTreeSelectData] = useState<OrganizationModal[]>([]);
     const {t} = useTranslation();
     const buttonPermissions = useButton(OrganizationPermissionConstant.List);
@@ -143,6 +144,7 @@ export const Organization = () => {
      */
     const onSelectTree = async (selectedKeys: Key[], {node}: { node: OrganizationModal }) => {
         if (!selectedKeys || selectedKeys.length === 0) {
+            updateSearchParams({...organizationQuery, parentId: null})
             return
         }
         setFormParentOrganization(node);
@@ -210,16 +212,15 @@ export const Organization = () => {
     return (
         <>
             <Splitter>
-                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
+                <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
                     <div className='tree-info'>
-                        <Tree.DirectoryTree
+                        <Tree<OrganizationModal>
                             showIcon={false}
                             defaultExpandParent={true}
                             defaultSelectedKeys={[organizationQuery.parentId]}
                             blockNode
                             motion={false}
                             fieldNames={{key: 'id', title: 'organizationName'}}
-                            switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={organizationLazyData}
                             onSelect={onSelectTree}

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-
-import {WeLinkLogin} from "@/components";
-import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {useEffect} from "react";
+import {useTranslation} from "react-i18next";
 
 /**
- * 账号绑定
- * @constructor
+ * 网站标题
+ * @param title 标题
  */
-export const AccountBind = () => {
-    usePageTitle('Menu.profile');
-    return (
-        <WeLinkLogin redirectType={'bind'}/>
-    )
+export function usePageTitle(title: string) {
+    const {t} = useTranslation()
+
+    const titleSuffix = `Sass Platform`
+
+    useEffect(() => {
+        document.title = `${t(title)} - ${titleSuffix}`;
+        return () => {
+            document.title = titleSuffix;
+        }
+    }, [t, title, titleSuffix]);
 }

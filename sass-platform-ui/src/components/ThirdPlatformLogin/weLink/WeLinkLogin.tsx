@@ -103,7 +103,7 @@ export const WeLinkLogin = ({redirectType}: WeLinkLoginProps) => {
                     scope: "snsapi_login",
                     lang: "cn",
                     isHideName: true,
-                    style: 'border:none;background-color:#FFFFFF;&isHideName=true',
+                    style: 'border:none;background-color:inherit;&isHideName=true',
                     height: 400,
                     width: 365,
                 });

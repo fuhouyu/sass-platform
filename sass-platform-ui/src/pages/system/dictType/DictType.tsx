@@ -43,13 +43,14 @@ import {CommonConstant} from "@/constants/commonConstant.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from '@/components/List/table/interface';
 import {Link} from 'react-router-dom';
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 /**
  * 字典类型
  * @constructor 构造函数
  */
 export const DictType = () => {
-
+    usePageTitle('Menu.dictManage');
     const {t} = useTranslation();
     const buttonPermissions = useButton(DictTypePermissionConstant.List);
     const initForm: DictTypeModel = {
@@ -69,7 +70,8 @@ export const DictType = () => {
             defaultSortOrder: 'descend',
             align: "center",
             render: (_, record: DictTypeModel) => {
-                return <Link to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
+                return <Link className={'link-dict-item'}
+                             to={`/system/dict-item/${record.dictCode}`}>{record.dictCode}</Link>
             }
         },
         {

@@ -32,8 +32,10 @@ import {tenantApi} from "@/apis/tenant.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {parseRoutes} from "@/hooks/useRoutes.tsx";
 
-import Icon from "@ant-design/icons";
+import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 
 /**
@@ -41,6 +43,7 @@ import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
  * @constructor
  */
 export const Login: React.FC = () => {
+    usePageTitle('Menu.login');
     const navigate = useNavigate();
     const turnstileRef = useRef<TurnstileInstance | null>(null);
     const [loginButtonLoading, setLoginButtonLoading] = useState<boolean>(false);
@@ -56,15 +59,20 @@ export const Login: React.FC = () => {
     const [tenantId, setTenantId] = useState<string>();
     const {fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
-    const initTenantList = async () => {
-        setTenantList(await tenantApi.list());
-    }
+    const {theme, changeTheme} = useThemeStore();
+    const [themeIcon, setThemeIcon] = useState(
+        theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
+    );
+
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate('/');
         }
-        initTenantList().then();
+        tenantApi.list().then(res => {
+            setTenantId(res[0].id);
+            setTenantList(res);
+        })
     }, [isAuth, navigate]);
     const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
@@ -105,20 +113,31 @@ export const Login: React.FC = () => {
                 />
             </Flex>
 
+            <Flex className={'login-right'} vertical>
+                <Flex className={'login-tools'}>
             <div className={'login-right'}>
                 <Flex justify={'flex-end'} align={'center'} className={'login-tools'}>
                     {LanguageSwitcherButton}
+                    <Button
+                        type={'text'}
+                        onClick={() => {
+                            const newTheme = theme === 'light' ? 'dark' : 'light';
+                            changeTheme(newTheme);
+                            setThemeIcon(newTheme === 'light' ? <MoonOutlined/> : <SunOutlined/>);
+                        }}>{themeIcon}</Button>
                 </Flex>
-                <Flex justify={'center'}>
+                <Flex flex={8} justify={'space-between'} align={'center'} vertical>
                     <div className={'login-form-container'}>
                         <div className={'login-title'}>
                             <h1>{t('Login.title')}</h1>
                             <span>{t('Login.tips')}</span>
                         </div>
                         <Select
+                            value={tenantId}
                             prefix={<IconFont type={'i-zuhuguanli'}/>}
                             className={'tenant-choose-container'}
                             onSelect={(value: string) => setTenantId(value)}
+                            placeholder={t('Login.chooseTenantPlaceholder')}
                             options={tenantList?.map(tenantInfo => {
                                 return {
                                     value: tenantInfo.id,
@@ -156,14 +175,14 @@ export const Login: React.FC = () => {
                                                     placeholder={t('Login.passwordPlaceholder')}/>
                                 </Form.Item>
                                 {import.meta.env.VITE_CLOUDFLARE_SITE_KEY &&
-                                    <Form.Item className={'cloudflare-turnstile'}>
+                                    <Form.Item className={'cloudflare-turnstile-container'}>
                                         <label>
                                             <span>{t('Login.cloudflareTurnstileVerify')}</span>
                                         </label>
                                         <Turnstile
                                             ref={turnstileRef}
                                             options={{
-                                                theme: 'light',
+                                                theme: theme as 'light' | 'dark' | 'auto',
                                                 size: 'flexible',
                                             }}
                                             siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
@@ -206,8 +225,12 @@ export const Login: React.FC = () => {
                             }
                         </div>
                     </div>
+                    <footer className={'foot-copyright'}>
+                        <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
+                    </footer>
                 </Flex>
-            </div>
+
+            </Flex>
         </Flex>
     );
 }

@@ -57,12 +57,13 @@ import useResourceType, {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 type ResourcePreview = {
     type: ResourceTypeEnum
 } & Resource;
 const TenantSpace: React.FC = () => {
-
+    usePageTitle('Menu.tenantSpace');
     const {t} = useTranslation();
 
     const tableRef = useRef<TableRefType<Resource>>(null);

@@ -36,7 +36,7 @@ export const LayoutMenu = () => {
             title: t('Menu.home'),
             label: t('Menu.home'),
             icon:
-                <IconFont type="i-zhuye" style={{fontSize: '16px'}}/>
+                <IconFont type="i-zhuye" style={{fontSize: '1rem'}}/>
         }
     ]
 

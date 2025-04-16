@@ -23,6 +23,7 @@ import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 interface MemoryData {
     timestamps: string[];
@@ -162,7 +163,7 @@ const getJvmOLineChat = (memoryData: MemoryData,
     }
 };
 export const ServerMonitor: FC = () => {
-
+    usePageTitle('Menu.serverMonitor');
     const [serverMonitor, setServerMonitor] = useState<ServerMonitorModel>({} as ServerMonitorModel);
     const {t} = useTranslation();
     const [memoryData, setMemoryData] = useState<MemoryData>({

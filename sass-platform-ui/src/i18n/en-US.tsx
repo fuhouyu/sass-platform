@@ -66,6 +66,7 @@ const EnUS = {
     Login: {
         title: 'Tenant Management System',
         tips: 'Please select a tenant to access the corresponding admin panel.',
+        chooseTenantPlaceholder: 'Please select a tenant',
         loginTitlePrefix: '',
         loginTitleSuffix: 'Login',
         usernamePlaceholder: 'Please input your username',

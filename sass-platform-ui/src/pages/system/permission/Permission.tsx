@@ -16,7 +16,6 @@
 
 
 import React, {Key, useEffect, useRef, useState} from "react";
-import {DownOutlined} from "@ant-design/icons";
 import {
     Button,
     Col,
@@ -48,6 +47,7 @@ import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
 import {TableRefType} from "@components/List/table/interface.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 
 /**
@@ -75,15 +75,8 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 }
 
-const mainPermission: Menu = {
-    id: '-1',
-    permissionName: 'Menu.main',
-    permissionCode: '',
-    isEnabled: true,
-}
-
 export const Permission: React.FC = () => {
-
+    usePageTitle('Menu.permissionManage');
     const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
 
     const {t} = useTranslation();
@@ -175,10 +168,8 @@ export const Permission: React.FC = () => {
      * 初始化权限
      */
     const initPermission = async () => {
-        setLazyTreeData([{
-            ...mainPermission,
-            children: await permissionApi.getPermissionListApi()
-        }]);
+        const menus = await permissionApi.getPermissionListApi();
+        setLazyTreeData([...menus]);
     }
 
     /**
@@ -196,6 +187,8 @@ export const Permission: React.FC = () => {
      */
     const onSelectTree = async (selectedKeys: Key[], {node}: { node: Menu }) => {
         if (!selectedKeys || selectedKeys.length === 0) {
+            // 查询一级菜单
+            updateSearchParams({...permissionQuery, parentId: null})
             return
         }
         setFormParentPermission(node);
@@ -223,9 +216,7 @@ export const Permission: React.FC = () => {
      */
     const permissionTreeSelect = async () => {
         const res = await permissionApi.getPermissionTreeSelect()
-        const menu = mainPermission;
-        menu.children = res
-        setTreeSelectData([menu])
+        setTreeSelectData([...res])
     }
 
     /**
@@ -294,21 +285,21 @@ export const Permission: React.FC = () => {
     return (
         <>
             <Splitter>
-                <Splitter.Panel className={'tree-container'} defaultSize="15%" min="10%" max="70%">
+                <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
                     <div className='tree-info'>
-                        {lazyTreeData && <Tree.DirectoryTree
+                        {lazyTreeData && <Tree
                             defaultExpandParent={true}
                             defaultSelectedKeys={[permissionQuery.parentId ?? -1]}
                             showIcon={false}
                             blockNode
                             motion={false}
                             fieldNames={{key: 'id', title: 'permissionName'}}
-                            switcherIcon={<DownOutlined/>}
                             loadData={onLoadData}
                             treeData={lazyTreeData}
                             titleRender={(menu: Menu) => t(`${menu.permissionName}`)}
                             onSelect={onSelectTree}
                         />}
+
                     </div>
                 </Splitter.Panel>
                 <Splitter.Panel>
@@ -364,7 +355,7 @@ export const Permission: React.FC = () => {
                 title={updateId ? t('Permission.edit') : t('Permission.add')}
                 open={isModalOpen}
                 onCancel={() => closeModal()}
-                width={750}
+                width={800}
                 footer={[
                     <Button key='onOk' type="primary"
                             loading={isModalButtonLoading}

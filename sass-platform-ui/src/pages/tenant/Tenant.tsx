@@ -34,12 +34,14 @@ import {permissionApi} from "@/apis/permission.tsx";
 import {Menu} from "@/model/menu.tsx";
 import {ReloadOutlined} from "@ant-design/icons";
 import {useUserStore} from "@/store";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 /**
  * 租户组件
  * @constructor
  */
 export const Tenant: React.FC = () => {
+    usePageTitle('Menu.tenantManage');
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
     const tableRef = useRef<TableRefType<TenantInfo>>(null);

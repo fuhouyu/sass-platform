@@ -22,6 +22,7 @@ import {OnlyOffice} from "@/model/office.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
 import {DocumentEditor} from "@onlyoffice/document-editor-react";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 function onLoadComponentError(errorCode: number, errorDescription: string) {
     switch (errorCode) {
@@ -41,6 +42,7 @@ function onLoadComponentError(errorCode: number, errorDescription: string) {
 
 
 export const Office: FC = () => {
+    usePageTitle('Menu.office');
     const {id} = useParams();
     const [params] = useSearchParams();
     const {userinfo, fetchUserinfo} = useUserStore(state => state);
@@ -48,19 +50,19 @@ export const Office: FC = () => {
     const {preview} = useResourceAction();
     const language = useLocaleStore(state => state.language);
 
-    if (!id) {
-        message.error("没有找到该资源").then();
-        return <div></div>;
-    }
     const initOfficeView = useCallback(async () => {
+        if (!id) {
+            message.error("没有找到该资源").then();
+            return <div></div>;
+        }
         const onlyOffice: OnlyOffice = await onlyOfficeApi.view({id: id, mode: params.get('mode') || 'VIEW'});
         setOfficeView(onlyOffice);
-    }, [])
+    }, [id, params])
 
     useEffect(() => {
         fetchUserinfo().then();
         initOfficeView().then();
-    }, [initOfficeView])
+    }, [fetchUserinfo, initOfficeView])
 
     return (
         officeView.config &&

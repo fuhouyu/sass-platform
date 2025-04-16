@@ -122,6 +122,7 @@
                         <exclude>**/.env.*</exclude>
                         <exclude>.github/**/*</exclude>
                         <exclude>logs/*</exclude>
+                        <exclude>**/*.svg</exclude>
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.imports</exclude>
                         <exclude>**/**.yaml</exclude>
