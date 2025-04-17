@@ -15,7 +15,9 @@
  */
 
 
-
+.resource-container {
+  height: 94%;
+}
 .tenant-space-header {
   margin: 0 .3rem .3rem .3rem;
   display: flex;
@@ -83,6 +85,7 @@
 }
 
 .resource-type-menu-container {
+  height: 100%;
   width: 100%;
   flex: 2;
   background-color: #FFFFFF;

@@ -27,6 +27,7 @@ import {operationLogApi} from '@/apis/operationLog';
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import dayjs from "dayjs";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import ReactJson from "react-json-view";
 
 
 /**
@@ -289,13 +290,13 @@ export const OperationLog = () => {
                         label={t('OperationLog.requestParam')}
                     >
                         <List className={'request-params-list'}>
-                            {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam as string)).map(([key, value], index) => (
-                                <List.Item key={index}>
+                            {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam)).map(([key, value]) => (
+                                <List.Item key={operationLog.id}>
                                     <div className={'log-item-value'}
                                     >
                                         <List.Item.Meta
                                             title={key}
-                                            description={value ? value as string : ''}
+                                            description={String(value)}
                                         />
                                         <Button
                                             icon={<CopyOutlined/>}
@@ -321,14 +322,8 @@ export const OperationLog = () => {
                         label={t('OperationLog.responseData')}>
                         {operationLog.responseData && <div className={'log-item-value'}
                         >
-                            {operationLog.responseData}
-                            <Button
-                                icon={<CopyOutlined/>}
-                                size="small"
-                                style={{marginLeft: 10}}
-                                onClick={() => handleCopy(operationLog.responseData as string)}
-                                title={t('Common.copy')}
-                            />
+                            <ReactJson src={JSON.parse(operationLog.responseData)} collapsed={false}
+                                       displayObjectSize={false}/>
                         </div>}
                     </Descriptions.Item>
 

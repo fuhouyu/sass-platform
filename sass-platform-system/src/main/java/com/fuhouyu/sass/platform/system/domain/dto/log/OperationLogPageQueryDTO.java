@@ -22,7 +22,6 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.time.LocalDate;
-import java.util.Objects;
 
 /**
  * <p>
@@ -62,10 +61,9 @@ public class OperationLogPageQueryDTO extends PageQueryDTO {
     private LocalDate endTime;
 
     public OperationLogPageQueryDTO() {
-        if (Objects.isNull(super.getSortColumn())) {
-            super.setSortColumn("operation_time");
-            super.setIsAsc(false);
-        }
+        super(1, 10);
+        super.setSortColumn("operation_time");
+        super.setIsAsc(false);
 
     }
 }
