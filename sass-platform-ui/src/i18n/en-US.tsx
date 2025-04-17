@@ -335,7 +335,8 @@ const EnUS = {
         setPublic: 'Set Public',
         setPrivate: 'Set Private',
         setPublicSuccessTips: "Resource <strong>{{name}}</strong> has been set to public and can be accessed directly via the link.",
-        setPrivateTips: "Resource <strong>{{name}}</strong> has been set to private and requires authorization for access."
+        setPrivateTips: "Resource <strong>{{name}}</strong> has been set to private and requires authorization for access.",
+        category: 'Category',
     },
     OperationLog: {
         list: 'Operation Log List',

@@ -33,6 +33,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenReq
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
+import com.fuhouyu.sass.platform.system.enums.ResourceCategoryEnum;
 import com.fuhouyu.sass.platform.system.enums.response.ResourceResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
@@ -132,9 +133,11 @@ public class ResourceServiceImpl implements ResourceService {
         });
         // 删除临时资源
         this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
+        String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(dto.getMimeType());
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
+        entity.setCategory(category);
         entity.setObjectKey(newObjectKey);
         entity.setParentId(parentId);
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());

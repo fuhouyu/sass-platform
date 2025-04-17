@@ -342,6 +342,8 @@ const ZhCN = {
         setPublicSuccessTips: '资源 <strong>{{name}}</strong> 已设为公开，可以通过链接直接访问。',
         setPrivate: '设为私有',
         setPrivateTips: '资源 <strong>{{name}}</strong> 已设为私有，需要授权后访问。',
+        category: '分类',
+
     },
     OperationLog: {
         list: '日志列表',

@@ -16,7 +16,6 @@
 
 import React, {useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
-import {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {ImageView} from "@components/ResourceView/imageView.tsx";
 import "./index.scss"
 import VideoView from "./videoView";
@@ -24,6 +23,7 @@ import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
 import {YamlView} from "@components/ResourceView/yamlView.tsx";
 import {Flex, Spin} from "antd";
+import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
@@ -42,17 +42,17 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         };
 
         fetchUrl().then();
-    }, [resourceView]);
+    }, [generateSignedUrl, preview, resourceView]);
     if (!viewUrl) {
         return <Flex className={'view-loading'} justify={'center'} align={'center'}>
             <Spin size={"large"} percent={"auto"}/>
         </Flex>
     }
 
-    switch (resourceView.type) {
-        case ResourceTypeEnum.IMAGE:
+    switch (resourceView.category) {
+        case ResourceCategoryEnum.IMAGE:
             return <ImageView viewUrl={viewUrl}/>;
-        case ResourceTypeEnum.VIDEO:
+        case ResourceCategoryEnum.VIDEO:
             return <VideoView
                 key={viewUrl} // 让 React 确认是播放新的视频（只有换源时才换）
                 options={{
@@ -82,7 +82,7 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                     ],
                 }}
             />
-        case ResourceTypeEnum.YAML:
+        case ResourceCategoryEnum.SOURCE_CODE:
             return <YamlView resourceId={resourceView.id}/>;
         default:
             return <div>{t('Resource.unknownType')}</div>;

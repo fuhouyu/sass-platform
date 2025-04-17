@@ -76,6 +76,11 @@ public class Resources extends BaseEntity {
     private Integer version;
 
     /**
+     * 资源分类
+     */
+    private String category;
+
+    /**
      * 是否公开
      */
     private Boolean isPublic;

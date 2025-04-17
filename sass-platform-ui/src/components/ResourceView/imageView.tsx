@@ -19,6 +19,5 @@ export const ImageView = ({viewUrl}: { viewUrl?: string }) => {
         width={'100%'}
         className={'resource-preview'}
         src={viewUrl}
-        alt="Preview Image"
-    />)
+        alt=''/>)
 }
