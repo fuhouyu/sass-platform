@@ -103,6 +103,11 @@ public enum ResourceCategoryEnum {
             "application/x-bzip2"),
 
     /**
+     * 文件夹
+     */
+    DIRECTORY("dir"),
+
+    /**
      * 其它
      */
     OTHER("application/octet-stream");;

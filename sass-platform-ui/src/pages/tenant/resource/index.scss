@@ -17,6 +17,7 @@
 
 
 .tenant-space-header {
+  margin: 0 .3rem .3rem .3rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -24,17 +25,6 @@
   border: 1px solid gray;
   border-radius: 0.25rem;
   padding: .3rem 1rem;
-}
-
-// 资源搜索头
-.resource-search-container {
-  padding-bottom: .5rem;
-  width: 100%;
-
-  .resource-search-input {
-    cursor: text;
-    width: 40%;
-  }
 }
 
 .space-bucket-info {
@@ -92,6 +82,16 @@
   cursor: pointer;
 }
 
+.resource-type-menu-container {
+  width: 100%;
+  flex: 2;
+  background-color: #FFFFFF;
+}
+
+.resource-list-container {
+  flex: 8;
+}
+
 .file-actions-list {
   background-color: #F8F8F8;
 
@@ -119,3 +119,4 @@
 .preview-modal .ant-modal-content {
   height: 52rem;
 }
+

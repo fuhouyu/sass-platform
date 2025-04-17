@@ -414,6 +414,7 @@ public class ResourceServiceImpl implements ResourceService {
         resources.setMimeType("");
         resources.setObjectKey(objectKey);
         resources.setVersion(1);
+        resources.setCategory(ResourceCategoryEnum.DIRECTORY.name());
         resources.setIsPublic(isPublic);
         resources.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         resources.setIsDirectory(true);

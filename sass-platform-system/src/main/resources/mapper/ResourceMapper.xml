@@ -203,6 +203,12 @@
             <if test="pageQuery.name != null and pageQuery.name != ''">
                AND r.name LIKE CONCAT('%',#{pageQuery.name}, '%')
             </if>
+            <if test="pageQuery.category != null and pageQuery.category != ''">
+                AND r.category = #{pageQuery.category}
+            </if>
+            <if test="pageQuery.isPublic != null">
+                AND r.is_public = #{pageQuery.isPublic}
+            </if>
         </where>
     </select>
 

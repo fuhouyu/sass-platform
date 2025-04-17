@@ -44,12 +44,14 @@ export enum ResourceCategoryEnum {
     OTHER = 'OTHER',
     // 源代码
     SOURCE_CODE = 'SOURCE_CODE',
+    // 文件夹
+    DIRECTORY = 'DIRECTORY',
 }
 
 /**
  * 资源类型分类配置
  */
-const resourceTypeInfo: Record<ResourceCategoryEnum, ResourceCategory> = {
+export const resourceTypeInfo: Record<ResourceCategoryEnum, ResourceCategory> = {
     [ResourceCategoryEnum.DOCUMENT]: {
         typeName: '文档',
         icon: <IconFont type={'i-Document'}/>,
@@ -67,13 +69,17 @@ const resourceTypeInfo: Record<ResourceCategoryEnum, ResourceCategory> = {
         typeName: '视频',
         icon: <IconFont type={'i-video'}/>,
     },
+    [ResourceCategoryEnum.AUDIO]: {
+        typeName: '音频',
+        icon: <IconFont type={'i-audio'}/>,
+    },
     [ResourceCategoryEnum.SOURCE_CODE]: {
         typeName: '代码',
         icon: <IconFont type={'i-hc-code'}/>,
     },
-    [ResourceCategoryEnum.AUDIO]: {
-        typeName: '音频',
-        icon: <IconFont type={'i-audio'}/>,
+    [ResourceCategoryEnum.DIRECTORY]: {
+        typeName: '文件夹',
+        icon: <IconFont type={'i-dir'}/>,
     },
     [ResourceCategoryEnum.OTHER]: {
         typeName: '其他',
@@ -92,4 +98,3 @@ export function getCategoryInfo(category: string): ResourceCategory {
     }
     return resourceTypeInfo[ResourceCategoryEnum.OTHER]
 }
-

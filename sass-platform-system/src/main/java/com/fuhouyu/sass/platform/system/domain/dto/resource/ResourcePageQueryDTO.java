@@ -43,4 +43,10 @@ public class ResourcePageQueryDTO extends PageQueryDTO {
 
     @Schema(name = "name", description = "名称模糊搜索")
     private String name;
+
+    @Schema(name = "category", description = "分类检索")
+    private String category;
+
+    @Schema(name = "isPublic", description = "是否公开")
+    private Boolean isPublic;
 }
