@@ -44,8 +44,12 @@ class ResourceApi extends DefaultApiImpl<Resource> {
     /**
      * 下载文件
      * @param id 主键id
+     * @param preview true 预览
      */
-    downloadFile: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/download/${id}`)
+    downloadFile: (id: string, preview?: boolean) => Promise<void> =
+        (id: string, preview?: boolean): Promise<void> => request.get(`${this.baseUrl}/download/${id}`, {
+            params: {preview}
+        })
 
 
     /**
@@ -72,6 +76,13 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      */
     countObjects: () => Promise<number> = (): Promise<number> =>
         request.get(`${this.baseUrl}/count`);
+
+    /**
+     * 读取文件到blob
+     * @param id 主键id
+     */
+    readFileBytes: (id: string) => Promise<string> = (id: string): Promise<string> =>
+        request.get(`${this.baseUrl}/${id}/bytes`)
 
 
     /**

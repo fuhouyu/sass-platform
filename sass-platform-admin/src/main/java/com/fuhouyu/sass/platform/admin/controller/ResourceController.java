@@ -106,7 +106,7 @@ public class ResourceController {
      */
     @Operation(summary = "通过资源id删除资源")
     @DeleteMapping
-    @PreAuthorize("@auth.hasAnyPermission('tenant-space:delete')")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:delete')")
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> removeResourceList(
             @RequestBody
@@ -194,5 +194,18 @@ public class ResourceController {
         resourceDTO.setIsPublic(isPublic);
         this.resourceService.edit(resourceDTO);
         return ResponseHelper.success();
+    }
+
+
+    /**
+     * 读取文件到字节数组
+     *
+     * @param id 主键id
+     * @return 读取文件到字节数组
+     */
+    @GetMapping("/{id}/bytes")
+    @Operation(summary = "读取文件到字节数组")
+    public BaseResponse<byte[]> readFileToByteArray(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.resourceService.readFileToByteArray(id));
     }
 }

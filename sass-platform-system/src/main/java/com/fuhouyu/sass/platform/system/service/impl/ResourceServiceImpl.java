@@ -50,6 +50,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -133,10 +134,16 @@ public class ResourceServiceImpl implements ResourceService {
         });
         // 删除临时资源
         this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
-        String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(dto.getMimeType());
+        String mimeType = dto.getMimeType();
+        String name = dto.getName();
+        if (StringUtils.isAllBlank(mimeType) && name.contains(".")) {
+            mimeType = name.substring(name.lastIndexOf(".") + 1);
+        }
+        String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
+        entity.setMimeType(mimeType);
         entity.setCategory(category);
         entity.setObjectKey(newObjectKey);
         entity.setParentId(parentId);
@@ -292,6 +299,19 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Integer countObjects() {
         return this.resourceMapper.countObjects();
+    }
+
+    @Override
+    public byte[] readFileToByteArray(Long id) {
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+
+        ResponseBytes<GetObjectResponse> objectAsBytes = this.s3Client.getObjectAsBytes(getObject -> {
+            getObject.bucket(tenantSpaceDTO.getBucketName());
+            getObject.key(resourceDTO.getObjectKey());
+
+        });
+        return objectAsBytes.asByteArray();
     }
 
     /**

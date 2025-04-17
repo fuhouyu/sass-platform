@@ -16,23 +16,24 @@
 
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {resourceApi} from "@/apis/resource.tsx";
+import {useCallback} from "react";
 
 export function useResourceAction() {
 
-    const preview = (resourceId?: string): string | undefined => {
+    const preview = useCallback((resourceId?: string): string | undefined => {
         if (resourceId) {
             return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/download/${resourceId}?preview=true`
         }
         return undefined;
-    }
+    }, []);
 
-    const generateSignedUrl = async (resourceId?: string,
-                                     preview?: boolean): Promise<string> => {
+    const generateSignedUrl = useCallback(async (resourceId?: string,
+                                                 preview?: boolean): Promise<string> => {
         if (resourceId) {
             return await resourceApi.generateSignedUrl(resourceId, preview);
         }
         return "#";
-    }
+    }, [])
 
 
     return {preview, generateSignedUrl}

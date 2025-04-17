@@ -90,4 +90,11 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      */
     Integer countObjects();
 
+    /**
+     * 读取文件到字节数组
+     *
+     * @param id 主键id
+     * @return 字节数组
+     */
+    byte[] readFileToByteArray(Long id);
 }

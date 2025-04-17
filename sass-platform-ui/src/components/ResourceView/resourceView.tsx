@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react"
+import React, {useCallback, useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
 import {ImageView} from "@components/ResourceView/imageView.tsx";
 import "./index.scss"
 import VideoView from "./videoView";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
-import {YamlView} from "@components/ResourceView/yamlView.tsx";
 import {Flex, Spin} from "antd";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
+import {SourceCodeView} from "@components/ResourceView/sourceCodeView.tsx";
 
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
+    const {isPublic, id} = resourceView;
     const {preview, generateSignedUrl} = useResourceAction();
     const {t} = useTranslation();
-    const [viewUrl, setViewUrl] = useState<string | undefined>(undefined);
+    const [viewUrl, setViewUrl] = useState<string | undefined>(preview(resourceView.id));
+
+    const generateSignedUrlFunc = useCallback(async () => {
+        if (!isPublic) {
+            const signedUrl = await generateSignedUrl(id, true);
+            setViewUrl(signedUrl);
+        }
+    }, [generateSignedUrl, id, isPublic]);
 
     useEffect(() => {
-        const fetchUrl = async () => {
-            if (resourceView.isPublic) {
-                setViewUrl(preview(resourceView.id)); // 直接赋值
-            } else {
-                const signedUrl = await generateSignedUrl(resourceView.id, true); // 等待异步请求
-                setViewUrl(signedUrl);
-            }
-        };
-
-        fetchUrl().then();
-    }, [generateSignedUrl, preview, resourceView]);
+        generateSignedUrlFunc().then();
+    }, [generateSignedUrlFunc]);
     if (!viewUrl) {
         return <Flex className={'view-loading'} justify={'center'} align={'center'}>
             <Spin size={"large"} percent={"auto"}/>
@@ -83,7 +82,7 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                 }}
             />
         case ResourceCategoryEnum.SOURCE_CODE:
-            return <YamlView resourceId={resourceView.id}/>;
+            return <SourceCodeView resourceId={resourceView.id} language={resourceView.mimeType}/>;
         default:
             return <div>{t('Resource.unknownType')}</div>;
     }
