@@ -24,8 +24,10 @@ import {useTranslation} from "react-i18next";
 import {Flex, Spin} from "antd";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import {SourceCodeView} from "@components/ResourceView/sourceCodeView.tsx";
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
-
+// TODO 这里的资源组件需要重新优化
 export const ResourceView = (resourceView: ResourceViewProps) => {
     const {isPublic, id} = resourceView;
     const {preview, generateSignedUrl} = useResourceAction();
@@ -83,6 +85,10 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
             />
         case ResourceCategoryEnum.SOURCE_CODE:
             return <SourceCodeView resourceId={resourceView.id} language={resourceView.mimeType}/>;
+        case ResourceCategoryEnum.AUDIO:
+            return <AudioPlayer
+                src={viewUrl}
+                autoPlay/>
         default:
             return <div>{t('Resource.unknownType')}</div>;
     }

@@ -49,18 +49,6 @@
 }
 
 // 源代码预览
-/**
-position: 'absolute',
-                            top: '0.5rem',
-                            right: '0.5rem',
-                            zIndex: 10,
-                            padding: '0.5rem 1rem',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            backgroundColor: '#f0f0f0',
-                            fontSize: '0.8rem',
- */
 .source-code-view-container {
   position: relative;
   height: 90%;
@@ -81,7 +69,6 @@ position: 'absolute',
   }
 
 }
-
 
 $color-primary: #E6FFFB !default;
 $color-secondary: #2315FF !default;
