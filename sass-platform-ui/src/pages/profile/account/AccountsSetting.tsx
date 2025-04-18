@@ -23,6 +23,7 @@ import {EditOutlined} from "@ant-design/icons";
 import {useLocaleStore, useUserStore} from "@/store";
 import {useForm} from "antd/es/form/Form";
 import {useNotification} from "@/hooks/useNotification.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 interface EditPasswordForm {
     oldPassword: string;
@@ -35,7 +36,7 @@ interface EditPasswordForm {
  * @constructor 构造函数
  */
 export const AccountsSetting = () => {
-
+    usePageTitle('Menu.accountsSetting');
     const [updatePasswordForm] = useForm<EditPasswordForm>();
     const {t} = useTranslation()
     const language = useLocaleStore((state) => state.language);
