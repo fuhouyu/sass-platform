@@ -25,7 +25,7 @@ import {useTranslation} from "react-i18next";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
-import {useRouterStore, useUserStore} from "@/store";
+import {useUserStore} from "@/store";
 import {TenantInfo} from "@/model/tenant.tsx";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
@@ -34,7 +34,6 @@ import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 
 /**
@@ -56,8 +55,6 @@ export const Login: React.FC = () => {
     const {preview} = useResourceAction();
     const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
     const [tenantId, setTenantId] = useState<string>();
-    const {fetchUserMenus} = useUserStore(state => state);
-    const router = useRouterStore(state => state.router);
     const {theme, changeTheme} = useThemeStore();
     const [themeIcon, setThemeIcon] = useState(
         theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
@@ -81,7 +78,6 @@ export const Login: React.FC = () => {
             await fetchLogin({...loginData, tenantId});
             // 跳转到跟目录
             const fromRouter = location.state?.from;
-            const from = (!fromRouter || fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter;
             navigate('/', {
                 state: {
                     from: fromRouter,

@@ -39,7 +39,7 @@ export const LayoutMain = () => {
     const navigate = useNavigate();
     const {userMenus, fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
-    const [initialized, setInitialized] = useState(userMenus !== undefined);
+    const [initialized, setInitialized] = useState(false);
 
 
     const initRoutes = useCallback(async () => {
@@ -48,7 +48,7 @@ export const LayoutMain = () => {
             router.routes[0].children.push(...parseRoutes(menus));
         }
         setInitialized(true);
-    }, [fetchUserMenus, router?.routes, userMenus])
+    }, [fetchUserMenus, router, userMenus])
     useEffect(() => {
         if (!accessToken) {
             navigate(BaseUrlConstant.LOGIN_URL, {state: {from: location.pathname}});
