@@ -24,6 +24,8 @@ import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import * as echarts from 'echarts/core';
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 interface MemoryData {
     timestamps: string[];
@@ -31,6 +33,57 @@ interface MemoryData {
     usedMemory: number[];
     freeMemory: number[];
 }
+
+echarts.registerTheme('dark-white-font', {
+    backgroundColor: '#2A2A2A',
+    textStyle: {
+        color: '#ffffff'
+    },
+    title: {
+        textStyle: {
+            color: '#ffffff'
+        },
+        subtextStyle: {
+            color: '#cccccc'
+        }
+    },
+    legend: {
+        textStyle: {
+            color: '#ffffff'
+        }
+    },
+    tooltip: {
+        textStyle: {
+            color: '#ffffff'
+        }
+    },
+    xAxis: {
+        axisLabel: {
+            color: '#ffffff'
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#888888'
+            }
+        }
+    },
+    yAxis: {
+        axisLabel: {
+            color: '#ffffff'
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#888888'
+            }
+        },
+        splitLine: {
+            lineStyle: {
+                color: '#333333'
+            }
+        }
+    }
+});
+
 
 const getDashboardOption = (value: number | string, title: string) => {
     return {
@@ -110,13 +163,11 @@ const getJvmOLineChat = (memoryData: MemoryData,
             textStyle: {
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: '#333',
                 textAlign: 'center'
             },
             subtext: subTitle,
             subtextStyle: {
                 fontSize: 12,
-                color: '#999',
                 textAlign: 'center'
             },
         },
@@ -166,6 +217,7 @@ export const ServerMonitor: FC = () => {
     usePageTitle('Menu.serverMonitor');
     const [serverMonitor, setServerMonitor] = useState<ServerMonitorModel>({} as ServerMonitorModel);
     const {t} = useTranslation();
+    const currentTheme = useThemeStore(state => state.theme);
     const [memoryData, setMemoryData] = useState<MemoryData>({
         timestamps: [],
         maxMemory: 0,
@@ -206,148 +258,150 @@ export const ServerMonitor: FC = () => {
 
 
     return (
-        <>
-            <Space direction="vertical" size="middle" style={{display: 'flex'}}>
-                <Flex wrap justify={'space-between'}>
-                    <Card title={t('Monitor.systemInfo')} style={{
-                        width: '49.5%'
-                    }}>
-                        <List>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.operationSystem')}</div>
-                                    <div>{serverMonitor?.systemInfo?.osName}</div>
-                                </Flex>
-                            </List.Item>
-
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.systemArch')}</div>
-                                    <div>{serverMonitor?.systemInfo?.osArch}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.startTime')}</div>
-                                    <div>{serverMonitor?.systemInfo?.startTime}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.runTime')}</div>
-                                    <div>{serverMonitor?.systemInfo?.runTime}</div>
-                                </Flex>
-                            </List.Item>
-
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.cpuCoreNum')}</div>
-                                    <div>{serverMonitor?.cpuInfo?.coreNum}</div>
-                                </Flex>
-                            </List.Item>
-
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.totalMemory')}</div>
-                                    <div>{serverMonitor?.memoryInfo?.total}</div>
-                                </Flex>
-                            </List.Item>
-                        </List>
-                    </Card>
-                    <Card title={t('Monitor.systemMonitor')} style={{
-                        width: '49.5%'
-                    }}>
-                        <Flex wrap justify={'space-around'}>
-                            <Flex vertical justify={'center'} align={'center'}>
-                                <ReactECharts
-                                    option={getDashboardOption(serverMonitor?.cpuInfo?.usageRate ?? 0, t('Monitor.cpuUsageRate'))}
-                                    style={{
-                                        width: 220,
-                                        height: 220
-                                    }}
-                                />
+        <Space direction="vertical" size="middle" style={{display: 'flex'}}>
+            <Flex wrap justify={'space-between'}>
+                <Card title={t('Monitor.systemInfo')} style={{
+                    width: '49.5%'
+                }}>
+                    <List>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.operationSystem')}</div>
+                                <div>{serverMonitor?.systemInfo?.osName}</div>
                             </Flex>
+                        </List.Item>
 
-                            <Flex vertical justify={'center'} align={'center'}>
-                                <ReactECharts
-                                    option={getDashboardOption(serverMonitor?.memoryInfo?.usageRate ?? 0, t('Monitor.memoryUsageRate'))}
-                                    style={{
-                                        width: 220,
-                                        height: 220
-                                    }}
-                                />
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.systemArch')}</div>
+                                <div>{serverMonitor?.systemInfo?.osArch}</div>
                             </Flex>
-                        </Flex>
-                    </Card>
-                </Flex>
-                <Flex wrap justify={'space-between'}>
-                    <Card title={t('Monitor.jvmInfo')} style={{
-                        width: '49.5%'
-                    }}>
-                        <List>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.jvmMaxMemory')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.maxMemory}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.jvmUsedMemory')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.usedMemory}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.jvmFreeMemory')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.freeMemory}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.jdkVersion')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.jdkVersion}</div>
-                                </Flex>
-                            </List.Item>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.startTime')}</div>
+                                <div>{serverMonitor?.systemInfo?.startTime}</div>
+                            </Flex>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.runTime')}</div>
+                                <div>{serverMonitor?.systemInfo?.runTime}</div>
+                            </Flex>
+                        </List.Item>
 
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.projectDir')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.projectDir}</div>
-                                </Flex>
-                            </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.cpuCoreNum')}</div>
+                                <div>{serverMonitor?.cpuInfo?.coreNum}</div>
+                            </Flex>
+                        </List.Item>
 
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.startTime')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.startTime}</div>
-                                </Flex>
-                            </List.Item>
-                            <List.Item>
-                                <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
-                                    <div>{t('Monitor.runTime')}</div>
-                                    <div>{serverMonitor?.jvmInfo?.runTime}</div>
-                                </Flex>
-                            </List.Item>
-                        </List>
-                    </Card>
-
-
-                    <Card title={t('Monitor.jvmHeapMemory')} style={{
-                        width: '49.5%'
-                    }}>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.totalMemory')}</div>
+                                <div>{serverMonitor?.memoryInfo?.total}</div>
+                            </Flex>
+                        </List.Item>
+                    </List>
+                </Card>
+                <Card title={t('Monitor.systemMonitor')} style={{
+                    width: '49.5%'
+                }}>
+                    <Flex wrap justify={'space-around'}>
                         <Flex vertical justify={'center'} align={'center'}>
-                            <ReactECharts option={getJvmOLineChat(memoryData,
+                            <ReactECharts
+                                theme={currentTheme === 'dark' ? 'dark-white-font' : ''}
+                                option={getDashboardOption(serverMonitor?.cpuInfo?.usageRate ?? 0, t('Monitor.cpuUsageRate'))}
+                                style={{
+                                    width: 220,
+                                    height: 220
+                                }}
+                            />
+                        </Flex>
+
+                        <Flex vertical justify={'center'} align={'center'}>
+                            <ReactECharts
+                                theme={currentTheme === 'dark' ? 'dark-white-font' : ''}
+                                option={getDashboardOption(serverMonitor?.memoryInfo?.usageRate ?? 0, t('Monitor.memoryUsageRate'))}
+                                style={{
+                                    width: 220,
+                                    height: 220
+                                }}
+                            />
+                        </Flex>
+                    </Flex>
+                </Card>
+            </Flex>
+            <Flex wrap justify={'space-between'}>
+                <Card title={t('Monitor.jvmInfo')} style={{
+                    width: '49.5%'
+                }}>
+                    <List>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.jvmMaxMemory')}</div>
+                                <div>{serverMonitor?.jvmInfo?.maxMemory}</div>
+                            </Flex>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.jvmUsedMemory')}</div>
+                                <div>{serverMonitor?.jvmInfo?.usedMemory}</div>
+                            </Flex>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.jvmFreeMemory')}</div>
+                                <div>{serverMonitor?.jvmInfo?.freeMemory}</div>
+                            </Flex>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.jdkVersion')}</div>
+                                <div>{serverMonitor?.jvmInfo?.jdkVersion}</div>
+                            </Flex>
+                        </List.Item>
+
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.projectDir')}</div>
+                                <div>{serverMonitor?.jvmInfo?.projectDir}</div>
+                            </Flex>
+                        </List.Item>
+
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.startTime')}</div>
+                                <div>{serverMonitor?.jvmInfo?.startTime}</div>
+                            </Flex>
+                        </List.Item>
+                        <List.Item>
+                            <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
+                                <div>{t('Monitor.runTime')}</div>
+                                <div>{serverMonitor?.jvmInfo?.runTime}</div>
+                            </Flex>
+                        </List.Item>
+                    </List>
+                </Card>
+
+
+                <Card title={t('Monitor.jvmHeapMemory')} style={{
+                    width: '49.5%', overflow: 'hidden', borderRadius: 8
+                }}>
+                    <Flex vertical justify={'center'} align={'center'} style={{width: '100%'}}>
+                        <ReactECharts
+                            theme={currentTheme === 'dark' ? 'dark-white-font' : ''}
+                            option={getJvmOLineChat(memoryData,
                                 t('Monitor.jvmMonitorTitle'),
                                 t('Monitor.jvmMonitorSubTitle'),
                                 t('Monitor.jvmUsedMemory'),
                                 t('Monitor.jvmFreeMemory'))}
-                                          style={{height: '350px', width: '100%'}}
-                            />
-                        </Flex>
-                    </Card>
-                </Flex>
-            </Space>
-        </>
+                            style={{height: '350px', width: '100%'}}
+                        />
+                    </Flex>
+                </Card>
+            </Flex>
+        </Space>
     );
 }

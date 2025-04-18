@@ -32,7 +32,7 @@ interface SourceCodeProps {
 }
 
 export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
-    const {resourceId, language} = sourceCodeProps;
+    const {resourceId} = sourceCodeProps;
     const currentTheme = useThemeStore(state => state.theme);
     const {t} = useTranslation();
 
