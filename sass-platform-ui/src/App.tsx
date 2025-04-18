@@ -16,8 +16,7 @@
 
 
 import React, {useEffect, useState} from "react";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import {commonRoutes} from "@/routes/routes.tsx";
+import {RouterProvider} from "react-router-dom";
 import '@/i18n/index'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
 import {ConfigProvider, theme} from "antd";
@@ -32,36 +31,23 @@ import 'dayjs/locale/zh-cn';
 import dayjs from "dayjs";
 
 export const App: React.FC = () => {
-    // 假设 useRoutes 是一个自定义钩子，返回路由是否加载完成
-    const {initialized, dynamicRoutes} = useRoutes();
+    const {initialized, updateDynamicRoutes} = useRoutes();
     const language = useLocaleStore(state => state.language);
     const [antdLocale, setAntdLocale] = useState<Locale>();
-    const [isLoading, setIsLoading] = useState(true);
-    const {router, storeRouter} = useRouterStore(state => state);
+    const {router} = useRouterStore(state => state);
     const currentTheme = useThemeStore(state => state.theme);
 
-    useEffect(() => {
-        if (initialized) {
-            const rootRoutes = [...commonRoutes];
-            rootRoutes[0].children = [...dynamicRoutes, ...(rootRoutes[0].children ?? [])];
-            const updatedRouter = createBrowserRouter(rootRoutes);
-            setIsLoading(false);
-            storeRouter(updatedRouter)
-
-        }
-    }, [initialized, dynamicRoutes, storeRouter]);
 
 
     useEffect(() => {
+        updateDynamicRoutes().then();
         dayjs.locale(language);
         setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
-    }, [language]);
+    }, [language, updateDynamicRoutes]);
 
-    if (isLoading) {
+    if (!initialized) {
         return <PageLoading/>;
     }
-
-
     // 路由加载完成后，渲染页面
     return (
         <ConfigProvider

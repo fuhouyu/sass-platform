@@ -34,6 +34,8 @@ import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useRoutes} from "@/hooks/useRoutes.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 
 /**
@@ -56,6 +58,7 @@ export const Login: React.FC = () => {
     const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
     const [tenantId, setTenantId] = useState<string>();
     const {theme, changeTheme} = useThemeStore();
+    const {updateDynamicRoutes} = useRoutes();
     const [themeIcon, setThemeIcon] = useState(
         theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
     );
@@ -76,13 +79,10 @@ export const Login: React.FC = () => {
         loginData.cloudflareTurnstileToken = turnstileToken;
         try {
             await fetchLogin({...loginData, tenantId});
-            // 跳转到跟目录
             const fromRouter = location.state?.from;
-            navigate('/', {
-                state: {
-                    from: fromRouter,
-                    fromLogin: true,
-                }
+            const from = (!fromRouter || fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter;
+            updateDynamicRoutes().then(() => {
+                navigate(from);
             });
         } finally {
             setLoginButtonLoading(false);
