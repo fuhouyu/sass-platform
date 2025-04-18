@@ -16,12 +16,12 @@
 
 import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Layout, {Content} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
 import './index.scss'
-import {Bread} from "@/components";
+import {Bread, PageLoading} from "@/components";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import FloatButtonGroup from "antd/es/float-button/FloatButtonGroup";
 import {CloudUploadOutlined} from "@ant-design/icons";
@@ -33,25 +33,39 @@ import {useRouterStore, useUserStore} from "@/store";
 
 export const LayoutMain = () => {
     const accessToken = useAuth();
-    const pathname = useLocation().pathname;
+    const location = useLocation();
     const uploadFiles = useUploadStore(state => state.uploadFiles);
     const {t} = useTranslation();
     const navigate = useNavigate();
     const {userMenus, fetchUserMenus} = useUserStore(state => state);
     const router = useRouterStore(state => state.router);
+    const [initialized, setInitialized] = useState(userMenus !== undefined);
+
 
     const initRoutes = useCallback(async () => {
-        const menus = userMenus ? userMenus : await fetchUserMenus();
+        const menus = userMenus ?? await fetchUserMenus();
         if (router?.routes[0]?.children) {
             router.routes[0].children.push(...parseRoutes(menus));
         }
+        setInitialized(true);
     }, [fetchUserMenus, router?.routes, userMenus])
     useEffect(() => {
         if (!accessToken) {
-            navigate(BaseUrlConstant.LOGIN_URL, {state: {from: pathname}});
+            navigate(BaseUrlConstant.LOGIN_URL, {state: {from: location.pathname}});
         }
-        initRoutes().then();
-    }, [accessToken, navigate, pathname, initRoutes]);
+        if (!initialized) {
+            initRoutes().then(() => {
+                if (location.state?.fromLogin) {
+                    const fromRouter = location.state?.from;
+                    navigate(fromRouter ?? '/')
+                }
+            });
+        }
+    }, [accessToken, navigate, location, initRoutes, initialized]);
+
+    if (!initialized) {
+        return <PageLoading/>
+    }
 
     return (
         <Layout className={'layout-container'}>
@@ -83,5 +97,5 @@ export const LayoutMain = () => {
                 </Layout>
             </Content>
         </Layout>
-    )
+    );
 }

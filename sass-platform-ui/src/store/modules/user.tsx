@@ -137,7 +137,7 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
 
     fetchUserMenus: async () => {
         const menus = await permissionApi.getUserPermissionApi();
-        set((state) => ({...state, userMenus: menus ?? []}));
+        set((state) => ({...state, userMenus: menus ?? undefined}));
         return menus;
     },
 
