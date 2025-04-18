@@ -14,45 +14,48 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react"
+import React, {useCallback, useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
-import {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {ImageView} from "@components/ResourceView/imageView.tsx";
 import "./index.scss"
 import VideoView from "./videoView";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
-import {YamlView} from "@components/ResourceView/yamlView.tsx";
 import {Flex, Spin} from "antd";
+import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
+import {SourceCodeView} from "@components/ResourceView/sourceCodeView.tsx";
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
-
+// TODO 这里的资源组件需要重新优化
 export const ResourceView = (resourceView: ResourceViewProps) => {
+    const {isPublic, id} = resourceView;
     const {preview, generateSignedUrl} = useResourceAction();
     const {t} = useTranslation();
-    const [viewUrl, setViewUrl] = useState<string | undefined>(undefined);
+    const [viewUrl, setViewUrl] = useState<string | undefined>();
+
+    const generateSignedUrlFunc = useCallback(async () => {
+        if (isPublic) {
+            setViewUrl(preview(resourceView.id));
+            return
+        }
+        const signedUrl = await generateSignedUrl(id, true);
+        setViewUrl(signedUrl);
+    }, [generateSignedUrl, id, isPublic, preview, resourceView.id]);
 
     useEffect(() => {
-        const fetchUrl = async () => {
-            if (resourceView.isPublic) {
-                setViewUrl(preview(resourceView.id)); // 直接赋值
-            } else {
-                const signedUrl = await generateSignedUrl(resourceView.id, true); // 等待异步请求
-                setViewUrl(signedUrl);
-            }
-        };
-
-        fetchUrl().then();
-    }, [resourceView]);
+        generateSignedUrlFunc().then();
+    }, [generateSignedUrlFunc]);
     if (!viewUrl) {
         return <Flex className={'view-loading'} justify={'center'} align={'center'}>
             <Spin size={"large"} percent={"auto"}/>
         </Flex>
     }
 
-    switch (resourceView.type) {
-        case ResourceTypeEnum.IMAGE:
+    switch (resourceView.category) {
+        case ResourceCategoryEnum.IMAGE:
             return <ImageView viewUrl={viewUrl}/>;
-        case ResourceTypeEnum.VIDEO:
+        case ResourceCategoryEnum.VIDEO:
             return <VideoView
                 key={viewUrl} // 让 React 确认是播放新的视频（只有换源时才换）
                 options={{
@@ -82,8 +85,12 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                     ],
                 }}
             />
-        case ResourceTypeEnum.YAML:
-            return <YamlView resourceId={resourceView.id}/>;
+        case ResourceCategoryEnum.SOURCE_CODE:
+            return <SourceCodeView resourceId={resourceView.id} language={resourceView.mimeType}/>;
+        case ResourceCategoryEnum.AUDIO:
+            return <AudioPlayer
+                src={viewUrl}
+                autoPlay/>
         default:
             return <div>{t('Resource.unknownType')}</div>;
     }

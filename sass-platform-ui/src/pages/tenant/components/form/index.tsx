@@ -338,7 +338,6 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
 
                                 }}
                                 onSelectedAll={(ids: string[]) => {
-                                    console.log(ids)
                                     if (ids.length === 0) {
                                         setDeletePermissionIds([...addPermissionIds]);
                                         setAddPermissionIds([])

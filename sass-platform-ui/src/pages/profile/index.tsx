@@ -25,9 +25,8 @@ import {IconFont, S3Upload} from "@/components";
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import type {MenuItemType} from "antd/es/menu/interface";
 import {Userinfo} from "@/pages/profile/components/Userinfo.tsx";
-import {AccountsBinding} from "@/pages/profile/account/AccountsBinding.tsx";
+import {AccountsSetting} from "@/pages/profile/account/AccountsSetting.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
-import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 interface MenuItem extends MenuItemType {
     element: React.ReactNode
@@ -38,7 +37,6 @@ interface MenuItem extends MenuItemType {
  * @constructor 构造函数
  */
 export const UserProfile: React.FC = () => {
-    usePageTitle('Menu.accountsBinding');
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
     const {preview} = useResourceAction();
@@ -52,8 +50,8 @@ export const UserProfile: React.FC = () => {
         {
             key: 'accounts',
             icon: <SettingOutlined/>,
-            label: t('Menu.accountsBinding'),
-            element: <AccountsBinding/>,
+            label: t('Menu.accountsSetting'),
+            element: <AccountsSetting/>,
         },
         // 可以继续添加其他菜单项
     ];

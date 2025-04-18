@@ -49,7 +49,7 @@ export const LogMonitor: FC = () => {
             onMessage: e => onMessage(e),
         })
 
-    }, [])
+    }, [defaultLogLevel])
     useEffect(() => {
         // 滚动到底部
         if (listRef.current) {

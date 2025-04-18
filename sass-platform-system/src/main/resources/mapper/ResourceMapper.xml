@@ -25,6 +25,7 @@
         <result column="etag" property="etag"/>
         <result column="object_key" property="objectKey"/>
         <result column="version" property="version"/>
+        <result column="category" property="category"/>
         <result column="is_public" property="isPublic"/>
         <result column="is_directory" property="isDirectory"/>
         <result column="owner_tenant_id" property="ownerTenantId"/>
@@ -43,6 +44,7 @@
         object_key,
         etag,
         version,
+        category,
         is_deleted,
         is_public,
         is_directory,
@@ -59,6 +61,7 @@
         r.parent_id,
         r.name,
         r.size,
+        r.category,
         r.mime_type,
         r.object_key,
         r.etag,
@@ -89,6 +92,7 @@
             #{objectKey},
             #{etag},
             #{version},
+            #{category},
             #{isDeleted},
             #{isPublic},
             #{isDirectory},
@@ -117,6 +121,7 @@
                 #{entity.objectKey},
                 #{entity.etag},
                 #{entity.version},
+                #{entity.category},
                 #{entity.isDeleted},
                 #{entity.isPublic},
                 #{entity.isDirectory},
@@ -197,6 +202,12 @@
             </if>
             <if test="pageQuery.name != null and pageQuery.name != ''">
                AND r.name LIKE CONCAT('%',#{pageQuery.name}, '%')
+            </if>
+            <if test="pageQuery.category != null and pageQuery.category != ''">
+                AND r.category = #{pageQuery.category}
+            </if>
+            <if test="pageQuery.isPublic != null">
+                AND r.is_public = #{pageQuery.isPublic}
             </if>
         </where>
     </select>

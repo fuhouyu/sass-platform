@@ -28,9 +28,9 @@ export interface ResourceViewProps {
     mimeType: string;
 
     /**
-     * 资源类型
+     * 资源分类
      */
-    type: string;
+    category: string;
 
     /**
      * 是否是公开资源

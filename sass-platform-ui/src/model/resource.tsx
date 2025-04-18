@@ -90,7 +90,7 @@ export interface Resource extends BaseModel {
     /**
      * 业务名称
      */
-    businessName?: string | undefined | null;
+    businessName: string | undefined | null;
 
     /**
      * eTag
@@ -101,6 +101,11 @@ export interface Resource extends BaseModel {
      * 名称
      */
     name: string;
+
+    /**
+     * 资源分类
+     */
+    category?: string;
 
     /**
      * 可访问的url

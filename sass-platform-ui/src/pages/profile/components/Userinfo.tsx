@@ -20,9 +20,10 @@ import {useTranslation} from "react-i18next";
 import {Button, Flex, Form, Input, message} from "antd";
 import {useUserStore} from "@/store";
 import {Userinfo as UserinfoModal} from "@/model/user.tsx";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 export const Userinfo = () => {
-
+    usePageTitle('Menu.profile');
     const {t} = useTranslation();
     const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
     const [form] = Form.useForm();

@@ -86,6 +86,9 @@ public class ResourceDTO extends BaseDTO implements Serializable {
             value = "RESOURCE_PUBLIC_NOT_NULL")
     private Boolean isPublic;
 
+    @Schema(name = "category", description = "资源分类,根据mimeType获取分类名称")
+    private String category;
+
     @Schema(name = "isDirectory", description = "是否是目录", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "是否目录未选择")
     @ParamErrorResponse(using = ResourceResponseStatusEnum.class,

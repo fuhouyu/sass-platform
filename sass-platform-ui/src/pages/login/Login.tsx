@@ -25,17 +25,17 @@ import {useTranslation} from "react-i18next";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
 import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
-import {useRouterStore, useUserStore} from "@/store";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {useUserStore} from "@/store";
 import {TenantInfo} from "@/model/tenant.tsx";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
-import {parseRoutes} from "@/hooks/useRoutes.tsx";
 
 import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/pages/login/components/LoginSvg.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useRoutes} from "@/hooks/useRoutes.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 
 
 /**
@@ -57,9 +57,8 @@ export const Login: React.FC = () => {
     const {preview} = useResourceAction();
     const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
     const [tenantId, setTenantId] = useState<string>();
-    const {fetchUserMenus} = useUserStore(state => state);
-    const router = useRouterStore(state => state.router);
     const {theme, changeTheme} = useThemeStore();
+    const {updateDynamicRoutes} = useRoutes();
     const [themeIcon, setThemeIcon] = useState(
         theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
     );
@@ -80,16 +79,11 @@ export const Login: React.FC = () => {
         loginData.cloudflareTurnstileToken = turnstileToken;
         try {
             await fetchLogin({...loginData, tenantId});
-            setLoginButtonLoading(false)
-            setLoginButtonLoading(false);
             const fromRouter = location.state?.from;
-            const from = (fromRouter && fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter || '/';
-            const menus = await fetchUserMenus();
-            if (router?.routes[0]?.children) {
-                router.routes[0].children.push(...parseRoutes(menus));
-            }
-            navigate(from);
-
+            const from = (!fromRouter || fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter;
+            updateDynamicRoutes().then(() => {
+                navigate(from);
+            });
         } finally {
             setLoginButtonLoading(false);
         }
@@ -226,7 +220,8 @@ export const Login: React.FC = () => {
                         </div>
                     </div>
                     <footer className={'foot-copyright'}>
-                        <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
+                        <p>Copyright © 2024-{new Date().getFullYear()} <a href="https://github.com/fuhouyu">fuhouyu</a>.
+                        </p>
                     </footer>
                 </Flex>
             </Flex>

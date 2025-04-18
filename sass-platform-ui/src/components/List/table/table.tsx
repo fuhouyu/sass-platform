@@ -92,47 +92,45 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     };
 
     return (
-        <>
-            <Flex className="table-container" vertical>
-                <div className="title-line">
-                    {tableName &&
-                        <span className="title">
+        <Flex className="table-container" vertical>
+            <div className="title-line">
+                {tableName &&
+                    <span className="title">
                             {tableName}
                         </span>}
-                    <div className="components">
-                        {tableComponents?.map((component, index) => (
-                            <div className='component' key={index}>
-                                {component}
-                            </div>
-                        ))
-                        }
-                    </div>
+                <div className="components">
+                    {tableComponents?.map((component, index) => (
+                        <div className='component' key={index}>
+                            {component}
+                        </div>
+                    ))
+                    }
                 </div>
-                {!disableTableHint && <div className="tips-container">
-                    <Space>
-                        <InfoCircleFilled className="table-tips-icon"/>
-                        <span>{t('Common.listTips')}</span>
-                    </Space>
-                </div>}
-                <AntdTable
-                    {...tableProps}
-                    // size={'middle'}
-                    rowKey={tableProps.rowKey ?? 'id'}
-                    onChange={onChange}
-                    scroll={{y: 450}}
+            </div>
+            {!disableTableHint && <div className="tips-container">
+                <Space>
+                    <InfoCircleFilled className="table-tips-icon"/>
+                    <span>{t('Common.listTips')}</span>
+                </Space>
+            </div>}
+            <AntdTable
+                {...tableProps}
+                // size={'middle'}
+                rowKey={tableProps.rowKey ?? 'id'}
+                onChange={onChange}
+                scroll={{y: 440}}
 
-                    dataSource={pageResult?.list}
-                    pagination={{
-                        defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
-                        total: pageResult?.total,
-                        hideOnSinglePage: false,
-                        showSizeChanger: true,
-                        defaultPageSize: pageResult?.pageSize ?? 10,
-                    }}
-                    showSorterTooltip={{target: 'sorter-icon'}}
-                />
-            </Flex>
-        </>
+                dataSource={pageResult?.list}
+                pagination={{
+                    defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
+                    total: pageResult?.total,
+                    hideOnSinglePage: false,
+                    showSizeChanger: true,
+                    defaultPageSize: pageResult?.pageSize ?? 10,
+                }}
+                showSorterTooltip={{target: 'sorter-icon'}}
+            />
+        </Flex>
     )
 }
 

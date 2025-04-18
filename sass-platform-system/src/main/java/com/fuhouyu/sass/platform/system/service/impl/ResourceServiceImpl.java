@@ -33,6 +33,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenReq
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
+import com.fuhouyu.sass.platform.system.enums.ResourceCategoryEnum;
 import com.fuhouyu.sass.platform.system.enums.response.ResourceResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
@@ -49,6 +50,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -132,9 +134,17 @@ public class ResourceServiceImpl implements ResourceService {
         });
         // 删除临时资源
         this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
+        String mimeType = dto.getMimeType();
+        String name = dto.getName();
+        if (StringUtils.isAllBlank(mimeType) && name.contains(".")) {
+            mimeType = name.substring(name.lastIndexOf(".") + 1);
+        }
+        String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
         entity.setId(id);
+        entity.setMimeType(mimeType);
+        entity.setCategory(category);
         entity.setObjectKey(newObjectKey);
         entity.setParentId(parentId);
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
@@ -291,6 +301,19 @@ public class ResourceServiceImpl implements ResourceService {
         return this.resourceMapper.countObjects();
     }
 
+    @Override
+    public byte[] readFileToByteArray(Long id) {
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+
+        ResponseBytes<GetObjectResponse> objectAsBytes = this.s3Client.getObjectAsBytes(getObject -> {
+            getObject.bucket(tenantSpaceDTO.getBucketName());
+            getObject.key(resourceDTO.getObjectKey());
+
+        });
+        return objectAsBytes.asByteArray();
+    }
+
     /**
      * 检查资源权限
      *
@@ -411,6 +434,7 @@ public class ResourceServiceImpl implements ResourceService {
         resources.setMimeType("");
         resources.setObjectKey(objectKey);
         resources.setVersion(1);
+        resources.setCategory(ResourceCategoryEnum.DIRECTORY.name());
         resources.setIsPublic(isPublic);
         resources.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         resources.setIsDirectory(true);

@@ -15,11 +15,12 @@
  */
 
 import {NotFound} from "../pages/error/notfound/NotFound.tsx";
-import {lazy, useEffect, useState} from "react";
+import {lazy, useCallback, useState} from "react";
 import {Menu} from "@/model/menu.tsx";
 import {getAccessToken} from "@/utils";
-import {useUserStore} from "@/store";
-import {DataRouteObject} from "react-router-dom";
+import {useRouterStore, useUserStore} from "@/store";
+import {createBrowserRouter, DataRouteObject} from "react-router-dom";
+import {commonRoutes} from "@/routes/routes.tsx";
 
 
 const modules = import.meta.glob('../pages/**/index.tsx');
@@ -32,7 +33,7 @@ const lazyElement = (path: string) => {
     // @ts-expect-error
     const Component = lazy(module);
     return (
-            <Component/>
+        <Component/>
     );
 };
 
@@ -57,26 +58,27 @@ export const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
 export const useRoutes = () => {
     const {userMenus, fetchUserMenus} = useUserStore();
     const [initialized, setInitialized] = useState(false);
-    const [dynamicRoutes, setRoutes] = useState<DataRouteObject[]>([]);
+    const {storeRouter} = useRouterStore(state => state);
 
-    useEffect(() => {
+    /**
+     * 更新动态路由
+     */
+    const updateDynamicRoutes = useCallback(async () => {
+        const rootRoutes = [...commonRoutes];
         const accessToken = getAccessToken();
         if (!accessToken) {
+            const updatedRouter = createBrowserRouter(rootRoutes);
+            storeRouter(updatedRouter);
             setInitialized(true);
-            return;
         }
+        if (initialized || userMenus) return;
+        const menus = await fetchUserMenus();
+        setInitialized(true);
+        const dynamicRoutes = parseRoutes(menus);
+        rootRoutes[0].children = [...dynamicRoutes, ...(rootRoutes[0].children ?? [])];
+        const updatedRouter = createBrowserRouter(rootRoutes);
+        storeRouter(updatedRouter);
+    }, [userMenus, initialized, fetchUserMenus, storeRouter]);
 
-        const initializeRoutes = async () => {
-            if (initialized || userMenus) return; // Avoid duplicate calls
-            const menus = await fetchUserMenus();
-            const newRoutes = parseRoutes(menus); // Parse new routes
-            setRoutes(newRoutes); // Update routes
-
-            setInitialized(true);
-        };
-
-        initializeRoutes().then();
-    }, [userMenus, initialized]);
-
-    return {initialized, dynamicRoutes};
+    return {initialized, updateDynamicRoutes};
 }

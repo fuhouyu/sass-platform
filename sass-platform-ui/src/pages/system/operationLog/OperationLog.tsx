@@ -27,6 +27,8 @@ import {operationLogApi} from '@/apis/operationLog';
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import dayjs from "dayjs";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import ReactJson from "react-json-view";
+import {useThemeStore} from "@/store/modules/theme.tsx";
 
 
 /**
@@ -145,7 +147,7 @@ export const OperationLog = () => {
                 return <Button icon={<EyeOutlined/>} type={'link'}
                                onClick={async () => {
                                    setOperationLog(await operationLogApi.operationLogInfo(record.id!))
-                                   setModalOpen(true)
+                                   setIsModalOpen(true)
                                }}
                 >{t('OperationLog.detail')}</Button>
             }
@@ -157,10 +159,11 @@ export const OperationLog = () => {
     const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
     const [moduleNameList, setModuleNameList] = useState<string[]>([]);
     const {findDictItemName, findDictItems} = useDictItem(["OPERATION_LOG_TYPE"]);
-    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [operationLog, setOperationLog] = useState<OperationLogModel>({});
     const {RangePicker} = DatePicker;
-
+    const {theme} = useThemeStore(state => state);
+    const jsonTheme = theme === 'dark' ? 'monokai' : 'rjv-default';
 
     const initSearchSelect = useCallback(async () => {
         setModuleNameList(await operationLogApi.getModuleList());
@@ -168,7 +171,7 @@ export const OperationLog = () => {
 
     useEffect(() => {
         initSearchSelect().then();
-    }, []);
+    }, [initSearchSelect]);
 
     /**
      * 复制
@@ -251,7 +254,7 @@ export const OperationLog = () => {
                                     pageQuery['startTime'] ? dayjs(pageQuery['startTime']) : null,
                                     pageQuery['endTime'] ? dayjs(pageQuery['endTime']) : null
                                 ]}
-                                onCalendarChange={(_, search, __) => {
+                                onCalendarChange={(_, search) => {
                                     setPageQuery({...pageQuery, startTime: search[0], endTime: search[1]})
                                 }}/>
                         </>
@@ -264,7 +267,7 @@ export const OperationLog = () => {
                 title={t('OperationLog.info')}
                 open={isModalOpen}
                 closable
-                onCancel={() => setModalOpen(false)}
+                onCancel={() => setIsModalOpen(false)}
                 destroyOnClose
                 width={'80%'}
                 footer={[]}
@@ -289,25 +292,36 @@ export const OperationLog = () => {
                         label={t('OperationLog.requestParam')}
                     >
                         <List className={'request-params-list'}>
-                            {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam as string)).map(([key, value], index) => (
-                                <List.Item key={index}>
+                            {operationLog.requestParam && Object.entries(JSON.parse(operationLog.requestParam)).map(([key, value]) => {
+
+                                const jsonObject = JSON.parse(value as string);
+
+                                return (<List.Item key={operationLog.id}>
                                     <div className={'log-item-value'}
                                     >
                                         <List.Item.Meta
                                             title={key}
-                                            description={value ? value as string : ''}
+                                            description={
+                                                typeof jsonObject === 'object' ?
+                                                    <ReactJson
+                                                        theme={jsonTheme}
+                                                        src={jsonObject}
+                                                        collapsed={false}
+                                                        displayObjectSize={false}/>
+                                                    : jsonObject
+                                            }
                                         />
-                                        <Button
+                                        {typeof jsonObject !== 'object' && <Button
                                             icon={<CopyOutlined/>}
                                             size="small"
                                             style={{marginLeft: 10}}
                                             onClick={() => handleCopy(value as string)}
                                             title={t('Common.copy')}
-                                        />
+                                        />}
                                     </div>
 
-                                </List.Item>
-                            ))}
+                                </List.Item>)
+                            })}
                         </List>
 
                     </Descriptions.Item>
@@ -321,14 +335,11 @@ export const OperationLog = () => {
                         label={t('OperationLog.responseData')}>
                         {operationLog.responseData && <div className={'log-item-value'}
                         >
-                            {operationLog.responseData}
-                            <Button
-                                icon={<CopyOutlined/>}
-                                size="small"
-                                style={{marginLeft: 10}}
-                                onClick={() => handleCopy(operationLog.responseData as string)}
-                                title={t('Common.copy')}
-                            />
+                            <ReactJson
+                                theme={jsonTheme}
+                                src={JSON.parse(operationLog.responseData)}
+                                collapsed={false}
+                                displayObjectSize={false}/>
                         </div>}
                     </Descriptions.Item>
 
@@ -351,5 +362,5 @@ export const OperationLog = () => {
             </Modal>
 
         </>
-    )
+    );
 }

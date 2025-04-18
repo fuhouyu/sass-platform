@@ -20,16 +20,17 @@ import {
     Breadcrumb,
     BreadcrumbProps,
     Button,
-    Card,
     Divider,
     Drawer,
     Dropdown,
     Flex,
     Input,
     List,
+    Menu,
     MenuProps,
     Modal,
     Popconfirm,
+    Select,
     Space,
     TableColumnsType,
     Tag
@@ -46,7 +47,6 @@ import {
     FolderOutlined,
     LeftOutlined,
     LockOutlined,
-    SearchOutlined,
     UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -55,7 +55,6 @@ import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
-import useResourceType, {ResourceTypeEnum} from "@/hooks/useResourceType.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
@@ -64,26 +63,24 @@ import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.t
 import {useButton} from "@/hooks/useButton.tsx";
 import {AnyObject} from "antd/es/_util/type";
 import {useNotification} from "@/hooks/useNotification.tsx";
+import {getCategoryInfo, ResourceCategoryEnum, resourceTypeInfo,} from "@/enums/ResourceCategoryEnum.tsx";
 
-type ResourcePreview = {
-    type: ResourceTypeEnum
-} & Resource;
 const TenantResource: React.FC = () => {
     usePageTitle('Menu.resourceManage');
     const {t} = useTranslation();
 
     const tableRef = useRef<TableRefType<Resource>>(null);
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
-    const {parseResourceType} = useResourceType();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const {generateSignedUrl} = useResourceAction();
     const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
     const [countObjects, setCountObjects] = useState<number>(0)
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
-    const [selectFile, setSelectFile] = useState<ResourcePreview>();
+    const [selectFile, setSelectFile] = useState<Resource>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
     const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
     const {notificationMessage, contextHolder} = useNotification();
+    const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
 
     const columns: TableColumnsType<Resource> = [
         {
@@ -101,9 +98,9 @@ const TenantResource: React.FC = () => {
                         </Space>
                     </Button>
                 }
-                const resource = parseResourceType(record.mimeType);
+                const categoryInfo = getCategoryInfo(record.category!);
                 return <Space size={4}>
-                    {resource.icon}
+                    {categoryInfo.icon}
                     {record.name}
                 </Space>
             }
@@ -134,6 +131,14 @@ const TenantResource: React.FC = () => {
                     return <span>-</span>
                 }
                 return <span>{record.mimeType}</span>
+            }
+        },
+        {
+            title: t('Resource.category.title'),
+            dataIndex: 'category',
+            align: "center",
+            render: (_, record) => {
+                return <span>{t(`Resource.category.${record.category?.toLowerCase()}`)}</span>
             }
         },
         {
@@ -189,32 +194,30 @@ const TenantResource: React.FC = () => {
                 const label = record.isPublic ? t('Resource.setPrivate') : t('Resource.setPublic');
                 const icon = record.isPublic ? <LockOutlined/> : <EyeOutlined/>;
                 const successTips = record.isPublic ? t('Resource.setPrivateTips') : t('Resource.setPublicSuccessTips');
-                return (<>
-                    <PermissionButton buttonPermissions={buttonPermissions}
-                                      permissionStr={TenantResourcePermissionConstant.EDIT}>
-                        <Button
-                            color={record.isPublic ? 'pink' : 'cyan'}
-                            variant={'solid'}
-                            icon={icon}
-                            disabled={record.isDirectory}
-                            onClick={async (event) => {
-                                event.stopPropagation();
-                                await resourceApi.status(record.id!, !record.isPublic);
-                                notificationMessage({
-                                    type: 'success',
-                                    message: label,
-                                    description: <Trans
-                                        i18nKey={successTips}
-                                        values={{name: record.name}}
-                                        components={{strong: <span className="highlight"/>}}
-                                    />
-                                });
-                                await tableRef.current?.refreshPageList();
-                            }}>
-                            {label}
-                        </Button>
-                    </PermissionButton>
-                </>)
+                return (<PermissionButton buttonPermissions={buttonPermissions}
+                                          permissionStr={TenantResourcePermissionConstant.EDIT}>
+                    <Button
+                        color={record.isPublic ? 'pink' : 'cyan'}
+                        variant={'solid'}
+                        icon={icon}
+                        disabled={record.isDirectory}
+                        onClick={async (event) => {
+                            event.stopPropagation();
+                            await resourceApi.status(record.id!, !record.isPublic);
+                            notificationMessage({
+                                type: 'success',
+                                message: label,
+                                description: <Trans
+                                    i18nKey={successTips}
+                                    values={{name: record.name}}
+                                    components={{strong: <span className="highlight"/>}}
+                                />
+                            });
+                            await tableRef.current?.refreshPageList();
+                        }}>
+                        {label}
+                    </Button>
+                </PermissionButton>)
             }
         }
     ]
@@ -223,7 +226,7 @@ const TenantResource: React.FC = () => {
         const breadcrumbItems = [
             {
                 title: t('Resource.rootPath'),
-                onClick: () => breadcrumbClick(undefined),
+                onClick: () => breadcrumbClick(),
             }];
         const prefix: string = querySearchParams()['prefix'];
         if (!prefix) {
@@ -238,7 +241,7 @@ const TenantResource: React.FC = () => {
         return breadcrumbItems
     };
 
-    const [breadcrumbItems, setBreadcrumb] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
+    const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
 
     /**
      * 初始化数据
@@ -256,7 +259,7 @@ const TenantResource: React.FC = () => {
             urlPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
         }
         if (!prefix) {
-            setBreadcrumb(breadcrumbItems?.slice(0, 1));
+            setBreadcrumbItems(breadcrumbItems?.slice(0, 1));
             updateSearchParams({prefix: urlPrefix})
             return
         }
@@ -264,10 +267,10 @@ const TenantResource: React.FC = () => {
         prefix.split("/").forEach(p => {
             const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
             if (index !== -1) {
-                setBreadcrumb(breadcrumbItems?.slice(0, index + 1));
+                setBreadcrumbItems(breadcrumbItems?.slice(0, index + 1));
                 return
             }
-            setBreadcrumb([...breadcrumbItems ?? [], {
+            setBreadcrumbItems([...breadcrumbItems ?? [], {
                 title: p,
                 onClick: () => breadcrumbClick(p),
             }])
@@ -293,10 +296,7 @@ const TenantResource: React.FC = () => {
             return
         }
         setShowFileDetail(true);
-        setSelectFile({
-            ...record,
-            type: parseResourceType(record.mimeType).type,
-        });
+        setSelectFile({...record});
     }
 
     /**
@@ -315,7 +315,7 @@ const TenantResource: React.FC = () => {
                         isPublic={false}
                         showUploadList={false}
                         showUploadFloatButton
-                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string)}
+                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
                         {t('Resource.uploadFile')}
@@ -330,7 +330,7 @@ const TenantResource: React.FC = () => {
                         directory
                         isPublic={false}
                         showUploadList={false}
-                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length! - 1].title as string)}
+                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
                         {t('Resource.uploadFolder')}
@@ -361,7 +361,7 @@ const TenantResource: React.FC = () => {
             icon: <EyeOutlined/>,
             text: t('Resource.preview'),
             onClick: () => {
-                if (selectFile?.type === ResourceTypeEnum.OFFICE) {
+                if (selectFile?.category === ResourceCategoryEnum.DOCUMENT) {
                     window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=VIEW`)
                     return
                 }
@@ -370,123 +370,169 @@ const TenantResource: React.FC = () => {
         },
     ];
 
+    /**
+     * 获取资源分类名称的菜单
+     */
+    const getResourceTypeMenuItems = (): MenuProps['items'] => {
+        const menuItems = Object.entries(resourceTypeInfo).map(([key, value]) => ({
+            key,
+            label: t(`Resource.category.${key.toLowerCase()}`),
+            icon: value.icon,
+        }));
+        menuItems.unshift({
+            key: '',
+            label: t(`Resource.category.all`),
+            icon: <IconFont type={'i-quanbu'}/>,
+        })
+        return menuItems;
+    };
+
     return (<>
         {contextHolder}
-        <Flex className={'resource-search-container'} justify={'center'} align={'center'}>
-            <Input
-                className={'resource-search-input'}
-                prefix={<SearchOutlined/>}
-                placeholder={t('Resource.search')}
-                value={querySearchParams().name}
-                onChange={(e) => updateSearchParams({
-                    name: e.target.value
-                })}
-            />
-        </Flex>
-        <Card>
-            <div className={'tenant-space-header'}>
-                <Flex gap={8}>
-                    <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
-                    <Flex vertical justify={'center'} className={'space-bucket-info'}>
-                        <h2>{tenantSpace?.bucketName}</h2>
-                        <Space size={24}>
-                            <span>{t('Common.createdAt')}：<strong>{tenantSpace?.createdAt}</strong></span>
-                            <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                            <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {countObjects} Objects
-                            </span>
-                        </Space>
-                    </Flex>
-                </Flex>
-                <Flex gap={8}>
-                    <Popconfirm
-                        title={t('Button.delete')}
-                        description={t('Button.deleteConfirm')}
-                        okText={t('Common.yes')}
-                        cancelText={t('Common.no')}
-                        onConfirm={async () => {
-                            await resourceApi.deleteInfoApi(rowKeys as string[]);
-                            await tableRef?.current?.refreshPageList();
-                        }}
-                    >
-                        <DeleteButton
-                            disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                    </Popconfirm>
-                    <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
-                        {t('Resource.uploadFile')}
-                    </Dropdown.Button>
-                </Flex>
-            </div>
 
-            <div className={'tenant-space-content'}>
-                <PageList<Resource>
-                    tableProps={{
-                        tableRef: tableRef,
-                        onRow: (record) => ({
-                            onClick: () => onTableRowClick(record),
-                        }),
-                        columns: columns,
-                        pageApi: resourceApi.pageInfoListApi,
-                        rowSelection: rowSelection,
-                        tableComponents: [
-                            <>
-                                <Flex justify={'center'}>
+        <Flex gap={20} className={'resource-container'}>
+            <Flex className={'resource-type-menu-container'} justify={'center'}>
+                <Menu
+                    className={'resource-type-menu'}
+                    mode="inline"
+                    items={getResourceTypeMenuItems()}
+                    onClick={(e) => {
+                        updateSearchParams({category: e.key})
+                    }}
+
+                />
+            </Flex>
+            <div className={'resource-list-container'}>
+                <div className={'tenant-space-header'}>
+                    <Flex gap={8}>
+                        <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
+                        <Flex vertical justify={'center'} className={'space-bucket-info'}>
+                            <h2>{tenantSpace?.bucketName}</h2>
+                            <Space size={24}>
+                                <span>{t('Common.createdAt')}：<strong>{tenantSpace?.createdAt}</strong></span>
+                                <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
+                                <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {countObjects} Objects
+                            </span>
+                            </Space>
+                        </Flex>
+                    </Flex>
+                    <Flex gap={8}>
+                        <Popconfirm
+                            title={t('Button.delete')}
+                            description={t('Button.deleteConfirm')}
+                            okText={t('Common.yes')}
+                            cancelText={t('Common.no')}
+                            onConfirm={async () => {
+                                await resourceApi.deleteInfoApi(rowKeys as string[]);
+                                await tableRef?.current?.refreshPageList();
+                            }}
+                        >
+                            <DeleteButton
+                                disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                        </Popconfirm>
+                        <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
+                            {t('Resource.uploadFile')}
+                        </Dropdown.Button>
+                    </Flex>
+                </div>
+                <div className={'tenant-space-content'}>
+                    <PageList<Resource>
+                        tableProps={{
+                            tableRef: tableRef,
+                            onRow: (record) => ({
+                                onClick: () => onTableRowClick(record),
+                            }),
+                            columns: columns,
+                            pageApi: resourceApi.pageInfoListApi,
+                            rowSelection: rowSelection,
+                            tableComponents: [
+                                <Flex
+                                    key={'back-button'}
+                                    justify={'center'}>
                                     <Button className={'back-button'}
-                                            onClick={breadcrumbItems && breadcrumbItems[breadcrumbItems.length - 2]?.onClick}
+                                            onClick={breadcrumbItems?.[breadcrumbItems.length - 2]?.onClick}
                                     ><LeftOutlined/></Button>
                                     <Breadcrumb className={'space-bucket-breadcrumb'} items={breadcrumbItems}/>
                                 </Flex>
-                            </>
-                        ]
-                    }}
-                />
-                <Drawer
-                    title={selectFile?.name}
-                    placement="right"
-                    closable={false}
-                    onClose={() => setShowFileDetail(false)}
-                    open={showFileDetail}
-                >
-                    <List
-                        className={'file-actions-list'}
-                        header={<span><strong>Actions: </strong></span>}
-                        bordered
-                        dataSource={fileActions}
-                        renderItem={(item) => {
-                            if (item.text === t('Resource.editor')) {
-                                if (!(selectFile?.type === ResourceTypeEnum.OFFICE)) {
-                                    return null;
-                                }
-                            }
-                            console.log(buttonPermissions)
-                            return <PermissionButton buttonPermissions={buttonPermissions}
-                                                     permissionStr={item.key}>
-                                <List.Item onClick={item.onClick}>
-                                    {item.icon} {item.text}
-                                </List.Item>
-                            </PermissionButton>
+                            ]
+                        }}
+                        headerSearchProps={{
+                            components: [
+                                <><label htmlFor="name">{t('Resource.name')}</label>
+                                    <Input
+                                        allowClear
+                                        defaultValue={pageQuery.name}
+                                        placeholder={t('Resource.namePlaceholder')}
+                                        id={'name'}
+                                        onChange={(e) => setPageQuery({name: e.target.value})}
+                                    />
+                                </>,
+                                <><label htmlFor="permission">{t('Resource.permission')}</label>
+                                    <Select
+                                        allowClear
+                                        defaultValue={pageQuery.isPublic}
+                                        placeholder={t('Resource.permissionPlaceholder')}
+                                        id={'permission'}
+                                        onChange={(value) => setPageQuery({isPublic: value})}
+                                        options={[
+                                            {value: 'true', label: t('Resource.public')},
+                                            {value: 'false', label: t('Resource.private')}
+                                        ]}
+                                    />
+                                </>,
+                            ],
+                            onSearchClick: () => updateSearchParams(pageQuery),
 
                         }}
                     />
-                    <h3>{t('Resource.info')}</h3>
-                    <Divider/>
-                    <div className={'file-detail-container'}>
-                        <strong>{t('Resource.name')}: </strong>
-                        <br/>
-                        <span>{selectFile?.name}</span>
-                    </div>
-                    <div className={'file-detail-container'}>
-                        <strong>{t('Resource.size')}: </strong>
-                        <br/>
-                        <span>{selectFile?.size}</span>
-                    </div>
-                    <div className={'file-detail-container'}>
-                        <strong>Etag: </strong>
-                        <br/>
-                        <span>{selectFile?.eTag}</span>
-                    </div>
-                </Drawer>
+                    <Drawer
+                        title={selectFile?.name}
+                        placement="right"
+                        closable={false}
+                        onClose={() => setShowFileDetail(false)}
+                        open={showFileDetail}
+                    >
+                        <List
+                            className={'file-actions-list'}
+                            header={<span><strong>Actions: </strong></span>}
+                            bordered
+                            dataSource={fileActions}
+                            renderItem={(item) => {
+                                if (item.text === t('Resource.editor')) {
+                                    if (selectFile?.category !== ResourceCategoryEnum.DOCUMENT.toString()) {
+                                        return null;
+                                    }
+                                }
+                                return <PermissionButton buttonPermissions={buttonPermissions}
+                                                         permissionStr={item.key}>
+                                    <List.Item onClick={item.onClick}>
+                                        {item.icon} {item.text}
+                                    </List.Item>
+                                </PermissionButton>
+
+                            }}
+                        />
+                        <h3>{t('Resource.info')}</h3>
+                        <Divider/>
+                        <div className={'file-detail-container'}>
+                            <strong>{t('Resource.name')}: </strong>
+                            <br/>
+                            <span>{selectFile?.name}</span>
+                        </div>
+                        <div className={'file-detail-container'}>
+                            <strong>{t('Resource.size')}: </strong>
+                            <br/>
+                            <span>{selectFile?.size}</span>
+                        </div>
+                        <div className={'file-detail-container'}>
+                            <strong>Etag: </strong>
+                            <br/>
+                            <span>{selectFile?.eTag}</span>
+                        </div>
+                    </Drawer>
+                </div>
             </div>
-        </Card>
+        </Flex>
 
         <Modal
             title={selectFile?.name}
@@ -494,15 +540,17 @@ const TenantResource: React.FC = () => {
             destroyOnClose
             open={previewModal}
             footer={null}
-            width={'100%'}
+            width={'80%'}
+            height={'80%'}
             closable
+
             onCancel={() => setPreviewModal(false)}
         >
             <ResourceView
                 mimeType={selectFile?.mimeType ?? ''}
                 id={selectFile?.id ?? ''}
                 isPublic={selectFile?.isPublic ?? false}
-                type={selectFile?.type ?? ''}/>
+                category={selectFile?.category ?? ''}/>
         </Modal>
 
     </>)

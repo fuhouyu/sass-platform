@@ -1086,6 +1086,7 @@ CREATE TABLE resources
     mime_type       VARCHAR(100),
     object_key   VARCHAR(255) NOT NULL,
     version         INT          NOT NULL DEFAULT 1,
+    category VARCHAR(64) NOT NULL DEFAULT 'OTHER',
     etag         VARCHAR(64)  NOT NULL,
     is_directory BOOLEAN      NOT NULL DEFAULT FALSE,
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
@@ -1109,6 +1110,7 @@ COMMENT ON COLUMN resources.owner_tenant_id IS '所属的租户id';
 COMMENT ON COLUMN resources.object_key IS '对象存储中的对象名称';
 COMMENT ON COLUMN resources.etag IS 'etag';
 COMMENT ON COLUMN resources.version IS '资源的版本号';
+COMMENT ON COLUMN resources.category IS '资源分类';
 COMMENT ON COLUMN resources.is_public IS '是否允许公开访问';
 COMMENT ON COLUMN resources.created_at IS '创建时间';
 COMMENT ON COLUMN resources.created_by IS '创建人';
