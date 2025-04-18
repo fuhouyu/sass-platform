@@ -32,14 +32,16 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
     const {isPublic, id} = resourceView;
     const {preview, generateSignedUrl} = useResourceAction();
     const {t} = useTranslation();
-    const [viewUrl, setViewUrl] = useState<string | undefined>(preview(resourceView.id));
+    const [viewUrl, setViewUrl] = useState<string | undefined>();
 
     const generateSignedUrlFunc = useCallback(async () => {
-        if (!isPublic) {
-            const signedUrl = await generateSignedUrl(id, true);
-            setViewUrl(signedUrl);
+        if (isPublic) {
+            setViewUrl(preview(resourceView.id));
+            return
         }
-    }, [generateSignedUrl, id, isPublic]);
+        const signedUrl = await generateSignedUrl(id, true);
+        setViewUrl(signedUrl);
+    }, [generateSignedUrl, id, isPublic, preview, resourceView.id]);
 
     useEffect(() => {
         generateSignedUrlFunc().then();

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 .ant-layout, .ant-layout-has-sider, .ant-layout-content, .layout-content {
   height: 100%;
   padding: 0;
-  overflow-y: hidden;
 }
 
 .layout-content {
-  padding-right: 1rem;
-  overflow-y: scroll;
+  height: calc(100% - 6rem);
 }
 
 // 分隔线
@@ -52,4 +49,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.ant-layout-footer {
+  padding: 0;
+
 }

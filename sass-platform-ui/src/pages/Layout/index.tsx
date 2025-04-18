@@ -44,7 +44,8 @@ export const LayoutMain = () => {
 
 
     return (
-        <Layout className={'layout-container'}>
+        <Layout className={'app-container'}
+        >
             <LayoutHeader/>
             <Content className={'layout-content'}>
                 <Layout>

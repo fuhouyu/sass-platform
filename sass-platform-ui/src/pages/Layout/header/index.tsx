@@ -73,46 +73,44 @@ export const LayoutHeader = () => {
 
 
     return (
-        <>
-            <Header className="layout-header">
-                <div className={'header-title-container'}>
+        <Header className="layout-header">
+            <div className={'header-title-container'}>
 
-                    <h3 className="platform-title">
-                        {tenant?.tenantName}
-                    </h3>
+                <h3 className="platform-title">
+                    {tenant?.tenantName}
+                </h3>
 
-                    <Divider className={'header-title-divider'} type="vertical"/>
-                </div>
+                <Divider className={'header-title-divider'} type="vertical"/>
+            </div>
 
-                <Flex className={'header-actions-user-container'} justify={'center'} align={'center'} gap={20}>
-                    <Flex>
-                        <Segmented
-                            shape="round"
-                            defaultValue={theme}
-                            options={[
-                                {value: 'light', icon: <SunOutlined/>},
-                                {value: 'dark', icon: <MoonOutlined/>},
-                            ]}
-                            onChange={(value: string) => changeTheme(value)}
-                        />
-                    </Flex>
-                    <Flex>
-                        {LanguageSwitcherButton}
-                    </Flex>
-                    <Flex className={'cursor-point'} justify={'center'} align={'center'}>
-                        <Dropdown menu={{items: dropDownMenus}}>
-                            <Space>
-                                <Avatar size={24}
-                                        icon={<UserOutlined/>}
-                                        src={preview(userinfo.avatar)}
-                                />
-                                <span>{userinfo.realName}</span>
-                            </Space>
-                        </Dropdown>
-                    </Flex>
+            <Flex className={'header-actions-user-container'} justify={'center'} align={'center'} gap={20}>
+                <Flex>
+                    <Segmented
+                        shape="round"
+                        defaultValue={theme}
+                        options={[
+                            {value: 'light', icon: <SunOutlined/>},
+                            {value: 'dark', icon: <MoonOutlined/>},
+                        ]}
+                        onChange={(value: string) => changeTheme(value)}
+                    />
                 </Flex>
+                <Flex>
+                    {LanguageSwitcherButton}
+                </Flex>
+                <Flex className={'cursor-point'} justify={'center'} align={'center'}>
+                    <Dropdown menu={{items: dropDownMenus}}>
+                        <Space>
+                            <Avatar size={24}
+                                    icon={<UserOutlined/>}
+                                    src={preview(userinfo.avatar)}
+                            />
+                            <span>{userinfo.realName}</span>
+                        </Space>
+                    </Dropdown>
+                </Flex>
+            </Flex>
 
-            </Header>
-        </>
+        </Header>
     )
 }

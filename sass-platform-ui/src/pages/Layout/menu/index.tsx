@@ -48,21 +48,22 @@ export const LayoutMenu = () => {
     menuItems.unshift(...commonMenus);
 
     return (
-        <>
-            <Sider className={'layout-main-sider'} theme={"light"}
-                   collapsible
-                   collapsed={collapsed}
-                   trigger={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
-                   onCollapse={(value) => setCollapsed(value)}>
-                <Divider/>
-                <Menu className="layout-menu"
-                      defaultSelectedKeys={['home']}
-                      mode="inline"
-
-                      items={menuItems} onClick={({key}) => {
-                    navigate(key);
-                }}/>
-            </Sider>
-        </>
+        <Sider className={'layout-main-sider'}
+               collapsible
+               collapsed={collapsed}
+               theme={'light'}
+               trigger={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+               zeroWidthTriggerStyle={{
+                   padding: 0
+               }}
+               onCollapse={(value) => setCollapsed(value)}>
+            <Divider/>
+            <Menu className="layout-menu"
+                  defaultSelectedKeys={['home']}
+                  mode="inline"
+                  items={menuItems} onClick={({key}) => {
+                navigate(key);
+            }}/>
+        </Sider>
     )
 }

@@ -220,7 +220,8 @@ export const Login: React.FC = () => {
                         </div>
                     </div>
                     <footer className={'foot-copyright'}>
-                        <p>Copyright © 2024-2025 <a href="https://github.com/fuhouyu">fuhouyu</a>.</p>
+                        <p>Copyright © 2024-{new Date().getFullYear()} <a href="https://github.com/fuhouyu">fuhouyu</a>.
+                        </p>
                     </footer>
                 </Flex>
             </Flex>

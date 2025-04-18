@@ -118,7 +118,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 // size={'middle'}
                 rowKey={tableProps.rowKey ?? 'id'}
                 onChange={onChange}
-                scroll={{y: 480}}
+                scroll={{y: 440}}
 
                 dataSource={pageResult?.list}
                 pagination={{
