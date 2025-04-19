@@ -136,7 +136,7 @@ export const LayoutMain = () => {
             <Content className={'layout-content'}>
                 <Layout>
                     <LayoutMenu/>
-                    {uploadFiles.length === 0 && <Affix className={'task-affix-container'}>
+                    {uploadFiles.length > 0 && <Affix className={'task-affix-container'}>
                         <Badge count={uploadFiles.length}
                                offset={[-30, 0]}
                         >

@@ -115,7 +115,6 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
             </div>}
             <AntdTable
                 {...tableProps}
-                // size={'middle'}
                 rowKey={tableProps.rowKey ?? 'id'}
                 onChange={onChange}
                 scroll={{y: 440}}
