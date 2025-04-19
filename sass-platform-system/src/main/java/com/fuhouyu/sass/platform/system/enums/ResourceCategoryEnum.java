@@ -86,7 +86,6 @@ public enum ResourceCategoryEnum {
             "text/x-scss",
             "text/x-sass",
             "text/x-less",
-            "text/markdown",
             "application/x-yaml",
             "application/xml",
             "text/x-java-source",
@@ -136,8 +135,6 @@ public enum ResourceCategoryEnum {
             "fsharp",
             "groovy",
             "less",
-            "markdown",
-            "md",
             "ini",
             "properties",
             "dockerfile",
@@ -156,6 +153,13 @@ public enum ResourceCategoryEnum {
             "application/x-tar",
             "application/gzip",
             "application/x-bzip2"),
+
+    /**
+     * Markdown 标记语言
+     */
+    MARKDOWN("text/markdown",
+            "markdown",
+            "md"),
 
     /**
      * 文件夹

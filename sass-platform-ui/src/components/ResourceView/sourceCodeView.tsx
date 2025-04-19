@@ -24,12 +24,15 @@ import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
+import MarkdownPreview from '@uiw/react-markdown-preview';
+
 
 interface SourceCodeProps {
     // 预览地址
     resourceId: string;
     // 语言
-    language: string;
+    category: string;
 }
 
 export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
@@ -75,10 +78,21 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
                     onClick={handleCopy}
                     className={'copy-button'}
                 />
-                <SyntaxHighlighter
-                    style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
-                    {displayCodes.join('')}
-                </SyntaxHighlighter>
+                {
+                    sourceCodeProps.category === ResourceCategoryEnum.SOURCE_CODE ?
+                        <SyntaxHighlighter
+                            style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
+                            {displayCodes.join('')}
+                        </SyntaxHighlighter>
+                        :
+                        // 渲染md
+                        <div className={'source-code-view'} data-color-mode="github-dark">
+                            <MarkdownPreview style={{
+                                padding: '3rem'
+                            }} source={displayCodes.join('')}/>
+                        </div>
+
+                }
             </div>
         ) : (
             <Flex className={'view-loading'} justify={'center'} align={'center'}>

@@ -21,7 +21,6 @@ import {ReactNode} from "react";
  * 分类配置
  */
 interface ResourceCategory {
-    typeName: string;
     icon: ReactNode;
 }
 
@@ -42,6 +41,8 @@ export enum ResourceCategoryEnum {
     ARCHIVE = 'ARCHIVE',
     // 其他类型
     OTHER = 'OTHER',
+    // markdown
+    MARKDOWN = 'MARKDOWN',
     // 源代码
     SOURCE_CODE = 'SOURCE_CODE',
     // 文件夹
@@ -53,36 +54,31 @@ export enum ResourceCategoryEnum {
  */
 export const resourceTypeInfo: Record<ResourceCategoryEnum, ResourceCategory> = {
     [ResourceCategoryEnum.DOCUMENT]: {
-        typeName: '文档',
         icon: <IconFont type={'i-Document'}/>,
     },
     [ResourceCategoryEnum.IMAGE]: {
-        typeName: '图片',
         icon: <IconFont type={'i-tupian'}/>,
     },
     [ResourceCategoryEnum.ARCHIVE]: {
-        typeName: '压缩包',
         icon: <IconFont type={'i-zip'}/>,
     },
 
     [ResourceCategoryEnum.VIDEO]: {
-        typeName: '视频',
         icon: <IconFont type={'i-video'}/>,
     },
     [ResourceCategoryEnum.AUDIO]: {
-        typeName: '音频',
         icon: <IconFont type={'i-audio'}/>,
     },
     [ResourceCategoryEnum.SOURCE_CODE]: {
-        typeName: '代码',
         icon: <IconFont type={'i-hc-code'}/>,
     },
+    [ResourceCategoryEnum.MARKDOWN]: {
+        icon: <IconFont type={'i-markdown'}/>,
+    },
     [ResourceCategoryEnum.DIRECTORY]: {
-        typeName: '文件夹',
         icon: <IconFont type={'i-dir'}/>,
     },
     [ResourceCategoryEnum.OTHER]: {
-        typeName: '其他',
         icon: <IconFont type={'i-weizhi'}/>,
     },
 };

@@ -351,6 +351,7 @@ const EnUS = {
             video: 'Video',
             source_code: 'Source Code',
             directory: 'Directory',
+            markdown: 'Markdown',
             other: 'Other',
         },
     },

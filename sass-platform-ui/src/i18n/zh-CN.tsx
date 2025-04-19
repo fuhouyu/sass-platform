@@ -357,6 +357,7 @@ const ZhCN = {
             video: '视频',
             source_code: '源代码',
             directory: '文件夹',
+            markdown: 'Markdown',
             other: '其他',
         },
 
