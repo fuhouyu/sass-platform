@@ -50,7 +50,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -61,6 +60,7 @@ import software.amazon.awssdk.utils.BinaryUtils;
 import software.amazon.awssdk.utils.Md5Utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -69,6 +69,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -302,16 +303,20 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public byte[] readFileToByteArray(Long id) {
+    public void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer) {
         ResourceDTO resourceDTO = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(tenantSpaceDTO.getBucketName())
+                .key(resourceDTO.getObjectKey())
+                .build();
+        ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(getObjectRequest);
+        try (inputStream) {
+            inputStreamConsumer.accept(inputStream);
+        } catch (IOException e) {
+            LoggerUtil.error(log, "读取文件失败", e);
+        }
 
-        ResponseBytes<GetObjectResponse> objectAsBytes = this.s3Client.getObjectAsBytes(getObject -> {
-            getObject.bucket(tenantSpaceDTO.getBucketName());
-            getObject.key(resourceDTO.getObjectKey());
-
-        });
-        return objectAsBytes.asByteArray();
     }
 
     /**

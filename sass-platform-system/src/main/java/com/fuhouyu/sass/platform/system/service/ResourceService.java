@@ -20,6 +20,9 @@ import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 
+import java.io.InputStream;
+import java.util.function.Consumer;
+
 /**
  * <p>
  * 资源接口
@@ -94,7 +97,7 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 读取文件到字节数组
      *
      * @param id 主键id
-     * @return 字节数组
+     * @param inputStreamConsumer 字节流
      */
-    byte[] readFileToByteArray(Long id);
+    void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer);
 }
