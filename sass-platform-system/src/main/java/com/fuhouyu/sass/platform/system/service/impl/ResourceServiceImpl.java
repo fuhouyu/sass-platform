@@ -246,7 +246,8 @@ public class ResourceServiceImpl implements ResourceService {
         // 只允许上传到指定的对象中
         StsTokenResponse stsTokenResponse = this.stsOperation.generateStsToken(tenantSpaceDTO.getBucketName(),
                 objectsMap.values(),
-                StsActionEnum.PutObject);
+                StsActionEnum.PutObject,
+                StsActionEnum.DeleteObject);
         return StsTemporaryTokenResponseDTO.builder()
                 .accessKeyId(stsTokenResponse.getAccessKey())
                 .secretAccessKey(stsTokenResponse.getSecretAccessKey())

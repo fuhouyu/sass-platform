@@ -64,6 +64,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {AnyObject} from "antd/es/_util/type";
 import {useNotification} from "@/hooks/useNotification.tsx";
 import {getCategoryInfo, ResourceCategoryEnum, resourceTypeInfo,} from "@/enums/ResourceCategoryEnum.tsx";
+import {FileUtils} from "@/utils/fileUtil.tsx";
 
 const TenantResource: React.FC = () => {
     usePageTitle('Menu.resourceManage');
@@ -113,13 +114,7 @@ const TenantResource: React.FC = () => {
                 if (record.isDirectory) {
                     return <span>-</span>
                 }
-                const fileSize = Math.round((record.size / 1024) * 100) / 100;
-                if (fileSize > 1024) {
-                    return (<span>{(fileSize / 1024).toFixed(2)} MB</span>)
-                } else if (fileSize > (1024 * 1024)) {
-                    return (<span>{(fileSize / (1024 * 1024)).toFixed(2)} GB</span>)
-                }
-                return (<span>{fileSize} KB</span>);
+                return (<span>{FileUtils.formatSize(record.size)}</span>);
             }
         },
         {
@@ -318,7 +313,7 @@ const TenantResource: React.FC = () => {
                         prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
-                        {t('Resource.uploadFile')}
+                        {t('Resource.upload.file')}
                     </S3Upload>
                 ),
                 key: 'upload-file',
@@ -333,7 +328,7 @@ const TenantResource: React.FC = () => {
                         prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
-                        {t('Resource.uploadFolder')}
+                        {t('Resource.upload.folder')}
                     </S3Upload>
                 ),
                 key: 'upload-folder',
@@ -431,7 +426,7 @@ const TenantResource: React.FC = () => {
                                 disabled={rowKeys === undefined || rowKeys.length === 0}/>
                         </Popconfirm>
                         <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
-                            {t('Resource.uploadFile')}
+                            {t('Resource.upload.file')}
                         </Dropdown.Button>
                     </Flex>
                 </div>

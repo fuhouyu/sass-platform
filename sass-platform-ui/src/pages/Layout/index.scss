@@ -56,3 +56,30 @@
   padding: 0;
   margin: 0;
 }
+
+.task-affix-container {
+  position: absolute;
+  right: 0.625rem;
+  bottom: calc(50% - 7.5rem);
+  z-index: 1000;
+
+  .task-button {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    height: auto;
+    line-height: 1.2;
+
+    .task-button-text {
+      white-space: nowrap;
+      font-size: 14px;
+    }
+  }
+}
+
+.task-table-container .ant-drawer-body {
+  padding: 0 !important;
+}
