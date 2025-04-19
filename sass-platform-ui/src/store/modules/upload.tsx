@@ -38,11 +38,27 @@ export interface UploadFile {
      */
     size: number;
 
-
     /**
      * 上传进度
      */
-    progress: number;
+    progress?: number;
+
+    /**
+     * 取消上传
+     * @param fileUid
+     */
+    abortController?: AbortController;
+
+    /**
+     * 上传状态
+     */
+    status: 'pending' | 'uploading' | 'canceled' | 'success' | 'error';
+
+    /**
+     * 上传错误信息
+     */
+    errorMessage?: string;
+
 }
 
 interface UploadState {
@@ -58,8 +74,13 @@ interface UploadAction {
      * 存储文件上传状态
      * @param uploadFile 上传的文件
      */
-    storeUploadFiles: (uploadFile: UploadFile) => void
+    storeUploadFiles: (uploadFile: UploadFile) => void,
 
+    /**
+     * 通过id删除文件
+     * @param id 文件id
+     */
+    removeUploadFile: (id: string) => void
 }
 
 
@@ -81,13 +102,18 @@ const createUploadSlice: StateCreator<UploadState & UploadAction> = (set) => ({
                 return {
                     uploadFiles: state.uploadFiles.map((file) =>
                         file.id === uploadFile.id
-                            ? {...file, progress: uploadFile.progress}
+                            ? {...uploadFile}
                             : file
                     ),
                 };
             }
             return {uploadFiles: [...state.uploadFiles, uploadFile]};
         });
+    },
+    removeUploadFile: id => {
+        set((state) => ({
+            uploadFiles: state.uploadFiles.filter((file) => file.id !== id),
+        }));
     }
 });
 

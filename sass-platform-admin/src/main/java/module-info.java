@@ -59,8 +59,11 @@
     exports com.fuhouyu.sass.platform.admin.constants;
     exports com.fuhouyu.sass.platform.admin.controller;
     exports com.fuhouyu.sass.platform.admin.filter;
+    exports com.fuhouyu.sass.platform.admin.response;
+    exports com.fuhouyu.sass.platform.admin.enums;
 
     opens com.fuhouyu.sass.platform.admin.configuration to spring.core, spring.beans, spring.context;
+    opens com.fuhouyu.sass.platform.admin.response to com.fasterxml.jackson.databind;
     opens com.fuhouyu.sass.platform.admin.controller to spring.core;
     opens com.fuhouyu.sass.platform.admin.filter to spring.beans;
     opens com.fuhouyu.sass.platform.admin to spring.beans;

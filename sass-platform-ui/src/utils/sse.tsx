@@ -25,16 +25,14 @@ class SSEClient {
      * 创建SSE连接
      * @param url SSE服务地址
      * @param handlers 事件监听器配置
-     * @param token 认证token
      */
     connect(
         url: string,
         handlers: {
-            onMessage: ((this: EventSource, ev: MessageEvent) => any) | null;
-            onError?: ((this: EventSource, ev: Event) => any) | null;
-            onOpen?: ((this: EventSource, ev: Event) => any) | null;
+            onMessage: ((this: EventSource, ev: MessageEvent) => void) | null;
+            onError?: ((this: EventSource, ev: Event) => void) | null;
+            onOpen?: ((this: EventSource, ev: Event) => void) | null;
         },
-        token?: string
     ) {
         // 关闭已有连接
         this.disconnect();
@@ -45,7 +43,7 @@ class SSEClient {
         // 绑定事件监听
         this.eventSource.onmessage = handlers.onMessage;
         this.eventSource.onerror = handlers.onError || ((e) => console.error('SSE Error:', e));
-        this.eventSource.onopen = handlers.onOpen || ((e) => console.log('SSE Connected'));
+        this.eventSource.onopen = handlers.onOpen || ((e) => console.log('SSE Connected', e));
     }
 
     /** 主动关闭连接 */

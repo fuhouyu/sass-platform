@@ -45,7 +45,7 @@ export const Tenant: React.FC = () => {
     const buttonPermissions = useButton(TenantPermissionConstant.List);
     const {t} = useTranslation();
     const tableRef = useRef<TableRefType<TenantInfo>>(null);
-    const [updateId, setUpdatedId] = useState<string | undefined>();
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const {tenant} = useUserStore(state => state);
     const columns: TableColumnsType = [
         {
@@ -179,7 +179,7 @@ export const Tenant: React.FC = () => {
      * 打开租户表单抽屉
      */
     const openDrawer = async (tenantId?: string | undefined) => {
-        setUpdatedId(tenantId)
+        setUpdateId(tenantId)
         setOpenTenantDrawer(true);
         setPermissionTree(await permissionApi.getPermissionTreeSelect());
     }

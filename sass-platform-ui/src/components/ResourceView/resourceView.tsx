@@ -86,7 +86,8 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                 }}
             />
         case ResourceCategoryEnum.SOURCE_CODE:
-            return <SourceCodeView resourceId={resourceView.id} language={resourceView.mimeType}/>;
+        case ResourceCategoryEnum.MARKDOWN:
+            return <SourceCodeView resourceId={resourceView.id} category={resourceView.category}/>;
         case ResourceCategoryEnum.AUDIO:
             return <AudioPlayer
                 src={viewUrl}

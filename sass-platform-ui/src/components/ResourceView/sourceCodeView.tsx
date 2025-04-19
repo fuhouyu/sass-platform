@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import {resourceApi} from "@/apis/resource.tsx";
 
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism'; // 暗色主题 // 亮色主题
 import {Button, Flex, message, Spin} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
+import {sseClient} from "@/utils/sse.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
+import MarkdownPreview from '@uiw/react-markdown-preview';
+
 
 interface SourceCodeProps {
     // 预览地址
     resourceId: string;
     // 语言
-    language: string;
+    category: string;
 }
 
 export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
@@ -36,28 +40,37 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
     const currentTheme = useThemeStore(state => state.theme);
     const {t} = useTranslation();
 
-    const [codeString, setCodeString] = useState<string>('');
+    const [displayCodes, setDisplayCodes] = useState<string[]>([]);
 
-    const initCodeString = useCallback(async () => {
-        const text = await resourceApi.readFileBytes(resourceId);
-        const bytes = Uint8Array.from(atob(text), c => c.charCodeAt(0));
-        setCodeString(new TextDecoder('utf-8').decode(bytes));
-    }, [resourceId]);
 
     useEffect(() => {
-        initCodeString().then();
-    }, [initCodeString]);
+        sseClient.connect(`${BaseApiUrlConstant.RESOURCE_API_PREFIX}/${resourceId}/bytes`, {
+            onMessage: e => {
+                try {
+                    const message = JSON.parse(e.data);
+                    if (message.type === 'MESSAGE' && message.data) {
+                        setDisplayCodes(prevCodes => [...prevCodes, message.data]);
+                    } else if (message.type === 'DONE') {
+                        sseClient.disconnect();
+                    }
+                } catch (error) {
+                    console.error('Failed to parse SSE message:', error, e.data);
+                }
+            },
+        })
+
+    }, [resourceId])
 
     /**
      * 复制
      */
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(codeString);
+        await navigator.clipboard.writeText(displayCodes.join(''));
         await message.success(t('Common.copySuccess'));
     };
 
     return <>
-        {codeString ? (
+        {displayCodes.length > 0 ? (
             <div className={'source-code-view-container'}>
                 <Button
                     title={t('Common.copy')}
@@ -65,10 +78,21 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
                     onClick={handleCopy}
                     className={'copy-button'}
                 />
-                <SyntaxHighlighter
-                    style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
-                    {codeString}
-                </SyntaxHighlighter>
+                {
+                    sourceCodeProps.category === ResourceCategoryEnum.SOURCE_CODE ?
+                        <SyntaxHighlighter
+                            style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
+                            {displayCodes.join('')}
+                        </SyntaxHighlighter>
+                        :
+                        // 渲染md
+                        <div className={'source-code-view'} data-color-mode="github-dark">
+                            <MarkdownPreview style={{
+                                padding: '3rem'
+                            }} source={displayCodes.join('')}/>
+                        </div>
+
+                }
             </div>
         ) : (
             <Flex className={'view-loading'} justify={'center'} align={'center'}>

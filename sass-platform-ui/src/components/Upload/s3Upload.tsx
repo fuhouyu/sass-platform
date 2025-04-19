@@ -24,7 +24,7 @@ import {RcFile} from "antd/es/upload";
 import {StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import {NotificationType, useNotification} from "@/hooks/useNotification.tsx";
 
 
@@ -35,10 +35,10 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
     const [totalProgress, setTotalProgress] = React.useState(0);
     const {notificationMessage, contextHolder} = useNotification();
 
-    const uploadNotification = (type: NotificationType, message: string) => {
+    const uploadNotification = (type: NotificationType, message: React.ReactNode) => {
         notificationMessage({
             type: type,
-            message: t('Resource.uploadFile'),
+            message: t('Resource.upload.file'),
             description: message,
         });
     };
@@ -74,13 +74,16 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
     const doFileUpload = async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath];
+        const abortController = new AbortController();
         if (showUploadFloatButton) {
             storeUploadFiles({
                 id: file.uid,
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                progress: 0
+                progress: 0,
+                abortController,
+                status: 'pending'
             });
         }
         const upload = new s3Upload({
@@ -92,8 +95,10 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 ContentType: file.type,
                 ChecksumAlgorithm: ChecksumAlgorithm.CRC32,
             },
+            partSize: 1024 * 1024 * 2,
         });
 
+        upload['abortController'] = abortController;
         upload.on("httpUploadProgress", (progress: Progress) => {
             const {loaded, total} = progress;
             let percentage = 100;
@@ -101,34 +106,77 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 percentage = Math.round((loaded / total) * 100);
             }
             setTotalProgress(percentage);
+            const status = percentage === 100 ? 'success' : 'uploading';
             if (showUploadFloatButton) {
                 storeUploadFiles({
                     id: file.uid,
                     name: file.name,
                     type: file.type,
                     size: file.size,
-                    progress: percentage
+                    progress: percentage,
+                    abortController,
+                    status: status
                 });
             }
         });
 
 
-        const response = await upload.done();
-        const resourceId = await resourceApi.saveInfoApi({
-            businessName: prefix,
-            eTag: JSON.parse(response.ETag!),
-            name: file.name,
-            size: file.size,
-            mimeType: file.type,
-            isPublic: isPublic,
-            isDirectory: false,
-            version: 1,
-            objectKey: objectKey,
-        });
+        try {
+            const response = await upload.done();
+            const resourceId = await resourceApi.saveInfoApi({
+                businessName: prefix,
+                eTag: JSON.parse(response.ETag!),
+                name: file.name,
+                size: file.size,
+                mimeType: file.type,
+                isPublic: isPublic,
+                isDirectory: false,
+                version: 1,
+                objectKey: objectKey,
+            });
+            onUploadSuccess?.(resourceId);
+            uploadNotification('success', <Trans
+                i18nKey={t('Resource.upload.successTips')}
+                values={{name: file.name}}
+                components={{strong: <span className="highlight"/>}}
+            />);
+        } catch (err: unknown) {
+            if (!(err instanceof Error)) {
+                return
+            }
+            if (err.name === 'AbortError') {
+                uploadNotification('warning', <Trans
+                    i18nKey={t('Resource.upload.canceledTips')}
+                    values={{name: file.name}}
+                    components={{strong: <span className="highlight"/>}}
+                />);
+                storeUploadFiles({
+                    id: file.uid,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    abortController,
+                    status: 'canceled'
+                });
+            } else {
+                storeUploadFiles({
+                    id: file.uid,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    status: 'error',
+                    errorMessage: err.message,
+                });
+                uploadNotification('error', <Trans
+                    i18nKey={t('Resource.upload.errorTips')}
+                    values={{name: file.name}}
+                    components={{strong: <span className="highlight"/>}}
+                />);
 
-        onUploadSuccess?.(resourceId);
-        const success = `${file.name} ${t('Resource.uploadSuccess')}`;
-        uploadNotification('success', success);
+            }
+        }
+
+
     }
 
     return (
@@ -146,7 +194,12 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                         onSuccess?.({}, rcFile);
                     }).catch((e) => {
                         onError?.(e, rcFile);
-                        uploadNotification('error', `${rcFile.name} ${t('Resource.uploadError')}`);
+                        uploadNotification('error', <Trans
+                            i18nKey={t('Resource.upload.error')}
+                            values={{name: rcFile.name}}
+                            components={{strong: <span className="highlight"/>}}
+                        />);
+
                     });
                 }}
             >

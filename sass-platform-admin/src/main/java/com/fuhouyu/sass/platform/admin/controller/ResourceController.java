@@ -22,6 +22,8 @@ import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
+import com.fuhouyu.sass.platform.admin.enums.SseResponseTypeEnum;
+import com.fuhouyu.sass.platform.admin.response.SseResponseMessage;
 import com.fuhouyu.sass.platform.system.domain.dto.ValidGroups;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
@@ -33,10 +35,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -60,6 +67,7 @@ public class ResourceController {
 
     /**
      * 生成stsToken
+     *
      * @param requestDTO 生成请求的dto对象
      * @return stsToken
      */
@@ -73,7 +81,7 @@ public class ResourceController {
     /**
      * 下载文件
      *
-     * @param id       资源id
+     * @param id                   资源id
      * @param resourceSignedUrlDTO 签名dto对象
      */
     @GetMapping("/download/{id}")
@@ -148,7 +156,7 @@ public class ResourceController {
     /**
      * 生成签名url
      *
-     * @param id 主键id
+     * @param id      主键id
      * @param preview 是否为预览
      * @return 签名url
      */
@@ -203,9 +211,25 @@ public class ResourceController {
      * @param id 主键id
      * @return 读取文件到字节数组
      */
-    @GetMapping("/{id}/bytes")
+    @GetMapping(value = "/{id}/bytes", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "读取文件到字节数组")
-    public BaseResponse<byte[]> readFileToByteArray(@PathVariable("id") Long id) {
-        return ResponseHelper.success(this.resourceService.readFileToByteArray(id));
+    public Flux<SseResponseMessage<String>> readFileToByteArray(@PathVariable("id") Long id) {
+        return Flux.create(sink -> this.resourceService.readFileToByteArray(id, inputStream -> {
+            byte[] buffer = new byte[1024 * 16]; // 4KB 块大小
+            int bytesRead;
+            try {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    String chunk = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
+                    SseResponseMessage<String> message =
+                            SseResponseMessage.success(SseResponseTypeEnum.MESSAGE, "content part", chunk);
+                    sink.next(message);
+                }
+
+            } catch (IOException e) {
+                sink.error(e);
+            }
+            sink.next(SseResponseMessage.done("read complete", ""));
+            sink.complete();
+        }), FluxSink.OverflowStrategy.BUFFER);
     }
 }

@@ -76,6 +76,38 @@ public enum ResourceCategoryEnum {
     SOURCE_CODE("java",
             "tsx",
             "yaml",
+            "text/javascript",
+            "application/typescript",
+            "text/jsx",
+            "text/tsx",
+            "application/json",
+            "text/html",
+            "text/css",
+            "text/x-scss",
+            "text/x-sass",
+            "text/x-less",
+            "application/x-yaml",
+            "application/xml",
+            "text/x-java-source",
+            "text/x-kotlin",
+            "application/x-groovy",
+            "text/x-python",
+            "application/x-ruby",
+            "application/x-httpd-php",
+            "text/x-c",
+            "text/x-c++src",
+            "text/x-csharp",
+            "text/x-go",
+            "text/rust",
+            "application/x-sh",
+            "application/x-powershell",
+            "text/x-makefile",
+            "text/x-dockerfile",
+            "application/sql",
+            "application/graphql",
+            "application/toml",
+            "text/javascript",
+            "application/x-yaml",
             "yml",
             "ts",
             "js",
@@ -103,8 +135,6 @@ public enum ResourceCategoryEnum {
             "fsharp",
             "groovy",
             "less",
-            "markdown",
-            "md",
             "ini",
             "properties",
             "dockerfile",
@@ -125,6 +155,13 @@ public enum ResourceCategoryEnum {
             "application/x-bzip2"),
 
     /**
+     * Markdown 标记语言
+     */
+    MARKDOWN("text/markdown",
+            "markdown",
+            "md"),
+
+    /**
      * 文件夹
      */
     DIRECTORY("dir"),
@@ -132,7 +169,7 @@ public enum ResourceCategoryEnum {
     /**
      * 其它
      */
-    OTHER("application/octet-stream");;
+    OTHER("application/octet-stream");
 
     private final String[] mimeTypes;
 
