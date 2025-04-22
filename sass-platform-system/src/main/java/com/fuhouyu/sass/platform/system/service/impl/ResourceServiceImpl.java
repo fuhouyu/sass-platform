@@ -101,7 +101,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
-    @Value("${sass.platform.resource.base-url:''}")
+    @Value("${sass.platform.resource.base-url:}")
     private String baseUrl;
 
     private final HttpServletRequest httpServletRequest;
