@@ -529,10 +529,9 @@ const TenantResource: React.FC = () => {
             destroyOnClose
             open={previewModal}
             footer={null}
-            width={'80%'}
             height={'80%'}
+            width={'80%'}
             closable
-
             onCancel={() => setPreviewModal(false)}
         >
             <ResourceView
