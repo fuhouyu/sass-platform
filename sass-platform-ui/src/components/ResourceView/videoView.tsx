@@ -33,8 +33,11 @@ const VideoView = ({url}: { url: string }) => {
             controls: true,
             plugins: [Mp4Plugin],
             mp4plugin: {
-                maxBufferLength: 30,
+                maxBufferLength: 15,
                 minBufferLength: 10,
+                cacheSegmentCount: 3,
+                preloadTime: 5,
+                segmentDuration: 3,
             }
         });
         return () => player.destroy();
