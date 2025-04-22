@@ -101,7 +101,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
-    @Value("${resource.baseUrl:''}")
+    @Value("${sass.platform.resource.base-url:''}")
     private String baseUrl;
 
     private final HttpServletRequest httpServletRequest;
@@ -535,7 +535,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return 当前url地址
      */
     private String getHttpBaseUrl() {
-        if (StringUtils.isNotBlank(this.baseUrl)) {
+        if (StringUtils.isNotEmpty(this.baseUrl)) {
             return this.baseUrl;
         }
         String hostBaseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
