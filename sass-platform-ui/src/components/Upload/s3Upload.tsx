@@ -73,7 +73,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
      */
     const doFileUpload = async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
 
-        const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath];
+        const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath === '' ? file.name : file.webkitRelativePath];
         const abortController = new AbortController();
         if (showUploadFloatButton) {
             storeUploadFiles({
@@ -140,7 +140,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 components={{strong: <span className="highlight"/>}}
             />);
         } catch (err: unknown) {
-
+            console.log(err)
             if (!(err instanceof Error)) {
                 return
             }
@@ -194,6 +194,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                         onSuccess?.({}, rcFile);
                     }).catch((e) => {
                         console.log(e)
+                        onError?.(e);
                         storeUploadFiles({
                             id: rcFile.uid,
                             name: rcFile.name,
