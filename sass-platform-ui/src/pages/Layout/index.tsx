@@ -105,7 +105,7 @@ export const LayoutMain = () => {
             key: 'action',
             align: 'center',
             render: (_, uploadFile: UploadFile) => {
-                if (uploadFile.status === 'canceled' || uploadFile.status === 'success') {
+                if (uploadFile.status === 'canceled' || uploadFile.status === 'success' || uploadFile.status === 'error') {
                     return <Button
                         type={'link'}
                         onClick={() => removeUploadFile(uploadFile.id)}
@@ -136,7 +136,7 @@ export const LayoutMain = () => {
             <Content className={'layout-content'}>
                 <Layout>
                     <LayoutMenu/>
-                    {uploadFiles.length === 0 && <Affix className={'task-affix-container'}>
+                    {uploadFiles.length > 0 && <Affix className={'task-affix-container'}>
                         <Badge count={uploadFiles.length}
                                offset={[-30, 0]}
                         >

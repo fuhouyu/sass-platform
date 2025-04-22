@@ -46,6 +46,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -99,6 +100,9 @@ public class ResourceServiceImpl implements ResourceService {
     private static final String TMP_DIR = "tmp/";
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    @Value("${sass.platform.resource.base-url:''}")
+    private String baseUrl;
 
     private final HttpServletRequest httpServletRequest;
 
@@ -531,11 +535,14 @@ public class ResourceServiceImpl implements ResourceService {
      * @return 当前url地址
      */
     private String getHttpBaseUrl() {
-        String baseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
-        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
-            baseUrl += ":" + httpServletRequest.getServerPort();
+        if (StringUtils.isNotEmpty(this.baseUrl)) {
+            return this.baseUrl;
         }
-        return baseUrl;
+        String hostBaseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
+        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
+            hostBaseUrl += ":" + httpServletRequest.getServerPort();
+        }
+        return hostBaseUrl;
     }
 }
 

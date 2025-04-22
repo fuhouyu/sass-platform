@@ -21,7 +21,7 @@ import "./index.scss"
 import VideoView from "./videoView";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
-import {Flex, Spin} from "antd";
+import {Spin} from "antd";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import {SourceCodeView} from "@components/ResourceView/sourceCodeView.tsx";
 import AudioPlayer from 'react-h5-audio-player';
@@ -47,9 +47,15 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         generateSignedUrlFunc().then();
     }, [generateSignedUrlFunc]);
     if (!viewUrl) {
-        return <Flex className={'view-loading'} justify={'center'} align={'center'}>
-            <Spin size={"large"} percent={"auto"}/>
-        </Flex>
+        return ((
+            <div className={'view-loading'}>
+                <Spin
+                    size="large"
+                    percent={"auto"}
+                />
+            </div>
+        ))
+
     }
 
     switch (resourceView.category) {
@@ -58,32 +64,7 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         case ResourceCategoryEnum.VIDEO:
             return <VideoView
                 key={viewUrl} // 让 React 确认是播放新的视频（只有换源时才换）
-                options={{
-                    controls: true,
-                    responsive: true,
-                    preload: 'auto',
-                    html5: {
-                        hls: {
-                            overrideNative: true,
-                            limitRenditionByPlayerDimensions: true,
-                            useDevicePixelRatio: true
-                            // bandwidth: 16777216,
-                        },
-                        nativeAudioTracks: false,
-                        nativeVideoTracks: false,
-                        useBandwidthFromLocalStorage: true
-                    },
-                    controlBar: {
-                        pictureInPictureToggle: false
-                    },
-                    sources: [
-                        {
-                            src: viewUrl,
-                            type: 'video/mp4',
-                            withCredentials: false,
-                        },
-                    ],
-                }}
+                url={viewUrl}
             />
         case ResourceCategoryEnum.SOURCE_CODE:
         case ResourceCategoryEnum.MARKDOWN:

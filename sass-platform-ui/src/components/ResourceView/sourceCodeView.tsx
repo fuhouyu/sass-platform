@@ -71,7 +71,7 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
 
     return <>
         {displayCodes.length > 0 ? (
-            <div className={'source-code-view-container'}>
+            <Flex className={'source-code-view-container'}>
                 <Button
                     title={t('Common.copy')}
                     icon={<CopyOutlined/>}
@@ -87,17 +87,16 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
                         :
                         // 渲染md
                         <div className={'source-code-view'} data-color-mode="github-dark">
-                            <MarkdownPreview style={{
-                                padding: '3rem'
-                            }} source={displayCodes.join('')}/>
+                            <MarkdownPreview source={displayCodes.join('')}/>
                         </div>
 
                 }
-            </div>
-        ) : (
-            <Flex className={'view-loading'} justify={'center'} align={'center'}>
-                <Spin size={"large"} percent={"auto"}/>
             </Flex>
+        ) : (
+            <div className={'view-loading'}>
+                <Spin size={"large"} percent={"auto"}/>
+            </div>
+
         )}
     </>
 }

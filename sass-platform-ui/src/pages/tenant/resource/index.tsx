@@ -238,15 +238,6 @@ const TenantResource: React.FC = () => {
 
     const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
 
-    /**
-     * 初始化数据
-     */
-    const init = useCallback(async () => {
-        setTenantSpace(await tenantSpaceApi.getTenantSpaceForMe());
-        const number = await resourceApi.countObjects();
-        setCountObjects(number);
-    }, []);
-
 
     const breadcrumbClick = (prefix?: string) => {
         let urlPrefix = prefix;
@@ -274,8 +265,11 @@ const TenantResource: React.FC = () => {
 
 
     useEffect(() => {
-        init().then();
-    }, [init])
+        tenantSpaceApi.getTenantSpaceForMe().then(tenantSpace => setTenantSpace(tenantSpace));
+        resourceApi.countObjects().then((number) => {
+            setCountObjects(number);
+        })
+    }, [])
 
 
     /**
@@ -535,10 +529,9 @@ const TenantResource: React.FC = () => {
             destroyOnClose
             open={previewModal}
             footer={null}
-            width={'80%'}
             height={'80%'}
+            width={'80%'}
             closable
-
             onCancel={() => setPreviewModal(false)}
         >
             <ResourceView

@@ -74,7 +74,7 @@ public class PageQueryDTO implements Serializable {
      * @return 排序字段
      */
     public String getOrderBy() {
-        if (Objects.isNull(sortColumn)) {
+        if (Objects.isNull(sortColumn) || Objects.isNull(this.isAsc)) {
             return null;
         }
         String orderBy = sortColumn + " " + (isAsc ? "ASC" : "DESC");

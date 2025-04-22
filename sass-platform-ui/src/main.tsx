@@ -24,9 +24,7 @@ import {App as AntdApp} from 'antd';
 
 
 createRoot(document.getElementById('root')!).render(
-    <>
-        <AntdApp className={'app-container'}>
-            <App/>
-        </AntdApp>
-    </>
+    <AntdApp className={'app-container'}>
+        <App/>
+    </AntdApp>
 )
