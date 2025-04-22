@@ -63,15 +63,15 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                     responsive: true,
                     preload: 'auto',
                     html5: {
-                        hls: {
-                            overrideNative: true,
-                            limitRenditionByPlayerDimensions: true,
-                            useDevicePixelRatio: true
-                            // bandwidth: 16777216,
-                        },
+                        nativeTextTracks: false,
                         nativeAudioTracks: false,
                         nativeVideoTracks: false,
-                        useBandwidthFromLocalStorage: true
+                        hls: {
+                            overrideNative: true
+                        },
+                        dash: {
+                            overrideNative: true
+                        }
                     },
                     controlBar: {
                         pictureInPictureToggle: false

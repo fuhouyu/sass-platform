@@ -50,7 +50,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
     const generateStsToken = async (uploadFile: RcFile) => {
         const stsTokenResponse = await resourceApi.generateStsToken({
             prefix: prefix,
-            fileNames: [uploadFile.webkitRelativePath]
+            fileNames: [uploadFile.webkitRelativePath === '' ? uploadFile.name : uploadFile.webkitRelativePath]
         });
         const s3Client = new S3Client({
             region: stsTokenResponse.region,
@@ -95,7 +95,6 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 ContentType: file.type,
                 ChecksumAlgorithm: ChecksumAlgorithm.CRC32,
             },
-            partSize: 1024 * 1024 * 2,
         });
 
         upload['abortController'] = abortController;
@@ -141,6 +140,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 components={{strong: <span className="highlight"/>}}
             />);
         } catch (err: unknown) {
+
             if (!(err instanceof Error)) {
                 return
             }
@@ -193,7 +193,15 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                         await doFileUpload(s3Client, stsTokenResponse, rcFile);
                         onSuccess?.({}, rcFile);
                     }).catch((e) => {
-                        onError?.(e, rcFile);
+                        console.log(e)
+                        storeUploadFiles({
+                            id: rcFile.uid,
+                            name: rcFile.name,
+                            type: rcFile.type,
+                            size: rcFile.size,
+                            status: 'error',
+                            errorMessage: (e as Error).message
+                        });
                         uploadNotification('error', <Trans
                             i18nKey={t('Resource.upload.error')}
                             values={{name: rcFile.name}}
@@ -203,7 +211,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                     });
                 }}
             >
-                {children === undefined ? <span>{t('Resource.uploadFile')}</span> : children}
+                {children === undefined ? <span>{t('Resource.upload.file')}</span> : children}
             </AntdUpload>
         </>
 
