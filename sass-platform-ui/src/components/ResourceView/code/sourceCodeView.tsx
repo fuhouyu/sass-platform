@@ -18,14 +18,16 @@ import React, {useEffect, useState} from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 
 import {useThemeStore} from "@/store/modules/theme.tsx";
-import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism'; // 暗色主题 // 亮色主题
-import {Button, Flex, message, Spin} from "antd";
+import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {Button, Flex, message} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import MarkdownPreview from '@uiw/react-markdown-preview';
+
+import './index.scss'
 
 
 interface SourceCodeProps {
@@ -69,34 +71,25 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
         await message.success(t('Common.copySuccess'));
     };
 
-    return <>
-        {displayCodes.length > 0 ? (
-            <Flex className={'source-code-view-container'}>
-                <Button
-                    title={t('Common.copy')}
-                    icon={<CopyOutlined/>}
-                    onClick={handleCopy}
-                    className={'copy-button'}
-                />
-                {
-                    sourceCodeProps.category === ResourceCategoryEnum.SOURCE_CODE ?
-                        <SyntaxHighlighter
-                            style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
-                            {displayCodes.join('')}
-                        </SyntaxHighlighter>
-                        :
-                        // 渲染md
-                        <div className={'source-code-view'} data-color-mode="github-dark">
-                            <MarkdownPreview source={displayCodes.join('')}/>
-                        </div>
+    return <Flex className={'source-code-view-container'}>
+        <Button
+            title={t('Common.copy')}
+            icon={<CopyOutlined/>}
+            onClick={handleCopy}
+            className={'copy-button'}
+        />
+        {
+            sourceCodeProps.category === ResourceCategoryEnum.SOURCE_CODE ?
+                <SyntaxHighlighter
+                    style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
+                    {displayCodes.join('')}
+                </SyntaxHighlighter>
+                :
+                // 渲染md
+                <div className={'source-code-view'} data-color-mode="github-dark">
+                    <MarkdownPreview source={displayCodes.join('')}/>
+                </div>
 
-                }
-            </Flex>
-        ) : (
-            <div className={'view-loading'}>
-                <Spin size={"large"} percent={"auto"}/>
-            </div>
-
-        )}
-    </>
+        }
+    </Flex>
 }

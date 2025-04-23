@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export const ImageView = ({viewUrl}: { viewUrl?: string }) => {
-    return (<img
-        width={'100%'}
-        className={'resource-preview'}
-        src={viewUrl}
-        alt=''/>)
+.video-container {
+  padding-top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
 }
