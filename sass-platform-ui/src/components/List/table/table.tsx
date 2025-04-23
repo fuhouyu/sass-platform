@@ -117,9 +117,13 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 {...tableProps}
                 rowKey={tableProps.rowKey ?? 'id'}
                 onChange={onChange}
-                scroll={{y: 440}}
-
+                virtual={true}
+                scroll={{
+                    y: 'calc(100vh - 18.75rem)',
+                    x: 'calc(100vh - 18.75rem)',
+                }}
                 dataSource={pageResult?.list}
+                rowSelection={{...tableProps.rowSelection, columnWidth: 48}}
                 pagination={{
                     defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
                     total: pageResult?.total,

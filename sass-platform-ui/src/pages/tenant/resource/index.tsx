@@ -97,7 +97,7 @@ const TenantResource: React.FC = () => {
                             <IconFont type={'i-dir'}/>
                             {record.name}
                         </Space>
-                    </Button>
+                    </Button>;
                 }
                 const categoryInfo = getCategoryInfo(record.category!);
                 return <Space size={4}>
