@@ -88,6 +88,8 @@ public class UserLoginAspectj {
         if (!Objects.equals(userLoginDTO.getAccountType(), AccountTypeEnum.PASSWORD)) {
             return joinPoint.proceed();
         }
+
+
         Map<String, List<ParamConfigDTO>> paramConfigMap = null;
         if (userLoginDTO.getAccountType().isPassword()) {
             // 只有密码才进行检查
@@ -109,6 +111,7 @@ public class UserLoginAspectj {
         } catch (Exception ex) {
             // 登录的异常处理
             this.handleLoginError(userLoginDTO, paramConfigMap);
+            LoggerUtil.error(log, "用户登录失败: {}", ex.getMessage());
             return null;
         }
     }

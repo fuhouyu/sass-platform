@@ -15,44 +15,42 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.exception.ServiceException;
-import com.fuhouyu.framework.common.function.Callback;
-import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.request.Request;
-import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
 import com.fuhouyu.sass.platform.system.constants.CacheConstant;
+import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
+import com.fuhouyu.sass.platform.system.domain.dto.user.LoginUserDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
-import com.fuhouyu.sass.platform.system.service.AccountService;
-import com.fuhouyu.sass.platform.system.service.AdminUserService;
-import com.fuhouyu.sass.platform.system.service.UserAccountService;
-import com.fuhouyu.sass.platform.system.service.UserService;
+import com.fuhouyu.sass.platform.system.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * <p>
@@ -81,28 +79,33 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserService userService;
 
+    private final PermissionService permissionService;
+
 
     @Override
     public UserTokenDTO adminLogin(UserLoginDTO userLoginDTO) {
-        return this.authentication(userLoginDTO, authentication -> {
+        UserTokenDTO userTokenDTO = this.authentication(userLoginDTO, authentication -> {
             UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
             // 管理员用户
-            AdminUserDTO adminUserDTO = this.adminUserService.findById(userAccountDetails.getUserId());
-            ((UsernamePasswordAuthenticationToken) authentication)
-                    .setDetails(adminUserDTO);
-            this.userService.recordLoginSuccess(userAccountDetails.getUserId());
+            AdminUserDTO userDetails = this.adminUserService.findById(userAccountDetails.getUserId());
+            return UserAccountAuthenticationToken.authenticated(authentication.getPrincipal(),
+                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO.getAccountType().name()),
+                    this.permissionService.findUserSimpleGrantedAuthorities(userLoginDTO.getTenantId(), userDetails.getId()));
         });
+        this.adminUserService.recordLoginSuccess(userTokenDTO.getUserId());
+        return userTokenDTO;
     }
 
     @Override
     public UserTokenDTO login(UserLoginDTO userLoginDTO) {
-        return this.authentication(userLoginDTO, authentication -> {
+        UserTokenDTO userTokenDTO = this.authentication(userLoginDTO, authentication -> {
             UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
-            UserDTO userDTO = this.userService.findById(userAccountDetails.getUserId());
-            ((UsernamePasswordAuthenticationToken) authentication)
-                    .setDetails(userDTO);
-            this.userService.recordLoginSuccess(userAccountDetails.getUserId());
+            UserDTO userDetails = this.userService.findById(userAccountDetails.getUserId());
+            return UserAccountAuthenticationToken.authenticated(authentication.getPrincipal(),
+                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO.getAccountType().name()));
         });
+        this.userService.recordLoginSuccess(userTokenDTO.getUserId());
+        return userTokenDTO;
     }
 
     @Override
@@ -132,7 +135,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (Objects.isNull(thirdPartyUserId)) {
             throw new ServiceException(AuthenticationResponseStatusEnum.THIRD_PARTY_ACCOUNT_BIND_EXPIRE);
         }
-        AccountDTO account = this.accountService.findById(new AccountIdDTO(thirdPartyUserId, AccountTypeEnum.WELINK));
+        AccountDTO account = this.accountService.findById(new AccountIdDTO(thirdPartyBindPlatformDTO.getTenantId(), thirdPartyUserId, AccountTypeEnum.WELINK));
         if (Objects.nonNull(account)) {
             throw new ServiceException(AuthenticationResponseStatusEnum.THIRD_PARTY_ACCOUNT_BINDING);
         }
@@ -161,7 +164,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @return 用户token dto对象
      */
     private UserTokenDTO authentication(UserLoginDTO userLoginDTO,
-                                        Callback<Authentication> authenticationCallback) {
+                                        Function<Authentication, UserAccountAuthenticationToken> authenticationCallback) {
         Request request = ContextHolderStrategy.getContext().getRequest();
         request.putAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID, userLoginDTO.getTenantId());
         Authentication authentication;
@@ -187,19 +190,42 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @return 用户账号详情
      */
     private UserTokenDTO doLogin(Authentication authentication,
-                                 Callback<Authentication> authenticationCallback) {
+                                 Function<Authentication, UserAccountAuthenticationToken> authenticationCallback) {
 
         UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
         userAccountDetails.eraseCredentials();
         if (Objects.nonNull(authenticationCallback)) {
-            authenticationCallback.call(authentication);
+            authentication = authenticationCallback.apply(authentication);
         }
-        // 设置上下文信息
-        UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
-                UserEntity.class));
-        DefaultListableContextFactory context = (DefaultListableContextFactory) ContextHolderStrategy.getContext();
-        context.setUser(userEntity);
-        return TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
+        UserTokenDTO userTokenDTO = TOKEN_ASSEMBLER.toUserTokenDTO(tokenStore.createToken(authentication));
+        userTokenDTO.setUserId(userAccountDetails.getUserId());
+        return userTokenDTO;
+    }
+
+    /**
+     * 获取登录的详情信息
+     *
+     * @param accountType 账号类型
+     * @return 登录的用户详情dto对象
+     */
+    private LoginUserDetailDTO getLoginUserDetailDTO(String accountType) {
+        Request request = ContextHolderStrategy.getContext().getRequest();
+        LoginUserDetailDTO loginUserDetailDTO = new LoginUserDetailDTO();
+        String location = request.getAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION);
+        Long tenantId = request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
+        UserAgent userAgent = UserAgentUtil.parse(request.getUserAgent());
+        loginUserDetailDTO.setLoginTime(LocalDateTime.now());
+        loginUserDetailDTO.setLoginIp(request.getRequestIp());
+        loginUserDetailDTO.setLoginLocation(location);
+        loginUserDetailDTO.setLoginTenantId(tenantId);
+        loginUserDetailDTO.setLoginType(accountType);
+        loginUserDetailDTO.setOs(userAgent.getOs().getName());
+        loginUserDetailDTO.setBrowser(userAgent.getBrowser().getName());
+        loginUserDetailDTO.setBrowserVersion(userAgent.getBrowser().getVersion(request.getUserAgent()));
+        loginUserDetailDTO.setEngine(userAgent.getEngine().getName());
+        loginUserDetailDTO.setPlatform(userAgent.getPlatform().getName());
+
+        return loginUserDetailDTO;
     }
 
 }

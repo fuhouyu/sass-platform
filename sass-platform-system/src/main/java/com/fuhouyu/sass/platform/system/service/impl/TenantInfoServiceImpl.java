@@ -190,7 +190,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_NOT_EXISTS);
         }
         String contactPerson = tenantInfo.getContactPerson();
-        AccountDTO accountDTO = this.accountService.findById(new AccountIdDTO(contactPerson, AccountTypeEnum.PASSWORD), id);
+        AccountDTO accountDTO = this.accountService.findById(new AccountIdDTO(id, contactPerson, AccountTypeEnum.PASSWORD));
         List<ParamConfigDTO> paramConfigList = this.paramConfigService.findListByGroupKey("TENANT");
         Optional<ParamConfigDTO> optional = paramConfigList.stream()
                 .filter(config -> Objects.equals(config.getConfigKey(), "DEFAULT_PASSWORD"))

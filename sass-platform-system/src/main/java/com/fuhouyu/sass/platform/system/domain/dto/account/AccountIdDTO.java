@@ -43,6 +43,12 @@ public class AccountIdDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 5142354211238415241L;
 
+    @Schema(name = "tenantId", description = "租户id")
+    @NotNull
+    @ParamErrorResponse(using = AuthenticationResponseStatusEnum.class,
+            enumName = "TENANT_ID_NOT_NULL")
+    private Long tenantId;
+
     @NotEmpty
     @Schema(name = "account", description = """
             登录标识，如用户名，刷新令牌等
@@ -61,7 +67,8 @@ public class AccountIdDTO implements Serializable {
     public AccountIdDTO() {
     }
 
-    public AccountIdDTO(String account, AccountTypeEnum accountType) {
+    public AccountIdDTO(Long tenantId, String account, AccountTypeEnum accountType) {
+        this.tenantId = tenantId;
         this.account = account;
         this.accountType = accountType;
     }

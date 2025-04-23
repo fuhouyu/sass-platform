@@ -16,12 +16,9 @@
 package com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.log.serializer.LogRequestParamDesensitizeSerializer;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
-import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -54,11 +51,4 @@ public class UserLoginDTO extends AccountIdDTO {
             """, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @JsonSerialize(using = LogRequestParamDesensitizeSerializer.class)
     private String cloudflareTurnstileToken;
-
-    @Schema(name = "tenantId", description = "租户id")
-    @NotNull
-    @ParamErrorResponse(using = AuthenticationResponseStatusEnum.class,
-            enumName = "TENANT_ID_NOT_NULL")
-    private Long tenantId;
-
 }

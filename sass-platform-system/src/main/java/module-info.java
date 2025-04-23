@@ -71,6 +71,7 @@ module sass.platform.system {
     exports com.fuhouyu.sass.platform.system.core.config;
     exports com.fuhouyu.sass.platform.system.core.handle;
     exports com.fuhouyu.sass.platform.system.core.office;
+    exports com.fuhouyu.sass.platform.system.core.security;
     exports com.fuhouyu.sass.platform.system.core.security.authority;
     exports com.fuhouyu.sass.platform.system.core.security.provider;
     exports com.fuhouyu.sass.platform.system.utils;
@@ -126,6 +127,7 @@ module sass.platform.system {
     opens com.fuhouyu.sass.platform.system.domain.dto.resource to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.domain.dto.permission to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.domain.dto.dict to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
+    opens com.fuhouyu.sass.platform.system.core.security to com.esotericsoftware.kryo.kryo5;
 
     opens com.fuhouyu.sass.platform.system.domain.entity to spring.core;
 
