@@ -52,9 +52,19 @@ public enum ResourceResponseStatusEnum implements BaseResponseStatus {
     RESOURCE_DIRECTORY_NOT_NULL(200104, "资源目录不能为空"),
 
     /**
+     * 资源无权访问
+     */
+    RESOURCE_NOT_AUTH_ACCESS(200301, "资源无权访问"),
+
+    /**
      * 资源不存在
      */
     RESOURCE_NOT_EXISTS(200501, "资源不存在"),
+
+    /**
+     * 资源桶不存在
+     */
+    RESOURCE_BUCKET_NOT_EXISTS(200502, "资源桶不存在"),
     ;
     private final int code;
 

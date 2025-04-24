@@ -391,7 +391,7 @@ const TenantResource: React.FC = () => {
 
                 />
             </Flex>
-            <div className={'resource-list-container'}>
+            <div>
                 <div className={'tenant-space-header'}>
                     <Flex gap={8}>
                         <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>

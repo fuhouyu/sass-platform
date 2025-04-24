@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourcePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import org.apache.ibatis.annotations.Param;
@@ -77,4 +78,12 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      */
     @TenantQuery
     Integer countObjects();
+
+    /**
+     * 查询详情
+     *
+     * @param id 资源id
+     * @return 资源详情
+     */
+    ResourceDetailDTO queryDetailById(@Param("id") Long id);
 }
