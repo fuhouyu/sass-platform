@@ -16,18 +16,17 @@
 
 import React, {useCallback, useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
-import {ImageView} from "@components/ResourceView/imageView.tsx";
+import {ImageView} from "@components/ResourceView/image/imageView.tsx";
 import "./index.scss"
-import VideoView from "./videoView";
+import VideoView from "./video/videoView.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
 import {Spin} from "antd";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
-import {SourceCodeView} from "@components/ResourceView/sourceCodeView.tsx";
+import {SourceCodeView} from "@components/ResourceView/code/sourceCodeView.tsx";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 
-// TODO 这里的资源组件需要重新优化
 export const ResourceView = (resourceView: ResourceViewProps) => {
     const {isPublic, id} = resourceView;
     const {preview, generateSignedUrl} = useResourceAction();

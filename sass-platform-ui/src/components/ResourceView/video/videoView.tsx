@@ -30,14 +30,17 @@ const VideoView = ({url}: { url: string }) => {
             autoplay: true,
             width: '100%',
             height: '90%',
-            controls: true,
+            controls: {
+                autoHide: true,
+            },
             plugins: [Mp4Plugin],
             mp4plugin: {
                 maxBufferLength: 15,
                 minBufferLength: 10,
-                cacheSegmentCount: 3,
-                preloadTime: 5,
                 segmentDuration: 3,
+                disableBufferBreakCheck: true,
+                waitingTimeOut: 3,
+                waitingInBufferTimeOut: 3,
             }
         });
         return () => player.destroy();

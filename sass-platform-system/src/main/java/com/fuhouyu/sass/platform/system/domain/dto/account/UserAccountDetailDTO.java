@@ -13,10 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.view-loading {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+package com.fuhouyu.sass.platform.system.domain.dto.account;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
+
+/**
+ * <p>
+ * 用户登录的账号详情dto对象，
+ * 内部认证使用
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/23 18:52
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class UserAccountDetailDTO extends AccountDTO {
+
+    @Serial
+    private static final long serialVersionUID = 1541235787123123139L;
+
+    /**
+     * 用户详情的dto对象
+     */
+    private Object userDetail;
 }

@@ -47,6 +47,7 @@ import {
     FolderOutlined,
     LeftOutlined,
     LockOutlined,
+    ShareAltOutlined,
     UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
@@ -65,6 +66,7 @@ import {AnyObject} from "antd/es/_util/type";
 import {useNotification} from "@/hooks/useNotification.tsx";
 import {getCategoryInfo, ResourceCategoryEnum, resourceTypeInfo,} from "@/enums/ResourceCategoryEnum.tsx";
 import {FileUtils} from "@/utils/fileUtil.tsx";
+import {ShareResource} from "./components/ShareResource";
 
 const TenantResource: React.FC = () => {
     usePageTitle('Menu.resourceManage');
@@ -79,6 +81,7 @@ const TenantResource: React.FC = () => {
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
     const [selectFile, setSelectFile] = useState<Resource>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
+    const [shareModal, setShareModal] = useState<boolean>(false);
     const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
     const {notificationMessage, contextHolder} = useNotification();
     const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
@@ -97,7 +100,7 @@ const TenantResource: React.FC = () => {
                             <IconFont type={'i-dir'}/>
                             {record.name}
                         </Space>
-                    </Button>
+                    </Button>;
                 }
                 const categoryInfo = getCategoryInfo(record.category!);
                 return <Space size={4}>
@@ -339,6 +342,12 @@ const TenantResource: React.FC = () => {
             onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
         },
         {
+            key: TenantResourcePermissionConstant.SHARE,
+            icon: <ShareAltOutlined/>,
+            text: t('Resource.share'),
+            onClick: () => setShareModal(true),
+        },
+        {
             key: TenantResourcePermissionConstant.OFFICE_EDIT,
             icon: <EditOutlined/>, text: t('Resource.editor'),
             onClick: () => {
@@ -391,7 +400,7 @@ const TenantResource: React.FC = () => {
 
                 />
             </Flex>
-            <div className={'resource-list-container'}>
+            <div>
                 <div className={'tenant-space-header'}>
                     <Flex gap={8}>
                         <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
@@ -541,6 +550,21 @@ const TenantResource: React.FC = () => {
                 category={selectFile?.category ?? ''}/>
         </Modal>
 
+        {/*资源分享*/}
+        <Modal
+            title={<Space><IconFont type={'i-icon_share'}/><span>{selectFile?.name}</span></Space>}
+            className={'share-modal'}
+            destroyOnClose
+            open={shareModal}
+            footer={null}
+            width={750}
+            centered
+            closable
+            onCancel={() => setShareModal(false)}
+        >
+            <ShareResource id={selectFile?.id}/>
+
+        </Modal>
     </>)
 }
 

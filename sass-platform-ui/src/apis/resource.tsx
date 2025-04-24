@@ -34,13 +34,6 @@ class ResourceApi extends DefaultApiImpl<Resource> {
         Promise<StsTemporaryTokenResponse> = (stsTokenRequest: StsTemporaryTokenRequest): Promise<StsTemporaryTokenResponse> =>
         request.post(`${this.baseUrl}/sts-token`, stsTokenRequest);
 
-
-    /**
-     * 通过etag 获取资源
-     * @param etag etag
-     */
-    getResourceByEtag: (etag: string) => Promise<Resource> = (etag: string): Promise<Resource> => request.get(`${this.baseUrl}`, {params: {etag}})
-
     /**
      * 下载文件
      * @param id 主键id
@@ -50,16 +43,6 @@ class ResourceApi extends DefaultApiImpl<Resource> {
         (id: string, preview?: boolean): Promise<void> => request.get(`${this.baseUrl}/download/${id}`, {
             params: {preview}
         })
-
-
-    /**
-     * 文件预览
-     * @param id 主键id
-     */
-    previewFile: (id: string) => Promise<Blob> = (id: string): Promise<Blob> =>
-        request.get(`${this.baseUrl}/preview/${id}`, {
-            responseType: "blob"
-        });
 
     /**
      * 生成随机的url
@@ -78,20 +61,20 @@ class ResourceApi extends DefaultApiImpl<Resource> {
         request.get(`${this.baseUrl}/count`);
 
     /**
-     * 读取文件到blob
-     * @param id 主键id
-     */
-    readFileBytes: (id: string) => Promise<string> = (id: string): Promise<string> =>
-        request.get(`${this.baseUrl}/${id}/bytes`)
-
-
-    /**
      * 切换资源访问的状态
      * @param id id
      * @param isPublic 公开访问/私有访问
      */
     status: (id: string, isPublic: boolean) => Promise<void> = (id: string, isPublic: boolean): Promise<void> =>
-        request.put(`${this.baseUrl}/${id}/status?public=${isPublic}`)
+        request.put(`${this.baseUrl}/${id}/status?public=${isPublic}`);
+
+    /**
+     * 分享资源
+     * @param id id
+     * @param expires 过期时间
+     */
+    share: (id: string, expires: number) => Promise<string> = (id: string, expires: number): Promise<string> =>
+        request.get(`${this.baseUrl}/${id}/share?expires=${expires}`)
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -27,10 +26,7 @@ import com.fuhouyu.framework.s3.service.StsOperation;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import com.fuhouyu.sass.platform.system.enums.ResourceCategoryEnum;
@@ -46,7 +42,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -88,21 +83,11 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
 
-    /**
-     * 过期时间一个小时
-     */
-    private static final long EXPIRE_TIME = Duration.ofHours(1).getSeconds();
-
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-    private static final String BASE_DOWNLOAD_API = "%s/v1/resource/download/%s";
 
     private static final String TMP_DIR = "tmp/";
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
-
-    @Value("${sass.platform.resource.base-url:''}")
-    private String baseUrl;
 
     private final HttpServletRequest httpServletRequest;
 
@@ -272,33 +257,22 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public String generateSignedUrl(Long id,
-                                    Boolean preview) {
+                                    SingedUrlRequestDTO singedUrlRequestDTO) {
         ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        String baseUrl = String.format(BASE_DOWNLOAD_API, this.getHttpBaseUrl(), id);
-        SignedUrlUtil.UrlSignedDTO urlSignedDTO = SignedUrlUtil.UrlSignedDTO
-                .builder()
-                .expiresSeconds(EXPIRE_TIME)
-                .accessKey(resourceDTO.getObjectKey())
-                .secretKey(s3Properties.getSecretKey())
-                .params(Map.of("preview", preview))
-                .build();
-        return SignedUrlUtil.generateSignedUrl(baseUrl, urlSignedDTO);
-    }
-
-    @Override
-    public String generatePresignerDownloadUrl(Long id) {
-        ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
-
+        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
-            request.signatureDuration(Duration.ofHours(1));
+            request.signatureDuration(Duration.ofSeconds(singedUrlRequestDTO.getExpires()));
             request.getObjectRequest(getObject -> {
-                getObject.key(resourceDTO.getObjectKey());
-                getObject.bucket(tenantSpaceDTO.getBucketName());
-                getObject.responseContentType(MediaType.APPLICATION_OCTET_STREAM.getType());
-                getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
+                getObject.responseContentType(resourceDTO.getMimeType());
+                getObject.bucket(tenantSpaceDTO.getBucketName())
+                        .key(resourceDTO.getObjectKey());
+                if (Objects.equals(singedUrlRequestDTO.getIsPreview(), Boolean.FALSE)) {
+                    getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"",
+                            URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
+                }
             });
         });
+
         return presignedGetObjectRequest.url().toExternalForm();
     }
 
@@ -309,10 +283,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer) {
-        ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(resourceDTO.getOwnerTenantId());
+        ResourceDetailDTO resourceDTO = this.checkResourcePermission(id);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(tenantSpaceDTO.getBucketName())
+                .bucket(resourceDTO.getBucketName())
                 .key(resourceDTO.getObjectKey())
                 .build();
         ResponseInputStream<GetObjectResponse> inputStream = s3Client.getObject(getObjectRequest);
@@ -331,19 +304,23 @@ public class ResourceServiceImpl implements ResourceService {
      * @return 资源
      */
     @Override
-    public ResourceDTO checkResourcePermission(Long id) {
-        Resources resources = this.resourceMapper.queryById(id);
-        if (Objects.isNull(resources)) {
+    public ResourceDetailDTO checkResourcePermission(Long id) {
+        ResourceDetailDTO resourceDetailDTO = this.resourceMapper.queryDetailById(id);
+        if (Objects.isNull(resourceDetailDTO)) {
             LoggerUtil.warn(log, "资源不存在, id: {}", id);
             throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
         }
-        if (!resources.getIsPublic()) {
+        if (Objects.isNull(resourceDetailDTO.getBucketName())) {
+            LoggerUtil.warn(log, "资源bucketName为空, id: {}", id);
+            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_BUCKET_NOT_EXISTS);
+        }
+        if (!resourceDetailDTO.getIsPublic()) {
             if (Objects.isNull(ContextHolderStrategy.getContext().getUser()) ||
-                    !Objects.equals(ContextHolderStrategy.getContext().getUser().getTenantId(), resources.getOwnerTenantId())) {
-                throw new ServiceException(ResponseStatusEnum.NOT_AUTH, "无权访问该资源");
+                    !Objects.equals(ContextHolderStrategy.getContext().getUser().getTenantId(), resourceDetailDTO.getOwnerTenantId())) {
+                throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_AUTH_ACCESS);
             }
         }
-        return RESOURCES_ASSEMBLER.toDTO(resources);
+        return resourceDetailDTO;
     }
 
 
@@ -488,8 +465,7 @@ public class ResourceServiceImpl implements ResourceService {
     private void checkSignedUrl(ResourceSignedUrlDTO resourceSignedUrlDTO,
                                 Resources resources) {
         if (Objects.isNull(resources)) {
-            throw new ServiceException(ResponseStatusEnum.NOT_FOUND,
-                    "当前资源不存在");
+            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
         }
         if (resources.getIsPublic()) {
             return;
@@ -526,23 +502,6 @@ public class ResourceServiceImpl implements ResourceService {
                 builder.range(rangeHeader);
             }
         });
-    }
-
-
-    /**
-     * 获取url 地址
-     *
-     * @return 当前url地址
-     */
-    private String getHttpBaseUrl() {
-        if (StringUtils.isNotEmpty(this.baseUrl)) {
-            return this.baseUrl;
-        }
-        String hostBaseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName();
-        if (httpServletRequest.getServerPort() != 80 && httpServletRequest.getServerPort() != 443) {
-            hostBaseUrl += ":" + httpServletRequest.getServerPort();
-        }
-        return hostBaseUrl;
     }
 }
 

@@ -46,6 +46,13 @@ const EnUS = {
         pageNotfound: 'Page Notfound',
         backHome: 'Back Home'
     },
+    // 时间
+    Time: {
+        days: 'Days',
+        hours: 'Hours',
+        minutes: 'Minutes',
+        seconds: 'Seconds',
+    },
     // button
     Button: {
         add: 'Add',
@@ -98,6 +105,7 @@ const EnUS = {
         resourceManage: 'Resource Manage',
         resource: {
             preview: 'Preview',
+            share: 'Share',
             download: 'Download',
             officeEdit: 'Editor',
         },
@@ -325,6 +333,10 @@ const EnUS = {
         type: 'File Type',
         preview: 'Preview',
         download: 'Download',
+        share: 'Share',
+        shareTips: "The following URL lets you share this object without requiring a login. The URL expires automatically at your configured time (e.g., 12 hours).",
+        shareActiveFor: 'Active For',
+        shareExpireAt: 'Link will be available until:',
         editor: 'Editor',
         upload: {
             list: "Upload List",

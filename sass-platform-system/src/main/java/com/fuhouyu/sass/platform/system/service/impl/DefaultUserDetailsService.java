@@ -22,19 +22,15 @@ import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.response.AuthenticationResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.service.AccountService;
-import com.fuhouyu.sass.platform.system.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -52,8 +48,6 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
 
     private final AccountService accountService;
 
-    private final PermissionService permissionService;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.loadUserByUsername(username, AccountTypeEnum.PASSWORD.name());
@@ -62,21 +56,16 @@ public class DefaultUserDetailsService implements ExtensionUserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String account, String accountType) throws UsernameNotFoundException {
         Long tenantId = ContextHolderStrategy.getContext().getRequest().getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
-        AccountIdDTO accountIdDTO = new AccountIdDTO(account, AccountTypeEnum.valueOf(accountType));
-        AccountDTO accountDTO = this.accountService.findById(accountIdDTO, tenantId);
+        AccountIdDTO accountIdDTO = new AccountIdDTO(tenantId, account, AccountTypeEnum.valueOf(accountType));
+        AccountDTO accountDTO = this.accountService.findById(accountIdDTO);
         if (Objects.isNull(accountDTO)) {
+            // 如果是密码，抛出异常
             if (Objects.equals(accountType, AccountTypeEnum.PASSWORD.name())) {
                 throw new ServiceException(AuthenticationResponseStatusEnum.USER_NOT_IN_TENANT);
             } else {
                 return null;
             }
-
         }
-        // 如果是密码，抛出异常
-        Collection<? extends GrantedAuthority> simpleGrantedAuthorities =
-                this.permissionService.findUserSimpleGrantedAuthorities(tenantId, accountDTO.getUserId());
-        UserAccountDetails userDetail = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
-        userDetail.setAuthorities(simpleGrantedAuthorities);
-        return userDetail;
+        return SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
     }
 }

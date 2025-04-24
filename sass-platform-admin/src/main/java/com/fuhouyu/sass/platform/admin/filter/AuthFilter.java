@@ -27,6 +27,7 @@ import com.fuhouyu.framework.web.handler.ParseHttpRequest;
 import com.fuhouyu.framework.web.model.Ip2Region;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
+import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -38,8 +39,6 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
@@ -79,15 +78,8 @@ public class AuthFilter implements ParseHttpRequest {
     @Override
     public Request parseRequest(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         Request parseRequest = ParseHttpRequest.super.parseRequest(request, response);
-        List<String> locationList = new ArrayList<>(5);
         Ip2Region ip2Region = ip2RegionTemplate.searchIp(parseRequest.getRequestIp());
-        locationList.add(ip2Region.getCountry());
-        locationList.add(ip2Region.getRegion());
-        locationList.add(ip2Region.getProvince());
-        locationList.add(ip2Region.getCity());
-        locationList.add(ip2Region.getIsp());
-        locationList.removeIf(s -> Objects.isNull(s) || Objects.equals(s, "0"));
-        String location = String.join("/", locationList);
+        String location = ip2Region.toNotNullString();
         parseRequest.putAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION,
                 location);
         return parseRequest;
@@ -117,6 +109,9 @@ public class AuthFilter implements ParseHttpRequest {
         UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
         userEntity.putAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISSIONS, authentication.getAuthorities());
+        if (authentication instanceof UserAccountAuthenticationToken userAccountAuthenticationToken) {
+            userEntity.putAdditionalInformation(userAccountAuthenticationToken.getLoginUserDetails());
+        }
         return userEntity;
     }
 

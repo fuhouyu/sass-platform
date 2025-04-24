@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.core.office;
 
 import com.fuhouyu.framework.common.utils.NumberFormatUtil;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.SingedUrlRequestDTO;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.onlyoffice.manager.settings.SettingsManager;
 import com.onlyoffice.manager.url.DefaultUrlManager;
@@ -42,7 +43,9 @@ public class UrlMangerImpl extends DefaultUrlManager {
 
     @Override
     public String getFileUrl(@NonNull String fileId) {
-        return resourceService.generateSignedUrl(NumberFormatUtil.toLong(fileId), false);
+        SingedUrlRequestDTO singedUrlRequestDTO = new SingedUrlRequestDTO();
+        singedUrlRequestDTO.setIsPreview(false);
+        return resourceService.generateSignedUrl(NumberFormatUtil.toLong(fileId), singedUrlRequestDTO);
     }
 
 

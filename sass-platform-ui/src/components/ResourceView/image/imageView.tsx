@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.view-loading {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+import './index.scss'
+
+export const ImageView = ({viewUrl}: { viewUrl?: string }) => {
+    return (<img
+        width={'100%'}
+        className={'image-view'}
+        src={viewUrl}
+        alt=''/>)
 }

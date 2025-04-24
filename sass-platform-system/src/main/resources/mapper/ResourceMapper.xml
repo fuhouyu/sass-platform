@@ -31,6 +31,10 @@
         <result column="owner_tenant_id" property="ownerTenantId"/>
     </resultMap>
 
+    <resultMap id="ResourceDetail" type="com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO" extends="BaseResultMap">
+        <result property="bucketName" column="bucket_name"/>
+    </resultMap>
+
     <sql id="TableName">
         resources
     </sql>
@@ -66,7 +70,6 @@
         r.object_key,
         r.etag,
         r.version,
-        r.is_deleted,
         r.is_public,
         r.is_directory,
         r.owner_tenant_id,
@@ -246,5 +249,15 @@
         FROM
         <include refid="TableName"/> r
         WHERE r.is_directory = false
+    </select>
+
+    <select id="queryDetailById" resultMap="ResourceDetail">
+        SELECT
+        <include refid="QueryColumns"/>,
+        ts.bucket_name
+        FROM
+        <include refid="TableName"/> r
+        LEFT JOIN tenant_space ts ON r.owner_tenant_id = ts.tenant_id
+        WHERE r.id = #{id}
     </select>
 </mapper>

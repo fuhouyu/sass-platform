@@ -67,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         accountDTO.setIsEnabled(true);
         Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
         this.accountMapper.insert(entity);
-        return new AccountIdDTO(accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
+        return new AccountIdDTO(ContextHolderStrategy.getContext().getUser().getTenantId(), accountDTO.getAccount(), AccountTypeEnum.valueOf(accountDTO.getAccountType()));
     }
 
     @Override
@@ -97,18 +97,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO findById(AccountIdDTO accountIdDTO) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
-        return this.getAccountDTO(accountIdDTO, tenantId);
+        return this.getAccountDTO(accountIdDTO);
     }
 
     @Override
     public List<AccountDTO> findByUserId(Long userId) {
         return ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryByUserId(userId));
-    }
-
-    @Override
-    public AccountDTO findById(AccountIdDTO accountIdDTO, Long tenantId) {
-        return this.getAccountDTO(accountIdDTO, tenantId);
     }
 
 
@@ -159,7 +153,6 @@ public class AccountServiceImpl implements AccountService {
     public void editAccountStatusByUserId(Long userId, Boolean enabled) {
         this.accountMapper.updateAccountStatusByUserId(userId, enabled);
     }
-
     @Override
     public void saveThirdPartyAccount(AccountIdDTO accountIdDTO) {
         // TODO 目前这里只会有weLink，先临时处理，后面需要抽到accountTypeEnum中
@@ -178,11 +171,10 @@ public class AccountServiceImpl implements AccountService {
      * 获取账号dto对象
      *
      * @param accountIdDTO 账号id dto对象
-     * @param tenantId     租户id
      * @return 账号dto对象
      */
-    private AccountDTO getAccountDTO(AccountIdDTO accountIdDTO, Long tenantId) {
-        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name(), tenantId));
+    private AccountDTO getAccountDTO(AccountIdDTO accountIdDTO) {
+        Accounts accounts = this.accountMapper.queryById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name(), accountIdDTO.getTenantId()));
         if (Objects.isNull(accounts)) {
             return null;
         }

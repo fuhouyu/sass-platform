@@ -15,10 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceSignedUrlDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
 
 import java.io.InputStream;
 import java.util.function.Consumer;
@@ -63,11 +60,11 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 生成资源签名的url
      *
      * @param id 主键id
-     * @param preview 是否预览
+     * @param singedUrlRequestDTO 签名请求的url
      * @return 签名的url
      */
     String generateSignedUrl(Long id,
-                             Boolean preview);
+                             SingedUrlRequestDTO singedUrlRequestDTO);
 
 
     /**
@@ -77,14 +74,6 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @return 资源dto对象
      */
     ResourceDTO checkResourcePermission(Long id);
-
-    /**
-     * 生成一个预签名，直接从oss中下载的url
-     *
-     * @param id 资源id
-     * @return url
-     */
-    String generatePresignerDownloadUrl(Long id);
 
     /**
      * 资源总数

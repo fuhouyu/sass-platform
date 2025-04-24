@@ -79,9 +79,6 @@ public class OperationLogDTO implements Serializable {
     @Schema(name = "systemName", description = "系统名称")
     private String systemName;
 
-    /**
-     * 操作系统
-     */
     @Schema(name = "os", description = "操作系统")
     private String os;
 

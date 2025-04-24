@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.view-loading {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+.expire-time-container {
+  align-self: center;
+  margin-bottom: 1rem;
+}
+
+.share-tips {
+  margin-top: .5rem;
+}
+
+.expire-time-text {
+  font-size: 1rem;
+  font-weight: bold;
 }
