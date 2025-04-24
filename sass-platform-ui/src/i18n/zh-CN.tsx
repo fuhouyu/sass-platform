@@ -46,6 +46,13 @@ const ZhCN = {
         pageNotfound: '页面不存在',
         backHome: '回到首页',
     },
+    // 时间
+    Time: {
+        days: '天',
+        hours: '小时',
+        minutes: '分钟',
+        seconds: '秒',
+    },
     // button
     Button: {
         add: '新增',
@@ -141,6 +148,7 @@ const ZhCN = {
         resourceManage: '资源管理',
         resource: {
             preview: '预览',
+            share: '分享',
             download: '下载',
             officeEdit: '编辑',
         },
@@ -331,6 +339,10 @@ const ZhCN = {
         type: '文件类型',
         preview: '预览',
         download: '下载',
+        share: '分享',
+        shareTips: "以下链接允许您共享该对象，无需登录。该链接将在您配置的时间（例如 12 小时）后自动过期。",
+        shareActiveFor: "有效时长：",
+        shareExpireAt: '链接有效期至：',
         editor: '编辑',
         upload: {
             list: '上传列表',

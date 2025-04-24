@@ -119,8 +119,8 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 onChange={onChange}
                 virtual={true}
                 scroll={{
-                    y: 'calc(100vh - 18.75rem)',
-                    x: 'calc(100vh - 18.75rem)',
+                    y: 490,
+                    x: 500,
                 }}
                 dataSource={pageResult?.list}
                 rowSelection={{...tableProps.rowSelection, columnWidth: 48}}

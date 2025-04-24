@@ -83,11 +83,6 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
 
-    /**
-     * 过期时间一个小时
-     */
-    private static final long DEFAULT_EXPIRE_TIME = Duration.ofHours(1).getSeconds();
-
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private static final String TMP_DIR = "tmp/";
@@ -262,34 +257,22 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public String generateSignedUrl(Long id,
-                                    Boolean preview) {
-
+                                    SingedUrlRequestDTO singedUrlRequestDTO) {
         ResourceDTO resourceDTO = this.checkResourcePermission(id);
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
-            request.signatureDuration(Duration.ofHours(1));
+            request.signatureDuration(Duration.ofSeconds(singedUrlRequestDTO.getExpires()));
             request.getObjectRequest(getObject -> {
+                getObject.responseContentType(resourceDTO.getMimeType());
                 getObject.bucket(tenantSpaceDTO.getBucketName())
                         .key(resourceDTO.getObjectKey());
+                if (Objects.equals(singedUrlRequestDTO.getIsPreview(), Boolean.FALSE)) {
+                    getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"",
+                            URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
+                }
             });
         });
 
-        return presignedGetObjectRequest.url().toExternalForm();
-    }
-
-    @Override
-    public String generatePresignerDownloadUrl(Long id) {
-        ResourceDetailDTO resourceDTO = this.checkResourcePermission(id);
-
-        PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
-            request.signatureDuration(Duration.ofHours(1));
-            request.getObjectRequest(getObject -> {
-                getObject.key(resourceDTO.getObjectKey());
-                getObject.bucket(resourceDTO.getBucketName());
-                getObject.responseContentType(MediaType.APPLICATION_OCTET_STREAM.getType());
-                getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
-            });
-        });
         return presignedGetObjectRequest.url().toExternalForm();
     }
 

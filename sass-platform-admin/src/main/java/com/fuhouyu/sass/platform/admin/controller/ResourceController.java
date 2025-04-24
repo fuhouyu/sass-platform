@@ -92,6 +92,23 @@ public class ResourceController {
         this.resourceService.downloadFile(id, resourceSignedUrlDTO);
     }
 
+
+    /**
+     * 分享资源
+     *
+     * @param id                  资源id
+     * @param singedUrlRequestDTO 签名请求的url
+     * @return 分享链接
+     */
+    @GetMapping("/{id}/share")
+    @Operation(summary = "分享资源")
+    public BaseResponse<String> share(@PathVariable("id") Long id,
+                                      SingedUrlRequestDTO singedUrlRequestDTO) {
+        // 分享的链接默认下载
+        singedUrlRequestDTO.setIsPreview(false);
+        return ResponseHelper.success(this.resourceService.generateSignedUrl(id, singedUrlRequestDTO));
+    }
+
     /**
      * 保存资源信息
      *
@@ -157,16 +174,15 @@ public class ResourceController {
      * 生成签名url
      *
      * @param id      主键id
-     * @param preview 是否为预览
+     * @param singedUrlRequestDTO 签名请求的dto对象
      * @return 签名url
      */
     @Operation(summary = "生成签名url")
     @GetMapping("/generate/signed-url/{id}")
     @Parameter(name = "preview", description = "是否为预览")
     public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id,
-                                                  @RequestParam(value = "preview", required = false, defaultValue = "false")
-                                                  Boolean preview) {
-        return ResponseHelper.success(this.resourceService.generateSignedUrl(id, preview));
+                                                  SingedUrlRequestDTO singedUrlRequestDTO) {
+        return ResponseHelper.success(this.resourceService.generateSignedUrl(id, singedUrlRequestDTO));
     }
 
 

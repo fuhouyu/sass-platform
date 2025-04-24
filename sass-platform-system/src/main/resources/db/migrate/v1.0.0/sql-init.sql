@@ -470,6 +470,12 @@ INSERT INTO permissions (id, parent_id, permission_name, permission_code, displa
 VALUES (127, 12, 'Menu.resource.officeEdit', 'tenant:resource:office-edit', 8, '', '', '', '', false, 'BUTTON', false,
         true, true, true, 1,
         false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (128, 12, 'Menu.resource.share', 'tenant:resource:share', 9, '', '', '', '', false, 'BUTTON', false,
+        true, true, true, 1,
+        false, now(), 'admin', now(), 'admin');
 
 
 -- 组织管理
@@ -726,6 +732,8 @@ INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 126, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 127, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 128, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 26, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)

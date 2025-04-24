@@ -267,6 +267,11 @@ class TenantResourcePermissionConstant {
     static readonly PREVIEW: string = "tenant:resource:preview";
 
     /**
+     * 分享
+     */
+    static readonly SHARE: string = "tenant:resource:share";
+
+    /**
      * 下载
      */
     static readonly DOWNLOAD: string = "tenant:resource:download";
