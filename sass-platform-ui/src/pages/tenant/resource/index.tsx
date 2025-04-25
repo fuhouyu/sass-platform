@@ -195,9 +195,10 @@ const TenantResource: React.FC = () => {
                 return (<PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantResourcePermissionConstant.EDIT}>
                     <Button
-                        color={record.isPublic ? 'pink' : 'cyan'}
-                        variant={'solid'}
+                        type="primary"
                         icon={icon}
+                        size={'small'}
+                        danger={record.isPublic}
                         disabled={record.isDirectory}
                         onClick={async (event) => {
                             event.stopPropagation();

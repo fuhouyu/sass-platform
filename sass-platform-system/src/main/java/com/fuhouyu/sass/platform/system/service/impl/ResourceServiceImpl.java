@@ -202,17 +202,16 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     @Override
-    public void downloadFile(Long id, ResourceSignedUrlDTO resourceSignedUrlDTO) {
-        Resources resources = this.resourceMapper.queryById(id);
-        this.checkSignedUrl(resourceSignedUrlDTO, resources);
-        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(RESOURCES_ASSEMBLER.toDTO(resources));
+    public void downloadFile(Long id, Boolean preview) {
+        ResourceDetailDTO resourceDetailDTO = this.checkResourcePermission(id);
+        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(resourceDetailDTO);
         // 判断是预览还是下载
-        if (Objects.equals(resourceSignedUrlDTO.getPreview(), Boolean.TRUE)) {
+        if (Objects.equals(preview, Boolean.TRUE)) {
             httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, responseResponseInputStream.response().contentType());
         } else {
             httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDetailDTO.getName(), StandardCharsets.UTF_8)));
         }
         try {
             this.doFileDownload(responseResponseInputStream);
@@ -489,14 +488,13 @@ public class ResourceServiceImpl implements ResourceService {
      * @param resourceDTO 资源文件
      * @return 从s3下载的资源
      */
-    private ResponseInputStream<GetObjectResponse> downloadFileByS3(ResourceDTO resourceDTO) {
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
+    private ResponseInputStream<GetObjectResponse> downloadFileByS3(ResourceDetailDTO resourceDTO) {
         String rangeHeader = httpServletRequest.getHeader(HttpHeaders.RANGE);
         int status = Objects.isNull(rangeHeader) ?
                 HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
         httpServletResponse.setStatus(status);
         return this.s3Client.getObject(builder -> {
-            builder.bucket(tenantSpaceDTO.getBucketName())
+            builder.bucket(resourceDTO.getBucketName())
                     .key(resourceDTO.getObjectKey());
             if (Objects.nonNull(rangeHeader)) {
                 builder.range(rangeHeader);

@@ -335,7 +335,7 @@ const EnUS = {
         download: 'Download',
         share: 'Share',
         shareTips: "The following URL lets you share this object without requiring a login. The URL expires automatically at your configured time (e.g., 12 hours).",
-        shareActiveFor: 'Active For',
+        shareActiveFor: 'Active For:',
         shareExpireAt: 'Link will be available until:',
         editor: 'Editor',
         upload: {

@@ -15,7 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.SingedUrlRequestDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
 
 import java.io.InputStream;
 import java.util.function.Consumer;
@@ -35,10 +38,10 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 下载资源
      *
      * @param id                   资源id
-     * @param resourceSignedUrlDTO 资源签名的dto
+     * @param  preview 是否预览: true 预览， false 下载
      */
     void downloadFile(Long id,
-                      ResourceSignedUrlDTO resourceSignedUrlDTO);
+                      Boolean preview);
 
     /**
      * 生成sts临时token

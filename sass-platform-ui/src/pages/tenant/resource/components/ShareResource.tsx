@@ -68,7 +68,7 @@ export const ShareResource = ({id}: { id?: string }) => {
 
         {shareUrl && (
             <Space direction="vertical">
-                <Text strong> <LinkOutlined/>{t('Resource.shareExpireAt')}<span
+                <Text strong> <LinkOutlined/> <span>{t('Resource.shareExpireAt')}</span><span
                     className={'expire-time-text'}>{expireAt}</span></Text>
                 <Input
                     readOnly
