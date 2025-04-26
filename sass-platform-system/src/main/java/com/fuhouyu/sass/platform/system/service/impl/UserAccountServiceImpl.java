@@ -89,7 +89,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             // 管理员用户
             AdminUserDTO userDetails = this.adminUserService.findById(userAccountDetails.getUserId());
             return UserAccountAuthenticationToken.authenticated(authentication.getPrincipal(),
-                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO.getAccountType().name()),
+                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO),
                     this.permissionService.findUserSimpleGrantedAuthorities(userLoginDTO.getTenantId(), userDetails.getId()));
         });
         this.adminUserService.recordLoginSuccess(userTokenDTO.getUserId());
@@ -102,7 +102,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             UserAccountDetails userAccountDetails = (UserAccountDetails) authentication.getPrincipal();
             UserDTO userDetails = this.userService.findById(userAccountDetails.getUserId());
             return UserAccountAuthenticationToken.authenticated(authentication.getPrincipal(),
-                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO.getAccountType().name()));
+                    authentication.getCredentials(), userDetails, this.getLoginUserDetailDTO(userLoginDTO));
         });
         this.userService.recordLoginSuccess(userTokenDTO.getUserId());
         return userTokenDTO;
@@ -205,20 +205,20 @@ public class UserAccountServiceImpl implements UserAccountService {
     /**
      * 获取登录的详情信息
      *
-     * @param accountType 账号类型
+     * @param userLoginDTO 登录dto
      * @return 登录的用户详情dto对象
      */
-    private LoginUserDetailDTO getLoginUserDetailDTO(String accountType) {
+    private LoginUserDetailDTO getLoginUserDetailDTO(UserLoginDTO userLoginDTO) {
         Request request = ContextHolderStrategy.getContext().getRequest();
         LoginUserDetailDTO loginUserDetailDTO = new LoginUserDetailDTO();
         String location = request.getAdditionalInformation(HttpRequestAdditionalConstant.IP_LOCATION_ADDITIONAL_INFORMATION);
-        Long tenantId = request.getAdditionalInformation(HttpRequestAdditionalConstant.TENANT_ADDITIONAL_INFORMATION_ID);
         UserAgent userAgent = UserAgentUtil.parse(request.getUserAgent());
         loginUserDetailDTO.setLoginTime(LocalDateTime.now());
         loginUserDetailDTO.setLoginIp(request.getRequestIp());
         loginUserDetailDTO.setLoginLocation(location);
-        loginUserDetailDTO.setLoginTenantId(tenantId);
-        loginUserDetailDTO.setLoginType(accountType);
+        loginUserDetailDTO.setLoginAccount(userLoginDTO.getAccount());
+        loginUserDetailDTO.setLoginType(userLoginDTO.getAccountType().name());
+        loginUserDetailDTO.setLoginTenantId(userLoginDTO.getTenantId());
         loginUserDetailDTO.setOs(userAgent.getOs().getName());
         loginUserDetailDTO.setBrowser(userAgent.getBrowser().getName());
         loginUserDetailDTO.setBrowserVersion(userAgent.getBrowser().getVersion(request.getUserAgent()));

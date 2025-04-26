@@ -113,7 +113,7 @@ export const DictItem = () => {
         }
     ];
 
-    const [updateId, setUpdatedId] = useState<string | undefined>();
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
@@ -148,7 +148,7 @@ export const DictItem = () => {
      * @param dictItemId 角色id
      */
     const openModal = async (dictItemId?: string) => {
-        setUpdatedId(dictItemId);
+        setUpdateId(dictItemId);
         if (dictItemId) {
             const dictItemInfo: DictItemModel = await dictItemApi.getInfoByIdApi(dictItemId);
             setFormInitValues(dictItemInfo);

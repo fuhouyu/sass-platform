@@ -120,6 +120,11 @@ export class BaseApiUrlConstant {
      * 应用管理
      */
     static readonly APPLICATION_MANAGE_URL: string = `${BaseApiUrlConstant.VERSION}/application`;
+
+    /**
+     * 在线用户
+     */
+    static readonly ONLINE_USER_URL: string = `${BaseApiUrlConstant.VERSION}/online/user`;
 }
 
 /**

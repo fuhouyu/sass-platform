@@ -74,16 +74,23 @@ public class ServerMonitorController {
      */
     @GetMapping("/server")
     @Operation(summary = "服务监控")
-    @PreAuthorize("@auth.hasAllPermission('system:server-monitor:list')")
+    @PreAuthorize("@auth.hasAllPermission('monitor:server:list')")
     public Flux<ServerMonitorDTO> monitor() {
         return Flux.interval(Duration.ofSeconds(1))
                 .map(i -> new ServerMonitorDTO(systemInfo));
     }
 
+    /**
+     * 服务日志监控
+     *
+     * @param logLevel 日志级别
+     * @return 日志内容
+     */
     @GetMapping(value = "/log", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "服务日志")
     @NoAuth
     @Parameter(name = "logLevel", description = "日志级别")
+    @PreAuthorize("@auth.hasAllPermission('monitor:log:list')")
     public Flux<String> log(@RequestParam(value = "logLevel", required = false, defaultValue = "info") String logLevel) {
         List<String> lastLines = this.logMonitorService.readHistoryLogFile(logLevel, 1000);
         Flux<String> heartbeat = Flux.interval(Duration.ofSeconds(30))

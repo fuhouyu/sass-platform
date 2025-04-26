@@ -67,12 +67,15 @@ export const Login: React.FC = () => {
     useEffect(() => {
         if (isAuth) {
             navigate('/');
+        } else {
+            tenantApi.list().then(res => {
+                setTenantId(res[0].id);
+                setTenantList(res);
+            })
         }
-        tenantApi.list().then(res => {
-            setTenantId(res[0].id);
-            setTenantList(res);
-        })
     }, [isAuth, navigate]);
+
+
     const onFinish = async (loginData: UserAuthentication) => {
         setLoginButtonLoading(true);
         loginData.accountType = AccountType.PASSWORD;

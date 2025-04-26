@@ -29,12 +29,16 @@ const SearchHeader = (searchComponentProps: SearchComponentProps) => {
     const [buttonLoading, setButtonLoading] = useState<boolean>(false);
     const {t} = useTranslation()
 
+    const [keys] = useState(() =>
+        components.map(() => Math.random().toString(36).slice(2))
+    );
+
     return (
         <div className="search-header">
             <div className='search-components'>
                 {components?.map((item, index) =>
                     (
-                        <div className='search-component' key={index}>
+                        <div className='search-component' key={keys[index]}>
                             {item}
                         </div>
                     )

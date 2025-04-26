@@ -128,6 +128,8 @@ const EnUS = {
         systemMonitor: 'System Monitor',
         serverMonitor: 'Server Monitor',
         logMonitor: 'Log Monitor',
+        onlineUser: 'Online User',
+        forceLogout: 'Force Logout',
         applicationCenter: 'Application Center',
         applicationManage: 'Application Manage',
     },
@@ -491,6 +493,25 @@ const EnUS = {
         ipWhitelistErrorMessage: 'IP whitelist format error',
         isEnabled: 'Enabled',
         isEnabledPlaceholder: 'Please select whether to enable',
+    },
+    // 在线用户
+    OnlineUser: {
+        list: 'Online User List',
+        sessionId: "Session ID",
+        loginAccount: "Login Account",
+        loginAccountPlaceholder: 'Please input login account',
+        forceLogout: 'Force Logout',
+        forceLogoutTips: 'Are you sure you want to force logout the selected users?',
+        loginType: "Login Type",
+        loginTime: "Login Time",
+        loginIp: "Login IP",
+        loginLocation: "Login Location",
+        browser: "Browser",
+        os: "Operating System",
+        clientId: "Client ID",
+        browserVersion: "Browser Version",
+        engine: "Engine",
+        platform: "Platform"
     }
 
 }

@@ -165,9 +165,11 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                                         }}/>
                                 </>,
                             ],
-                            onSearchClick: () => tableRef.current?.refreshPageList({
-                                pageQuery: {...pageQuery}
-                            })
+                            onSearchClick: () => {
+                                tableRef.current?.refreshPageList({
+                                    pageQuery: {...pageQuery}
+                                })
+                            }
                         }}
                     />
                 </Splitter.Panel>

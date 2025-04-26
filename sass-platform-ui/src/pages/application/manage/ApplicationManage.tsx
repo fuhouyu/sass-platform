@@ -78,7 +78,7 @@ export const ApplicationManage: FC = () => {
                                       buttonPermissions={buttonPermissions}>
                         <EditButton key={'edit'} onClick={() => {
                             setIsModalOpen(true);
-                            setUpdatedId(record.clientId);
+                            setUpdateId(record.clientId);
                         }}/>
                     </PermissionButton>
                 )
@@ -87,7 +87,7 @@ export const ApplicationManage: FC = () => {
     ];
 
     const tableRef = useRef<TableRefType<ApplicationModel>>(null);
-    const [updateId, setUpdatedId] = useState<string | undefined>();
+    const [updateId, setUpdateId] = useState<string | undefined>();
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const [rowKeys, setRowKeys] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -170,7 +170,7 @@ export const ApplicationManage: FC = () => {
                 updateId={updateId}
                 onClose={async () => {
                     setIsModalOpen(false);
-                    setUpdatedId(undefined);
+                    setUpdateId(undefined);
                     await tableRef?.current?.refreshPageList();
                 }}
             />
