@@ -78,7 +78,7 @@ public class ResourceDTO extends BaseDTO implements Serializable {
     private String objectKey;
 
     @Schema(name = "version", description = "版本号", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Integer version;
+    private String version;
 
     @Schema(name = "isPublic", description = "是否公开", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "是否公开未选择")

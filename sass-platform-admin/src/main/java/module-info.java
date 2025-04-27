@@ -51,6 +51,7 @@
     requires spring.security.oauth2.core;
     requires spring.security.web;
     requires spring.web;
+    requires spring.webflux;
 
     exports com.fuhouyu.sass.platform.admin;
     exports com.fuhouyu.sass.platform.admin.annotaions;

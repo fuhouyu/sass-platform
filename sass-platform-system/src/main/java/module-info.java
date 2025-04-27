@@ -65,6 +65,7 @@ module sass.platform.system {
     requires spring.tx;
     requires spring.web;
     requires cn.hutool.http;
+    requires transmittable.thread.local;
 
     exports com.fuhouyu.sass.platform.system.assembler;
     exports com.fuhouyu.sass.platform.system.constants;

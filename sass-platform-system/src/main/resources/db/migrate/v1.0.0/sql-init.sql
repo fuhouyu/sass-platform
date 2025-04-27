@@ -1111,7 +1111,7 @@ CREATE TABLE resources
     size            BIGINT       NOT NULL DEFAULT 0,
     mime_type       VARCHAR(100),
     object_key   VARCHAR(255) NOT NULL,
-    version         INT          NOT NULL DEFAULT 1,
+    version VARCHAR(64) NOT NULL,
     category VARCHAR(64) NOT NULL DEFAULT 'OTHER',
     etag         VARCHAR(64)  NOT NULL,
     is_directory BOOLEAN      NOT NULL DEFAULT FALSE,

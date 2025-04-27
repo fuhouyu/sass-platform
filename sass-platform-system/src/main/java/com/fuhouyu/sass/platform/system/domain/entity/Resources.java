@@ -73,7 +73,7 @@ public class Resources extends BaseEntity {
     /**
      * 版本号
      */
-    private Integer version;
+    private String version;
 
     /**
      * 资源分类

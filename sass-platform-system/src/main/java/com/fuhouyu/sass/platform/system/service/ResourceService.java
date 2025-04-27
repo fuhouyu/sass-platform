@@ -15,10 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.SingedUrlRequestDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenRequestDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.StsTemporaryTokenResponseDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
 
 import java.io.InputStream;
 import java.util.function.Consumer;
@@ -76,7 +73,7 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @param id 资源id
      * @return 资源dto对象
      */
-    ResourceDTO checkResourcePermission(Long id);
+    ResourceDetailDTO checkResourcePermission(Long id);
 
     /**
      * 资源总数
@@ -92,4 +89,12 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @param inputStreamConsumer 字节流
      */
     void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer);
+
+    /**
+     * 根据id查询资源详情
+     *
+     * @param id 主键id
+     * @return 资源详情
+     */
+    ResourceDetailDTO findDetailById(Long id);
 }
