@@ -17,9 +17,12 @@ package com.fuhouyu.sass.platform.system.utils;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.Objects;
 
@@ -34,6 +37,33 @@ import java.util.Objects;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BaseUrlUtil {
 
+
+    private static final String BASE_URL_PROPERTY = "sass.platform.base-url";
+    private static volatile String configuredBaseUrl;
+
+    /**
+     * 加载baseUrl
+     *
+     * @param request 请求
+     */
+    private static void loadConfiguredBaseUrl(HttpServletRequest request) {
+        if (configuredBaseUrl != null) {
+            return;
+        }
+        synchronized (BaseUrlUtil.class) {
+            if (configuredBaseUrl == null) {
+                ServletContext servletContext = request.getServletContext();
+                Environment environment = WebApplicationContextUtils
+                        .getRequiredWebApplicationContext(servletContext)
+                        .getEnvironment();
+                String baseUrl = environment.getProperty(BASE_URL_PROPERTY);
+                if (baseUrl != null && !baseUrl.trim().isEmpty()) {
+                    configuredBaseUrl = baseUrl.trim();
+                }
+            }
+        }
+    }
+
     /**
      * 从 HttpServletRequest 对象中获取应用的 baseUrl。
      * 例如：http://localhost:8080 或 https://example.com
@@ -46,6 +76,13 @@ public class BaseUrlUtil {
             return null;
         }
         HttpServletRequest httpServletRequest = request.getHttpServletRequest();
+
+        // 尝试读取配置
+        loadConfiguredBaseUrl(httpServletRequest);
+        if (configuredBaseUrl != null) {
+            return configuredBaseUrl;
+        }
+
         String scheme = httpServletRequest.getScheme();
         String serverName = httpServletRequest.getServerName();
         int serverPort = httpServletRequest.getServerPort();
