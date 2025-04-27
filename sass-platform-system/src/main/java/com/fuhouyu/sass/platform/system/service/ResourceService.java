@@ -35,10 +35,10 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * 下载资源
      *
      * @param id                   资源id
-     * @param resourceSignedUrlDTO 资源签名的dto
+     * @param  preview 是否预览: true 预览， false 下载
      */
     void downloadFile(Long id,
-                      ResourceSignedUrlDTO resourceSignedUrlDTO);
+                      Boolean preview);
 
     /**
      * 生成sts临时token
@@ -73,7 +73,7 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @param id 资源id
      * @return 资源dto对象
      */
-    ResourceDTO checkResourcePermission(Long id);
+    ResourceDetailDTO checkResourcePermission(Long id);
 
     /**
      * 资源总数
@@ -89,4 +89,12 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
      * @param inputStreamConsumer 字节流
      */
     void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer);
+
+    /**
+     * 根据id查询资源详情
+     *
+     * @param id 主键id
+     * @return 资源详情
+     */
+    ResourceDetailDTO findDetailById(Long id);
 }

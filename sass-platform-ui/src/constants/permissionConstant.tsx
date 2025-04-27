@@ -312,6 +312,13 @@ class ApplicationPermissionConstant {
 
 }
 
+/**
+ * 在线用户
+ */
+class OnlineUserPermissionConstant {
+    static readonly List: string = 'monitor:online-user:list';
+    static readonly ForceLogout: string = 'monitor:online-user:logout';
+}
 
 export {
     TenantPermissionConstant,
@@ -323,5 +330,6 @@ export {
     OrganizationPermissionConstant,
     ParamConfigPermissionConstant,
     ApplicationPermissionConstant,
-    TenantResourcePermissionConstant
+    TenantResourcePermissionConstant,
+    OnlineUserPermissionConstant
 }

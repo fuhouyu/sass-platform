@@ -82,14 +82,14 @@ public class ResourceController {
      * 下载文件
      *
      * @param id                   资源id
-     * @param resourceSignedUrlDTO 签名dto对象
+     * @param preview 是否预览: true 预览， false 下载
      */
     @GetMapping("/download/{id}")
     @Operation(summary = "下载资源文件")
     @NoAuth
     public void downloadFile(@PathVariable("id") Long id,
-                             ResourceSignedUrlDTO resourceSignedUrlDTO) {
-        this.resourceService.downloadFile(id, resourceSignedUrlDTO);
+                             @RequestParam("preview") Boolean preview) {
+        this.resourceService.downloadFile(id, preview);
     }
 
 

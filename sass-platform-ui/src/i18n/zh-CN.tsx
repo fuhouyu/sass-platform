@@ -172,6 +172,8 @@ const ZhCN = {
         systemMonitor: '系统监控',
         serverMonitor: '服务监控',
         logMonitor: '日志监控',
+        onlineUser: '在线用户',
+        forceLogout: '强制登出',
         applicationCenter: '应用中心',
         applicationManage: '应用管理',
 
@@ -501,6 +503,24 @@ const ZhCN = {
         ipWhitelistErrorMessage: 'IP白名单格式错误',
         isEnabled: '是否启用',
         isEnabledPlaceholder: '请选择是否启用',
+    },
+    OnlineUser: {
+        list: '在线用户列表',
+        sessionId: '会话id',
+        forceLogout: '踢出',
+        forceLogoutTips: '您确定要强制下线所选用户吗？',
+        loginAccount: '登录账号',
+        loginAccountPlaceholder: '请输入登录账号',
+        loginType: '登录类型',
+        loginTime: '登录时间',
+        loginIp: '登录ip',
+        loginLocation: '登录地点',
+        browser: '浏览器',
+        os: '操作系统',
+        clientId: '客户端id',
+        browserVersion: '浏览器版本',
+        engine: '引擎',
+        platform: '平台',
     }
 }
 

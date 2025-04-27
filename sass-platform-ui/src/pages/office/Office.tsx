@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 
-import React, {FC, useCallback, useEffect} from "react";
+import React, {FC, useCallback, useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
 import {message} from "antd";
 import {OnlyOffice} from "@/model/office.tsx";
-import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
 import {DocumentEditor} from "@onlyoffice/document-editor-react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-
-function onLoadComponentError(errorCode: number, errorDescription: string) {
-    switch (errorCode) {
-        case -1: // Unknown error loading component
-            console.log(errorDescription)
-            break
-
-        case -2: // Error load DocsAPI from http://documentserver/
-            console.log(errorDescription)
-            break
-
-        case -3: // DocsAPI is not defined
-            console.log(errorDescription)
-            break
-    }
-}
+import {Userinfo} from "@/model/user.tsx";
+import {PageLoading} from "@/components";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 
 export const Office: FC = () => {
     usePageTitle('Menu.office');
     const {id} = useParams();
     const [params] = useSearchParams();
-    const {userinfo, fetchUserinfo} = useUserStore(state => state);
     const [officeView, setOfficeView] = React.useState<OnlyOffice>({} as OnlyOffice)
+    const {fetchUserinfo} = useUserStore(state => state);
     const {preview} = useResourceAction();
+    const [userinfo, setUserinfo] = useState<Userinfo | undefined>(undefined);
     const language = useLocaleStore(state => state.language);
 
     const initOfficeView = useCallback(async () => {
@@ -55,14 +42,24 @@ export const Office: FC = () => {
             message.error("没有找到该资源").then();
             return <div></div>;
         }
-        const onlyOffice: OnlyOffice = await onlyOfficeApi.view({id: id, mode: params.get('mode') || 'VIEW'});
+        const onlyOffice: OnlyOffice = await onlyOfficeApi.view({id: id, mode: params.get('mode') ?? 'VIEW'});
         setOfficeView(onlyOffice);
-    }, [id, params])
+    }, [id, params]);
 
     useEffect(() => {
-        fetchUserinfo().then();
+        fetchUserinfo().then(res => {
+            setUserinfo(res);
+        });
+    }, [fetchUserinfo]);
+
+    useEffect(() => {
         initOfficeView().then();
-    }, [fetchUserinfo, initOfficeView])
+    }, [initOfficeView]);
+
+    if (userinfo === undefined) {
+        return <PageLoading/>
+    }
+
 
     return (
         officeView.config &&
@@ -80,7 +77,7 @@ export const Office: FC = () => {
                     lang: language
                 },
             }}
-            onLoadComponentError={onLoadComponentError}
+            onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
         />
-    )
+    );
 }

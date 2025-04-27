@@ -33,7 +33,8 @@ import {
     Select,
     Space,
     TableColumnsType,
-    Tag
+    Tag,
+    Tooltip
 } from "antd";
 import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
 import {Trans, useTranslation} from "react-i18next";
@@ -124,11 +125,17 @@ const TenantResource: React.FC = () => {
             title: t('Resource.type'),
             dataIndex: 'mimeType',
             align: "center",
+            width: 140,
+            ellipsis: {
+                showTitle: false,
+            },
             render: (_, record) => {
                 if (record.isDirectory) {
                     return <span>-</span>
                 }
-                return <span>{record.mimeType}</span>
+                return <Tooltip placement="topLeft" title={record.mimeType}>
+                    {record.mimeType}
+                </Tooltip>
             }
         },
         {
@@ -195,9 +202,10 @@ const TenantResource: React.FC = () => {
                 return (<PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantResourcePermissionConstant.EDIT}>
                     <Button
-                        color={record.isPublic ? 'pink' : 'cyan'}
-                        variant={'solid'}
+                        type="primary"
                         icon={icon}
+                        size={'small'}
+                        danger={record.isPublic}
                         disabled={record.isDirectory}
                         onClick={async (event) => {
                             event.stopPropagation();

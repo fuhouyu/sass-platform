@@ -584,17 +584,31 @@ VALUES (4, -1, 'Menu.systemMonitor', 'system-monitor', 4, 'i-yunjiankong', 'moni
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (41, 4, 'Menu.serverMonitor', 'system:server-monitor:list', 4, 'i-fuwujiankong', 'server',
+VALUES (41, 4, 'Menu.serverMonitor', 'monitor:server:list', 4, 'i-fuwujiankong', 'server',
         'monitor/server', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
                          component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
                          is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
-VALUES (42, 4, 'Menu.logMonitor', 'system:log-monitor:list', 4, 'i-caozuorizhi', 'log',
+VALUES (42, 4, 'Menu.logMonitor', 'monitor:log:list', 4, 'i-caozuorizhi', 'log',
         'monitor/log', '', false, 'MENU',
         false,
         true, false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (43, 4, 'Menu.onlineUser', 'monitor:online-user:list', 5, 'i-zaixianyonghu', 'online-user',
+        'monitor/online', '', false, 'MENU',
+        false,
+        true, false, true, 1, false, now(), 'admin', now(), 'admin');
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (431, 43, 'Menu.forceLogout', 'monitor:online-user:logout', 1, '', '', '', '', false, 'BUTTON', false, true,
+        true,
+        true, 1,
+        false, now(), 'admin', now(), 'admin');
 
 -- 应用管理
 INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
@@ -768,6 +782,10 @@ INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 41, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 42, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 43, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 431, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 5, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
@@ -1093,7 +1111,7 @@ CREATE TABLE resources
     size            BIGINT       NOT NULL DEFAULT 0,
     mime_type       VARCHAR(100),
     object_key   VARCHAR(255) NOT NULL,
-    version         INT          NOT NULL DEFAULT 1,
+    version VARCHAR(64) NOT NULL,
     category VARCHAR(64) NOT NULL DEFAULT 'OTHER',
     etag         VARCHAR(64)  NOT NULL,
     is_directory BOOLEAN      NOT NULL DEFAULT FALSE,

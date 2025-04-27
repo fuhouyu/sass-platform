@@ -25,6 +25,7 @@ import {AccountBind} from "@/pages/profile/account/AccountBind.tsx";
 import {LayoutMain} from "@/pages/Layout";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import Office from "@/pages/office";
+import {PageLoading} from "@/components";
 
 
 /**
@@ -54,7 +55,8 @@ export const commonRoutes: DataRouteObject[] = [
                 path: BaseUrlConstant.USER_PROFILE_URL,
                 Component: UserProfile,
             }
-        ]
+        ],
+        hydrateFallbackElement: <PageLoading/>
     },
     {
         id: 'office-preview',

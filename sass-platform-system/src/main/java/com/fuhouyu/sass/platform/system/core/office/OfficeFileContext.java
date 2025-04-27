@@ -15,37 +15,39 @@
  */
 package com.fuhouyu.sass.platform.system.core.office;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
-import com.onlyoffice.manager.document.DefaultDocumentManager;
-import com.onlyoffice.manager.settings.SettingsManager;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
- * 文档管理的实现类
+ * office文件的上下文
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/2 14:27
+ * @since 2025/4/27 20:43
  */
-public class DocumentManagerImpl extends DefaultDocumentManager {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class OfficeFileContext implements AutoCloseable {
+
+    private static final ThreadLocal<ResourceDetailDTO> RESOURCE_DETAIL_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
 
-    public DocumentManagerImpl(SettingsManager settingsManager) {
-        super(settingsManager);
+    public static void set(ResourceDetailDTO resourceDetail) {
+        RESOURCE_DETAIL_THREAD_LOCAL.set(resourceDetail);
     }
 
+    public static ResourceDetailDTO get() {
+        return RESOURCE_DETAIL_THREAD_LOCAL.get();
+    }
+
+    public static void clear() {
+        RESOURCE_DETAIL_THREAD_LOCAL.remove();
+    }
 
     @Override
-    public String getDocumentKey(String fileId, boolean embedded) {
-        ResourceDetailDTO resourceDetailDTO = OfficeFileContext.get();
-        return resourceDetailDTO.getId() + resourceDetailDTO.getVersion();
+    public void close() throws Exception {
+        RESOURCE_DETAIL_THREAD_LOCAL.remove();
     }
-
-    @Override
-    public String getDocumentName(String fileId) {
-        return OfficeFileContext.get().getName();
-    }
-
-
 }
-

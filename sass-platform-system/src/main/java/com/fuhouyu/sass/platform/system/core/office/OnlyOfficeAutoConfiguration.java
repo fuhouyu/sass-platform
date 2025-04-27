@@ -17,7 +17,6 @@ package com.fuhouyu.sass.platform.system.core.office;
 
 import cn.hutool.core.lang.Assert;
 import com.fuhouyu.sass.platform.system.properties.OnlyOfficeDocumentProperties;
-import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.onlyoffice.manager.document.DocumentManager;
 import com.onlyoffice.manager.security.DefaultJwtManager;
 import com.onlyoffice.manager.settings.DefaultSettingsManager;
@@ -30,6 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 /**
  * <p>
@@ -48,6 +48,7 @@ public class OnlyOfficeAutoConfiguration implements InitializingBean {
 
     private final OnlyOfficeDocumentProperties properties;
 
+    private final S3Presigner s3Presigner;
 
 
     @Bean
@@ -56,13 +57,13 @@ public class OnlyOfficeAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    public DocumentManager documentManager(DefaultSettingsManager settingsManager, ResourceService resourceService) {
-        return new DocumentManagerImpl(settingsManager, resourceService);
+    public DocumentManager documentManager(DefaultSettingsManager settingsManager) {
+        return new DocumentManagerImpl(settingsManager);
     }
 
     @Bean
-    public UrlManager urlManager(SettingsManager settingsManager, ResourceService resourceService) {
-        return new UrlMangerImpl(settingsManager, resourceService);
+    public UrlManager urlManager(SettingsManager settingsManager) {
+        return new UrlMangerImpl(settingsManager, s3Presigner);
     }
 
     @Bean

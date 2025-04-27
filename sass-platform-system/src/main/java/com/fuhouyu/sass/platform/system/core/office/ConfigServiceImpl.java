@@ -40,7 +40,6 @@ public class ConfigServiceImpl extends DefaultConfigService {
         super(documentManager, urlManager, jwtManager, settingsManager);
     }
 
-
     @Override
     public Permissions getPermissions(String fileId) {
         // TODO 这里先不设置权限

@@ -131,12 +131,17 @@ public class ResourceServiceImpl implements ResourceService {
         }
         String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
+        HeadObjectResponse headObjectResponse = this.s3Client.headObject(
+                builder -> builder.bucket(bucketName)
+                        .key(newObjectKey)
+        );
         long id = snowflake.nextId();
         entity.setId(id);
         entity.setMimeType(mimeType);
         entity.setCategory(category);
         entity.setObjectKey(newObjectKey);
         entity.setParentId(parentId);
+        entity.setVersion(Optional.ofNullable(headObjectResponse.versionId()).orElse(""));
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.resourceMapper.insert(entity);
         return id;
@@ -202,17 +207,16 @@ public class ResourceServiceImpl implements ResourceService {
 
 
     @Override
-    public void downloadFile(Long id, ResourceSignedUrlDTO resourceSignedUrlDTO) {
-        Resources resources = this.resourceMapper.queryById(id);
-        this.checkSignedUrl(resourceSignedUrlDTO, resources);
-        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(RESOURCES_ASSEMBLER.toDTO(resources));
+    public void downloadFile(Long id, Boolean preview) {
+        ResourceDetailDTO resourceDetailDTO = this.checkResourcePermission(id);
+        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(resourceDetailDTO);
         // 判断是预览还是下载
-        if (Objects.equals(resourceSignedUrlDTO.getPreview(), Boolean.TRUE)) {
+        if (Objects.equals(preview, Boolean.TRUE)) {
             httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, responseResponseInputStream.response().contentType());
         } else {
             httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resources.getName(), StandardCharsets.UTF_8)));
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDetailDTO.getName(), StandardCharsets.UTF_8)));
         }
         try {
             this.doFileDownload(responseResponseInputStream);
@@ -258,14 +262,14 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public String generateSignedUrl(Long id,
                                     SingedUrlRequestDTO singedUrlRequestDTO) {
-        ResourceDTO resourceDTO = this.checkResourcePermission(id);
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
+        ResourceDetailDTO resourceDTO = this.checkResourcePermission(id);
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
             request.signatureDuration(Duration.ofSeconds(singedUrlRequestDTO.getExpires()));
             request.getObjectRequest(getObject -> {
                 getObject.responseContentType(resourceDTO.getMimeType());
-                getObject.bucket(tenantSpaceDTO.getBucketName())
-                        .key(resourceDTO.getObjectKey());
+                getObject.bucket(resourceDTO.getBucketName())
+                        .key(resourceDTO.getObjectKey())
+                        .versionId(resourceDTO.getVersion());
                 if (Objects.equals(singedUrlRequestDTO.getIsPreview(), Boolean.FALSE)) {
                     getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"",
                             URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
@@ -323,6 +327,10 @@ public class ResourceServiceImpl implements ResourceService {
         return resourceDetailDTO;
     }
 
+    @Override
+    public ResourceDetailDTO findDetailById(Long id) {
+        return this.checkResourcePermission(id);
+    }
 
     /**
      * 获取父级路径
@@ -420,7 +428,7 @@ public class ResourceServiceImpl implements ResourceService {
         resources.setEtag("");
         resources.setMimeType("");
         resources.setObjectKey(objectKey);
-        resources.setVersion(1);
+        resources.setVersion("");
         resources.setCategory(ResourceCategoryEnum.DIRECTORY.name());
         resources.setIsPublic(isPublic);
         resources.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
@@ -489,15 +497,15 @@ public class ResourceServiceImpl implements ResourceService {
      * @param resourceDTO 资源文件
      * @return 从s3下载的资源
      */
-    private ResponseInputStream<GetObjectResponse> downloadFileByS3(ResourceDTO resourceDTO) {
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.findByTenantId(resourceDTO.getOwnerTenantId());
+    private ResponseInputStream<GetObjectResponse> downloadFileByS3(ResourceDetailDTO resourceDTO) {
         String rangeHeader = httpServletRequest.getHeader(HttpHeaders.RANGE);
         int status = Objects.isNull(rangeHeader) ?
                 HttpServletResponse.SC_OK : HttpServletResponse.SC_PARTIAL_CONTENT;
         httpServletResponse.setStatus(status);
         return this.s3Client.getObject(builder -> {
-            builder.bucket(tenantSpaceDTO.getBucketName())
-                    .key(resourceDTO.getObjectKey());
+            builder.bucket(resourceDTO.getBucketName())
+                    .key(resourceDTO.getObjectKey())
+                    .versionId(resourceDTO.getVersion());
             if (Objects.nonNull(rangeHeader)) {
                 builder.range(rangeHeader);
             }

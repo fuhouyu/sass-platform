@@ -109,6 +109,7 @@ public class AuthFilter implements ParseHttpRequest {
         UserEntity userEntity = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(authentication.getDetails(),
                 UserEntity.class));
         userEntity.putAdditionalInformation(USER_ADDITIONAL_INFORMATION_PERMISSIONS, authentication.getAuthorities());
+        userEntity.setSessionId(token);
         if (authentication instanceof UserAccountAuthenticationToken userAccountAuthenticationToken) {
             userEntity.putAdditionalInformation(userAccountAuthenticationToken.getLoginUserDetails());
         }

@@ -33,8 +33,14 @@ import java.time.LocalDateTime;
 @Schema(name = "LoginUserDetailDTO", description = "用户登录的详情dto对象")
 public class LoginUserDetailDTO implements Serializable {
 
+    @Schema(name = "accessToken", description = "访问令牌, 仅在返回时填充该值")
+    private String accessToken;
+
     @Schema(name = "loginTime", description = "登录时间")
     private LocalDateTime loginTime;
+
+    @Schema(name = "loginAccount", description = "登录账号")
+    private String loginAccount;
 
     @Schema(name = "loginIp", description = "登录ip")
     private String loginIp;
