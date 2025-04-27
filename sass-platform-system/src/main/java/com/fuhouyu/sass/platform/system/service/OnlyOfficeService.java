@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
 
 /**
  * <p>
@@ -28,6 +29,14 @@ import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
 public interface OnlyOfficeService {
 
     /**
+     * 文件预览/编码
+     *
+     * @param id   文件id
+     * @param mode 模式
+     */
+    OnlyOfficeResponseDTO view(Long id, String mode);
+
+    /**
      * 保存文件
      *
      * @param id                    文件id
@@ -36,4 +45,5 @@ public interface OnlyOfficeService {
      */
     void saveFile(Long id, String token,
                   OnlyOfficeCallbackDTO onlyOfficeCallbackDTO);
+
 }

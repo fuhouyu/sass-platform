@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -23,12 +25,19 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
+import com.fuhouyu.sass.platform.system.core.office.OfficeFileContext;
 import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.fuhouyu.sass.platform.system.service.OnlyOfficeService;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.utils.ChunkDownloadUtil;
+import com.onlyoffice.manager.url.UrlManager;
+import com.onlyoffice.model.documenteditor.Config;
+import com.onlyoffice.model.documenteditor.config.document.Type;
+import com.onlyoffice.model.documenteditor.config.editorconfig.Mode;
+import com.onlyoffice.service.documenteditor.config.ConfigService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -42,6 +51,7 @@ import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
@@ -64,6 +74,30 @@ public class OnlyOfficeServiceImpl implements OnlyOfficeService {
     private final ResourceService resourceService;
 
     private final S3Client s3Client;
+
+    private final ConfigService configService;
+
+    private final UrlManager urlManager;
+
+
+    @Override
+    public OnlyOfficeResponseDTO view(Long id, String mode) {
+        ResourceDetailDTO resourceDTO = this.resourceService.checkResourcePermission(id);
+        OfficeFileContext.set(resourceDTO);
+        try {
+            String userAgentString = ContextHolderStrategy.getContext().getRequest().getUserAgent();
+            UserAgent userAgent = UserAgentUtil.parse(userAgentString);
+            Config config = configService.createConfig(String.valueOf(id), Mode.valueOf(mode.toUpperCase(Locale.ROOT)),
+                    userAgent.isMobile() ? Type.MOBILE : Type.DESKTOP);
+            return OnlyOfficeResponseDTO.builder()
+                    .config(config)
+                    .documentServerApiUrl(urlManager.getDocumentServerApiUrl())
+                    .documentServerUrl(urlManager.getDocumentServerUrl())
+                    .build();
+        } finally {
+            OfficeFileContext.clear();
+        }
+    }
 
     @Override
     public void saveFile(Long id, String token, OnlyOfficeCallbackDTO onlyOfficeCallbackDTO) {
