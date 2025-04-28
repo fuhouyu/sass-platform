@@ -19,19 +19,11 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
-import com.fuhouyu.sass.platform.system.core.office.OfficeFileContext;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.fuhouyu.sass.platform.system.properties.OnlyOfficeDocumentProperties;
 import com.fuhouyu.sass.platform.system.service.OnlyOfficeService;
-import com.fuhouyu.sass.platform.system.service.ResourceService;
-import com.onlyoffice.manager.url.UrlManager;
-import com.onlyoffice.model.documenteditor.Config;
-import com.onlyoffice.model.documenteditor.config.document.Type;
-import com.onlyoffice.model.documenteditor.config.editorconfig.Mode;
-import com.onlyoffice.service.documenteditor.config.ConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Locale;
 
 /**
  * <p>
@@ -60,13 +50,7 @@ import java.util.Locale;
         value = "enabled", havingValue = "true")
 public class OnlyOfficeController {
 
-    private final ConfigService configService;
-
-    private final UrlManager urlManager;
-
     private final OnlyOfficeService onlyOfficeService;
-
-    private final ResourceService resourceService;
 
     /**
      * 在线预览
@@ -78,19 +62,7 @@ public class OnlyOfficeController {
     @NoAuth
     public BaseResponse<OnlyOfficeResponseDTO> view(@PathVariable("id") Long id,
                                                     @RequestParam(required = false, defaultValue = "view") String mode) {
-        ResourceDetailDTO resourceDTO = this.resourceService.checkResourcePermission(id);
-        OfficeFileContext.set(resourceDTO);
-        try {
-            Config config = configService.createConfig(String.valueOf(id), Mode.valueOf(mode.toUpperCase(Locale.ROOT)), Type.DESKTOP);
-            return ResponseHelper.success(
-                    OnlyOfficeResponseDTO.builder()
-                            .config(config)
-                            .documentServerApiUrl(urlManager.getDocumentServerApiUrl())
-                            .documentServerUrl(urlManager.getDocumentServerUrl())
-                            .build());
-        } finally {
-            OfficeFileContext.clear();
-        }
+        return ResponseHelper.success(this.onlyOfficeService.view(id, mode));
 
     }
 

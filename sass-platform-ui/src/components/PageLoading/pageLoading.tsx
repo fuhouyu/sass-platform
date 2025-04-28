@@ -15,22 +15,24 @@
  */
 
 
-import {Spin} from "antd";
 import React from "react";
 import './index.scss'
-import {useTranslation} from "react-i18next";
+import {Space} from "antd";
 
 export const PageLoading = () => {
-    const {t} = useTranslation();
-    const contentStyle: React.CSSProperties = {
-        background: 'rgba(0, 0, 0, 0.05)',
-        borderRadius: 10,
-    };
 
-    const content = <div style={contentStyle}/>;
     return (
-        <Spin tip={t('Common.pageLoading')} fullscreen={true} size="large" className="page-loading">
-            {content}
-        </Spin>
+        <div className={'page-loading-container'}>
+            <div className="loader">
+                <Space align={'center'} direction={'vertical'}>
+                    <div className="ball-wrapper">
+                        <div className="ball"></div>
+                    </div>
+                    <div className={'page-loading-span'}>{document.title}</div>
+                </Space>
+            </div>
+        </div>
+
+
     )
 }
