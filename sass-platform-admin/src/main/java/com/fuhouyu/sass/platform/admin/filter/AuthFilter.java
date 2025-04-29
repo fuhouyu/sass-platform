@@ -27,7 +27,7 @@ import com.fuhouyu.framework.web.handler.ParseHttpRequest;
 import com.fuhouyu.framework.web.model.Ip2Region;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
-import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
+import com.fuhouyu.sass.platform.system.components.security.UserAccountAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;

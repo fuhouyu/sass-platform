@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.core.office;
+package com.fuhouyu.sass.platform.system.components.office;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;

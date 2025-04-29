@@ -26,8 +26,8 @@ import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenti
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
 import com.fuhouyu.sass.platform.system.assembler.TokenAssembler;
+import com.fuhouyu.sass.platform.system.components.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.constants.CacheConstant;
-import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;

@@ -408,7 +408,7 @@ const TenantResource: React.FC = () => {
 
                 />
             </Flex>
-            <div>
+            <Flex className={'resource-table-container'} vertical>
                 <div className={'tenant-space-header'}>
                     <Flex gap={8}>
                         <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
@@ -537,7 +537,7 @@ const TenantResource: React.FC = () => {
                         </div>
                     </Drawer>
                 </div>
-            </div>
+            </Flex>
         </Flex>
 
         <Modal

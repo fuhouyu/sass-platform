@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.listener;
+package com.fuhouyu.sass.platform.system.components.listener;
 
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.SaveOrEditTenantInfoDTO;
 import com.fuhouyu.sass.platform.system.enums.TenantEventEnum;

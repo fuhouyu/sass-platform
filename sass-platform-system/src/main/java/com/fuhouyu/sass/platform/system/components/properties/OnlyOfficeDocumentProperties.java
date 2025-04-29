@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.properties;
+package com.fuhouyu.sass.platform.system.components.properties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.sass.platform.common.constants.ConfigPropertiesConstant;
