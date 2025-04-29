@@ -20,7 +20,7 @@ import cn.hutool.core.util.ObjUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.sass.platform.system.core.security.UserAccountAuthenticationToken;
+import com.fuhouyu.sass.platform.system.components.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.LoginUserDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.OnlineUserPageQueryDTO;

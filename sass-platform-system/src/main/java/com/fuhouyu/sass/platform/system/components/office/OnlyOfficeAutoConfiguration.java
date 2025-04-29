@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.core.office;
+package com.fuhouyu.sass.platform.system.components.office;
 
 import cn.hutool.core.lang.Assert;
-import com.fuhouyu.sass.platform.system.properties.OnlyOfficeDocumentProperties;
+import com.fuhouyu.sass.platform.system.components.properties.OnlyOfficeDocumentProperties;
 import com.onlyoffice.manager.document.DocumentManager;
 import com.onlyoffice.manager.security.DefaultJwtManager;
 import com.onlyoffice.manager.settings.DefaultSettingsManager;

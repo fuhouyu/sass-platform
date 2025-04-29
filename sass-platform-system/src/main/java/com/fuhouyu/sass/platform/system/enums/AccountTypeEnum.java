@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.enums;
 
-import com.fuhouyu.sass.platform.system.core.security.provider.WeLinkAuthenticationProvider;
-import com.fuhouyu.sass.platform.system.core.security.provider.WechatAppletAuthenticationProvider;
+import com.fuhouyu.sass.platform.system.components.security.provider.WeLinkAuthenticationProvider;
+import com.fuhouyu.sass.platform.system.components.security.provider.WechatAppletAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -69,12 +69,12 @@ module sass.platform.system {
 
     exports com.fuhouyu.sass.platform.system.assembler;
     exports com.fuhouyu.sass.platform.system.constants;
-    exports com.fuhouyu.sass.platform.system.core.config;
-    exports com.fuhouyu.sass.platform.system.core.handle;
-    exports com.fuhouyu.sass.platform.system.core.office;
-    exports com.fuhouyu.sass.platform.system.core.security;
-    exports com.fuhouyu.sass.platform.system.core.security.authority;
-    exports com.fuhouyu.sass.platform.system.core.security.provider;
+    exports com.fuhouyu.sass.platform.system.components.config;
+    exports com.fuhouyu.sass.platform.system.components.handle;
+    exports com.fuhouyu.sass.platform.system.components.office;
+    exports com.fuhouyu.sass.platform.system.components.security;
+    exports com.fuhouyu.sass.platform.system.components.security.authority;
+    exports com.fuhouyu.sass.platform.system.components.security.provider;
     exports com.fuhouyu.sass.platform.system.utils;
     exports com.fuhouyu.sass.platform.system.domain.dto;
     exports com.fuhouyu.sass.platform.system.domain.dto.account;
@@ -97,16 +97,16 @@ module sass.platform.system {
     exports com.fuhouyu.sass.platform.system.domain.entity;
     exports com.fuhouyu.sass.platform.system.enums;
     exports com.fuhouyu.sass.platform.system.enums.response;
-    exports com.fuhouyu.sass.platform.system.listener;
+    exports com.fuhouyu.sass.platform.system.components.listener;
     exports com.fuhouyu.sass.platform.system.mapper;
-    exports com.fuhouyu.sass.platform.system.properties;
+    exports com.fuhouyu.sass.platform.system.components.properties;
     exports com.fuhouyu.sass.platform.system.service;
     exports com.fuhouyu.sass.platform.system.service.impl;
     exports com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
-    opens com.fuhouyu.sass.platform.system.core.office to spring.core;
+    opens com.fuhouyu.sass.platform.system.components.office to spring.core;
     opens com.fuhouyu.sass.platform.system.service.impl to spring.core;
-    opens com.fuhouyu.sass.platform.system.core.security.provider to spring.core;
+    opens com.fuhouyu.sass.platform.system.components.security.provider to spring.core;
     opens com.fuhouyu.sass.platform.system.utils to spring.core;
 
     opens com.fuhouyu.sass.platform.system.domain.dto to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
@@ -128,7 +128,7 @@ module sass.platform.system {
     opens com.fuhouyu.sass.platform.system.domain.dto.resource to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.domain.dto.permission to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.domain.dto.dict to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
-    opens com.fuhouyu.sass.platform.system.core.security to com.esotericsoftware.kryo.kryo5;
+    opens com.fuhouyu.sass.platform.system.components.security to com.esotericsoftware.kryo.kryo5;
 
     opens com.fuhouyu.sass.platform.system.domain.entity to spring.core;
 

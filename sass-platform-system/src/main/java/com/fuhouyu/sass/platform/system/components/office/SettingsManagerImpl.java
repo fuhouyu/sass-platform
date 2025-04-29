@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.core.office;
+package com.fuhouyu.sass.platform.system.components.office;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
-import com.fuhouyu.sass.platform.system.properties.OnlyOfficeDocumentProperties;
+import com.fuhouyu.sass.platform.system.components.properties.OnlyOfficeDocumentProperties;
 import com.onlyoffice.manager.settings.DefaultSettingsManager;
 
 import java.util.HashMap;
