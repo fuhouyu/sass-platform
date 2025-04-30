@@ -13,9 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {useEffect, useState} from 'react';
 import './index.scss'
+import {resourceApi} from "@/apis/resource.tsx";
 
-export const ImageView = ({viewUrl}: { viewUrl?: string }) => {
+export const ImageView = ({id}: { id: string }) => {
+    const [viewUrl, setViewUrl] = useState<string>();
+    useEffect(() => {
+        resourceApi.downloadFile(id, true, {
+            responseType: 'blob' // 必须设置
+        })
+            .then(response => {
+                const blob = new Blob([response as Blob], {type: 'image/*'});
+                const url = URL.createObjectURL(blob);
+                console.log(url)
+                setViewUrl(url)
+            })
+    }, [id]);
     return (<img
         width={'100%'}
         className={'image-view'}

@@ -19,6 +19,7 @@ import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {Resource, StsTemporaryTokenRequest, StsTemporaryTokenResponse} from "@/model/resource.tsx";
 import {DefaultApiImpl} from "@/apis/baseApi.tsx";
+import {AxiosRequestConfig} from "axios";
 
 class ResourceApi extends DefaultApiImpl<Resource> {
 
@@ -38,9 +39,11 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      * 下载文件
      * @param id 主键id
      * @param preview true 预览
+     * @param config 请求配置
      */
-    downloadFile: (id: string, preview?: boolean) => Promise<void> =
-        (id: string, preview?: boolean): Promise<void> => request.get(`${this.baseUrl}/download/${id}`, {
+    downloadFile: (id: string, preview?: boolean, config?: AxiosRequestConfig) => Promise<void | Blob> =
+        (id: string, preview?: boolean, config?: AxiosRequestConfig): Promise<void | Blob> => request.get(`${this.baseUrl}/${id}/download`, {
+            ...config,
             params: {preview}
         })
 
@@ -74,7 +77,7 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      * @param expires 过期时间
      */
     share: (id: string, expires: number) => Promise<string> = (id: string, expires: number): Promise<string> =>
-        request.get(`${this.baseUrl}/${id}/share?expires=${expires}`)
+        request.get(`${this.baseUrl}/${id}/share?expires=${expires}`);
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

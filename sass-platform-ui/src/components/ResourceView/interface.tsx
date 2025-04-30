@@ -32,8 +32,4 @@ export interface ResourceViewProps {
      */
     category: string;
 
-    /**
-     * 是否是公开资源
-     */
-    isPublic: boolean;
 }

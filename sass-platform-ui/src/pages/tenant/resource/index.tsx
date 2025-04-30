@@ -555,7 +555,6 @@ const TenantResource: React.FC = () => {
             <ResourceView
                 mimeType={selectFile?.mimeType ?? ''}
                 id={selectFile?.id ?? ''}
-                isPublic={selectFile?.isPublic ?? false}
                 category={selectFile?.category ?? ''}/>
         </Modal>
 

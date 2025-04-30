@@ -84,7 +84,7 @@ public class ResourceController {
      * @param id                   资源id
      * @param preview 是否预览: true 预览， false 下载
      */
-    @GetMapping("/download/{id}")
+    @GetMapping("/{id}/download")
     @Operation(summary = "下载资源文件")
     @NoAuth
     public void downloadFile(@PathVariable("id") Long id,
@@ -228,7 +228,7 @@ public class ResourceController {
      * @return 读取文件到字节数组
      */
     @GetMapping(value = "/{id}/bytes", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Operation(summary = "读取文件到字节数组")
+    @Operation(summary = "读取文件到字节数组 sse")
     public Flux<SseResponseMessage<String>> readFileToByteArray(@PathVariable("id") Long id) {
         return Flux.create(sink -> this.resourceService.readFileToByteArray(id, inputStream -> {
             byte[] buffer = new byte[1024 * 16]; // 4KB 块大小
