@@ -26,15 +26,19 @@ class OnlyOfficeApi {
     }
 
     /**
-     * office 视图
+     * office 预览
      * @param id 主键id
-     * @param mode mode
      */
-    view: ({id, mode}: { id: string, mode: string }) => Promise<OnlyOfficeModal> = ({id, mode}: {
-        id: string,
-        mode: string
-    }): Promise<OnlyOfficeModal> =>
-        request.get(`${this._baseUrl}/${id}`, {params: {mode}});
+    view: (id: string) => Promise<OnlyOfficeModal> = (id: string): Promise<OnlyOfficeModal> =>
+        request.get(`${this._baseUrl}/${id}`);
+
+
+    /**
+     * office edit
+     * @param id 主键id
+     */
+    edit: (id: string) => Promise<OnlyOfficeModal> = (id: string): Promise<OnlyOfficeModal> =>
+        request.get(`${this._baseUrl}/${id}/edit`);
 
 }
 

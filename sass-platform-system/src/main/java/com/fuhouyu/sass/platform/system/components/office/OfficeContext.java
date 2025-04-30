@@ -16,8 +16,10 @@
 package com.fuhouyu.sass.platform.system.components.office;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
+import com.fuhouyu.sass.platform.system.enums.OfficeModeEnum;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,16 +31,16 @@ import lombok.RequiredArgsConstructor;
  * @since 2025/4/27 20:43
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class OfficeFileContext implements AutoCloseable {
+public class OfficeContext implements AutoCloseable {
 
-    private static final ThreadLocal<ResourceDetailDTO> RESOURCE_DETAIL_THREAD_LOCAL = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<OfficeContextDTO> RESOURCE_DETAIL_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
 
-    public static void set(ResourceDetailDTO resourceDetail) {
-        RESOURCE_DETAIL_THREAD_LOCAL.set(resourceDetail);
+    public static void set(OfficeContextDTO officeContextDTO) {
+        RESOURCE_DETAIL_THREAD_LOCAL.set(officeContextDTO);
     }
 
-    public static ResourceDetailDTO get() {
+    public static OfficeContextDTO get() {
         return RESOURCE_DETAIL_THREAD_LOCAL.get();
     }
 
@@ -49,5 +51,46 @@ public class OfficeFileContext implements AutoCloseable {
     @Override
     public void close() throws Exception {
         RESOURCE_DETAIL_THREAD_LOCAL.remove();
+    }
+
+    @Builder
+    @Getter
+    public static class OfficeContextDTO {
+
+        /**
+         * 主键id
+         */
+        private Long id;
+
+        /**
+         * 名称
+         */
+        private String name;
+
+        /**
+         * 文件类型
+         */
+        private String mimeType;
+
+        /**
+         * 桶名
+         */
+        private String bucketName;
+
+        /**
+         * 对象key
+         */
+        private String objectKey;
+
+        /**
+         * 版本号
+         */
+        private String version;
+
+        /**
+         * office模式
+         */
+        private OfficeModeEnum mode;
+
     }
 }

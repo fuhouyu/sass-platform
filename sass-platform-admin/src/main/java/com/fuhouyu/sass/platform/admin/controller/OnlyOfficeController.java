@@ -23,12 +23,14 @@ import com.fuhouyu.sass.platform.system.components.properties.OnlyOfficeDocument
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
+import com.fuhouyu.sass.platform.system.enums.OfficeModeEnum;
 import com.fuhouyu.sass.platform.system.service.OnlyOfficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,11 +61,23 @@ public class OnlyOfficeController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "在线预览")
-    @NoAuth
-    public BaseResponse<OnlyOfficeResponseDTO> view(@PathVariable("id") Long id,
-                                                    @RequestParam(required = false, defaultValue = "view") String mode) {
-        return ResponseHelper.success(this.onlyOfficeService.view(id, mode));
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:preview')")
+    public BaseResponse<OnlyOfficeResponseDTO> view(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.onlyOfficeService.webOffice(id, OfficeModeEnum.VIEW));
+    }
 
+
+    /**
+     * 在线编辑
+     *
+     * @param id 主键id
+     * @return void
+     */
+    @GetMapping("/{id}/edit")
+    @Operation(summary = "在线编辑")
+    @PreAuthorize("@auth.hasAnyPermission('tenant:resource:office-edit')")
+    public BaseResponse<OnlyOfficeResponseDTO> edit(@PathVariable("id") Long id) {
+        return ResponseHelper.success(this.onlyOfficeService.webOffice(id, OfficeModeEnum.EDIT));
     }
 
 

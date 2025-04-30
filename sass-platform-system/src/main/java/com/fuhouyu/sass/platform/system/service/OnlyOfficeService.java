@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
+import com.fuhouyu.sass.platform.system.enums.OfficeModeEnum;
 
 /**
  * <p>
@@ -29,12 +30,12 @@ import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
 public interface OnlyOfficeService {
 
     /**
-     * 文件预览/编码
+     * 在线文档
      *
      * @param id   文件id
      * @param mode 模式
      */
-    OnlyOfficeResponseDTO view(Long id, String mode);
+    OnlyOfficeResponseDTO webOffice(Long id, OfficeModeEnum mode);
 
     /**
      * 保存文件

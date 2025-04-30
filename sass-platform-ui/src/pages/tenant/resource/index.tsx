@@ -402,6 +402,7 @@ const TenantResource: React.FC = () => {
                     className={'resource-type-menu'}
                     mode="inline"
                     items={getResourceTypeMenuItems()}
+                    defaultSelectedKeys={[querySearchParams().category ?? '']}
                     onClick={(e) => {
                         updateSearchParams({category: e.key})
                     }}
