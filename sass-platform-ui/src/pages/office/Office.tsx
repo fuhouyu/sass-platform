@@ -42,7 +42,9 @@ export const Office: FC = () => {
             message.error("没有找到该资源").then();
             return <div></div>;
         }
-        const onlyOffice: OnlyOffice = await onlyOfficeApi.view({id: id, mode: params.get('mode') ?? 'VIEW'});
+
+        const onlyOffice: OnlyOffice = params.get('mode') === 'VIEW' ?
+            await onlyOfficeApi.view(id) : await onlyOfficeApi.edit(id);
         setOfficeView(onlyOffice);
     }, [id, params]);
 

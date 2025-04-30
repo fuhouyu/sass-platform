@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.enums;
 
-.source-code-view-container {
-  position: relative;
-  height: 100%;
-  width: 100%;
+/**
+ * <p>
+ * office mode
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/4/30 11:50
+ */
+public enum OfficeModeEnum {
 
-  .copy-button {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    font-size: .8rem;
-    z-index: 999;
+    /**
+     * 预览
+     */
+    VIEW,
 
-  }
+    /**
+     * 编辑
+     */
+    EDIT,
 
+    ;
+
+    /**
+     * 是否预览
+     *
+     * @return true 预览
+     */
+    public boolean isView() {
+        return this == VIEW;
+    }
 }
-
-.code-view {
-  height: 93%;
-  overflow-y: auto;
-}
-
-.md-view {
-  height: 93%;
-  overflow-y: auto;
-  padding: 1rem;
-  margin: 0;
-  }

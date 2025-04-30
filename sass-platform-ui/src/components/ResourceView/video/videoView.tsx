@@ -19,10 +19,13 @@ import './index.scss';
 import Player from "xgplayer";
 import Mp4Plugin from "xgplayer-mp4";
 import 'xgplayer/dist/index.min.css';
+import {getAccessToken} from "@/utils";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 
-const VideoView = ({url}: { url: string }) => {
-
+const VideoView = ({id}: { id: string }) => {
+    const {preview} = useResourceAction();
+    const url = preview(id);
     useEffect(() => {
         const player = new Player({
             id: 'mse',
@@ -41,6 +44,13 @@ const VideoView = ({url}: { url: string }) => {
                 disableBufferBreakCheck: true,
                 waitingTimeOut: 3,
                 waitingInBufferTimeOut: 3,
+                reqOptions: {
+                    mode: 'cors',
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${getAccessToken()}`
+                    },
+                }
             }
         });
         return () => player.destroy();

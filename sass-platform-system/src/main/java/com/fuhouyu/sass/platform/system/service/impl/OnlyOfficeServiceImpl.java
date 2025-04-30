@@ -25,11 +25,12 @@ import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.sass.platform.system.components.office.OfficeFileContext;
+import com.fuhouyu.sass.platform.system.components.office.OfficeContext;
 import com.fuhouyu.sass.platform.system.components.security.UserAccountAuthenticationToken;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeCallbackDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.office.OnlyOfficeResponseDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
+import com.fuhouyu.sass.platform.system.enums.OfficeModeEnum;
 import com.fuhouyu.sass.platform.system.service.OnlyOfficeService;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.utils.ChunkDownloadUtil;
@@ -51,7 +52,6 @@ import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant.USER_ADDITIONAL_INFORMATION_PERMISSIONS;
@@ -81,13 +81,21 @@ public class OnlyOfficeServiceImpl implements OnlyOfficeService {
 
 
     @Override
-    public OnlyOfficeResponseDTO view(Long id, String mode) {
+    public OnlyOfficeResponseDTO webOffice(Long id, OfficeModeEnum mode) {
         ResourceDetailDTO resourceDTO = this.resourceService.checkResourcePermission(id);
-        OfficeFileContext.set(resourceDTO);
+        OfficeContext.set(OfficeContext.OfficeContextDTO.builder()
+                .id(resourceDTO.getId())
+                .name(resourceDTO.getName())
+                .bucketName(resourceDTO.getBucketName())
+                .objectKey(resourceDTO.getObjectKey())
+                .mimeType(resourceDTO.getMimeType())
+                .mode(mode)
+                .version(resourceDTO.getVersion())
+                .build());
         try {
             String userAgentString = ContextHolderStrategy.getContext().getRequest().getUserAgent();
             UserAgent userAgent = UserAgentUtil.parse(userAgentString);
-            Config config = configService.createConfig(String.valueOf(id), Mode.valueOf(mode.toUpperCase(Locale.ROOT)),
+            Config config = configService.createConfig(String.valueOf(id), Mode.valueOf(mode.name()),
                     userAgent.isMobile() ? Type.MOBILE : Type.DESKTOP);
             return OnlyOfficeResponseDTO.builder()
                     .config(config)
@@ -95,7 +103,7 @@ public class OnlyOfficeServiceImpl implements OnlyOfficeService {
                     .documentServerUrl(urlManager.getDocumentServerUrl())
                     .build();
         } finally {
-            OfficeFileContext.clear();
+            OfficeContext.clear();
         }
     }
 

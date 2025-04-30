@@ -15,7 +15,6 @@
  */
 package com.fuhouyu.sass.platform.system.components.office;
 
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.onlyoffice.manager.document.DefaultDocumentManager;
 import com.onlyoffice.manager.settings.SettingsManager;
 
@@ -37,13 +36,13 @@ public class DocumentManagerImpl extends DefaultDocumentManager {
 
     @Override
     public String getDocumentKey(String fileId, boolean embedded) {
-        ResourceDetailDTO resourceDetailDTO = OfficeFileContext.get();
-        return resourceDetailDTO.getId() + resourceDetailDTO.getVersion();
+        OfficeContext.OfficeContextDTO officeContextDTO = OfficeContext.get();
+        return officeContextDTO.getId() + officeContextDTO.getVersion();
     }
 
     @Override
     public String getDocumentName(String fileId) {
-        return OfficeFileContext.get().getName();
+        return OfficeContext.get().getName();
     }
 
 

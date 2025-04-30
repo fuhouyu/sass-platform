@@ -278,7 +278,7 @@ class TenantResourcePermissionConstant {
 
 
     /**
-     * 在线编译
+     * 在线编辑
      */
     static readonly OFFICE_EDIT: string = "tenant:resource:office-edit";
 

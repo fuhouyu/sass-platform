@@ -17,12 +17,15 @@
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {resourceApi} from "@/apis/resource.tsx";
 import {useCallback} from "react";
+import {request} from "@/utils";
 
 export function useResourceAction() {
 
+    const uri = request.getUri();
+
     const preview = useCallback((resourceId?: string): string | undefined => {
         if (resourceId) {
-            return `${import.meta.env.VITE_API_URL}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/download/${resourceId}?preview=true`
+            return `${uri}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/${resourceId}/download?preview=true`
         }
         return undefined;
     }, []);

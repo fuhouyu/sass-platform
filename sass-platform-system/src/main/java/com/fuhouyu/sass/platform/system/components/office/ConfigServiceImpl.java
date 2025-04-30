@@ -42,9 +42,18 @@ public class ConfigServiceImpl extends DefaultConfigService {
 
     @Override
     public Permissions getPermissions(String fileId) {
-        // TODO 这里先不设置权限
-        return Permissions.builder()
+        OfficeContext.OfficeContextDTO officeContextDTO = OfficeContext.get();
+        Permissions.PermissionsBuilder builder = Permissions.builder()
+                .copy(true)
                 .edit(true)
-                .build();
+                .review(true)
+                .chat(true);
+        if (!officeContextDTO.getMode().isView()) {
+            builder.edit(true)
+                    .download(true)
+                    .comment(true);
+        }
+        return builder.build();
+
     }
 }

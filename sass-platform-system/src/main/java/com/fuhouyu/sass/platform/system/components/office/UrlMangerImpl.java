@@ -16,7 +16,6 @@
 package com.fuhouyu.sass.platform.system.components.office;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.fuhouyu.sass.platform.system.utils.BaseUrlUtil;
 import com.onlyoffice.manager.settings.SettingsManager;
 import com.onlyoffice.manager.url.DefaultUrlManager;
@@ -47,17 +46,16 @@ public class UrlMangerImpl extends DefaultUrlManager {
 
     @Override
     public String getFileUrl(@NonNull String fileId) {
-
-        ResourceDetailDTO resourceDetailDTO = OfficeFileContext.get();
+        OfficeContext.OfficeContextDTO officeContextDTO = OfficeContext.get();
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
             request.signatureDuration(Duration.ofHours(1));
             request.getObjectRequest(getObject -> {
-                getObject.responseContentType(resourceDetailDTO.getMimeType());
-                getObject.bucket(resourceDetailDTO.getBucketName())
-                        .key(resourceDetailDTO.getObjectKey())
-                        .versionId(resourceDetailDTO.getVersion())
+                getObject.responseContentType(officeContextDTO.getMimeType());
+                getObject.bucket(officeContextDTO.getBucketName())
+                        .key(officeContextDTO.getObjectKey())
+                        .versionId(officeContextDTO.getVersion())
                         .responseContentDisposition(String.format("attachment; filename=\"%s\"",
-                                URLEncoder.encode(resourceDetailDTO.getName(), StandardCharsets.UTF_8)));
+                                URLEncoder.encode(officeContextDTO.getName(), StandardCharsets.UTF_8)));
             });
         });
         return presignedGetObjectRequest.url().toExternalForm();

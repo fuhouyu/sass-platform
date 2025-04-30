@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
  */
 @SpringBootApplication(scanBasePackages = "com.fuhouyu.sass.platform")
 @MapperScan(basePackages = "com.fuhouyu.sass.platform.system.mapper")
-@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.sass.platform.system.properties")
+@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.sass.platform.system.components.properties")
 public class SassPlatformAdminApplication {
 
 

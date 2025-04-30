@@ -19,7 +19,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {Button, Flex, message} from "antd";
+import {Button, message} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
@@ -71,7 +71,7 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
         await message.success(t('Common.copySuccess'));
     };
 
-    return <Flex className={'source-code-view-container'}>
+    return <div className={'source-code-view-container'}>
         <Button
             title={t('Common.copy')}
             icon={<CopyOutlined/>}
@@ -81,15 +81,18 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
         {
             sourceCodeProps.category === ResourceCategoryEnum.SOURCE_CODE ?
                 <SyntaxHighlighter
-                    style={currentTheme === 'dark' ? oneDark : oneLight} className={'source-code-view'}>
+                    style={currentTheme === 'dark' ? oneDark : oneLight} className={'code-view'}>
                     {displayCodes.join('')}
                 </SyntaxHighlighter>
                 :
                 // 渲染md
-                <div className={'source-code-view'} data-color-mode="github-dark">
-                    <MarkdownPreview source={displayCodes.join('')}/>
-                </div>
+                <MarkdownPreview
+                    wrapperElement={{
+                        "data-color-mode": currentTheme === 'dark' ? 'dark' : 'light',
+                    }}
+                    className={'md-view'}
+                    source={displayCodes.join('')}/>
 
         }
-    </Flex>
+    </div>
 }
