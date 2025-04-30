@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.log.annotaions.LogModule;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.enums.RiskTypeEnum;
@@ -45,6 +46,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@LogModule(value = "用户模块")
 public class UserHasRoleController {
 
     private final UserHasRoleService userHasRoleService;
