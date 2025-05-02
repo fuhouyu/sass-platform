@@ -16,8 +16,6 @@
 
 import React from "react";
 import {Upload as AntdUpload} from "antd";
-import {ChecksumAlgorithm, S3Client} from "@aws-sdk/client-s3";
-import {Upload as s3Upload} from "@aws-sdk/lib-storage";
 import {resourceApi} from "@/apis/resource.tsx";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
 import {RcFile} from "antd/es/upload";
@@ -27,7 +25,13 @@ import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {Trans, useTranslation} from "react-i18next";
 import {NotificationType, useNotification} from "@/hooks/useNotification.tsx";
 
-
+const loadAwsSdk = async () => {
+    const [{S3Client, ChecksumAlgorithm}, {Upload}] = await Promise.all([
+        import("@aws-sdk/client-s3"),
+        import("@aws-sdk/lib-storage"),
+    ]);
+    return {S3Client, Upload, ChecksumAlgorithm};
+};
 export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
     const {prefix, isPublic, children, showUploadFloatButton, onUploadSuccess} = uploadProps;
     const {t} = useTranslation();
@@ -48,6 +52,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
      * 生成sts的Token
      */
     const generateStsToken = async (uploadFile: RcFile) => {
+        const {S3Client} = await loadAwsSdk();
         const stsTokenResponse = await resourceApi.generateStsToken({
             prefix: prefix,
             fileNames: [uploadFile.webkitRelativePath === '' ? uploadFile.name : uploadFile.webkitRelativePath]
@@ -72,6 +77,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
      * @param file 需要上传的文件
      */
     const doFileUpload = async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
+        const {Upload, ChecksumAlgorithm} = await loadAwsSdk();
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath === '' ? file.name : file.webkitRelativePath];
         const abortController = new AbortController();
@@ -86,7 +92,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
                 status: 'pending'
             });
         }
-        const upload = new s3Upload({
+        const upload = new Upload({
             client: s3Client,
             params: {
                 Bucket: stsTokenResponse.bucketName,

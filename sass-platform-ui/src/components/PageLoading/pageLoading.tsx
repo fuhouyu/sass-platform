@@ -18,8 +18,9 @@
 import React from "react";
 import './index.scss'
 import {Space} from "antd";
+import {PageLoadingProps} from "@components/PageLoading/interface.tsx";
 
-export const PageLoading = () => {
+export const PageLoading = ({title}: PageLoadingProps) => {
 
     return (
         <div className={'page-loading-container'}>
@@ -28,7 +29,7 @@ export const PageLoading = () => {
                     <div className="ball-wrapper">
                         <div className="ball"></div>
                     </div>
-                    <div className={'page-loading-span'}>{document.title}</div>
+                    {<div className="page-loading-span">{title ?? document.title}</div>}
                 </Space>
             </div>
         </div>

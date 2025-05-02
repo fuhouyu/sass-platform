@@ -37,7 +37,7 @@ interface SourceCodeProps {
     category: string;
 }
 
-export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
+const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
     const {resourceId} = sourceCodeProps;
     const currentTheme = useThemeStore(state => state.theme);
     const {t} = useTranslation();
@@ -96,3 +96,5 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
         }
     </div>
 }
+
+export default SourceCodeView
