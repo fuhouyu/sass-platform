@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-import React, {useState} from "react"
+import React, {lazy, Suspense, useState} from "react"
 import {ResourceViewProps} from "./interface"
 import {ImageView} from "@components/ResourceView/image/imageView.tsx";
 import "./index.scss"
-import VideoView from "./video/videoView.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
-import {SourceCodeView} from "@components/ResourceView/code/sourceCodeView.tsx";
-import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import {PageLoading} from "@/components";
+
+const SourceCodeView = lazy(() => import("./code/sourceCodeView.tsx"));
+const VideoView = lazy(() => import("./video/videoView.tsx"));
+const AudioPlayer = lazy(() => import('react-h5-audio-player'));
 
 export const ResourceView = (resourceView: ResourceViewProps) => {
     const {id} = resourceView;
@@ -40,17 +42,23 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         case ResourceCategoryEnum.IMAGE:
             return <ImageView id={id}/>;
         case ResourceCategoryEnum.VIDEO:
-            return <VideoView
-                id={id}
-            />
+            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+                <VideoView
+                    id={id}
+                />
+            </Suspense>
         case ResourceCategoryEnum.SOURCE_CODE:
         case ResourceCategoryEnum.MARKDOWN:
-            return <SourceCodeView resourceId={resourceView.id} category={resourceView.category}/>;
+            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+                <SourceCodeView resourceId={id} category={resourceView.category}/>
+            </Suspense>
         case ResourceCategoryEnum.AUDIO:
             initUrl().then();
-            return <AudioPlayer
-                src={url}
-                autoPlay/>
+            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+                <AudioPlayer
+                    src={url}
+                    autoPlay/>
+            </Suspense>
         default:
             return <div>{t('Resource.unknownType')}</div>;
     }

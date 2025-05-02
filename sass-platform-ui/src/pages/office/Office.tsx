@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-import React, {FC, useCallback, useEffect, useState} from "react";
+import React, {FC, Suspense, useCallback, useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
 import {message} from "antd";
 import {OnlyOffice} from "@/model/office.tsx";
 import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
-import {DocumentEditor} from "@onlyoffice/document-editor-react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {Userinfo} from "@/model/user.tsx";
 import {PageLoading} from "@/components";
+import {useTranslation} from "react-i18next";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+
+
+const DocumentEditor = React.lazy(() =>
+    import('@onlyoffice/document-editor-react').then(module => ({
+        default: module.DocumentEditor
+    }))
+);
 
 
 export const Office: FC = () => {
     usePageTitle('Menu.office');
     const {id} = useParams();
+    const {t} = useTranslation();
     const [params] = useSearchParams();
     const [officeView, setOfficeView] = React.useState<OnlyOffice>({} as OnlyOffice)
     const {fetchUserinfo} = useUserStore(state => state);
@@ -64,22 +72,24 @@ export const Office: FC = () => {
 
 
     return (
-        officeView.config &&
-        <DocumentEditor
-            id="documentEditor"
-            documentServerUrl={officeView?.documentServerUrl}
-            config={{
-                ...officeView?.config,
-                editorConfig: {
-                    user: {
-                        id: userinfo?.id,
-                        name: userinfo?.realName,
-                        image: preview(userinfo.avatar)
+
+        <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+            <DocumentEditor
+                id="documentEditor"
+                documentServerUrl={officeView?.documentServerUrl}
+                config={{
+                    ...officeView?.config,
+                    editorConfig: {
+                        user: {
+                            id: userinfo?.id,
+                            name: userinfo?.realName,
+                            image: preview(userinfo.avatar)
+                        },
+                        lang: language
                     },
-                    lang: language
-                },
-            }}
-            onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
-        />
+                }}
+                onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
+            />
+        </Suspense>
     );
 }

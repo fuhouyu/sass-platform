@@ -270,7 +270,7 @@ public class ResourceServiceImpl implements ResourceService {
                 getObject.bucket(resourceDTO.getBucketName())
                         .key(resourceDTO.getObjectKey())
                         .versionId(resourceDTO.getVersion());
-                if (Objects.equals(singedUrlRequestDTO.getIsPreview(), Boolean.FALSE)) {
+                if (Objects.equals(singedUrlRequestDTO.getPreview(), Boolean.FALSE)) {
                     getObject.responseContentDisposition(String.format("attachment; filename=\"%s\"",
                             URLEncoder.encode(resourceDTO.getName(), StandardCharsets.UTF_8)));
                 }

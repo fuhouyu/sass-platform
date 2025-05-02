@@ -33,11 +33,11 @@ import './index.scss'
 interface SourceCodeProps {
     // 预览地址
     resourceId: string;
-    // 语言
+    // 分类
     category: string;
 }
 
-export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
+const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
     const {resourceId} = sourceCodeProps;
     const currentTheme = useThemeStore(state => state.theme);
     const {t} = useTranslation();
@@ -96,3 +96,5 @@ export const SourceCodeView = (sourceCodeProps: SourceCodeProps) => {
         }
     </div>
 }
+
+export default SourceCodeView

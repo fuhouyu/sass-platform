@@ -105,7 +105,7 @@ public class ResourceController {
     public BaseResponse<String> share(@PathVariable("id") Long id,
                                       SingedUrlRequestDTO singedUrlRequestDTO) {
         // 分享的链接默认下载
-        singedUrlRequestDTO.setIsPreview(false);
+        singedUrlRequestDTO.setPreview(false);
         return ResponseHelper.success(this.resourceService.generateSignedUrl(id, singedUrlRequestDTO));
     }
 
@@ -178,7 +178,7 @@ public class ResourceController {
      * @return 签名url
      */
     @Operation(summary = "生成签名url")
-    @GetMapping("/generate/signed-url/{id}")
+    @GetMapping("/generate/{id}/signed-url")
     @Parameter(name = "preview", description = "是否为预览")
     public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id,
                                                   SingedUrlRequestDTO singedUrlRequestDTO) {

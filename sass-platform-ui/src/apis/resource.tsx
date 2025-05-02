@@ -53,7 +53,7 @@ class ResourceApi extends DefaultApiImpl<Resource> {
      * @param preview 是否为预览
      */
     generateSignedUrl: (id: string, preview?: boolean) => Promise<string> = (id: string, preview?: boolean): Promise<string> =>
-        request.get(`${this.baseUrl}/generate/signed-url/${id}`, {
+        request.get(`${this.baseUrl}/generate/${id}/signed-url`, {
             params: {preview}
         })
 

@@ -33,8 +33,8 @@ import java.time.Duration;
 @Schema(name = "SingedUrlRequestDTO", description = "签名url请求的dto对象")
 public class SingedUrlRequestDTO implements Serializable {
 
-    @Schema(name = "isPreview", description = "是否预览")
-    private Boolean isPreview;
+    @Schema(name = "preview", description = "true 预览，false 下载")
+    private Boolean preview;
 
     @Schema(name = "expires", description = "过期时间", example = "600")
     private Long expires = Duration.ofMinutes(10).getSeconds();
