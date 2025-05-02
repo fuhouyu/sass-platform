@@ -24,6 +24,8 @@ import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {Trans, useTranslation} from "react-i18next";
 import {NotificationType, useNotification} from "@/hooks/useNotification.tsx";
+import type {S3Client} from "@aws-sdk/client-s3";
+
 
 const loadAwsSdk = async () => {
     const [{S3Client, ChecksumAlgorithm}, {Upload}] = await Promise.all([
