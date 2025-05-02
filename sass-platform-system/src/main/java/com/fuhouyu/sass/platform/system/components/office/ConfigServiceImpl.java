@@ -45,7 +45,6 @@ public class ConfigServiceImpl extends DefaultConfigService {
         OfficeContext.OfficeContextDTO officeContextDTO = OfficeContext.get();
         Permissions.PermissionsBuilder builder = Permissions.builder()
                 .copy(true)
-                .edit(true)
                 .review(true)
                 .chat(true);
         if (!officeContextDTO.getMode().isView()) {
