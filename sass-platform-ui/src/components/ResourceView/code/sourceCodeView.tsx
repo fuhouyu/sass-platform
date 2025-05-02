@@ -33,7 +33,7 @@ import './index.scss'
 interface SourceCodeProps {
     // 预览地址
     resourceId: string;
-    // 语言
+    // 分类
     category: string;
 }
 

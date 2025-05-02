@@ -42,6 +42,7 @@ const ZhCN = {
         selectAllOrSelectNone: '全选/全不选',
         expandOrCollapse: '展开/折叠',
         pageLoading: '页面加载中....',
+        resourceLoading: '资源加载中...',
         updateAvatar: '更新头像',
         pageNotfound: '页面不存在',
         backHome: '回到首页',

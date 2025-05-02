@@ -41,7 +41,8 @@ const EnUS = {
         welcome: 'Welcome',
         selectAllOrSelectNone: 'Select All/Select None',
         expandOrCollapse: 'Expand/Collapse',
-        pageLoading: 'Page Loading....',
+        pageLoading: 'Page Loading...',
+        resourceLoading: 'Resource Loading...',
         updateAvatar: 'Update Avatar',
         pageNotfound: 'Page Notfound',
         backHome: 'Back Home'
