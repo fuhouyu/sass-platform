@@ -60,7 +60,7 @@ export const LayoutMain = () => {
                 _paq.push(['setTrackerUrl', `${MATOMO_URL}matomo.php`]);
                 _paq.push(['setUserId', res.username])
 
-                _paq.push(['setSiteId',]);
+                _paq.push(['setSiteId', SITE_ID]);
                 const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
                 g.async = true;
                 g.src = `${MATOMO_URL}matomo.js`;
