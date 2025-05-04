@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {lazy, Suspense, useState} from "react"
+import React, {lazy, Suspense, useCallback, useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
 import {ImageView} from "@components/ResourceView/image/imageView.tsx";
 import "./index.scss"
@@ -34,9 +34,16 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
     const {generateSignedUrl} = useResourceAction();
     const [url, setUrl] = useState<string>();
 
-    const initUrl = async () => {
+    const initUrl = useCallback(async () => {
         setUrl(await generateSignedUrl(id));
-    }
+    }, [generateSignedUrl, id])
+
+    useEffect(() => {
+        if (ResourceCategoryEnum.AUDIO === resourceView.category) {
+            initUrl().then();
+        }
+    }, [initUrl, resourceView.category]);
+
 
     switch (resourceView.category) {
         case ResourceCategoryEnum.IMAGE:
@@ -53,7 +60,6 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
                 <SourceCodeView resourceId={id} category={resourceView.category}/>
             </Suspense>
         case ResourceCategoryEnum.AUDIO:
-            initUrl().then();
             return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
                 <AudioPlayer
                     src={url}

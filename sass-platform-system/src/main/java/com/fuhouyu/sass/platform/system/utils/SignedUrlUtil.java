@@ -16,21 +16,23 @@
 package com.fuhouyu.sass.platform.system.utils;
 
 import cn.hutool.core.codec.Base64Encoder;
+import cn.hutool.core.util.RandomUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.*;
 
@@ -46,101 +48,75 @@ import java.util.*;
 @Slf4j
 public class SignedUrlUtil {
 
-    private static final String RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     private static final String SIGNED_ALGORITHM = "HmacSHA256";
 
     /**
      * 生成带签名的 API URL
      *
-     * @param baseUrl      API 地址
-     * @param urlSignedDTO url 签名的dto 对象
+     * @param baseUrl   API 地址
+     * @param signedDTO 请求参数
      * @return 带签名的 URL
      */
-    public static String generateSignedUrl(String baseUrl,
-                                           UrlSignedDTO urlSignedDTO) {
-
-        Map<String, Object> signParamsMap = getSignParamsMap(urlSignedDTO);
+    public static String generateSignedUrl(String baseUrl, SignedUrlDTO signedDTO) {
+        Map<String, Object> signParamsMap = getSignParamsMap(signedDTO);
 
         // 生成签名
-        String secretKey = urlSignedDTO.getSecretKey();
-        String signature = generateSignature(signParamsMap, secretKey);
+        String signature = generateSignature(signParamsMap, signedDTO.getSecretKey());
         signParamsMap.put("signature", signature);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl);
         signParamsMap.forEach(builder::queryParam);
         return builder.build().toUriString();
     }
 
-
     /**
-     * 检查签名是否有效，失效将会抛出异常
+     * 验证签名
      *
-     * @param urlSignedDTO 签名的dto对象
+     * @param signedDTO 含签名的 DTO
      */
-    public static void verifySignedUrl(VerifySignedUrlDTO urlSignedDTO) {
-        Long expires = urlSignedDTO.getExpires();
-        // 检查 URL 是否过期
+    public static void verifySignedUrl(SignedUrlDTO signedDTO) {
         long currentTime = Instant.now().getEpochSecond();
-        if (Objects.isNull(expires) || currentTime > expires) {
+        if (signedDTO.getExpires() == null || currentTime > signedDTO.getExpires()) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前url签名已过期");
         }
-        Map<String, Object> signParamsMap = getSignParamsMap(urlSignedDTO);
-        // 生成签名
-        String secretKey = urlSignedDTO.getSecretKey();
-        String expectedSignature = generateSignature(signParamsMap, secretKey);
-        // 比较签名
-        String originSignedData = urlSignedDTO.getSignature();
-        if (!Objects.equals(originSignedData, expectedSignature)) {
-            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
-                    "当前签名url已失效");
+
+        Map<String, Object> signParamsMap = getSignParamsMap(signedDTO);
+        String expectedSignature = generateSignature(signParamsMap, signedDTO.getSecretKey());
+
+        if (!Objects.equals(signedDTO.getSignature(), expectedSignature)) {
+            throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前签名url已失效");
         }
     }
 
+    /**
+     * 获取签名参数 Map（排除 signature）
+     */
+    private static Map<String, Object> getSignParamsMap(SignedUrlDTO dto) {
+        Map<String, Object> params = JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper()
+                .convertValue(dto, new TypeReference<TreeMap<String, Object>>() {
+                }));
+        params.putAll(dto.getParams());
+        return params;
+    }
 
     /**
      * 生成签名
-     *
-     * @param params    请求参数（已包含 accessKey, timestamp, nonce）
-     * @param secretKey 签名密钥
-     * @return HMAC-SHA256 签名字符串
      */
     private static String generateSignature(Map<String, Object> params, String secretKey) {
-        // 1. 按照 key 进行字典序排序
         List<String> sortedKeys = new ArrayList<>(params.keySet());
         Collections.sort(sortedKeys);
 
-        // 2. 构造签名字符串
         StringBuilder signData = new StringBuilder();
         for (String key : sortedKeys) {
             signData.append(key).append("=").append(params.get(key)).append("&");
         }
-        // 移除最后的 "&"
         signData.setLength(signData.length() - 1);
 
-        // 3. 使用 HMAC-SHA256 计算签名
         return hmacSha256(signData.toString(), secretKey);
     }
 
     /**
-     * 生成随机字符串（nonce）
-     *
-     * @return 随机字符串
-     */
-    private static String generateNonce() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder(16);
-        for (int i = 0; i < 16; i++) {
-            sb.append(RANDOM_CHARS.charAt(random.nextInt(RANDOM_CHARS.length())));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 计算 HMAC-SHA256 签名
-     *
-     * @param data      需要加密的数据
-     * @param secretKey 密钥
-     * @return HMAC-SHA256 签名
+     * 生成 HMAC-SHA256 签名
      */
     private static String hmacSha256(String data, String secretKey) {
         try {
@@ -155,38 +131,11 @@ public class SignedUrlUtil {
         }
     }
 
-
     /**
-     * 生成需要名称的map 对象
-     *
-     * @param urlSignedDTO dto对象
-     * @return 需要签名的map对象
-     */
-    private static Map<String, Object> getSignParamsMap(UrlSignedDTO urlSignedDTO) {
-        String accessKey = urlSignedDTO.getAccessKey();
-        Map<String, Object> params = new TreeMap<>(urlSignedDTO.getParams());
-        if (urlSignedDTO instanceof VerifySignedUrlDTO verifySignedUrlDTO) {
-            params.put("accessKey", accessKey);
-            params.put("nonce", verifySignedUrlDTO.getNonce());
-            params.put("expires", verifySignedUrlDTO.getExpires());
-
-        } else {
-            params.put("accessKey", accessKey);
-            params.put("nonce", generateNonce());
-            long expirationTime = Instant.now().getEpochSecond() + urlSignedDTO.getExpiresSeconds();
-            params.put("expires", expirationTime);
-        }
-
-        return params;
-    }
-
-
-    /**
-     * url签名dto对象
+     * 签名 DTO
      */
     @Data
-    @SuperBuilder
-    public static class UrlSignedDTO {
+    public static class SignedUrlDTO {
 
         /**
          * ak
@@ -196,45 +145,48 @@ public class SignedUrlUtil {
         /**
          * sk
          */
+        @JsonIgnore
         private String secretKey;
 
         /**
          * 参数
          */
+        @JsonIgnore
         private Map<String, Object> params;
 
         /**
-         * url过期时间
-         */
-        private long expiresSeconds;
-
-        public UrlSignedDTO() {
-            this.params = Collections.emptyMap();
-        }
-    }
-
-    /**
-     * 检查url签名的dto对象
-     */
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    @SuperBuilder
-    public static class VerifySignedUrlDTO extends UrlSignedDTO {
-
-
-        /**
-         * 随机数
+         * 随机数（防重放）
          */
         private String nonce;
 
         /**
-         * 过期时间
+         * 过期时间戳（秒）
          */
         private Long expires;
 
         /**
-         * 当前签名值
+         * 签名（用于校验）
          */
+        @JsonIgnore
         private String signature;
+
+
+        @Builder(builderMethodName = "signedBuilder")
+        public SignedUrlDTO(String accessKey,
+                            String secretKey,
+                            Map<String, Object> params,
+                            String signature,
+                            Long expires,
+                            long expiresSeconds,
+                            String nonce) {
+            this.accessKey = accessKey;
+            this.secretKey = secretKey;
+            this.params = params == null ? Collections.emptyMap() : params;
+            this.signature = signature;
+
+            // 初始化 nonce 和 expires 如果没有提供
+            this.nonce = nonce != null ? nonce : RandomUtil.randomString(16);
+            this.expires = Objects.isNull(expires) ? Instant.now().getEpochSecond() + expiresSeconds : expires;
+        }
     }
 }

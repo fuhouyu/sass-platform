@@ -81,15 +81,28 @@ public class ResourceController {
     /**
      * 下载文件
      *
-     * @param id                   资源id
-     * @param preview 是否预览: true 预览， false 下载
+     * @param id      资源id
+     * @param preview 是否预览
      */
     @GetMapping("/{id}/download")
+    @Operation(summary = "下载资源文件（需要登录）")
+    public void downloadWithToken(@PathVariable("id") Long id,
+                                  @RequestParam("preview") Boolean preview) {
+        this.resourceService.downloadFile(id, preview);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param id                   资源id
+     * @param resourceSignedUrlDTO 资源签名url dto对象
+     */
+    @GetMapping("/{id}/download-signed")
     @Operation(summary = "下载资源文件")
     @NoAuth
     public void downloadFile(@PathVariable("id") Long id,
-                             @RequestParam("preview") Boolean preview) {
-        this.resourceService.downloadFile(id, preview);
+                             ResourceSignedUrlDTO resourceSignedUrlDTO) {
+        this.resourceService.downloadFile(id, resourceSignedUrlDTO);
     }
 
 
@@ -173,13 +186,12 @@ public class ResourceController {
     /**
      * 生成签名url
      *
-     * @param id      主键id
+     * @param id                  主键id
      * @param singedUrlRequestDTO 签名请求的dto对象
      * @return 签名url
      */
     @Operation(summary = "生成签名url")
     @GetMapping("/generate/{id}/signed-url")
-    @Parameter(name = "preview", description = "是否为预览")
     public BaseResponse<String> generateSignedUrl(@PathVariable("id") Long id,
                                                   SingedUrlRequestDTO singedUrlRequestDTO) {
         return ResponseHelper.success(this.resourceService.generateSignedUrl(id, singedUrlRequestDTO));

@@ -34,6 +34,7 @@ import com.fuhouyu.sass.platform.system.enums.response.ResourceResponseStatusEnu
 import com.fuhouyu.sass.platform.system.mapper.ResourceMapper;
 import com.fuhouyu.sass.platform.system.service.ResourceService;
 import com.fuhouyu.sass.platform.system.service.TenantSpaceService;
+import com.fuhouyu.sass.platform.system.utils.BaseUrlUtil;
 import com.fuhouyu.sass.platform.system.utils.SignedUrlUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,6 +85,8 @@ public class ResourceServiceImpl implements ResourceService {
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
 
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    private static final String BASE_DOWNLOAD_API = "%s/v1/resource/%s/download-signed";
 
     private static final String TMP_DIR = "tmp/";
 
@@ -226,6 +229,26 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public void downloadFile(Long id, ResourceSignedUrlDTO resourceSignedUrlDTO) {
+        ResourceDetailDTO resourceDetailDTO = this.checkResourceExists(id);
+        this.checkSignedUrl(resourceSignedUrlDTO, resourceDetailDTO);
+        ResponseInputStream<GetObjectResponse> responseResponseInputStream = this.downloadFileByS3(resourceDetailDTO);
+        // 判断是预览还是下载
+        if (Objects.equals(resourceSignedUrlDTO.getPreview(), Boolean.TRUE)) {
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, responseResponseInputStream.response().contentType());
+        } else {
+            httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(resourceDetailDTO.getName(), StandardCharsets.UTF_8)));
+        }
+        try {
+            this.doFileDownload(responseResponseInputStream);
+        } catch (IOException e) {
+            // ignore 这里如果是客户端取消下载，会抛出异常，不需要处理
+        }
+    }
+
+    @Override
     public StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO) {
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(ContextHolderStrategy.getContext().getUser().getTenantId());
         List<String> fileNames = requestDTO.getFileNames();
@@ -262,6 +285,21 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public String generateSignedUrl(Long id,
                                     SingedUrlRequestDTO singedUrlRequestDTO) {
+        ResourceDTO resourceDTO = this.checkResourcePermission(id);
+        String baseUrl = String.format(BASE_DOWNLOAD_API, BaseUrlUtil.getBaseUrl(), id);
+        SignedUrlUtil.SignedUrlDTO urlSignedDTO = SignedUrlUtil.SignedUrlDTO
+                .signedBuilder()
+                .params(this.signedUrlMap(singedUrlRequestDTO.getPreview(), ContextHolderStrategy.getContext().getUser().getUsername()))
+                .accessKey(resourceDTO.getObjectKey())
+                .expiresSeconds(singedUrlRequestDTO.getExpires())
+                .secretKey(s3Properties.getSecretKey())
+                .build();
+
+        return SignedUrlUtil.generateSignedUrl(baseUrl, urlSignedDTO);
+    }
+
+    @Override
+    public String generatePresignerDownloadUrl(Long id, SingedUrlRequestDTO singedUrlRequestDTO) {
         ResourceDetailDTO resourceDTO = this.checkResourcePermission(id);
         PresignedGetObjectRequest presignedGetObjectRequest = this.s3Presigner.presignGetObject(request -> {
             request.signatureDuration(Duration.ofSeconds(singedUrlRequestDTO.getExpires()));
@@ -309,11 +347,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public ResourceDetailDTO checkResourcePermission(Long id) {
-        ResourceDetailDTO resourceDetailDTO = this.resourceMapper.queryDetailById(id);
-        if (Objects.isNull(resourceDetailDTO)) {
-            LoggerUtil.warn(log, "资源不存在, id: {}", id);
-            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
-        }
+        ResourceDetailDTO resourceDetailDTO = this.checkResourceExists(id);
         if (Objects.isNull(resourceDetailDTO.getBucketName())) {
             LoggerUtil.warn(log, "资源bucketName为空, id: {}", id);
             throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_BUCKET_NOT_EXISTS);
@@ -330,6 +364,22 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public ResourceDetailDTO findDetailById(Long id) {
         return this.checkResourcePermission(id);
+    }
+
+
+    /**
+     * 检查资源是否存在
+     *
+     * @param id 主键id
+     * @return 资源
+     */
+    private ResourceDetailDTO checkResourceExists(Long id) {
+        ResourceDetailDTO resourceDetailDTO = this.resourceMapper.queryDetailById(id);
+        if (Objects.isNull(resourceDetailDTO)) {
+            LoggerUtil.warn(log, "资源不存在, id: {}", id);
+            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
+        }
+        return resourceDetailDTO;
     }
 
     /**
@@ -468,25 +518,22 @@ public class ResourceServiceImpl implements ResourceService {
      * 检查签名url
      *
      * @param resourceSignedUrlDTO 资源签名url dto
-     * @param resources            资源文件
+     * @param resourceDetailDTO    资源文件
      */
     private void checkSignedUrl(ResourceSignedUrlDTO resourceSignedUrlDTO,
-                                Resources resources) {
-        if (Objects.isNull(resources)) {
-            throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_EXISTS);
-        }
-        if (resources.getIsPublic()) {
+                                ResourceDetailDTO resourceDetailDTO) {
+        if (resourceDetailDTO.getIsPublic()) {
             return;
         }
-        SignedUrlUtil.VerifySignedUrlDTO verifySignedUrlDTO = SignedUrlUtil.VerifySignedUrlDTO
-                .builder()
-                .expires(resourceSignedUrlDTO.getExpires())
-                .nonce(resourceSignedUrlDTO.getNonce())
-                .signature(resourceSignedUrlDTO.getSignature())
-                .accessKey(resources.getObjectKey())
+        SignedUrlUtil.SignedUrlDTO verifySignedUrlDTO = SignedUrlUtil.SignedUrlDTO
+                .signedBuilder()
+                .params(this.signedUrlMap(resourceSignedUrlDTO.getPreview(), resourceSignedUrlDTO.getShareUser()))
+                .accessKey(resourceDetailDTO.getObjectKey())
+                .expiresSeconds(resourceSignedUrlDTO.getExpires())
                 .secretKey(s3Properties.getSecretKey())
+                .nonce(resourceSignedUrlDTO.getNonce())
+                .expires(resourceSignedUrlDTO.getExpires())
                 .signature(resourceSignedUrlDTO.getSignature())
-                .params(Map.of("preview", resourceSignedUrlDTO.getPreview()))
                 .build();
         SignedUrlUtil.verifySignedUrl(verifySignedUrlDTO);
     }
@@ -510,6 +557,18 @@ public class ResourceServiceImpl implements ResourceService {
                 builder.range(rangeHeader);
             }
         });
+    }
+
+    /**
+     * url 签名参数
+     *
+     * @param preview   是否预览
+     * @param shareUser 共享用户
+     * @return map参数对象
+     */
+    private Map<String, Object> signedUrlMap(Boolean preview, String shareUser) {
+        return Map.of("preview", preview,
+                "shareUser", shareUser);
     }
 }
 
