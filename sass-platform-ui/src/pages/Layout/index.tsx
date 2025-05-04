@@ -28,13 +28,46 @@ import {Affix, Badge, Button, Drawer, Progress, Space, Table, TableColumnsType, 
 import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
 import {FileUtils} from "@/utils/fileUtil.tsx";
+import {AnyObject} from "antd/es/_util/type";
+import {useUserStore} from "@/store";
 
+declare global {
+    interface Window {
+        _mtm?: AnyObject[]; // 或更具体的类型，例如: MatomoEvent[]
+        _paq?: AnyObject[]; // 或更具体的类型，例如: MatomoEvent[]
+    }
+}
 export const LayoutMain = () => {
     const accessToken = useAuth();
     const location = useLocation();
     const {uploadFiles, removeUploadFile} = useUploadStore(state => state);
     const {t} = useTranslation();
     const [visible, setVisible] = useState<boolean>(false);
+    const {fetchUserinfo} = useUserStore(state => state);
+
+    useEffect(() => {
+        fetchUserinfo().then(res => {
+            const MATOMO_URL = import.meta.env.VITE_MATOMO_URL;
+            const SITE_ID = import.meta.env.VITE_MATOMO_SITE_ID;
+
+            // 未配置则跳过初始化
+            if (!MATOMO_URL || !SITE_ID) return;
+
+            const _paq = window._paq = window._paq || [];
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function () {
+                _paq.push(['setTrackerUrl', `${MATOMO_URL}matomo.php`]);
+                _paq.push(['setUserId', res.username])
+
+                _paq.push(['setSiteId',]);
+                const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.async = true;
+                g.src = `${MATOMO_URL}matomo.js`;
+                s.parentNode?.insertBefore(g, s);
+            }());
+        })
+    }, [fetchUserinfo])
 
     const showDrawer = () => {
         setVisible(true);

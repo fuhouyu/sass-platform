@@ -32,7 +32,7 @@ import {tenantApi} from "@/apis/tenant.tsx";
 export const LayoutHeader = () => {
     const {t} = useTranslation();
     const {LanguageSwitcherButton} = useLanguageSwitcher('language-button');
-    const {fetchUserinfo, fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
+    const {fetchLogout, userinfo, storeTenant} = useUserStore(state => state);
     const navigate = useNavigate();
     const {tenant} = useUserStore(state => state);
     const {theme, changeTheme} = useThemeStore();
@@ -40,8 +40,7 @@ export const LayoutHeader = () => {
 
     const setTenant = useCallback(async () => {
         storeTenant(await tenantApi.findTenantInfoForMe());
-        await fetchUserinfo();
-    }, [fetchUserinfo, storeTenant])
+    }, [storeTenant])
 
     useEffect(() => {
         setTenant().then();

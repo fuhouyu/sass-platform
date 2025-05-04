@@ -28,7 +28,7 @@ export function useResourceAction() {
             return `${uri}${BaseApiUrlConstant.RESOURCE_API_PREFIX}/${resourceId}/download?preview=true`
         }
         return undefined;
-    }, []);
+    }, [uri]);
 
     const generateSignedUrl = useCallback(async (resourceId?: string,
                                                  preview?: boolean): Promise<string> => {

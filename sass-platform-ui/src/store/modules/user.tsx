@@ -95,7 +95,7 @@ interface UserAction {
 /**
  * 用户切片
  */
-const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
+const createUserSlice: StateCreator<UserState & UserAction> = (set, get) => ({
     token: {
         accessToken: '',
         refreshToken: '',
@@ -130,6 +130,9 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set) => ({
     },
 
     fetchUserinfo: async () => {
+        if (Object.keys(get().userinfo).length > 0) {
+            return get().userinfo;
+        }
         const res: Userinfo = await userApi.getInfoMeApi();
         set({userinfo: res});
         return res;
