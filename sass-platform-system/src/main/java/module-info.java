@@ -94,6 +94,7 @@ module sass.platform.system {
     exports com.fuhouyu.sass.platform.system.domain.dto.user;
     exports com.fuhouyu.sass.platform.system.domain.dto.wechat;
     exports com.fuhouyu.sass.platform.system.domain.dto.welink;
+    exports com.fuhouyu.sass.platform.system.domain.dto.matomo;
     exports com.fuhouyu.sass.platform.system.domain.entity;
     exports com.fuhouyu.sass.platform.system.enums;
     exports com.fuhouyu.sass.platform.system.enums.response;
@@ -105,7 +106,7 @@ module sass.platform.system {
     exports com.fuhouyu.sass.platform.system.domain.dto.user.admin;
 
     opens com.fuhouyu.sass.platform.system.components.office to spring.core;
-    opens com.fuhouyu.sass.platform.system.service.impl to spring.core;
+    opens com.fuhouyu.sass.platform.system.service.impl to spring.core, spring.beans, spring.context;
     opens com.fuhouyu.sass.platform.system.components.security.provider to spring.core;
     opens com.fuhouyu.sass.platform.system.utils to spring.core;
 
@@ -129,6 +130,7 @@ module sass.platform.system {
     opens com.fuhouyu.sass.platform.system.domain.dto.permission to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.domain.dto.dict to org.hibernate.validator, com.esotericsoftware.kryo.kryo5, spring.core;
     opens com.fuhouyu.sass.platform.system.components.security to com.esotericsoftware.kryo.kryo5;
+    opens com.fuhouyu.sass.platform.system.domain.dto.matomo to com.fasterxml.jackson.databind;
 
     opens com.fuhouyu.sass.platform.system.domain.entity to spring.core;
 
