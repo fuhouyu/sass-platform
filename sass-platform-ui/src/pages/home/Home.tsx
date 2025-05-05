@@ -15,14 +15,38 @@
  */
 
 
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {matomoApi} from "@/apis/matomo.tsx";
+import VisitTrendChart from "@/pages/home/components/visitSummary/VisitTrendChart.tsx";
+import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {Card} from "antd";
+import BounceAndTimeChart from "@/pages/home/components/visitSummary/BounceAndTimeChart.tsx";
 
 export const Home: React.FC = () => {
     usePageTitle('Menu.home');
+
+    const [visitSummary, setVisitSummary] = useState<MatomoVisitSummary[]>([]);
+
+    const initVisitSummary = useCallback(async () => {
+        const res = await matomoApi.getVisitSummary({
+            date: 'last30',
+            period: 'DAY',
+        });
+        setVisitSummary(res);
+    }, [])
+    useEffect(() => {
+        initVisitSummary().then();
+    }, [])
     return (
         <>
+            <Card title={'访问趋势'}>
+                <VisitTrendChart data={visitSummary}/>
+            </Card>
 
+            <Card title={'访问趋势'}>
+                <BounceAndTimeChart data={visitSummary}/>
+            </Card>
         </>
     )
 }

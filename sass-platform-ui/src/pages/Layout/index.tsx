@@ -203,7 +203,10 @@ export const LayoutMain = () => {
                     </Drawer>
 
                     <Content className="layout-content">
-                        <Bread/>
+                        <div className={'bread-container'}>
+                            <Bread/>
+                        </div>
+
                         <Outlet/>
                     </Content>
                 </Layout>

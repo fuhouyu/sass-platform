@@ -81,12 +81,10 @@ export const Bread = () => {
     }, [pathname, t, userMenus])
         .filter(item => item !== undefined);
     return (
-        <>
-            <Breadcrumb className="breadcrumb"
-                        items={breadcrumb}
-                        itemRender={itemRender}
-            ></Breadcrumb>
-        </>
+        <Breadcrumb className="breadcrumb"
+                    items={breadcrumb}
+                    itemRender={itemRender}
+        ></Breadcrumb>
     );
 };
 
