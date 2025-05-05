@@ -30,15 +30,23 @@ import java.util.function.Consumer;
  */
 public interface ResourceService extends BaseService<Long, ResourceDTO> {
 
+    /**
+     * 下载资源
+     *
+     * @param id      资源id
+     * @param preview 是否预览: true 预览， false 下载
+     */
+    void downloadFile(Long id,
+                      Boolean preview);
 
     /**
      * 下载资源
      *
-     * @param id                   资源id
-     * @param  preview 是否预览: true 预览， false 下载
+     * @param id      资源id
+     * @param resourceSignedUrlDTO 资源签名dto对象
      */
     void downloadFile(Long id,
-                      Boolean preview);
+                      ResourceSignedUrlDTO resourceSignedUrlDTO);
 
     /**
      * 生成sts临时token
@@ -59,12 +67,23 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
     /**
      * 生成资源签名的url
      *
-     * @param id 主键id
+     * @param id                  主键id
      * @param singedUrlRequestDTO 签名请求的url
      * @return 签名的url
      */
     String generateSignedUrl(Long id,
                              SingedUrlRequestDTO singedUrlRequestDTO);
+
+    /**
+     * 生成一个预签名，直接从oss中下载的url
+     * 一般提供给内部使用
+     *
+     * @param id                  资源id
+     * @param singedUrlRequestDTO 签名请求的url
+     * @return url
+     */
+    String generatePresignerDownloadUrl(Long id,
+                                        SingedUrlRequestDTO singedUrlRequestDTO);
 
 
     /**
@@ -85,7 +104,7 @@ public interface ResourceService extends BaseService<Long, ResourceDTO> {
     /**
      * 读取文件到字节数组
      *
-     * @param id 主键id
+     * @param id                  主键id
      * @param inputStreamConsumer 字节流
      */
     void readFileToByteArray(Long id, Consumer<InputStream> inputStreamConsumer);

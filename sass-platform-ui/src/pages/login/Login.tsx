@@ -66,7 +66,7 @@ export const Login: React.FC = () => {
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
-            navigate('/');
+            navigate(BaseUrlConstant.HOME_URL);
         } else {
             tenantApi.list().then(res => {
                 setTenantId(res[0].id);
@@ -83,7 +83,7 @@ export const Login: React.FC = () => {
         try {
             await fetchLogin({...loginData, tenantId});
             const fromRouter = location.state?.from;
-            const from = (!fromRouter || fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? '/' : fromRouter;
+            const from = (!fromRouter || fromRouter.endsWith(BaseUrlConstant.LOGIN_URL)) ? BaseUrlConstant.HOME_URL : fromRouter;
             updateDynamicRoutes().then(() => {
                 navigate(from);
             });

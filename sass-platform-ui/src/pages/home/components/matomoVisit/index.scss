@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-
-.layout-main-sider {
-  margin-right: 1rem;
-
-  .ant-menu {
-    height: calc(100% - 3rem);
-  }
-
+.echarts-container {
+  width: 200px !important;; /* Make it take the full width of its parent */
+  height: 300px /* Adjust this value as needed */
 }
-

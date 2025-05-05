@@ -44,4 +44,7 @@ public class ResourceSignedUrlDTO implements Serializable {
 
     @Schema(name = "preview", description = "是否为预览")
     private Boolean preview;
+
+    @Schema(name = "shareUser", description = "共享的用户")
+    private String shareUser;
 }

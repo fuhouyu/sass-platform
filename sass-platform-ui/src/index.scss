@@ -28,16 +28,12 @@ body,
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
   box-sizing: border-box;
+  min-height: 100%;
 }
 
 a {
   text-decoration: none;
   color: inherit;
-}
-
-.app-container {
-  height: 100%;
-  width: 100%;
 }
 
 // 字体居中
@@ -60,11 +56,12 @@ a {
 }
 
 .ant-splitter {
-  height: 94%;
+  height: calc(100% - 2.375rem);
 }
 
 // 树样式
 .tree-container {
+  height: 100%;
   background-color: #fff;
   border-radius: .5rem;
 

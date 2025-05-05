@@ -24,7 +24,6 @@ import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-import * as echarts from 'echarts/core';
 import {useThemeStore} from "@/store/modules/theme.tsx";
 
 interface MemoryData {
@@ -34,55 +33,6 @@ interface MemoryData {
     freeMemory: number[];
 }
 
-echarts.registerTheme('dark-white-font', {
-    backgroundColor: '#2A2A2A',
-    textStyle: {
-        color: '#ffffff'
-    },
-    title: {
-        textStyle: {
-            color: '#ffffff'
-        },
-        subtextStyle: {
-            color: '#cccccc'
-        }
-    },
-    legend: {
-        textStyle: {
-            color: '#ffffff'
-        }
-    },
-    tooltip: {
-        textStyle: {
-            color: '#ffffff'
-        }
-    },
-    xAxis: {
-        axisLabel: {
-            color: '#ffffff'
-        },
-        axisLine: {
-            lineStyle: {
-                color: '#888888'
-            }
-        }
-    },
-    yAxis: {
-        axisLabel: {
-            color: '#ffffff'
-        },
-        axisLine: {
-            lineStyle: {
-                color: '#888888'
-            }
-        },
-        splitLine: {
-            lineStyle: {
-                color: '#333333'
-            }
-        }
-    }
-});
 
 
 const getDashboardOption = (value: number | string, title: string) => {

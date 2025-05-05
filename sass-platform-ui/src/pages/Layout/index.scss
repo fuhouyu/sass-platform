@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ant-layout, .ant-layout-has-sider, .ant-layout-content, .layout-content {
+.ant-layout, .ant-layout-has-sider, .ant-layout-content {
   height: 100%;
-  padding: 0;
 }
 
-.layout-content {
+
+.app-container {
   height: 100%;
-  overflow-y: hidden;
+  width: 100%;
+}
+
+
+.content-container {
+  height: 100%;
+  padding-right: .8rem;
 }
 
 // 分隔线
@@ -44,9 +50,9 @@
 }
 
 .upload-headItem {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: bold;
-  width: 270px;
+  width: 16.875rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -82,4 +88,8 @@
 
 .task-table-container .ant-drawer-body {
   padding: 0 !important;
+}
+
+.bread-container {
+  padding: .5rem 0;
 }

@@ -92,7 +92,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     };
 
     return (
-        <Flex className="table-container" vertical>
+        <Flex className="table-container" flex={1} vertical>
             <div className="title-line">
                 {tableName &&
                     <span className="title">

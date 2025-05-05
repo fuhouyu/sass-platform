@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.admin.controller;
 
 import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoCountryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoVisitQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoVisitSummaryDTO;
 import com.fuhouyu.sass.platform.system.service.MatomoService;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * <p>
@@ -59,7 +60,19 @@ public class MatomoController {
      */
     @Operation(summary = "获取访问概要")
     @GetMapping("/visit-summary")
-    public BaseResponse<Map<String, MatomoVisitSummaryDTO>> getVisitSummary(MatomoVisitQueryDTO queryDTO) {
+    public BaseResponse<List<MatomoVisitSummaryDTO>> getVisitSummary(MatomoVisitQueryDTO queryDTO) {
         return ResponseHelper.success(this.matomoService.getVisitSummary(queryDTO));
+    }
+
+    /**
+     * 获取国家访问统计
+     *
+     * @param queryDTO 查询参数
+     * @return 国家访问统计
+     */
+    @Operation(summary = "获取国家访问统计")
+    @GetMapping("/country-visit")
+    public BaseResponse<List<MatomoCountryDTO>> getCountryVisit(MatomoVisitQueryDTO queryDTO) {
+        return ResponseHelper.success(this.matomoService.getCountryVisit(queryDTO));
     }
 }
