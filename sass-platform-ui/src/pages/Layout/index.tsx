@@ -24,7 +24,7 @@ import './index.scss'
 import {Bread} from "@/components";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {QuestionCircleFilled, UnorderedListOutlined} from "@ant-design/icons";
-import {Affix, Badge, Button, Drawer, Progress, Space, Table, TableColumnsType, Tooltip} from "antd";
+import {Affix, Badge, Button, Drawer, Flex, Progress, Space, Table, TableColumnsType, Tooltip} from "antd";
 import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
 import {FileUtils} from "@/utils/fileUtil.tsx";
@@ -203,11 +203,11 @@ export const LayoutMain = () => {
                     </Drawer>
 
                     <Content className="layout-content">
-                        <div className={'bread-container'}>
-                            <Bread/>
-                        </div>
 
-                        <Outlet/>
+                        <Flex vertical>
+                            <Bread/>
+                            <Outlet/>
+                        </Flex>
                     </Content>
                 </Layout>
             </Content>

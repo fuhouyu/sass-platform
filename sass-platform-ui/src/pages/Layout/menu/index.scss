@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+.ant-menu {
+  height: calc(100% - 3rem);
+}
+
 .layout-main-sider {
   margin-right: 1rem;
 }
