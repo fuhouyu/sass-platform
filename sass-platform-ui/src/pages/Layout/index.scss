@@ -17,11 +17,15 @@
   height: 100%;
 }
 
-.layout-content {
-  overflow-y: auto;
+
+.app-container {
+  height: 100%;
+  width: 100%;
 }
 
+
 .content-container {
+  height: 100%;
   padding-right: .8rem;
 }
 
@@ -46,9 +50,9 @@
 }
 
 .upload-headItem {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: bold;
-  width: 270px;
+  width: 16.875rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

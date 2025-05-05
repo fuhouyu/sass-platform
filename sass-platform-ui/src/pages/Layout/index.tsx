@@ -163,53 +163,51 @@ export const LayoutMain = () => {
 
 
     return (
-        <Layout className={'app-container'}
-        >
+        <Layout className="app-container">
             <LayoutHeader/>
-            <Content className={'layout-content'}>
-                <Layout>
-                    <LayoutMenu/>
-                    {uploadFiles.length > 0 && <Affix className={'task-affix-container'}>
-                        <Badge count={uploadFiles.length}
-                               offset={[-30, 0]}
-                        >
+            <Layout className="layout-content">
+                <LayoutMenu/>
+                {uploadFiles.length > 0 && (
+                    <Affix className="task-affix-container">
+                        <Badge count={uploadFiles.length} offset={[-30, 0]}>
                             <Button
-                                className={'task-button'}
-                                variant={'filled'}
+                                className="task-button"
+                                variant="filled"
                                 icon={<UnorderedListOutlined/>}
                                 size="small"
                                 onClick={showDrawer}
                             >
-
-                                <span className="task-button-text">{t('Resource.upload.list')}</span>
-
+                            <span className="task-button-text">
+                                {t('Resource.upload.list')}
+                            </span>
                             </Button>
                         </Badge>
-                    </Affix>}
-                    <Drawer
-                        className={'task-table-container'}
-                        title={t('Resource.upload.list')}
-                        placement="right"
-                        closable={true}
-                        onClose={onClose}
-                        open={visible}
-                        width={'40%'}
+                    </Affix>
+                )}
+                <Drawer
+                    className="task-table-container"
+                    title={t('Resource.upload.list')}
+                    placement="right"
+                    closable
+                    onClose={onClose}
+                    open={visible}
+                    width="40%"
+                >
+                    <Table<UploadFile>
+                        rowKey="id"
+                        pagination={false}
+                        columns={uploadFileColumns}
+                        dataSource={uploadFiles}
+                    />
+                </Drawer>
+                <Content>
+                    <div className="content-container">
+                        <Bread/>
+                        <Outlet/>
+                    </div>
+                </Content>
+            </Layout>
 
-                    >
-                        <Table<UploadFile>
-                            rowKey={'id'}
-                            pagination={false}
-                            columns={uploadFileColumns} dataSource={uploadFiles}/>
-                    </Drawer>
-
-                    <Content className="layout-content">
-                        <div className={'content-container'}>
-                            <Bread/>
-                            <Outlet/>
-                        </div>
-                    </Content>
-                </Layout>
-            </Content>
         </Layout>
     );
 }
