@@ -15,10 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoCountryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoVisitQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.matomo.MatomoVisitSummaryDTO;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * <p>
@@ -34,7 +35,15 @@ public interface MatomoService {
      * 获取访问统计
      *
      * @param queryDTO 查询条件
-     * @return 访问统计, key 为日期
+     * @return 访问统计
      */
-    Map<String, MatomoVisitSummaryDTO> getVisitSummary(MatomoVisitQueryDTO queryDTO);
+    List<MatomoVisitSummaryDTO> getVisitSummary(MatomoVisitQueryDTO queryDTO);
+
+    /**
+     * 获取国家访问统计
+     *
+     * @param queryDTO 查询的dto对象
+     * @return 国家访问统计
+     */
+    List<MatomoCountryDTO> getCountryVisit(MatomoVisitQueryDTO queryDTO);
 }

@@ -125,6 +125,11 @@ export class BaseApiUrlConstant {
      * 在线用户
      */
     static readonly ONLINE_USER_URL: string = `${BaseApiUrlConstant.VERSION}/online/user`;
+
+    /**
+     * matomo 统计
+     */
+    static readonly MATOMO_API_URL: string = `${BaseApiUrlConstant.VERSION}/matomo`;
 }
 
 /**

@@ -522,7 +522,64 @@ const ZhCN = {
         browserVersion: '浏览器版本',
         engine: '引擎',
         platform: '平台',
-    }
+    },
+    DateRange: {
+        start: '开始日期',
+        end: '结束日期',
+        clear: '清除',
+        cancel: '取消',
+        ok: '确定',
+        presetRanges: {
+            today: '今天',
+            yesterday: '昨天',
+            last7Days: '最近7天',
+            last30Days: '最近30天',
+            last60Days: '最近60天',
+            last90Days: '最近90天',
+        }
+    },
+    MatomoVisit: {
+        title: "用户访问总览",
+        totalVisits: "总访问量：",
+        totalUsers: "总用户数：",
+        uniqueVisitors: "唯一访客数：",
+        visitTrendChart: {
+            title: "访问趋势",
+            legend: {
+                nbVisits: "访问次数",
+                nbUniqVisitors: "唯一访客",
+                nbUsers: "用户数"
+            }
+        },
+        actionDepthChart: {
+            title: "行为深度",
+            legend: {
+                actions: "行为总数",
+                maxActions: "最大行为数",
+                avgActions: "平均每次访问行为数"
+            }
+        },
+        bounceAndTimeChart: {
+            legend: {
+                bounceRate: "跳出率 (%)",
+                avgTime: "平均停留时长 (秒)"
+            },
+            yAxis: {
+                bounceRate: "跳出率 (%)",
+                avgTime: "停留时间 (秒)"
+            }
+        },
+        visitQualityRadarChart: {
+            title: "访问质量",
+            indicator: {
+                avgActions: "平均行为数",
+                avgVisitTime: "平均访问时长(s)",
+                bounceRate: "跳出率(%)",
+                conversions: "转化次数"
+            }
+        }
+    },
+
 }
 
 export {

@@ -513,8 +513,63 @@ const EnUS = {
         browserVersion: "Browser Version",
         engine: "Engine",
         platform: "Platform"
+    },
+    DateRange: {
+        start: "Start Date",
+        end: "End Date",
+        clear: "Clear",
+        cancel: "Cancel",
+        ok: "OK",
+        presetRanges: {
+            today: "Today",
+            yesterday: "Yesterday",
+            last7Days: "Last 7 Days",
+            last30Days: "Last 30 Days",
+            last60Days: "Last 60 Days",
+            last90Days: "Last 90 Days"
+        }
+    },
+    MatomoVisit: {
+        title: "User Visit Overview",
+        totalVisits: "Total Visits:",
+        totalUsers: "Total Users:",
+        uniqueVisitors: "Unique Visitors:",
+        visitTrendChart: {
+            title: "Visit Trend",
+            legend: {
+                nbVisits: "Visits",
+                nbUniqVisitors: "Unique Visitors",
+                nbUsers: "Users"
+            }
+        },
+        actionDepthChart: {
+            title: "Action Depth",
+            legend: {
+                actions: "Total Actions",
+                maxActions: "Max Actions",
+                avgActions: "Avg Actions per Visit"
+            }
+        },
+        bounceAndTimeChart: {
+            legend: {
+                bounceRate: "Bounce Rate (%)",
+                avgTime: "Avg Time on Site (s)"
+            },
+            yAxis: {
+                bounceRate: "Bounce Rate (%)",
+                avgTime: "Time on Site (s)"
+            }
+        },
+        visitQualityRadarChart: {
+            title: "Visit Quality",
+            indicator: {
+                avgActions: "Avg Actions",
+                avgVisitTime: "Avg Visit Duration (s)",
+                bounceRate: "Bounce Rate (%)",
+                conversions: "Conversions"
+            }
+        }
     }
-
 }
 
 export {

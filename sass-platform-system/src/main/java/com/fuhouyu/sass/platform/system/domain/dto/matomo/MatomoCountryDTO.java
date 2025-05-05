@@ -24,56 +24,75 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 每日访问汇总数据
+ * matomo 国家访问dto对象
  * </p>
  *
  * @author fuhouyu
- * @since 2025/5/4 19:36
+ * @since 2025/5/5 13:36
  */
 @Data
-@Schema(name = "MatomoVisitSummaryDTO", description = "Matomo 每日访问汇总数据")
-public class MatomoVisitSummaryDTO implements Serializable {
+@Schema(name = "MatomoCountryDTO", description = "Matomo 国家访问dto对象")
+public class MatomoCountryDTO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1287612386576152375L;
+    private static final long serialVersionUID = 54123786182357123L;
 
     @Schema(name = "date", description = "日期")
     private String date;
 
-    @JsonAlias("nb_visits")
-    @Schema(description = "访问次数")
-    private Integer nbVisits;
+    @Schema(description = "国家/地区名称")
+    private String label;
 
     @JsonAlias("nb_uniq_visitors")
     @Schema(description = "唯一访客数量")
     private Integer nbUniqVisitors;
 
-    @JsonAlias("nb_users")
-    @Schema(description = "登录用户数量")
-    private Integer nbUsers;
+    @JsonAlias("nb_visits")
+    @Schema(description = "访问次数")
+    private Integer nbVisits;
 
     @JsonAlias("nb_actions")
     @Schema(description = "行为总数（如点击、页面浏览等）")
     private Integer nbActions;
 
-    @JsonAlias("nb_visits_converted")
-    @Schema(description = "转化的访问次数")
-    private Integer nbVisitsConverted;
-
-    @JsonAlias("bounce_count")
-    @Schema(description = "跳出访问数量（只访问一个页面就离开的次数）")
-    private Integer bounceCount;
-
-    @JsonAlias("sum_visit_length")
-    @Schema(description = "访问时长总和（单位：秒）")
-    private Integer sumVisitLength;
+    @JsonAlias("nb_users")
+    @Schema(description = "登录用户数量")
+    private Integer nbUsers;
 
     @JsonAlias("max_actions")
     @Schema(description = "单个访问的最大行为数")
     private Integer maxActions;
 
+    @JsonAlias("sum_visit_length")
+    @Schema(description = "访问时长总和（单位：秒）")
+    private Integer sumVisitLength;
+
+    @JsonAlias("bounce_count")
+    @Schema(description = "跳出访问数量（只访问一个页面就离开的次数）")
+    private Integer bounceCount;
+
+    @JsonAlias("nb_visits_converted")
+    @Schema(description = "转化的访问次数")
+    private Integer nbVisitsConverted;
+
+    @JsonAlias("code")
+    @Schema(description = "国家代码（如 cn）")
+    private String code;
+
+    @JsonAlias("logo")
+    @Schema(description = "国家图标 URL")
+    private String logo;
+
+    @JsonAlias("segment")
+    @Schema(description = "国家代码 Segment 表达式")
+    private String segment;
+
+    @JsonAlias("logoHeight")
+    @Schema(description = "图标高度")
+    private Integer logoHeight;
+
     @JsonAlias("bounce_rate")
-    @Schema(description = "跳出率（例如 0%）")
+    @Schema(description = "跳出率（百分比字符串，如 40%）")
     private String bounceRate;
 
     @JsonAlias("nb_actions_per_visit")
@@ -83,5 +102,5 @@ public class MatomoVisitSummaryDTO implements Serializable {
     @JsonAlias("avg_time_on_site")
     @Schema(description = "平均停留时长（单位：秒）")
     private Integer avgTimeOnSite;
-
 }
+

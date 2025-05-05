@@ -86,6 +86,7 @@ public class ResourceController {
      */
     @GetMapping("/{id}/download")
     @Operation(summary = "下载资源文件（需要登录）")
+    @NoAuth
     public void downloadWithToken(@PathVariable("id") Long id,
                                   @RequestParam("preview") Boolean preview) {
         this.resourceService.downloadFile(id, preview);

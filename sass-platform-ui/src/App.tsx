@@ -29,7 +29,60 @@ import {PageLoading} from "./components";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import 'dayjs/locale/zh-cn';
 import dayjs from "dayjs";
+import * as echarts from "echarts/core";
 
+echarts.registerTheme('dark-white-font', {
+    backgroundColor: '#2A2A2A',
+    textStyle: {
+        color: '#ffffff'
+    },
+    title: {
+        textStyle: {
+            color: '#ffffff'
+        },
+        subtextStyle: {
+            color: '#cccccc'
+        }
+    },
+    legend: {
+        textStyle: {
+            color: '#ffffff'
+        }
+    },
+    tooltip: {
+        backgroundColor: '#333333', // 深色背景
+        borderColor: '#555555',
+        borderWidth: 1,
+        textStyle: {
+            color: '#ffffff'        // 白色字体
+        }
+    },
+    xAxis: {
+        axisLabel: {
+            color: '#ffffff'
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#888888'
+            }
+        }
+    },
+    yAxis: {
+        axisLabel: {
+            color: '#ffffff'
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#888888'
+            }
+        },
+        splitLine: {
+            lineStyle: {
+                color: '#333333'
+            }
+        }
+    }
+});
 export const App: React.FC = () => {
     const {initialized, updateDynamicRoutes} = useRoutes();
     const language = useLocaleStore(state => state.language);

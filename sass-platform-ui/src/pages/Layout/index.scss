@@ -15,11 +15,14 @@
  */
 .ant-layout, .ant-layout-has-sider, .ant-layout-content {
   height: 100%;
-  padding: 0;
 }
 
 .layout-content {
   overflow-y: auto;
+}
+
+.content-container {
+  padding-right: .8rem;
 }
 
 // 分隔线
