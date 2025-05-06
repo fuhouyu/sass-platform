@@ -49,9 +49,9 @@
   height: 3rem;
   background: linear-gradient(135deg, #74ebd5, #ACB6E5);
   border-radius: 50%;
-  animation: jump 1.5s infinite ease-in-out;
+  animation: jump 2.5s infinite ease-in-out;
   position: relative;
-  box-shadow: 0 6px 16px rgba(116, 235, 213, 0.6);
+  box-shadow: 0 0.375rem 1rem rgba(116, 235, 213, 0.6);
 }
 
 .page-loading-span {

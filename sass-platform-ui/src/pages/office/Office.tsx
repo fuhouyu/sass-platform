@@ -39,7 +39,7 @@ export const Office: FC = () => {
     const {id} = useParams();
     const {t} = useTranslation();
     const [params] = useSearchParams();
-    const [officeView, setOfficeView] = React.useState<OnlyOffice>({} as OnlyOffice)
+    const [officeView, setOfficeView] = useState<OnlyOffice>({} as OnlyOffice)
     const {fetchUserinfo} = useUserStore(state => state);
     const {preview} = useResourceAction();
     const [userinfo, setUserinfo] = useState<Userinfo | undefined>(undefined);
@@ -54,7 +54,7 @@ export const Office: FC = () => {
         const onlyOffice: OnlyOffice = params.get('mode') === 'VIEW' ?
             await onlyOfficeApi.view(id) : await onlyOfficeApi.edit(id);
         setOfficeView(onlyOffice);
-    }, [id, params]);
+    }, [id, params, setOfficeView]);
 
     useEffect(() => {
         fetchUserinfo().then(res => {
@@ -66,7 +66,7 @@ export const Office: FC = () => {
         initOfficeView().then();
     }, [initOfficeView]);
 
-    if (userinfo === undefined) {
+    if (userinfo === undefined || Object.keys(userinfo).length === 0 || officeView === undefined || officeView === null) {
         return <PageLoading/>
     }
 
