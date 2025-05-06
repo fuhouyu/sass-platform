@@ -169,7 +169,7 @@ export const User: React.FC = () => {
             }
         }
     ];
-    const [updateUserId, setUpdateId] = useState<string | undefined>();
+    const [updateUserId, setUpdateUserId] = useState<string | undefined>();
     const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
@@ -195,7 +195,7 @@ export const User: React.FC = () => {
 
     useEffect(() => {
         initOrganization().then();
-    }, [])
+    }, [initOrganization])
 
     /**
      * 打开模态组
@@ -204,7 +204,7 @@ export const User: React.FC = () => {
     const openModal = async (userinfo?: Userinfo) => {
         setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
         setRoleSelectList(await roleApi.list());
-        setUpdateId(userinfo?.id)
+        setUpdateUserId(userinfo?.id)
         if (!userinfo) {
             setIsModalOpen(true);
             return;

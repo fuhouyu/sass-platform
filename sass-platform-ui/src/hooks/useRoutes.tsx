@@ -70,6 +70,7 @@ export const useRoutes = () => {
             const updatedRouter = createBrowserRouter(rootRoutes);
             storeRouter(updatedRouter);
             setInitialized(true);
+            return;
         }
         if (initialized || userMenus) return;
         const menus = await fetchUserMenus();
