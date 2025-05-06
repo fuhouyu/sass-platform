@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import "./index.scss"
 import {Avatar, Button, Divider, Flex, Form, Input, Select, Space} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -63,17 +63,20 @@ export const Login: React.FC = () => {
         theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
     );
 
+    const initTenant = useCallback(async () => {
+        const tenantInfos = await tenantApi.list();
+        setTenantList(tenantInfos);
+        setTenantId(tenantInfos[0].id);
+    }, [])
+
     // 如果本身存在token，跳转回首页
     useEffect(() => {
         if (isAuth) {
             navigate(BaseUrlConstant.HOME_URL);
-        } else {
-            tenantApi.list().then(res => {
-                setTenantId(res[0].id);
-                setTenantList(res);
-            })
+            return
         }
-    }, [isAuth, navigate]);
+        initTenant().then();
+    }, [isAuth, navigate, initTenant]);
 
 
     const onFinish = async (loginData: UserAuthentication) => {

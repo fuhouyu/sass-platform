@@ -30,7 +30,13 @@ export const LayoutMenu = () => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const {t} = useTranslation();
+    const rawPath = location.pathname.replace(/^\/+/, ''); // 去掉开头的 `/`
+    const segments = rawPath.split('/').filter(Boolean);
 
+    const defaultSelectedKeys = [rawPath];
+    const defaultOpenKeys = segments.length > 1
+        ? [segments.slice(0, -1).join('/')]
+        : [];
     const commonMenus: MenuProps[] = [
         {
             key: 'home',
@@ -59,7 +65,8 @@ export const LayoutMenu = () => {
                onCollapse={(value) => setCollapsed(value)}>
             <Divider/>
             <Menu className="layout-menu"
-                  defaultSelectedKeys={['home']}
+                  defaultSelectedKeys={defaultSelectedKeys}
+                  defaultOpenKeys={defaultOpenKeys}
                   mode="inline"
                   items={menuItems} onClick={({key}) => {
                 navigate(key);
