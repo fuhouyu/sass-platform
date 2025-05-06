@@ -15,7 +15,7 @@
  */
 
 import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {organizationApi} from "@/apis/organization.tsx";
 
 /**
@@ -56,10 +56,10 @@ export function useOrganizationLazyData(): {
     /**
      * 初始化data
      */
-    const initOrganization = async () => {
+    const initOrganization = useCallback(async () => {
         const organizations = await organizationApi.getOrganizationListApi();
         setOrganizationLazyData(organizations);
-    }
+    }, [setOrganizationLazyData]);
 
 
     /**
