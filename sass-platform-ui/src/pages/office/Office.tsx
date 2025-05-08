@@ -39,7 +39,7 @@ export const Office: FC = () => {
     const {id} = useParams();
     const {t} = useTranslation();
     const [params] = useSearchParams();
-    const [officeView, setOfficeView] = useState<OnlyOffice>({} as OnlyOffice)
+    const [officeView, setOfficeView] = useState<OnlyOffice | undefined>(undefined)
     const {fetchUserinfo} = useUserStore(state => state);
     const {preview} = useResourceAction();
     const [userinfo, setUserinfo] = useState<Userinfo | undefined>(undefined);
@@ -66,7 +66,7 @@ export const Office: FC = () => {
         initOfficeView().then();
     }, [initOfficeView]);
 
-    if (userinfo === undefined || Object.keys(userinfo).length === 0 || officeView === undefined || officeView === null) {
+    if (userinfo === undefined || officeView === undefined) {
         return <PageLoading/>
     }
 

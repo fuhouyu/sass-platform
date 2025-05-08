@@ -46,22 +46,27 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     const [searchParams] = useSearchParams();
     const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
 
     /**
      * 刷新页面
      */
     const refreshPageList = useCallback(async (refreshProps?: RefreshPageProps<T>) => {
+        setLoading(true);
         const currentParams = Object.fromEntries(searchParams.entries());
         const mergedParams = {...initPageQuery, ...currentParams, ...refreshProps?.pageQuery};
         const res = await pageApi(mergedParams);
         refreshProps?.dataCallback?.(res);
-        setPageResult({...res})
+        setPageResult({...res});
+        setLoading(false);
     }, [pageApi, searchParams]);
 
     useImperativeHandle(tableRef, () => ({
         refreshPageList: async (refreshProps?: RefreshPageProps<T>) => {
+            setLoading(true);
             await refreshPageList(refreshProps);
+            setLoading(false);
         },
         pageResult: pageResult,
     }));
@@ -117,6 +122,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 {...tableProps}
                 rowKey={tableProps.rowKey ?? 'id'}
                 onChange={onChange}
+                loading={loading}
                 virtual={true}
                 scroll={{
                     y: 490,
