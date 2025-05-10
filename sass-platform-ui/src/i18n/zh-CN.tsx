@@ -579,7 +579,9 @@ const ZhCN = {
             }
         }
     },
-
+    Office: {
+        loading: 'office 组件加载中……'
+    }
 }
 
 export {

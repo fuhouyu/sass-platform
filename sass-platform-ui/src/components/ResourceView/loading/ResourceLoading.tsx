@@ -15,23 +15,21 @@
  */
 
 
-import React from "react";
 import './index.scss'
+import {useTranslation} from "react-i18next";
 import {Space} from "antd";
-import {PageLoadingProps} from "@components/PageLoading/interface.tsx";
+import React from "react";
 
-export const PageLoading = ({title}: PageLoadingProps) => {
-
+export const ResourceLoading = ({title}: { title?: string | undefined }) => {
+    const {t} = useTranslation();
     return (
         <div className={'loading-container'}>
-                <Space align={'center'} direction={'vertical'}>
-                    <div>
-                        <div className="loader"></div>
-                    </div>
-                    <div className="loading-span">{title ?? document.title}</div>
-                </Space>
+            <Space align={'center'} direction={'vertical'}>
+                <div>
+                    <div className="resource-loader"></div>
+                </div>
+                <div className="loading-span">{title ?? t('Common.resourceLoading')}</div>
+            </Space>
         </div>
-
-
     )
 }

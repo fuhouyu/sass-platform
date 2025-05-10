@@ -569,6 +569,9 @@ const EnUS = {
                 conversions: "Conversions"
             }
         }
+    },
+    Office: {
+        loading: 'Office Loading...'
     }
 }
 

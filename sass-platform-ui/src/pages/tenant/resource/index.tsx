@@ -397,8 +397,8 @@ const TenantResource: React.FC = () => {
     return (<>
         {contextHolder}
 
-        <Flex gap={20} className={'resource-container'}>
-            <Flex className={'resource-type-menu-container shadow-container'} justify={'center'}>
+        <Flex gap={7} className={'resource-container'}>
+            <Flex className={'resource-type-menu-container '} justify={'center'}>
                 <Menu
                     className={'resource-type-menu'}
                     mode="inline"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {FC, Suspense, useCallback, useEffect, useState} from "react";
+import React, {FC, useCallback, useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
 import {message} from "antd";
@@ -22,9 +22,9 @@ import {OnlyOffice} from "@/model/office.tsx";
 import {onlyOfficeApi} from "@/apis/onlyOffice.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {Userinfo} from "@/model/user.tsx";
-import {PageLoading} from "@/components";
 import {useTranslation} from "react-i18next";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
 
 
 const DocumentEditor = React.lazy(() =>
@@ -67,29 +67,26 @@ export const Office: FC = () => {
     }, [initOfficeView]);
 
     if (userinfo === undefined || officeView === undefined) {
-        return <PageLoading/>
+        return <ResourceLoading title={t('Office.loading')}/>
     }
 
 
     return (
-
-        <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
-            <DocumentEditor
-                id="documentEditor"
-                documentServerUrl={officeView?.documentServerUrl}
-                config={{
-                    ...officeView?.config,
-                    editorConfig: {
-                        user: {
-                            id: userinfo?.id,
-                            name: userinfo?.realName,
-                            image: preview(userinfo.avatar)
-                        },
-                        lang: language
+        <DocumentEditor
+            id="documentEditor"
+            documentServerUrl={officeView?.documentServerUrl}
+            config={{
+                ...officeView?.config,
+                editorConfig: {
+                    user: {
+                        id: userinfo?.id,
+                        name: userinfo?.realName,
+                        image: preview(userinfo.avatar)
                     },
-                }}
-                onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
-            />
-        </Suspense>
+                    lang: language
+                },
+            }}
+            onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
+        />
     );
 }

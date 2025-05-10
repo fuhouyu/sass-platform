@@ -128,7 +128,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                     onChange={onChange}
                     loading={loading}
                     virtual
-                    scroll={{y: 400, x: '100%'}}
+                    scroll={{y: 400, x: 1500}}
                     dataSource={pageResult?.list}
                     rowSelection={{...tableProps.rowSelection, columnWidth: 48}}
                     // pagination={false}
