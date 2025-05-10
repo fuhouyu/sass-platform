@@ -18,7 +18,7 @@
 import React, {FC, useEffect, useState} from "react";
 import './index.scss'
 import ReactECharts from 'echarts-for-react';
-import {Card, Flex, List, Space} from "antd";
+import {Card, Flex, List} from "antd";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
 import {useTranslation} from "react-i18next";
@@ -32,7 +32,6 @@ interface MemoryData {
     usedMemory: number[];
     freeMemory: number[];
 }
-
 
 
 const getDashboardOption = (value: number | string, title: string) => {
@@ -165,7 +164,7 @@ const getJvmOLineChat = (memoryData: MemoryData,
 };
 export const ServerMonitor: FC = () => {
     usePageTitle('Menu.serverMonitor');
-    const [serverMonitor, setServerMonitor] = useState<ServerMonitorModel>({} as ServerMonitorModel);
+    const [serverMonitor, setServerMonitor] = useState<ServerMonitorModel | undefined>(undefined);
     const {t} = useTranslation();
     const currentTheme = useThemeStore(state => state.theme);
     const [memoryData, setMemoryData] = useState<MemoryData>({
@@ -208,11 +207,13 @@ export const ServerMonitor: FC = () => {
 
 
     return (
-        <Space direction="vertical" size="middle" style={{display: 'flex'}}>
-            <Flex wrap justify={'space-between'}>
-                <Card title={t('Monitor.systemInfo')} style={{
-                    width: '49.5%'
-                }}>
+        <Flex flex={1} gap={10} vertical justify={'space-between'} className={'monitor-container'}>
+            <Flex flex={1} gap={10}>
+                <Card title={t('Monitor.systemInfo')}
+                      loading={serverMonitor === undefined}
+                      style={{
+                          width: '49.5%'
+                      }}>
                     <List>
                         <List.Item>
                             <Flex justify={'space-between'} align={'center'} style={{width: '100%'}}>
@@ -255,7 +256,7 @@ export const ServerMonitor: FC = () => {
                         </List.Item>
                     </List>
                 </Card>
-                <Card title={t('Monitor.systemMonitor')} style={{
+                <Card loading={serverMonitor === undefined} title={t('Monitor.systemMonitor')} style={{
                     width: '49.5%'
                 }}>
                     <Flex wrap justify={'space-around'}>
@@ -283,8 +284,8 @@ export const ServerMonitor: FC = () => {
                     </Flex>
                 </Card>
             </Flex>
-            <Flex wrap justify={'space-between'}>
-                <Card title={t('Monitor.jvmInfo')} style={{
+            <Flex flex={1} gap={10}>
+                <Card loading={serverMonitor === undefined} title={t('Monitor.jvmInfo')} style={{
                     width: '49.5%'
                 }}>
                     <List>
@@ -334,9 +335,7 @@ export const ServerMonitor: FC = () => {
                         </List.Item>
                     </List>
                 </Card>
-
-
-                <Card title={t('Monitor.jvmHeapMemory')} style={{
+                <Card loading={serverMonitor === undefined} title={t('Monitor.jvmHeapMemory')} style={{
                     width: '49.5%', overflow: 'hidden', borderRadius: 8
                 }}>
                     <Flex vertical justify={'center'} align={'center'} style={{width: '100%'}}>
@@ -352,6 +351,6 @@ export const ServerMonitor: FC = () => {
                     </Flex>
                 </Card>
             </Flex>
-        </Space>
+        </Flex>
     );
 }

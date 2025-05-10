@@ -17,14 +17,14 @@
 import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import Layout, {Content} from "antd/es/layout/layout";
+import Layout, {Content, Footer} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
 import './index.scss'
 import {Bread} from "@/components";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {QuestionCircleFilled, UnorderedListOutlined} from "@ant-design/icons";
-import {Affix, Badge, Button, Drawer, Progress, Space, Table, TableColumnsType, Tooltip} from "antd";
+import {Affix, Badge, Button, Drawer, Flex, Progress, Space, Table, TableColumnsType, Tooltip} from "antd";
 import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
 import {FileUtils} from "@/utils/fileUtil.tsx";
@@ -201,12 +201,18 @@ export const LayoutMain = () => {
                     />
                 </Drawer>
                 <Content>
-                    <div className="content-container">
+                    <Flex className="content-container" vertical flex={1}>
                         <Bread/>
-                        <Outlet/>
-                    </div>
+                        <div className={'content-body'}>
+                            <Outlet/>
+                        </div>
+                    </Flex>
                 </Content>
             </Layout>
+            <Footer className={'footer'}>
+                <p>Copyright © 2024-{new Date().getFullYear()} <a href="https://github.com/fuhouyu">fuhouyu</a>.
+                </p>
+            </Footer>
 
         </Layout>
     );

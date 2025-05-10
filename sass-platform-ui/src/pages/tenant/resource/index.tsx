@@ -167,6 +167,7 @@ const TenantResource: React.FC = () => {
         {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
+            width: 180,
             align: "center",
             render: (_, record) => {
                 if (record.isDirectory) {
@@ -397,7 +398,7 @@ const TenantResource: React.FC = () => {
         {contextHolder}
 
         <Flex gap={20} className={'resource-container'}>
-            <Flex className={'resource-type-menu-container'} justify={'center'}>
+            <Flex className={'resource-type-menu-container shadow-container'} justify={'center'}>
                 <Menu
                     className={'resource-type-menu'}
                     mode="inline"
@@ -442,7 +443,6 @@ const TenantResource: React.FC = () => {
                         </Dropdown.Button>
                     </Flex>
                 </div>
-                <div className={'tenant-space-content'}>
                     <PageList<Resource>
                         tableProps={{
                             tableRef: tableRef,
@@ -537,7 +537,6 @@ const TenantResource: React.FC = () => {
                             <span>{selectFile?.eTag}</span>
                         </div>
                     </Drawer>
-                </div>
             </Flex>
         </Flex>
 

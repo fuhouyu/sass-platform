@@ -16,7 +16,7 @@
 
 
 import React, {useRef, useState} from "react";
-import {Button, Drawer, Input, message, Popconfirm, Space, Switch, TableColumnsType} from "antd";
+import {Button, Drawer, Input, Popconfirm, Space, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
@@ -35,6 +35,7 @@ import {Menu} from "@/model/menu.tsx";
 import {ReloadOutlined} from "@ant-design/icons";
 import {useUserStore} from "@/store";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {useNotification} from "@/hooks/useNotification.tsx";
 
 /**
  * 租户组件
@@ -47,6 +48,7 @@ export const Tenant: React.FC = () => {
     const tableRef = useRef<TableRefType<TenantInfo>>(null);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const {tenant} = useUserStore(state => state);
+    const {notificationMessage} = useNotification();
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -96,17 +98,17 @@ export const Tenant: React.FC = () => {
             dataIndex: 'expiration',
             align: 'center',
             render: (_, record: TenantInfo) => {
-                {
                     if (record.startDate && record.endDate) {
                         return record.startDate + "-" + record.endDate;
                     }
                     return t('Tenant.permanent');
-                }
+
             }
         },
         {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
+            width: 180,
             align: "center",
         },
         {
@@ -123,7 +125,6 @@ export const Tenant: React.FC = () => {
             render: (_, record: TenantInfo) => {
                 const flag = record.id === tenant?.id
                 return (
-                    <>
                         <PermissionButton buttonPermissions={buttonPermissions}
                                           permissionStr={TenantPermissionConstant.EDIT}>
                             <Space>
@@ -134,10 +135,14 @@ export const Tenant: React.FC = () => {
                                     cancelText={t('Common.no')}
                                     onConfirm={async () => {
                                         await tenantApi.resetPassword(record.id!);
-                                        message.success('密码重置成功');
+                                        notificationMessage({
+                                            type: 'success',
+                                            message: t('Tenant.resetPasswordSuccess')
+                                        })
                                     }}
                                 >
                                     <Button
+                                        size={'small'}
                                         disabled={flag}
                                         icon={<ReloadOutlined/>} color="pink"
                                             variant={'outlined'}>{t('Tenant.resetPassword')}</Button>
@@ -147,8 +152,6 @@ export const Tenant: React.FC = () => {
                                     onClick={() => openDrawer(record.id)}/>
                             </Space>
                         </PermissionButton>
-
-                    </>
 
                 )
             }

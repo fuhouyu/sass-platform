@@ -90,6 +90,7 @@ export const Role: React.FC = () => {
         {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
+            width: 180,
             align: "center",
         },
         {

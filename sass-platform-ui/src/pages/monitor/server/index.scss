@@ -17,3 +17,11 @@
 .monitor-statistic-item {
   text-align: center;
 }
+
+.monitor-container {
+  height: 100%;
+
+  .ant-card-body {
+    padding: .5rem 1rem;
+  }
+}
