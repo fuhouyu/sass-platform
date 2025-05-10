@@ -159,7 +159,7 @@ export const User: React.FC = () => {
                         </PermissionButton>
                         <PermissionButton permissionStr={UserPermissionConstant.EDIT}
                                           buttonPermissions={buttonPermissions}>
-                            <Button onClick={() => openRoleAuthenticationModal(record!)}
+                            <Button size={'small'} onClick={() => openRoleAuthenticationModal(record!)}
                                     icon={<IconFont type="i-jiaoseshouquan"/>}>
                                 {t('User.roleAuthorization')}
                             </Button>

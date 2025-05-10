@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Flex, Space, Table as AntdTable, TableProps as AntdTableProps} from "antd";
+import {Card, Space, Table as AntdTable, TableProps as AntdTableProps} from "antd";
 import {RefreshPageProps, TableProps} from "@components/List/table/interface";
 import {FilterValue, SorterResult, TablePaginationConfig} from "antd/es/table/interface";
 import './index.scss'
@@ -46,22 +46,27 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     const [searchParams] = useSearchParams();
     const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
 
     /**
      * 刷新页面
      */
     const refreshPageList = useCallback(async (refreshProps?: RefreshPageProps<T>) => {
+        setLoading(true);
         const currentParams = Object.fromEntries(searchParams.entries());
         const mergedParams = {...initPageQuery, ...currentParams, ...refreshProps?.pageQuery};
         const res = await pageApi(mergedParams);
         refreshProps?.dataCallback?.(res);
-        setPageResult({...res})
+        setPageResult({...res});
+        setLoading(false);
     }, [pageApi, searchParams]);
 
     useImperativeHandle(tableRef, () => ({
         refreshPageList: async (refreshProps?: RefreshPageProps<T>) => {
+            setLoading(true);
             await refreshPageList(refreshProps);
+            setLoading(false);
         },
         pageResult: pageResult,
     }));
@@ -92,49 +97,110 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
     };
 
     return (
-        <Flex className="table-container" vertical>
-            <div className="title-line">
-                {tableName &&
-                    <span className="title">
-                            {tableName}
-                        </span>}
-                <div className="components">
-                    {tableComponents?.map((component, index) => (
-                        <div className='component' key={index}>
-                            {component}
-                        </div>
-                    ))
-                    }
+
+        <Card className={'table-container'}>
+            <div className={'table-title'}>
+                <div className="title-line">
+                    {tableName && <span className="title">{tableName}</span>}
+                    <div className="components">
+                        {tableComponents?.map((component, index) => (
+                            <div className='component' key={index}>
+                                {component}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+                {!disableTableHint && (
+                    <div className="tips-container">
+                        <Space>
+                            <InfoCircleFilled className="table-tips-icon"/>
+                            <span>{t('Common.listTips')}</span>
+                        </Space>
+                    </div>
+                )}
             </div>
-            {!disableTableHint && <div className="tips-container">
-                <Space>
-                    <InfoCircleFilled className="table-tips-icon"/>
-                    <span>{t('Common.listTips')}</span>
-                </Space>
-            </div>}
-            <AntdTable
-                {...tableProps}
-                rowKey={tableProps.rowKey ?? 'id'}
-                onChange={onChange}
-                virtual={true}
-                scroll={{
-                    y: 490,
-                    x: 500,
-                }}
-                dataSource={pageResult?.list}
-                rowSelection={{...tableProps.rowSelection, columnWidth: 48}}
-                pagination={{
-                    defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
-                    total: pageResult?.total,
-                    hideOnSinglePage: false,
-                    showSizeChanger: true,
-                    defaultPageSize: pageResult?.pageSize ?? 10,
-                }}
-                showSorterTooltip={{target: 'sorter-icon'}}
-            />
-        </Flex>
-    )
+            <div className={'table-body'}>
+                <AntdTable<T>
+                    bordered
+                    {...tableProps}
+                    rootClassName={'table'}
+                    rowKey={tableProps.rowKey ?? 'id'}
+                    onChange={onChange}
+                    loading={loading}
+                    virtual
+                    scroll={{y: 400, x: 1500}}
+                    dataSource={pageResult?.list}
+                    rowSelection={{...tableProps.rowSelection, columnWidth: 48}}
+                    // pagination={false}
+                    pagination={{
+                        className: 'pagination',
+                        defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
+                        total: pageResult?.total,
+                        hideOnSinglePage: false,
+                        showSizeChanger: true,
+                        defaultPageSize: pageResult?.pageSize ?? 10,
+                    }}
+                    showSorterTooltip={{target: 'sorter-icon'}}
+                />
+
+            </div>
+
+            {/*<Pagination*/}
+            {/*    className="pagination"*/}
+            {/*    total={pageResult?.total}*/}
+            {/*    defaultCurrent={pageResult?.pageNum}*/}
+            {/*    defaultPageSize={pageResult?.pageSize}*/}
+            {/*    onChange={(page, pageSize) => {*/}
+            {/*        updateSearchParams({pageNum: page, pageSize: pageSize})*/}
+            {/*    }}*/}
+            {/*/>*/}
+        </Card>
+
+        // <div className="table-container">
+        //     {/*<div className={'table-title'}>*/}
+        //     {/*    <div className="title-line">*/}
+        //     {/*        {tableName && <span className="title">{tableName}</span>}*/}
+        //     {/*        <div className="components">*/}
+        //     {/*            {tableComponents?.map((component, index) => (*/}
+        //     {/*                <div className='component' key={index}>*/}
+        //     {/*                    {component}*/}
+        //     {/*                </div>*/}
+        //     {/*            ))}*/}
+        //     {/*        </div>*/}
+        //     {/*    </div>*/}
+        //     {/*    {!disableTableHint && (*/}
+        //     {/*        <div className="tips-container">*/}
+        //     {/*            <Space>*/}
+        //     {/*                <InfoCircleFilled className="table-tips-icon" />*/}
+        //     {/*                <span>{t('Common.listTips')}</span>*/}
+        //     {/*            </Space>*/}
+        //     {/*        </div>*/}
+        //     {/*    )}*/}
+        //     {/*</div>*/}
+        //
+        //
+        //     <AntdTable<T>
+        //         {...tableProps}
+        //         rowKey={tableProps.rowKey ?? 'id'}
+        //         onChange={onChange}
+        //         loading={loading}
+        //         virtual
+        //         scroll={{ y: '100%', x: '100%' }}
+        //         dataSource={pageResult?.list}
+        //         rowSelection={{ ...tableProps.rowSelection, columnWidth: 48 }}
+        //         pagination={{
+        //             defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
+        //             total: pageResult?.total,
+        //             hideOnSinglePage: false,
+        //             showSizeChanger: true,
+        //             defaultPageSize: pageResult?.pageSize ?? 10,
+        //         }}
+        //         showSorterTooltip={{target: 'sorter-icon'}}
+        //     />
+        // </div>
+
+
+    );
 }
 
 export default Table;

@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.ant-layout, .ant-layout-has-sider, .ant-layout-content {
-  height: 100%;
-}
 
 
-.app-container {
+.app-container, .layout-content {
   height: 100%;
   width: 100%;
+
 }
 
+.layout-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .content-body {
+    height: 100%;
+    overflow: auto;
+  }
+}
 
 .content-container {
+  flex: 1;
   height: 100%;
   padding-right: .8rem;
 }
+
 
 // 分隔线
 .ant-divider {
@@ -92,4 +102,8 @@
 
 .bread-container {
   padding: .5rem 0;
+}
+
+.footer {
+  text-align: center;
 }

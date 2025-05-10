@@ -56,7 +56,7 @@ a {
 }
 
 .ant-splitter {
-  height: calc(100% - 2.375rem);
+  height: 100%;
 }
 
 // 树样式
@@ -152,4 +152,26 @@ ol {
 
 .cursor-point {
   cursor: pointer;
+}
+
+.shadow-container {
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.15), /* 主阴影 */
+  0 0.75rem 1.5rem rgba(0, 0, 0, 0.1), /* 次级阴影 */
+  0 0.25rem 0.5rem rgba(0, 0, 0, 0.05), /* 边缘浅阴影 */
+  0 0 0.5rem rgba(0, 0, 0, 0.03); /* 最浅的边缘阴影 */
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-span {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  font-weight: bold;
+
 }

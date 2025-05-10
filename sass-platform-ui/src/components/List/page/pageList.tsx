@@ -19,17 +19,22 @@ import './index.scss'
 import {PageListProps} from "@components/List/page/interface";
 import SearchHeader from "@components/List/header/searchHeader";
 import Table from "@components/List/table/table";
+import {Flex} from "antd";
 
 const PageList = <T extends object>(props: PageListProps<T>) => {
     const {headerSearchProps, tableProps} = props
-
     return (
-        <>
+        <Flex vertical className={'page-list-container '}>
             {headerSearchProps && <SearchHeader
                 {...headerSearchProps}/>}
-            <Table<T>
-                {...tableProps}/>
-        </>
+            <div className={'shadow-container'} style={{
+                height: '100%'
+            }}>
+                <Table<T>
+                    className={'page-table-container '}
+                    {...tableProps}/>
+            </div>
+        </Flex>
     );
 };
 

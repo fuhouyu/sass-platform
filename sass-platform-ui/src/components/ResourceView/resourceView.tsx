@@ -22,7 +22,7 @@ import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useTranslation} from "react-i18next";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import 'react-h5-audio-player/lib/styles.css';
-import {PageLoading} from "@/components";
+import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
 
 const SourceCodeView = lazy(() => import("./code/sourceCodeView.tsx"));
 const VideoView = lazy(() => import("./video/videoView.tsx"));
@@ -49,18 +49,18 @@ export const ResourceView = (resourceView: ResourceViewProps) => {
         case ResourceCategoryEnum.IMAGE:
             return <ImageView id={id}/>;
         case ResourceCategoryEnum.VIDEO:
-            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+            return <Suspense fallback={<ResourceLoading/>}>
                 <VideoView
                     id={id}
                 />
             </Suspense>
         case ResourceCategoryEnum.SOURCE_CODE:
         case ResourceCategoryEnum.MARKDOWN:
-            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+            return <Suspense fallback={<ResourceLoading/>}>
                 <SourceCodeView resourceId={id} category={resourceView.category}/>
             </Suspense>
         case ResourceCategoryEnum.AUDIO:
-            return <Suspense fallback={<PageLoading title={t('Common.resourceLoading')}/>}>
+            return <Suspense fallback={<ResourceLoading/>}>
                 <AudioPlayer
                     src={url}
                     autoPlay/>

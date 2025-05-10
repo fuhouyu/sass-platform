@@ -113,6 +113,7 @@ export const OnlineUser: FC = () => {
                     disabled={record.accessToken === getAccessToken()}
                     type="primary"
                     danger
+                    size={'small'}
                     onClick={async () => {
                         onlineUserApi.logout([record.accessToken!])
                             .then(() => {

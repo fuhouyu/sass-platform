@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-.monitor-statistic-item {
-  text-align: center;
-}
 
-.monitor-container {
-  height: 100%;
+import './index.scss'
+import {useTranslation} from "react-i18next";
+import {Space} from "antd";
+import React from "react";
 
-  .ant-card-body {
-    padding: .5rem 1rem;
-  }
+export const ResourceLoading = ({title}: { title?: string | undefined }) => {
+    const {t} = useTranslation();
+    return (
+        <div className={'loading-container'}>
+            <Space align={'center'} direction={'vertical'}>
+                <div>
+                    <div className="resource-loader"></div>
+                </div>
+                <div className="loading-span">{title ?? t('Common.resourceLoading')}</div>
+            </Space>
+        </div>
+    )
 }

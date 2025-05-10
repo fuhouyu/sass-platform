@@ -72,6 +72,7 @@ export const EditButton = (buttonProps: ButtonProps) => {
         <Button className="edit-button"
                 {...buttonProps}
                 color={'cyan'}
+                size={'small'}
                 variant={'solid'}
                 icon={<EditOutlined/>}>
             {t('Button.edit')}

@@ -13,54 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import './index.scss'
-import {resourceApi} from "@/apis/resource.tsx";
-import {Progress} from 'antd';
-import {useTranslation} from "react-i18next";
+import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
 
 export const ImageView = ({id}: { id: string }) => {
     const [viewUrl, setViewUrl] = useState<string>();
     const [loading, setLoading] = useState(true);
-    const [percent, setPercent] = useState(0);
-    const {t} = useTranslation();
-    // 模拟进度条前进（可替换为真实加载进度）
-    useEffect(() => {
-        if (loading) {
-            let p = 0;
-            const timer = setInterval(() => {
-                p += 10;
-                if (p >= 90) {
-                    clearInterval(timer);
-                }
-                setPercent(p);
-            }, 700);
-            return () => clearInterval(timer);
-        }
-    }, [loading]);
 
-    const handleLoaded = () => {
-        setPercent(100);
-        setTimeout(() => setLoading(false), 300); // 等进度条显示完再渲染页面
-    };
-
-    useEffect(() => {
-        resourceApi.downloadFile(id, true, {
-            responseType: 'blob' // 必须设置
-        })
-            .then(response => {
-                const blob = new Blob([response as Blob], {type: 'image/*'});
-                const url = URL.createObjectURL(blob);
-                handleLoaded();
-                setViewUrl(url);
-            })
-    }, [id]);
-    return (loading ? (<div style={{padding: '8px', textAlign: 'center'}}>
-        <Progress percent={percent} showInfo={false} strokeColor="#1890ff" size="small"/>
-        <div style={{marginTop: 8, color: '#999'}}>{t('Common.resourceLoading')}</div>
-    </div>) : <img
+    // useEffect(() => {
+    //     setLoading(true);
+    //     resourceApi.downloadFile(id, true, {
+    //         responseType: 'blob' // 必须设置
+    //     })
+    //         .then(response => {
+    //             console.log('请求url')
+    //             const blob = new Blob([response as Blob], {type: 'image/*'});
+    //             const url = URL.createObjectURL(blob);
+    //             setViewUrl(url);
+    //             setLoading(false);
+    //         })
+    // }, [id]);
+    if (loading) {
+        return <ResourceLoading/>
+    }
+    return (<img
         width={'100%'}
+        height={'100%'}
         className={'image-view'}
         src={viewUrl}
-        alt=''/>)
+        alt=''/>);
 }

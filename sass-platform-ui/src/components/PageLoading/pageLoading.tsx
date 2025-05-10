@@ -23,15 +23,13 @@ import {PageLoadingProps} from "@components/PageLoading/interface.tsx";
 export const PageLoading = ({title}: PageLoadingProps) => {
 
     return (
-        <div className={'page-loading-container'}>
-            <div className="loader">
+        <div className={'loading-container'}>
                 <Space align={'center'} direction={'vertical'}>
-                    <div className="ball-wrapper">
-                        <div className="ball"></div>
+                    <div>
+                        <div className="loader"></div>
                     </div>
-                    {<div className="page-loading-span">{title ?? document.title}</div>}
+                    <div className="loading-span">{title ?? document.title}</div>
                 </Space>
-            </div>
         </div>
 
 
