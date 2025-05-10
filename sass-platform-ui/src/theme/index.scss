@@ -34,6 +34,10 @@ $dark-button-font-hover-color: #2090FF;
 
 
 .dark {
+
+  .content-body {
+    background-color: $dark-main-bgc;
+  }
   // 页头
   .layout-header {
     background-color: $dark-container-bgc;
@@ -53,11 +57,11 @@ $dark-button-font-hover-color: #2090FF;
     background-color: $dark-container-bgc;
   }
 
-  .layout-main-sider, .ant-layout-sider-light {
+  .layout-main-sider, .ant-layout-sider-light, .ant-layout-sider-children {
     border-right: $dark-aside-border;
   }
 
-  .ant-layout-sider-trigger {
+  .ant-layout-sider-trigger, .ant-layout-sider-children {
     background: $dark-main-bgc;
     border-top: 1px solid $dark-aside-border;
   }
@@ -83,7 +87,7 @@ $dark-button-font-hover-color: #2090FF;
     background-color: $dark-main-bgc;
   }
 
-  .tenant-space-content .title-line {
+  .resource-content .title-line {
     background-color: $dark-container-bgc;
   }
 

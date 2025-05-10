@@ -443,6 +443,7 @@ const TenantResource: React.FC = () => {
                         </Dropdown.Button>
                     </Flex>
                 </div>
+                <div className={'resource-content'}>
                     <PageList<Resource>
                         tableProps={{
                             tableRef: tableRef,
@@ -454,6 +455,7 @@ const TenantResource: React.FC = () => {
                             rowSelection: rowSelection,
                             tableComponents: [
                                 <Flex
+                                    className={''}
                                     key={'back-button'}
                                     justify={'center'}>
                                     <Button className={'back-button'}
@@ -537,6 +539,7 @@ const TenantResource: React.FC = () => {
                             <span>{selectFile?.eTag}</span>
                         </div>
                     </Drawer>
+                </div>
             </Flex>
         </Flex>
 

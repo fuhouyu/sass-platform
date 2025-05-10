@@ -43,10 +43,16 @@
 
 }
 
-.title-line {
-  border: 1px solid gray;
-  border-radius: 6px;
-  background-color: rgb(252, 252, 253);
+.resource-content {
+  height: 100%;
+  background-color: inherit;
+
+  .title-line {
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: rgb(252, 252, 253);
+  }
+
 }
 
 .preview-img-container {
