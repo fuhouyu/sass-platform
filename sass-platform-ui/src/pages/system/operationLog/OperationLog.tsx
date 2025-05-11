@@ -254,6 +254,9 @@ export const OperationLog = () => {
                                     pageQuery['startTime'] ? dayjs(pageQuery['startTime']) : null,
                                     pageQuery['endTime'] ? dayjs(pageQuery['endTime']) : null
                                 ]}
+                                disabledDate={(currentDate) => {
+                                    return currentDate.isAfter(new Date());
+                                }}
                                 onCalendarChange={(_, search) => {
                                     setPageQuery({...pageQuery, startTime: search[0], endTime: search[1]})
                                 }}/>
