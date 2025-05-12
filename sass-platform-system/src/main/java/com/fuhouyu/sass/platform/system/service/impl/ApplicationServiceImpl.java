@@ -15,15 +15,20 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.sass.platform.system.assembler.ApplicationsAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Applications;
 import com.fuhouyu.sass.platform.system.mapper.ApplicationMapper;
 import com.fuhouyu.sass.platform.system.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -42,7 +47,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ApplicationServiceImpl implements ApplicationService {
+public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Applications> implements ApplicationService {
 
     private static final ApplicationsAssembler APPLICATIONS_ASSEMBLER = ApplicationsAssembler.INSTANCE;
 
@@ -57,28 +62,21 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void edit(ApplicationDTO dto) {
-        this.applicationMapper.update(APPLICATIONS_ASSEMBLER.toEntity(dto));
-    }
-
-    @Override
-    public int removeById(String clientId) {
-        return this.applicationMapper.deleteById(clientId);
-    }
-
-    @Override
-    public int removeByIds(Collection<String> clientIds) {
-        return this.applicationMapper.deleteByIds(clientIds);
+        this.applicationMapper.updateById(APPLICATIONS_ASSEMBLER.toEntity(dto));
     }
 
     @Override
     public ApplicationDTO findById(String clientId) {
-        return APPLICATIONS_ASSEMBLER.toDTO(this.applicationMapper.queryById(clientId));
+        return APPLICATIONS_ASSEMBLER.toDTO(this.applicationMapper.selectById(clientId));
     }
 
     @Override
-    public Function<PageQueryDTO, List<ApplicationDTO>> getPageResult() {
-        return p -> APPLICATIONS_ASSEMBLER.toDTO(this.applicationMapper.queryList(p));
+    public PageResultDTO<ApplicationDTO> pageList(ApplicationPageQueryDTO queryDTO) {
+        LambdaQueryWrapper<Applications> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(StringUtils.hasText(queryDTO.getClientName()), Applications::getClientName, queryDTO.getClientName());
+        return PageResultDTO.buildPageResult(this.applicationMapper.selectPage(queryDTO, lambdaQueryWrapper), APPLICATIONS_ASSEMBLER::toDTO);
     }
+
 
     @Override
     public String generateClientSecret() {

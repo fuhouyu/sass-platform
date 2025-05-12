@@ -15,6 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.assembler.AccountsAssembler;
@@ -22,6 +29,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UpdatePasswordDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.welink.WeLinkLoginUserDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.AccountId;
 import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
@@ -52,7 +60,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl extends ServiceImpl<AccountMapper, Accounts> implements AccountService {
 
     private static final AccountsAssembler ACCOUNT_ASSEMBLER = AccountsAssembler.INSTANCE;
 
@@ -63,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
     private final WeLinkService weLinkService;
 
     @Override
-    public AccountIdDTO save(AccountDTO accountDTO) {
+    public AccountIdDTO saveAccounts(AccountDTO accountDTO) {
         accountDTO.setIsEnabled(true);
         Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
         this.accountMapper.insert(entity);
@@ -71,29 +79,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void saveBatch(List<AccountDTO> saveList) {
-        this.accountMapper.insertBatch(ACCOUNT_ASSEMBLER.toEntity(saveList));
+    public void saveAccounts(Collection<AccountDTO> saveList) {
+        this.accountMapper.insert(ACCOUNT_ASSEMBLER.toEntity(saveList));
     }
 
     @Override
-    public void edit(AccountDTO accountDTO) {
-        this.accountMapper.update(ACCOUNT_ASSEMBLER.toEntity(accountDTO));
+    public void editAccounts(AccountDTO accountDTO) {
+        Accounts entity = ACCOUNT_ASSEMBLER.toEntity(accountDTO);
+        this.accountMapper.update(entity, this.getWrapper(entity.getAccount(), entity.getAccountType()));
     }
 
     @Override
     public int removeById(AccountIdDTO accountIdDTO) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
-        return this.accountMapper.deleteById(new AccountId(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name(), tenantId));
+        return this.accountMapper.delete(this.getWrapper(accountIdDTO.getAccount(), accountIdDTO.getAccountType().name()));
     }
 
-    @Override
-    public int removeByIds(Collection<AccountIdDTO> accountIdList) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
-        List<AccountId> ids = accountIdList.stream().map(account ->
-                        new AccountId(account.getAccount(), account.getAccountType().name(), tenantId))
-                .toList();
-        return this.accountMapper.deleteByIds(ids);
-    }
+
 
     @Override
     public AccountDTO findById(AccountIdDTO accountIdDTO) {
@@ -121,11 +122,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<AccountDTO>> getPageResult() {
-        return p -> ACCOUNT_ASSEMBLER.toDTO(this.accountMapper.queryList(p));
-    }
-
-    @Override
     public void editPassword(UpdatePasswordDTO updatePasswordDTO) {
         if (!Objects.equals(updatePasswordDTO.getNewPassword(), updatePasswordDTO.getConfirmPassword())) {
             throw new ServiceException(AccountResponseStatusEnum.CONFIRM_PASSWORD_VERIFY_FAIL);
@@ -136,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
             throw new ServiceException(AccountResponseStatusEnum.ORIGINAL_PASSWORD_VERIFY_FAIL);
         }
         account.setCredentials(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
-        this.accountMapper.update(account);
+        this.accountMapper.update(account, this.getWrapper(account.getAccount(), account.getAccountType()));
     }
 
     @Override
@@ -153,6 +149,7 @@ public class AccountServiceImpl implements AccountService {
     public void editAccountStatusByUserId(Long userId, Boolean enabled) {
         this.accountMapper.updateAccountStatusByUserId(userId, enabled);
     }
+
     @Override
     public void saveThirdPartyAccount(AccountIdDTO accountIdDTO) {
         // TODO 目前这里只会有weLink，先临时处理，后面需要抽到accountTypeEnum中
@@ -181,6 +178,23 @@ public class AccountServiceImpl implements AccountService {
         AccountDTO dto = ACCOUNT_ASSEMBLER.toDTO(accounts);
         dto.setUserId(accounts.getUserId());
         return dto;
+    }
+
+
+    /**
+     * 获取wrapper对象
+     *
+     * @param account     账号
+     * @param accountType 账号类型
+     * @return wrapper
+     */
+    private Wrapper<Accounts> getWrapper(String account, String accountType) {
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        LambdaQueryWrapper<Accounts> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Accounts::getAccount, account)
+                .eq(Accounts::getAccountType, accountType)
+                .eq(Accounts::getOwnerTenantId, tenantId);
+        return wrapper;
     }
 
 }

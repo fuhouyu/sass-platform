@@ -105,13 +105,13 @@ public class DictTypeController {
      * 通过id集合删除数据
      *
      * @param ids ids
-     * @return 影响行数
+     * @return 成功/失败
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     @PreAuthorize("@auth.hasAnyPermission('system:dict-type:delete')")
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
-    public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
+    public BaseResponse<Boolean> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.dictTypeService.removeByIds(ids));
     }
 

@@ -135,8 +135,7 @@ public class TenantInfoController {
         if (ids.contains(ContextHolderStrategy.getContext().getUser().getTenantId())) {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_NO_PERMISSION);
         }
-        int count = this.tenantInfoService.removeByIds(ids);
-        return ResponseHelper.success(count > 0);
+        return ResponseHelper.success(this.tenantInfoService.removeByIds(ids));
     }
 
 

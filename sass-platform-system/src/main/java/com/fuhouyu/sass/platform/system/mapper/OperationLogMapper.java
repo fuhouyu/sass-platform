@@ -15,7 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fuhouyu.sass.platform.system.domain.dto.log.OperationLogPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.OperationLog;
 import org.apache.ibatis.annotations.Param;
@@ -30,14 +31,8 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/3/28 21:25
  */
-public interface OperationLogMapper {
+public interface OperationLogMapper extends BaseMapper<OperationLog> {
 
-    /**
-     * 插入日志
-     *
-     * @param record 日志记录
-     */
-    void insert(OperationLog record);
 
     /**
      * 查询列表
@@ -45,8 +40,7 @@ public interface OperationLogMapper {
      * @param pageQuery 分页查询
      * @return 操作日志集合
      */
-    @TenantQuery
-    List<OperationLog> queryList(@Param("pageQuery") OperationLogPageQueryDTO pageQuery);
+    IPage<OperationLog> queryList(@Param("pageQuery") OperationLogPageQueryDTO pageQuery);
 
     /**
      * 获取模块列表
@@ -61,6 +55,5 @@ public interface OperationLogMapper {
      * @param id 主键id
      * @return 操作日志
      */
-    @TenantQuery
     OperationLog queryById(Long id);
 }

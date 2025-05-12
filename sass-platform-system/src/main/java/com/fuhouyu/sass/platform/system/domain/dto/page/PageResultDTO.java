@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.page;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import lombok.ToString;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * <p>
@@ -42,10 +44,10 @@ public class PageResultDTO<T> implements Serializable {
     private static final long serialVersionUID = 1238719237918263821L;
 
     @Schema(name = "pageNum", description = "页号", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageNum;
+    private Long pageNum;
 
     @Schema(name = "pageSize", description = "每页显示条数", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageSize;
+    private Long pageSize;
 
     @Schema(name = "total", description = "总条数", requiredMode = Schema.RequiredMode.REQUIRED, implementation = String.class)
     private Long total;
@@ -53,16 +55,38 @@ public class PageResultDTO<T> implements Serializable {
     @Schema(name = "list", description = "分页数据")
     private transient List<T> list;
 
-    public PageResultDTO(Integer pageNum, Integer pageSize, Long total) {
+    public PageResultDTO(Long pageNum, Long pageSize, Long total) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         this.total = total;
     }
 
-    public PageResultDTO(Integer pageNum, Integer pageSize, Long total, List<T> list) {
+    public PageResultDTO(Long pageNum, Long pageSize, Long total, List<T> list) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         this.total = total;
         this.list = list;
+    }
+
+    /**
+     * 构建分页结果
+     *
+     * @param page 分页
+     * @return 分页结果
+     */
+    public static <T> PageResultDTO<T> buildPageResult(IPage<T> page) {
+        return new PageResultDTO<>(page.getCurrent(), page.getSize(), page.getTotal(), page.getRecords());
+    }
+
+
+    /**
+     * 构建分页结果
+     *
+     * @param page      分页
+     * @param converter 转换器
+     * @return 分页结果
+     */
+    public static <T, R> PageResultDTO<R> buildPageResult(IPage<T> page, Function<List<T>, List<R>> converter) {
+        return new PageResultDTO<>(page.getCurrent(), page.getSize(), page.getTotal(), converter.apply(page.getRecords()));
     }
 }

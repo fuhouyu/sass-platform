@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.role;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Roles;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "RolePageQueryDTO", description = "角色查询的dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RolePageQueryDTO extends PageQueryDTO {
+public class RolePageQueryDTO extends PageQueryDTO<Roles> {
 
     @Schema(name = "roleCode", description = "角色编码检索")
     private String roleCode;

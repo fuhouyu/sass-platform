@@ -15,8 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.sass.platform.system.assembler.UserPositionAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.UserPositions;
 import com.fuhouyu.sass.platform.system.mapper.UserPositionMapper;
 import com.fuhouyu.sass.platform.system.service.UserPositionService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,7 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserPositionServiceImpl implements UserPositionService {
+public class UserPositionServiceImpl extends ServiceImpl<UserPositionMapper, UserPositions> implements UserPositionService {
 
     private static final UserPositionAssembler USER_POSITION_ASSEMBLER = UserPositionAssembler.INSTANCE;
 
@@ -45,7 +47,7 @@ public class UserPositionServiceImpl implements UserPositionService {
     @Override
     public void saveUserPosition(Long userId, UserPositionDTO userPositionDTO) {
         userPositionDTO.setUserId(userId);
-        if (userPositionDTO.getIsMain()) {
+        if (Boolean.TRUE.equals(userPositionDTO.getIsMain())) {
             // 如果当前用户职位信息为主职，则将当前组织下所有职位信息设置为非主职
             this.userPositionMapper.updateNotMainByUserId(userId);
         }

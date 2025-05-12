@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/did/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.DictItemMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.DictItem" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.DictItem" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="item_name" property="itemName" jdbcType="VARCHAR"/>
         <result column="item_code" property="itemCode" jdbcType="VARCHAR"/>
@@ -90,32 +90,6 @@
         </trim>
     </insert>
 
-    <insert id="insertBatch" parameterType="java.util.List" >
-        INSERT INTO
-        <include refid="TableName"/>
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="AllColumns"/>
-        </trim>
-        VALUES
-        <foreach collection="list" separator="," item="entity">
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{entity.id},
-                #{entity.dictCode},
-                #{entity.itemName},
-                #{entity.itemCode},
-                #{entity.displayOrder},
-                #{entity.remark},
-                #{entity.isEnabled},
-                #{entity.isAllowModified},
-                #{entity.ownerTenantId},
-                #{entity.isDeleted},
-                #{entity.createdAt},
-                #{entity.createdBy},
-                #{entity.updatedAt},
-                #{entity.updatedBy},
-            </trim>
-        </foreach>
-    </insert>
 
     <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.DictItem">
         UPDATE
@@ -139,18 +113,6 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
-        DELETE FROM <include refid="TableName"/>
-        WHERE id = #{id}
-    </delete>
-
-    <delete id="deleteByIds" parameterType="java.util.List">
-        DELETE FROM <include refid="TableName"/>
-        WHERE id IN
-        <foreach collection="list" open="(" close=")" separator="," item="id">
-            #{id}
-        </foreach>
-    </delete>
 
     <select id="queryById" resultMap="BaseResultMap">
         SELECT <include refid="QueryColumns"/>

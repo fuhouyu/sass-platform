@@ -151,7 +151,7 @@ public class ResourceController {
             @RequestBody
             @Size(min = 1, message = "需要删除的资源不能为空")
             @NotNull(message = "需要删除的资源不能为空") List<Long> ids) {
-        this.resourceService.removeByIds(ids);
+        this.resourceService.deleteByIds(ids);
         return ResponseHelper.success();
     }
 

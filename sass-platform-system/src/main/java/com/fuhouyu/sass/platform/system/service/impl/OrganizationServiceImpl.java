@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -24,6 +26,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import com.fuhouyu.sass.platform.system.enums.response.OrganizationResponseStatusEnums;
@@ -34,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -49,7 +53,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OrganizationServiceImpl implements OrganizationService {
+public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Organizations> implements OrganizationService {
 
     private static final OrganizationsAssembler ORGANIZATIONS_ASSEMBLER = OrganizationsAssembler.INSTANCE;
 
@@ -60,8 +64,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final UserPositionService userPositionService;
 
     @Override
-    public Long save(OrganizationDTO dto) {
-        if (this.checkOrganizationCodeExists(dto.getOrganizationCode())) {
+    public long save(OrganizationDTO dto) {
+        if (Boolean.TRUE.equals(this.checkOrganizationCodeExists(dto.getOrganizationCode()))) {
             throw new ServiceException(OrganizationResponseStatusEnums.ORGANIZATION_CODE_EXISTS);
         }
         long id = snowflakeIdWorker.nextId();
@@ -82,17 +86,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void edit(OrganizationDTO dto) {
         Organizations entity = ORGANIZATIONS_ASSEMBLER.toEntity(dto);
-        this.organizationMapper.update(entity);
+        this.organizationMapper.updateById(entity);
     }
 
-    @Override
-    public int removeById(Long id) {
-        return 0;
-    }
 
     @Override
-    public int removeByIds(Collection<Long> ids) {
-        List<Organizations> organizations = this.organizationMapper.queryByIds(ids);
+    public Integer deleteByIds(Collection<Long> ids) {
+        List<Organizations> organizations = this.organizationMapper.selectByIds(ids);
         if (CollectionUtils.isEmpty(organizations)) {
             return 0;
         }
@@ -116,10 +116,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<OrganizationDTO>> getPageResult() {
-        return p -> ORGANIZATIONS_ASSEMBLER.toDTO(this.organizationMapper.queryList(p));
-    }
+    public PageResultDTO<OrganizationDTO> pageList(OrganizationPageQueryDTO pageQuery) {
+        LambdaQueryWrapper<Organizations> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Organizations::getParentId, pageQuery.getParentId());
+        lambdaQueryWrapper.like(StringUtils.hasText(pageQuery.getOrganizationName()), Organizations::getOrganizationName, pageQuery.getOrganizationName());
 
+        return PageResultDTO.buildPageResult(this.organizationMapper.selectPage(pageQuery, lambdaQueryWrapper), ORGANIZATIONS_ASSEMBLER::toDTO);
+    }
 
     /**
      * 检查编码是否存在

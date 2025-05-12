@@ -146,7 +146,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const next = async () => {
         if (current === 0) {
             await tenantInfoForm.validateFields()
-            setTenantInfo(tenantInfoForm.getFieldsValue());
+            const icon = tenantInfo?.icon
+            setTenantInfo({...tenantInfoForm.getFieldsValue(), icon});
         }
         setCurrent(current + 1);
     };
@@ -185,8 +186,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                                 <S3Upload
                                     isPublic={true}
                                     showUploadList={false}
-
-                                    onUploadSuccess={async (resourceId) => {
+                                    onUploadSuccess={(resourceId) => {
                                         setTenantInfo({...tenantInfo, icon: resourceId})
                                     }}
                                 >

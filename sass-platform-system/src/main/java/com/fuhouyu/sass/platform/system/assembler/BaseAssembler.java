@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.assembler;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public interface BaseAssembler<E extends BaseEntity, T extends BaseDTO> {
      * @param sourceList 实体对象集合
      * @return dto对象集合
      */
-    List<T> toDTO(List<E> sourceList);
+    List<T> toDTO(Collection<E> sourceList);
 
     /**
      * 转换为实体对象
@@ -60,5 +61,5 @@ public interface BaseAssembler<E extends BaseEntity, T extends BaseDTO> {
      * @param sourceList 源始对象集合
      * @return dto对象集合
      */
-    List<E> toEntity(List<T> sourceList);
+    List<E> toEntity(Collection<T> sourceList);
 }

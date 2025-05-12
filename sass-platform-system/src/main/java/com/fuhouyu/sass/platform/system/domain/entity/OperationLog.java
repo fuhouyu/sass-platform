@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serial;
@@ -30,6 +33,7 @@ import java.time.LocalDateTime;
  * @since 2025/3/28 21:25
  */
 @Data
+@TableName("operation_log")
 public class OperationLog implements Serializable {
 
     @Serial
@@ -158,5 +162,6 @@ public class OperationLog implements Serializable {
     /**
      * 所属的租户id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 }

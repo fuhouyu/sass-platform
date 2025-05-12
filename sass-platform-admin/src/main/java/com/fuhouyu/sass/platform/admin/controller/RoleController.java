@@ -107,13 +107,13 @@ public class RoleController {
      * 通过id集合删除数据
      *
      * @param ids ids
-     * @return 影响行数
+     * @return 成功/失败
      */
     @DeleteMapping
     @Operation(summary = "通过id集合删除数据")
     @PreAuthorize("@auth.hasAnyPermission('system:role:delete')")
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
-    public BaseResponse<Integer> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
+    public BaseResponse<Boolean> deleteByIds(@NotEmpty(message = "删除的数据未选择") @RequestBody List<Long> ids) {
         return ResponseHelper.success(this.roleService.removeByIds(ids));
     }
 
@@ -155,7 +155,7 @@ public class RoleController {
     @Operation(summary = "角色列表 不分页")
     @PreAuthorize("@auth.hasAnyPermission('system:role:list')")
     public BaseResponse<List<RoleDTO>> list() {
-        return ResponseHelper.success(this.roleService.list());
+        return ResponseHelper.success(this.roleService.getRoleList());
     }
 
 

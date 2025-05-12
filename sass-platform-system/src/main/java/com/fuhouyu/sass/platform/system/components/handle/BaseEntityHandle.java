@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.components.handle;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
 import org.apache.ibatis.executor.Executor;
@@ -24,6 +25,7 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -37,90 +39,40 @@ import java.util.*;
  * @author fuhouyu
  * @since 2024/9/24 18:25
  */
-@Intercepts(
-        {
-                @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        }
-)
 @Component
-public class BaseEntityHandle implements Interceptor {
+public class BaseEntityHandle implements MetaObjectHandler {
+
+
 
     @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        Object parameter = invocation.getArgs()[1];
-        // 获取 SQL 命令
-        SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
-
-        if (parameter instanceof Map<?, ?> map) {
-            Set<Object> set = new HashSet<>(map.size());
-            map.forEach((k, v) -> {
-                set.add(v);
-            });
-            set.forEach(v -> this.doHandlerParam(v, sqlCommandType));
-        } else {
-            this.doHandlerParam(parameter, sqlCommandType);
-        }
-        return invocation.proceed();
+    public void insertFill(MetaObject metaObject) {
+        LocalDateTime nowTime = LocalDateTime.now();
+        this.strictInsertFill(metaObject, "createdAt", LocalDateTime.class, nowTime);
+        this.strictInsertFill(metaObject, "updatedAt", LocalDateTime.class, nowTime);
+        this.strictInsertFill(metaObject, "isDeleted", Boolean.class, false);
+        this.strictInsertFill(metaObject, "ownerTenantId", Long.class, ContextHolderStrategy.getContext().getUser().getTenantId());
+        this.strictInsertFill(metaObject, "createdBy", String.class, getUsername(metaObject, "createdBy"));
+        this.strictInsertFill(metaObject, "updatedBy", String.class, getUsername(metaObject, "updatedBy"));
     }
 
-    @SuppressWarnings("unchecked")
-    private void doHandlerParam(Object parameter, SqlCommandType sqlCommandType) {
-        if (parameter instanceof List<?> list
-                && list.getFirst() instanceof BaseEntity) {
-            List<? extends BaseEntity> baseDOList = (List<? extends BaseEntity>) parameter;
-            this.doHandlerBaseDO(baseDOList, sqlCommandType);
-        } else if (parameter instanceof BaseEntity baseDO) {
-            this.doHandlerBaseDO(baseDO, sqlCommandType);
-        }
-    }
-
-    private void doHandlerBaseDO(BaseEntity baseDO, SqlCommandType sqlCommandType) {
-        if (sqlCommandType == SqlCommandType.INSERT) {
-            this.onInsert(baseDO);
-        } else {
-            this.onUpdate(baseDO);
-        }
-    }
-
-    private void doHandlerBaseDO(List<? extends BaseEntity> baseDOList, SqlCommandType sqlCommandType) {
-        if (sqlCommandType == SqlCommandType.INSERT) {
-            baseDOList.forEach(this::onInsert);
-        } else {
-            baseDOList.forEach(this::onUpdate);
-        }
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        LocalDateTime nowTime = LocalDateTime.now();
+        this.strictUpdateFill(metaObject, "updatedAt", LocalDateTime.class, nowTime);
+        this.strictUpdateFill(metaObject, "updatedBy", String.class, getUsername(metaObject, "updatedBy"));
     }
 
 
     /**
-     * 创建时更新
-     *
-     * @param baseDO baseDO对象
+     * 获取用户名
+     * @param metaObject metaObject
+     * @param fieldName fieldName
+     * @return 用户名
      */
-    private void onInsert(BaseEntity baseDO) {
-        LocalDateTime nowTime = LocalDateTime.now();
-        baseDO.setCreatedAt(nowTime);
-        baseDO.setUpdatedAt(nowTime);
-        baseDO.setCreatedBy(Objects.isNull(baseDO.getCreatedBy()) ?
-                ContextHolderStrategy.getContext().getUser().getUsername()
-                : baseDO.getCreatedBy()
-        );
-        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
-                ContextHolderStrategy.getContext().getUser().getUsername()
-                : baseDO.getUpdatedBy());
-        baseDO.setIsDeleted(false);
-    }
+    private String getUsername(MetaObject metaObject, String fieldName) {
+        String username = ContextHolderStrategy.getContext().getUser().getUsername();
+        String fieldValue = metaObject.findProperty(fieldName, true);
+        return Objects.isNull(fieldValue) ? username : fieldValue;
 
-    /**
-     * 修改时更新
-     *
-     * @param baseDO baseDO对象
-     */
-    private void onUpdate(BaseEntity baseDO) {
-        LocalDateTime nowTime = LocalDateTime.now();
-        baseDO.setUpdatedAt(nowTime);
-        baseDO.setUpdatedBy(Objects.isNull(baseDO.getUpdatedBy()) ?
-                ContextHolderStrategy.getContext().getUser().getUsername()
-                : baseDO.getUpdatedBy());
     }
 }

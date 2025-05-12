@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,6 +36,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@TableName("admin_users")
 public class AdminUsers extends BaseEntity {
 
     @Serial
@@ -91,6 +95,7 @@ public class AdminUsers extends BaseEntity {
     /**
      * 租户id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 
     /**

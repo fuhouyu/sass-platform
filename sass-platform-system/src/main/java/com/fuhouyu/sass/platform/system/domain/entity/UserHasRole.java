@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,6 +31,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@TableName("user_has_role")
 public class UserHasRole extends BaseEntity {
 
     @Serial

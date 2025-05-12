@@ -50,7 +50,6 @@ module sass.platform.system {
     requires org.hibernate.validator;
     requires org.mapstruct;
     requires org.mybatis;
-    requires pagehelper;
     requires software.amazon.awssdk.core;
     requires software.amazon.awssdk.services.s3;
     requires software.amazon.awssdk.utils;
@@ -66,6 +65,10 @@ module sass.platform.system {
     requires spring.web;
     requires cn.hutool.http;
     requires transmittable.thread.local;
+    requires com.baomidou.mybatis.plus.core;
+    requires com.baomidou.mybatis.plus.spring;
+    requires com.baomidou.mybatis.plus.annotation;
+    requires com.baomidou.mybatis.plus.extension;
 
     exports com.fuhouyu.sass.platform.system.assembler;
     exports com.fuhouyu.sass.platform.system.constants;

@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
@@ -46,7 +47,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
+public class TenantSpaceSpaceServiceImpl extends ServiceImpl<TenantSpaceMapper, TenantSpace> implements TenantSpaceService {
 
     private static final TenantSpaceAssembler TENANT_SPACE_ASSEMBLER = TenantSpaceAssembler.INSTANCE;
 
@@ -60,7 +61,7 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         if (Objects.isNull(tenantSpaceDTO.getTenantId())) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "未选择租户");
         }
-        TenantSpace tenantSpace = this.tenantSpaceMapper.queryById(tenantSpaceDTO.getTenantId());
+        TenantSpace tenantSpace = this.tenantSpaceMapper.selectById(tenantSpaceDTO.getTenantId());
         if (Objects.nonNull(tenantSpace)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM, "当前租户空间已存在");
         }
@@ -85,18 +86,18 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
         if (!Objects.equals(currentTenantSpace.getAcl(), tenantSpaceDTO.getAcl())) {
             this.s3Client.putBucketAcl(builder -> builder.acl(tenantSpaceDTO.getAcl()));
         }
-        this.tenantSpaceMapper.update(TENANT_SPACE_ASSEMBLER.toEntity(tenantSpaceDTO));
+        this.tenantSpaceMapper.updateById(TENANT_SPACE_ASSEMBLER.toEntity(tenantSpaceDTO));
 
     }
 
     @Override
     public TenantSpaceDTO findByTenantId(Long tenantId) {
-        return TENANT_SPACE_ASSEMBLER.toDTO(this.tenantSpaceMapper.queryById(tenantId));
+        return TENANT_SPACE_ASSEMBLER.toDTO(this.tenantSpaceMapper.selectById(tenantId));
     }
 
     @Override
     public TenantSpaceDTO checkExists(Long tenantId) {
-        TenantSpace tenantSpace = this.tenantSpaceMapper.queryById(tenantId);
+        TenantSpace tenantSpace = this.tenantSpaceMapper.selectById(tenantId);
         if (Objects.isNull(tenantSpace)) {
             throw new ServiceException(ResponseStatusEnum.INVALID_PARAM,
                     "当前租户空间不存在");
@@ -111,15 +112,14 @@ public class TenantSpaceSpaceServiceImpl implements TenantSpaceService {
 
     @Override
     public void removeSpaceByTenantIds(Collection<Long> tenantIds) {
-        List<TenantSpace> tenantSpaces = this.tenantSpaceMapper.queryByIds(tenantIds);
+        List<TenantSpace> tenantSpaces = this.tenantSpaceMapper.selectByIds(tenantIds);
         if (CollectionUtils.isEmpty(tenantSpaces)) {
             LoggerUtil.warn(log, "当前租户空间不存在，无需删除，租户id:{}", tenantIds);
         }
 
         this.tenantSpaceMapper.deleteByIds(tenantIds);
-        tenantSpaces.forEach(tenantSpace -> {
-            this.s3Client.deleteBucket(builder -> builder.bucket(tenantSpace.getBucketName()));
-        });
+        tenantSpaces.forEach(tenantSpace ->
+                this.s3Client.deleteBucket(builder -> builder.bucket(tenantSpace.getBucketName())));
     }
 
     @Override

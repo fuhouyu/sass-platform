@@ -15,8 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantSpace;
 
 import java.util.Collection;
 
@@ -28,7 +30,7 @@ import java.util.Collection;
  * @author fuhouyu
  * @since 2025/2/17 21:57
  */
-public interface TenantSpaceService {
+public interface TenantSpaceService extends IService<TenantSpace> {
 
 
     /**

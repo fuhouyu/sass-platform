@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +32,7 @@ import java.util.Set;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface PermissionMapper extends BaseMapper<Long, Permissions> {
+public interface PermissionMapper extends BaseMapper<Permissions> {
 
     /**
      * 通过权限编码查询权限
@@ -40,7 +40,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param permissionCode 权限编码
      * @return 权限do对象
      */
-    @TenantQuery(column = "p.owner_tenant_id")
     Permissions queryByPermissionCode(String permissionCode);
 
     /**
@@ -49,7 +48,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param roleIdList 角色id集合
      * @return 权限集合
      */
-    @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryListByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
 
     /**
@@ -58,7 +56,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param userId   用户id
      * @return 权限列表
      */
-    @TenantQuery(column = "r.owner_tenant_id")
     List<Permissions> queryUserPermissonList(@Param("userId") Long userId);
 
     /**
@@ -67,7 +64,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param parentId 父级id
      * @return 权限集合
      */
-    @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryListByParentId(@Param("parentId") Long parentId);
 
     /**
@@ -107,8 +103,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param id 主键id
      * @return 实体对象
      */
-    @TenantQuery(column = "p.owner_tenant_id")
-    @Override
     Permissions queryById(Long id);
 
     /**
@@ -117,8 +111,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    @TenantQuery(column = "p.owner_tenant_id")
-    @Override
     List<Permissions> queryByIds(@Param("list") Collection<Long> list);
 
     /**
@@ -126,7 +118,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      *
      * @return 权限集合
      */
-    @TenantQuery(column = "p.owner_tenant_id")
     List<Permissions> queryAll();
 
     /**
@@ -145,8 +136,6 @@ public interface PermissionMapper extends BaseMapper<Long, Permissions> {
      * @param <P>       范围查询的类型
      * @return 批量查询
      */
-    @Override
-    @TenantQuery
     <P extends PageQueryDTO> List<Permissions> queryList(@Param("pageQuery") P pageQuery);
 
 }

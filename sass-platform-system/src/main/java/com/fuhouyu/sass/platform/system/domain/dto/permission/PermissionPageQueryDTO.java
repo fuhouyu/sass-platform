@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.permission;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "PermissionPageQueryDTO", description = "权限查询dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PermissionPageQueryDTO extends PageQueryDTO {
+public class PermissionPageQueryDTO extends PageQueryDTO<Permissions> {
 
     @Schema(name = "parentId", description = "父级id")
     private Long parentId;
@@ -41,7 +42,7 @@ public class PermissionPageQueryDTO extends PageQueryDTO {
 
     public PermissionPageQueryDTO() {
         this.parentId = -1L;
-        this.setSortColumn("display_order");
-        this.setIsAsc(true);
+//        this.setSortColumn("display_order");
+//        this.setIsAsc(true);
     }
 }

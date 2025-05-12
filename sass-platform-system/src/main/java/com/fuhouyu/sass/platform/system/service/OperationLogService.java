@@ -37,7 +37,7 @@ public interface OperationLogService {
      * @param operationLogPageQueryDTO 日志查询的dto对象
      * @return 查询的分页对象
      */
-    PageResultDTO<OperationLogDTO> page(OperationLogPageQueryDTO operationLogPageQueryDTO);
+    PageResultDTO<OperationLogDTO> pageList(OperationLogPageQueryDTO operationLogPageQueryDTO);
 
     /**
      * 获取模块列表

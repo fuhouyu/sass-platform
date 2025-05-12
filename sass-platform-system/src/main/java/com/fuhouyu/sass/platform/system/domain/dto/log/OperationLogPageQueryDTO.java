@@ -15,13 +15,16 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.log;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.OperationLog;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -34,7 +37,7 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "OperationLogPageQueryDTO", description = "操作日志分页查询对象")
-public class OperationLogPageQueryDTO extends PageQueryDTO {
+public class OperationLogPageQueryDTO extends PageQueryDTO<OperationLog> {
 
     @Serial
     private static final long serialVersionUID = 8917239879871237513L;
@@ -61,9 +64,6 @@ public class OperationLogPageQueryDTO extends PageQueryDTO {
     private LocalDate endTime;
 
     public OperationLogPageQueryDTO() {
-        super(1, 10);
-        super.setSortColumn("operation_time");
-        super.setIsAsc(false);
-
+        super(List.of(OrderItem.desc("operation_time")));
     }
 }

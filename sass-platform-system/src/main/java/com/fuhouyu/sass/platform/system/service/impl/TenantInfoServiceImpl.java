@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -24,6 +27,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
@@ -36,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -55,7 +60,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TenantInfoServiceImpl implements TenantInfoService {
+public class TenantInfoServiceImpl extends ServiceImpl<TenantInfoMapper, TenantInfo> implements TenantInfoService {
 
     private static final TenantInfoAssembler TENANTS_ASSEMBLER = TenantInfoAssembler.INSTANCE;
 
@@ -82,7 +87,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final ParamConfigService paramConfigService;
 
     @Override
-    public Long save(TenantInfoDTO tenantInfoDTO) {
+    public long save(TenantInfoDTO tenantInfoDTO) {
         TenantInfo existsTenant = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
         if (Objects.nonNull(existsTenant)) {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_CODE_ALREADY_EXISTS);
@@ -97,36 +102,30 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public void edit(TenantInfoDTO tenantInfoDTO) {
-        TenantInfo tenantInfo = tenantInfoMapper.queryByTenantCode(tenantInfoDTO.getTenantCode());
+        TenantInfo tenantInfo = tenantInfoMapper.selectById(tenantInfoDTO.getId());
         if (Objects.isNull(tenantInfo)) {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_NOT_EXISTS);
         }
-        this.tenantInfoMapper.update(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
+        this.tenantInfoMapper.updateById(TENANTS_ASSEMBLER.toEntity(tenantInfoDTO));
     }
 
-    @Override
-    public int removeById(Long id) {
-        int count = this.tenantInfoMapper.deleteById(id);
-        this.doRemoveTenantAttach(List.of(id));
-        return count;
-    }
 
     @Override
-    public int removeByIds(Collection<Long> ids) {
+    public boolean removeByIds(Collection<?> ids) {
+        Collection<Long> tenantIds = ids.stream().map(Long.class::cast).toList();
         Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         if (ids.contains(tenantId)) {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_NO_PERMISSION);
         }
-        this.doRemoveTenantAttach(ids);
-        int count = this.tenantInfoMapper.deleteByIds(ids);
-        this.tenantSpaceService.removeSpaceByTenantIds(ids);
-        return count;
+        this.doRemoveTenantAttach(tenantIds);
+        this.tenantSpaceService.removeSpaceByTenantIds(tenantIds);
+        return super.removeByIds(ids);
 
     }
 
     @Override
     public TenantInfoDTO findById(Long id) {
-        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        TenantInfo tenantInfo = this.tenantInfoMapper.selectById(id);
         if (Objects.isNull(tenantInfo)) {
             return null;
         }
@@ -136,26 +135,21 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<TenantInfoDTO>> getPageResult() {
-        return p -> TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryList(p));
-    }
-
-    @Override
     public TenantInfoDTO findByTenantCode(String tenantCode) {
         return TENANTS_ASSEMBLER.toDTO(this.tenantInfoMapper.queryByTenantCode(tenantCode));
     }
 
     @Override
     public TenantInfoDetailDTO findDetailById(Long id) {
-        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        TenantInfo tenantInfo = this.tenantInfoMapper.selectById(id);
         TenantInfoDetailDTO tenantInfoDetail = TENANTS_ASSEMBLER.toTenantInfoDetail(tenantInfo);
         tenantInfoDetail.setPermissionIds(this.tenantHasPermissionService.findPermissionIdByTenantId(id));
         return tenantInfoDetail;
     }
 
     @Override
-    public Long saveTenantDetail(SaveOrEditTenantInfoDTO tenantInfoDTO) {
-        Long id = this.save(tenantInfoDTO);
+    public long saveTenantDetail(SaveOrEditTenantInfoDTO tenantInfoDTO) {
+        long id = this.save(tenantInfoDTO);
         TenantSpaceDTO tenantSpaceDTO = tenantInfoDTO.getTenantSpace();
         tenantSpaceDTO.setTenantId(id);
         this.tenantSpaceService.saveTenantSpace(tenantSpaceDTO);
@@ -185,7 +179,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public void resetPassword(Long id) {
-        TenantInfo tenantInfo = this.tenantInfoMapper.queryById(id);
+        TenantInfo tenantInfo = this.tenantInfoMapper.selectById(id);
         if (Objects.isNull(tenantInfo)) {
             throw new ServiceException(TenantResponseStatusEnum.TENANT_NOT_EXISTS);
         }
@@ -201,7 +195,15 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             accountDTO.setCredentials(optional.get().getConfigValue());
         }
         accountDTO.encodeCredentials();
-        this.accountService.edit(accountDTO);
+        this.accountService.editAccounts(accountDTO);
+    }
+
+    @Override
+    public PageResultDTO<TenantInfoDTO> pageList(TenantPageQueryDTO pageQueryDTO) {
+        LambdaQueryWrapper<TenantInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(StringUtils.hasText(pageQueryDTO.getTenantName()), TenantInfo::getTenantName, pageQueryDTO.getTenantName());
+
+        return PageResultDTO.buildPageResult(this.tenantInfoMapper.selectPage(pageQueryDTO, lambdaQueryWrapper), TENANTS_ASSEMBLER::toDTO);
     }
 
     /**

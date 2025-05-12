@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserHasRoleMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.UserHasRole" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.UserHasRole" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <result column="role_id" property="roleId" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" jdbcType="BIGINT"/>
     </resultMap>

@@ -15,8 +15,12 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 
 import java.util.Collection;
 
@@ -28,7 +32,7 @@ import java.util.Collection;
  * @author fuhouyu
  * @since 2024/10/5 19:17
  */
-public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
+public interface AdminUserService extends IService<AdminUsers> {
 
     /**
      * 保存用户详情
@@ -36,7 +40,7 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param userDTO 用户dto对象
      * @return 主键id
      */
-    Long saveUser(AdminUserDetailDTO userDTO);
+    long saveUser(AdminUserDetailDTO userDTO);
 
     /**
      * 通过用户名称查询
@@ -69,6 +73,13 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
     void editUser(AdminUserDetailDTO userDTO);
 
     /**
+     * 修改用户
+     *
+     * @param userDTO 用户dto对象
+     */
+    void edit(AdminUserDTO userDTO);
+
+    /**
      * 通过租户ids，删除当前租户下的所有账号
      *
      * @param tenantIds 租户ids
@@ -91,4 +102,20 @@ public interface AdminUserService extends BaseService<Long, AdminUserDTO> {
      * @param enabled true 启用 false 禁用
      */
     void editUserStatus(Long id, Boolean enabled);
+
+    /**
+     * 通过主键查询用户详情
+     *
+     * @param id 主键id
+     * @return 用户详情dto
+     */
+    AdminUserDTO findById(Long id);
+
+    /**
+     * 分页查询用户
+     *
+     * @param pageQueryDTO 分页查询对象
+     * @return 分页查询结果
+     */
+    PageResultDTO<AdminUserDTO> pageList(AdminUserPageQueryDTO pageQueryDTO);
 }

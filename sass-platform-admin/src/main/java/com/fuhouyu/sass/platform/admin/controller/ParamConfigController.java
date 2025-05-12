@@ -127,8 +127,7 @@ public class ParamConfigController {
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Boolean> deleteTenantInfo(@RequestBody @NotEmpty(message = "未选择需要删除的参数配置")
                                                   List<Long> ids) {
-        int count = this.paramConfigService.removeByIds(ids);
-        return ResponseHelper.success(count > 0);
+        return ResponseHelper.success(this.paramConfigService.removeByIds(ids));
     }
 
 

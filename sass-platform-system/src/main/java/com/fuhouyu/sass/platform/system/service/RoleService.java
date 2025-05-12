@@ -15,7 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.role.RolePageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Roles;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +32,31 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 20:47
  */
-public interface RoleService extends BaseService<Long, RoleDTO> {
+public interface RoleService extends IService<Roles> {
+
+    /**
+     * 创建角色
+     *
+     * @param roleDTO 角色dto对象
+     * @return 角色id
+     */
+    long save(RoleDTO roleDTO);
+
+
+    /**
+     * 修改角色
+     *
+     * @param roleDTO 角色dto对象
+     */
+    void edit(RoleDTO roleDTO);
+
+    /**
+     * 通过id获取角色
+     *
+     * @param id 主键id
+     * @return 角色dto对象
+     */
+    RoleDTO findById(Long id);
 
     /**
      * 通过角色编码获取角色
@@ -52,7 +80,7 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      *
      * @return 角色列表
      */
-    List<RoleDTO> list();
+    List<RoleDTO> getRoleList();
 
     /**
      * 删除租户下所有的权限
@@ -76,4 +104,12 @@ public interface RoleService extends BaseService<Long, RoleDTO> {
      * @param roleDTO 角色dto对象
      */
     void editStatus(RoleDTO roleDTO);
+
+    /**
+     * 分页查询
+     *
+     * @param pageQueryDTO 分页查询对象
+     * @return 分页查询集合
+     */
+    PageResultDTO<RoleDTO> pageList(RolePageQueryDTO pageQueryDTO);
 }

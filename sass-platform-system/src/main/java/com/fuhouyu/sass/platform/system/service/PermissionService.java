@@ -16,8 +16,12 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -31,7 +35,39 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 17:12
  */
-public interface PermissionService extends BaseService<Long, PermissionDTO> {
+public interface PermissionService extends IService<Permissions> {
+
+
+    /**
+     * 新增权限
+     * @param permissionDTO 权限dto对象
+     * @return 主键id
+     */
+    long save(PermissionDTO permissionDTO);
+
+    /**
+     * 编辑权限
+     * @param permissionDTO 权限dto对象
+     */
+    void edit(PermissionDTO permissionDTO);
+
+
+    /**
+     * 删除权限
+     *
+     * @param ids 主键ids
+     * @return 删除数量
+     */
+    int deleteByIds(Collection<Long> ids);
+
+
+    /**
+     * 通过id查询
+     *
+     * @param id id
+     * @return 权限dto对象
+     */
+    PermissionDTO findById(Long id);
 
 
     /**
@@ -112,4 +148,12 @@ public interface PermissionService extends BaseService<Long, PermissionDTO> {
      * @param tenantId 租户id
      */
     void removePermissionForTenant(Collection<Long> ids, Long tenantId);
+
+    /**
+     * 分页查询权限列表
+     *
+     * @param queryDTO 查询参数
+     * @return 分页结果
+     */
+    PageResultDTO<PermissionDTO> pageList(PermissionPageQueryDTO queryDTO);
 }

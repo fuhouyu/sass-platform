@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,6 +33,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@TableName("resources")
 public class Resources extends BaseEntity {
 
     @Serial
@@ -88,6 +92,7 @@ public class Resources extends BaseEntity {
     /**
      * 租户id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 
     /**

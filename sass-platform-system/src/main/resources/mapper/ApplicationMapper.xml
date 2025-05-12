@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.ApplicationMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Applications" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Applications" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <result column="client_id" property="clientId"/>
         <result column="client_secret" property="clientSecret"/>
         <result column="client_name" property="clientName"/>
@@ -113,38 +113,6 @@
         </trim>
     </insert>
 
-    <insert id="insertBatch" parameterType="java.util.List" >
-        INSERT INTO
-        <include refid="TableName"/>
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="InsertColumns"/>
-        </trim>
-        VALUES
-        <foreach collection="list" separator="," item="entity">
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{entity.clientId},
-                #{entity.clientSecret},
-                #{entity.clientName},
-                #{entity.icon},
-                #{entity.remark},
-                #{entity.redirectUris},
-                #{entity.scopes},
-                #{entity.grantTypes},
-                #{entity.accessTokenValidity},
-                #{entity.refreshTokenValidity},
-                #{entity.published},
-                #{entity.ipWhitelist},
-                #{entity.isEnabled},
-                #{entity.isDeleted},
-                #{entity.ownerTenantId},
-                #{entity.createdAt},
-                #{entity.createdBy},
-                #{entity.updatedAt},
-                #{entity.updatedBy}
-            </trim>
-        </foreach>
-    </insert>
-
     <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Users">
         UPDATE
         <include refid="TableName"/>
@@ -189,46 +157,5 @@
         updated_by = #{updatedBy}
         WHERE client_id  = #{clientId}
     </update>
-
-    <delete id="deleteById" parameterType="java.lang.Long">
-        DELETE FROM <include refid="TableName"/>
-        WHERE client_id  = #{id}
-    </delete>
-
-    <delete id="deleteByIds" parameterType="java.util.Set">
-        DELETE FROM <include refid="TableName"/>
-        WHERE client_id IN
-        <foreach collection="list" open="(" close=")" separator="," item="id">
-            #{id}
-        </foreach>
-    </delete>
-
-    <select id="queryById" resultMap="BaseResultMap">
-        SELECT <include refid="QueryAllColumns"/>
-        FROM <include refid="TableName"/> a
-        WHERE a.client_id  = #{clientId}
-    </select>
-
-
-    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="QueryAllColumns"/>
-        FROM <include refid="TableName"/> a
-        WHERE a.client_id IN
-        <foreach collection="list" open="(" close=")" separator="," item="id">
-            #{id}
-        </foreach>
-    </select>
-
-    <select id="queryList" resultMap="BaseResultMap" >
-        SELECT
-        <include refid="QueryAllColumns"/>
-        FROM
-        <include refid="TableName"/> a
-        <where>
-            <if test="pageQuery.clientName != null and pageQuery.clientName != ''">
-                client_name LIKE CONCAT('%', #{pageQuery.clientName}, '%')
-            </if>
-        </where>
-    </select>
 
 </mapper>

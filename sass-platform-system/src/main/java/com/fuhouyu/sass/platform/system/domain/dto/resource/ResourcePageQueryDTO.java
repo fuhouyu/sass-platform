@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.resource;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +34,7 @@ import java.io.Serial;
 @Schema(name = "ResourcePageQueryDTO", description = "资源查询dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ResourcePageQueryDTO extends PageQueryDTO {
+public class ResourcePageQueryDTO extends PageQueryDTO<Resources> {
 
     @Serial
     private static final long serialVersionUID = 8971293667152375871L;

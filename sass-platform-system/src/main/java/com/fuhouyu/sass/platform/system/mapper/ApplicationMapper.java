@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.Applications;
 
 /**
@@ -25,6 +26,6 @@ import com.fuhouyu.sass.platform.system.domain.entity.Applications;
  * @author fuhouyu
  * @since 2025/4/9 19:57
  */
-public interface ApplicationMapper extends BaseMapper<String, Applications> {
+public interface ApplicationMapper extends BaseMapper<Applications> {
 
 }

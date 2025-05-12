@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Roles;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface RoleMapper extends BaseMapper<Long, Roles> {
+public interface RoleMapper extends BaseMapper<Roles> {
 
     /**
      * 通过角色编码查询出角色对象
@@ -40,7 +40,6 @@ public interface RoleMapper extends BaseMapper<Long, Roles> {
      * @param roleCode 角色编码
      * @return 角色do对象
      */
-    @TenantQuery
     Roles queryByRoleCode(String roleCode);
 
     /**
@@ -49,8 +48,6 @@ public interface RoleMapper extends BaseMapper<Long, Roles> {
      * @param id 主键id
      * @return 实体对象
      */
-    @TenantQuery
-    @Override
     Roles queryById(Long id);
 
     /**
@@ -59,20 +56,7 @@ public interface RoleMapper extends BaseMapper<Long, Roles> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    @TenantQuery
-    @Override
     List<Roles> queryByIds(@Param("list") Collection<Long> list);
-
-    /**
-     * 批量查询
-     *
-     * @param pageQuery 分页查询对象
-     * @param <P>       范围查询的类型
-     * @return 批量查询
-     */
-    @TenantQuery
-    @Override
-    <P extends PageQueryDTO> List<Roles> queryList(@Param("pageQuery") P pageQuery);
 
     /**
      * 通过租户id进行删除

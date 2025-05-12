@@ -38,7 +38,7 @@ export interface S3UploadProps extends UploadProps {
     onUploadSuccess?: (resourceId: string) => void;
 
     /**
-     * 显示上传悬浮按钮
+     * 显示上传列表
      */
-    showUploadFloatButton?: boolean;
+    showUploadList?: boolean;
 }

@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.entity.UserHasRole;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/1/13 22:03
  */
-public interface UserHasRoleService {
+public interface UserHasRoleService extends IService<UserHasRole> {
 
 
     /**

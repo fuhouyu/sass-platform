@@ -15,7 +15,12 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.DictItem;
 
 import java.util.List;
 import java.util.Map;
@@ -28,8 +33,40 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/12/15 18:27
  */
-public interface DictItemService extends BaseService<Long, DictItemDTO> {
+public interface DictItemService extends IService<DictItem> {
 
+
+    /**
+     * 保存字典项
+     *
+     * @param dictItemDTO 字典项DTO
+     * @return 字典项ID
+     */
+    long save(DictItemDTO dictItemDTO);
+
+    /**
+     * 修改字典项
+     *
+     * @param dictItemDTO 字典项DTO
+     */
+    void edit(DictItemDTO dictItemDTO);
+
+
+    /**
+     * 通过ID查询字典项
+     *
+     * @param id 字典项ID
+     */
+    DictItemDTO findById(Long id);
+
+
+    /**
+     * 分页查询字典项列表
+     *
+     * @param queryDTO 字典项分页查询DTO
+     * @return 字典项分页列表
+     */
+    PageResultDTO<DictItemDTO> pageList(DictItemPageQueryDTO queryDTO);
 
     /**
      * 检查字典项编码是否存在

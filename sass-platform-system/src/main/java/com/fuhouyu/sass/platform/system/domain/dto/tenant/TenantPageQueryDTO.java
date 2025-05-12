@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.tenant;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "TenantPageQueryDTO", description = "租户分页查询的dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TenantPageQueryDTO extends PageQueryDTO {
+public class TenantPageQueryDTO extends PageQueryDTO<TenantInfo> {
 
     @Schema(name = "tenantName", description = "租户名称模糊查询")
     private String tenantName;

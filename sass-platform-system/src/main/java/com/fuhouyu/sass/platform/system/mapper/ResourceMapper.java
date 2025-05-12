@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourceDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.ResourcePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/2/17 21:27
  */
-public interface ResourceMapper extends BaseMapper<Long, Resources> {
+public interface ResourceMapper extends BaseMapper<Resources> {
 
 
     /**
@@ -41,7 +41,6 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      * @param etag etag
      * @return 资源对象
      */
-    @TenantQuery
     Resources queryByEtag(@Param("etag") String etag);
 
     /**
@@ -50,7 +49,6 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      * @param pageQuery 分页查询对象
      * @return 批量查询
      */
-    @TenantQuery
     List<Resources> queryList(@Param("pageQuery") ResourcePageQueryDTO pageQuery);
 
     /**
@@ -59,7 +57,6 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      * @param objectKey 对象key
      * @return 资源
      */
-    @TenantQuery
     Resources queryByObjectKey(@Param("objectKey") String objectKey);
 
     /**
@@ -68,7 +65,6 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      * @param prefixList 前缀集合
      * @return 资源集合
      */
-    @TenantQuery
     List<Resources> queryByPrefixList(@Param("prefixList") Collection<String> prefixList);
 
     /**
@@ -76,7 +72,6 @@ public interface ResourceMapper extends BaseMapper<Long, Resources> {
      *
      * @return 资源总数
      */
-    @TenantQuery
     Integer countObjects();
 
     /**

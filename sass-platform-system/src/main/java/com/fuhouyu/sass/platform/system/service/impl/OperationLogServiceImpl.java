@@ -17,6 +17,7 @@ package com.fuhouyu.sass.platform.system.service.impl;
 
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
@@ -30,8 +31,6 @@ import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.OperationLog;
 import com.fuhouyu.sass.platform.system.mapper.OperationLogMapper;
 import com.fuhouyu.sass.platform.system.service.OperationLogService;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -93,20 +92,18 @@ public class OperationLogServiceImpl implements OperationLogService, LogRecordSt
     }
 
     @Override
-    public PageResultDTO<OperationLogDTO> page(OperationLogPageQueryDTO operationLogPageQueryDTO) {
-        try (Page<Object> page = PageMethod.startPage(operationLogPageQueryDTO.getPageNum(), operationLogPageQueryDTO.getPageSize())) {
-            page.setUnsafeOrderBy(operationLogPageQueryDTO.getOrderBy());
-            List<OperationLog> operationLogs = this.operationLogMapper.queryList(operationLogPageQueryDTO);
-            List<OperationLogDTO> list = operationLogs.stream()
-                    .map(log -> {
-                        OperationLogDTO dto = new OperationLogDTO();
-                        BeanUtils.copyProperties(log, dto);
-                        return dto;
-                    }).toList();
-            return new PageResultDTO<>(page.getPageNum(),
-                    page.getPageSize(), page.getTotal(),
-                    list);
-        }
+    public PageResultDTO<OperationLogDTO> pageList(OperationLogPageQueryDTO operationLogPageQueryDTO) {
+        IPage<OperationLog> operationLogPage = this.operationLogMapper.queryList(operationLogPageQueryDTO);
+        List<OperationLog> operationLogs = operationLogPage.getRecords();
+        List<OperationLogDTO> list = operationLogs.stream()
+                .map(log -> {
+                    OperationLogDTO dto = new OperationLogDTO();
+                    BeanUtils.copyProperties(log, dto);
+                    return dto;
+                }).toList();
+        return new PageResultDTO<>(operationLogPageQueryDTO.getPageNum(),
+                operationLogPageQueryDTO.getPageSize(), operationLogPageQueryDTO.getTotal(),
+                list);
     }
 
     @Override

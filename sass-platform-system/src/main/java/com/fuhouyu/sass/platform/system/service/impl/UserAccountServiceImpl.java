@@ -150,7 +150,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         accountDTO.setUserId(userId);
         accountDTO.setRefAccountId(thirdPartyUserId);
         accountDTO.setIsEnabled(true);
-        this.accountService.save(accountDTO);
+        this.accountService.saveAccounts(accountDTO);
         cacheService.delete(CacheConstant.USER_BIND_TOKEN + thirdPartyBindPlatformDTO.getTemporaryToken());
         return userTokenDTO;
 

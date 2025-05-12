@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.UserHasRole;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,14 +30,8 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/1/13 22:05
  */
-public interface UserHasRoleMapper {
+public interface UserHasRoleMapper extends BaseMapper<UserHasRole> {
 
-    /**
-     * 插入用户角色
-     *
-     * @param userHasRole 用户角色对象
-     */
-    void insert(UserHasRole userHasRole);
 
     /**
      * 批量插入用户角色
@@ -59,6 +53,5 @@ public interface UserHasRoleMapper {
      * @param userId 用户id
      * @return 角色id
      */
-    @TenantQuery(column = "r.owner_tenant_id")
     List<Long> queryRoleIdsByUserId(@Param("userId") Long userId);
 }

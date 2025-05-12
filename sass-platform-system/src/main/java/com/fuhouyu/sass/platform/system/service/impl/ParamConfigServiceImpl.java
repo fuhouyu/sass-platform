@@ -15,16 +15,21 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ParamConfigAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
 import com.fuhouyu.sass.platform.system.mapper.ParamConfigMapper;
 import com.fuhouyu.sass.platform.system.service.ParamConfigService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +47,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ParamConfigServiceImpl implements ParamConfigService {
+public class ParamConfigServiceImpl extends ServiceImpl<ParamConfigMapper, ParamConfigs> implements ParamConfigService {
 
     private static final ParamConfigAssembler PARAM_CONFIG_ASSEMBLER = ParamConfigAssembler.INSTANCE;
 
@@ -51,7 +56,7 @@ public class ParamConfigServiceImpl implements ParamConfigService {
     private final SnowflakeIdWorker snowflakeIdWorker;
 
     @Override
-    public Long save(ParamConfigDTO dto) {
+    public long save(ParamConfigDTO dto) {
         this.checkConfigKeyExists(dto.getConfigKey());
         ParamConfigs entity = PARAM_CONFIG_ASSEMBLER.toEntity(dto);
         long id = snowflakeIdWorker.nextId();
@@ -62,28 +67,15 @@ public class ParamConfigServiceImpl implements ParamConfigService {
 
     @Override
     public void edit(ParamConfigDTO dto) {
-        this.paramConfigMapper.update(PARAM_CONFIG_ASSEMBLER.toEntity(dto));
+        this.paramConfigMapper.updateById(PARAM_CONFIG_ASSEMBLER.toEntity(dto));
     }
 
-    @Override
-    public int removeById(Long id) {
-        return this.paramConfigMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
-        return this.paramConfigMapper.deleteByIds(ids);
-    }
 
     @Override
     public ParamConfigDTO findById(Long id) {
-        return PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.queryById(id));
+        return PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.selectById(id));
     }
 
-    @Override
-    public Function<PageQueryDTO, List<ParamConfigDTO>> getPageResult() {
-        return p -> PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.queryList(p));
-    }
 
     @Override
     public Boolean checkConfigKeyExists(String configKey) {
@@ -93,5 +85,15 @@ public class ParamConfigServiceImpl implements ParamConfigService {
     @Override
     public List<ParamConfigDTO> findListByGroupKey(String groupKey) {
         return PARAM_CONFIG_ASSEMBLER.toDTO(this.paramConfigMapper.queryByGroupKey(groupKey));
+    }
+
+
+    @Override
+    public PageResultDTO<ParamConfigDTO> pageList(ParamConfigPageQueryDTO queryDTO) {
+        LambdaQueryWrapper<ParamConfigs> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(StringUtils.hasText(queryDTO.getGroupKey()), ParamConfigs::getGroupKey, queryDTO.getGroupKey());
+        lambdaQueryWrapper.like(StringUtils.hasText(queryDTO.getConfigName()), ParamConfigs::getConfigName, queryDTO.getConfigName());
+        lambdaQueryWrapper.like(StringUtils.hasText(queryDTO.getConfigKey()), ParamConfigs::getConfigKey, queryDTO.getConfigKey());
+        return PageResultDTO.buildPageResult(this.paramConfigMapper.selectPage(queryDTO, lambdaQueryWrapper), PARAM_CONFIG_ASSEMBLER::toDTO);
     }
 }

@@ -15,7 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.config.ParamConfigPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
 
 import java.util.List;
 
@@ -27,7 +31,34 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/4/2 23:12
  */
-public interface ParamConfigService extends BaseService<Long, ParamConfigDTO> {
+public interface ParamConfigService extends IService<ParamConfigs> {
+
+    /**
+     * 保存参数配置
+     * @param dto 参数dto对象
+     * @return 主键id
+     */
+    long save(ParamConfigDTO dto);
+
+    /**
+     * 编辑参数配置
+     * @param dto  参数dto对象
+     */
+    void edit(ParamConfigDTO dto);
+
+    /**
+     * 通过主键id查询参数配置
+     * @param id 主键id
+     * @return 参数配置dto
+     */
+    ParamConfigDTO findById(Long id);
+
+    /**
+     * 分页查询对象
+     * @param queryDTO 查询的对象
+     * @return 分页结果
+     */
+    PageResultDTO<ParamConfigDTO> pageList(ParamConfigPageQueryDTO queryDTO);
 
 
     /**

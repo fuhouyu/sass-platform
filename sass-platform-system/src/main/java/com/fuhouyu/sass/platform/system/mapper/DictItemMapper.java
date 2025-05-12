@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictItem;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface DictItemMapper extends BaseMapper<Long, DictItem> {
+public interface DictItemMapper extends BaseMapper<DictItem> {
 
     /**
      * 通过字典项编码查询出字典项对象
@@ -41,7 +41,6 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param itemCode 字典项编码
      * @return 字典项dto对象
      */
-    @TenantQuery
     DictItem queryByDictCodeAndItemCode(@Param("dictCode") String dictCode,
                                         @Param("itemCode") String itemCode);
 
@@ -51,7 +50,6 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param dictCodeList 字典编码列表
      * @return 字典项列表
      */
-    @TenantQuery
     List<DictItem> queryListByDictCodes(@Param("dictCodeList") Collection<String> dictCodeList);
 
     /**
@@ -60,8 +58,6 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param id 主键id
      * @return 实体对象
      */
-    @TenantQuery
-    @Override
     DictItem queryById(Long id);
 
     /**
@@ -70,8 +66,6 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    @TenantQuery
-    @Override
     List<DictItem> queryByIds(@Param("list") Collection<Long> list);
 
 
@@ -82,7 +76,5 @@ public interface DictItemMapper extends BaseMapper<Long, DictItem> {
      * @param <P>       范围查询的类型
      * @return 批量查询
      */
-    @TenantQuery
-    @Override
     <P extends PageQueryDTO> List<DictItem> queryList(@Param("pageQuery") P pageQuery);
 }

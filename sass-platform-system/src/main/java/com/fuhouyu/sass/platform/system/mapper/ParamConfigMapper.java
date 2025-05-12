@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/4/2 22:39
  */
-public interface ParamConfigMapper extends BaseMapper<Long, ParamConfigs> {
+public interface ParamConfigMapper extends BaseMapper<ParamConfigs> {
 
     /**
      * 通过配置key查询出参数配置

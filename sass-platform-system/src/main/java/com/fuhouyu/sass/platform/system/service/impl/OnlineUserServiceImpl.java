@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -54,37 +54,26 @@ public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
     public PageResultDTO<LoginUserDetailDTO> onlineUserList(OnlineUserPageQueryDTO onlineUserPageQueryDTO) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         Set<String> keys = this.tokenStore.getTokens();
         if (CollectionUtils.isEmpty(keys)) {
-            return new PageResultDTO<>(0, 0, 0L);
+            return new PageResultDTO<>(0L, 0L, 0L);
         }
         LoggerUtil.info(log, "当前在线用户数量:{}", keys.size());
-        List<LoginUserDetailDTO> loginUserDetailList = new ArrayList<>(onlineUserPageQueryDTO.getPageSize());
-        LocalDateTime startTime = onlineUserPageQueryDTO.getStartTime();
-        LocalDateTime endTime = onlineUserPageQueryDTO.getEndTime();
-        String account = onlineUserPageQueryDTO.getLoginAccount();
+        int pageSize = Math.toIntExact(onlineUserPageQueryDTO.getPageSize());
+        List<LoginUserDetailDTO> loginUserDetailList = new ArrayList<>(pageSize);
         for (String key : keys) {
 
             UserAccountAuthenticationToken authentication = (UserAccountAuthenticationToken) this.tokenStore.readAuthentication(key);
             LoginUserDetailDTO loginUserDetails = authentication.getLoginUserDetails();
+            if (!checkLoginUserDetailDTO(loginUserDetails, onlineUserPageQueryDTO)) {
+                continue;
+            }
             loginUserDetails.setAccessToken(key);
-            if (!Objects.equals(loginUserDetails.getLoginTenantId(), tenantId)) {
-                continue;
-            }
-            if (Objects.nonNull(startTime) && startTime.isBefore(loginUserDetails.getLoginTime())) {
-                continue;
-            }
-            if (Objects.nonNull(endTime) && endTime.isAfter(loginUserDetails.getLoginTime())) {
-                continue;
-            }
-            if (StringUtils.hasText(account) && !loginUserDetails.getLoginAccount().contains(account)) {
-                continue;
-            }
             loginUserDetailList.add(loginUserDetails);
         }
         loginUserDetailList.sort((o1, o2) -> o2.getLoginTime().compareTo(o1.getLoginTime()));
-        List<LoginUserDetailDTO> records = CollUtil.page((ObjUtil.defaultIfNull(onlineUserPageQueryDTO.getPageNum(), 1) - 1), onlineUserPageQueryDTO.getPageSize(), loginUserDetailList);
+        int pageNum = Math.toIntExact(onlineUserPageQueryDTO.getPageNum());
+        List<LoginUserDetailDTO> records = CollUtil.page(ObjectUtil.defaultIfNull(pageNum, 1) - 1, pageSize, loginUserDetailList);
         return new PageResultDTO<>(onlineUserPageQueryDTO.getPageNum(), onlineUserPageQueryDTO.getPageSize(),
                 (long) keys.size(), records);
     }
@@ -94,5 +83,28 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         for (String sessionId : sessionIds) {
             this.tokenStore.removeAuth2Token(sessionId);
         }
+    }
+
+    /**
+     * 校验登录用户详情
+     * @param loginUserDetails 登录用户详情
+     * @param onlineUserPageQueryDTO 在线用户分页查询
+     * @return true 校验通过 false 校验不通过
+     */
+    private boolean checkLoginUserDetailDTO(LoginUserDetailDTO loginUserDetails, OnlineUserPageQueryDTO onlineUserPageQueryDTO) {
+        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        if (!Objects.equals(loginUserDetails.getLoginTenantId(), tenantId)) {
+            return false;
+        }
+        LocalDateTime startTime = onlineUserPageQueryDTO.getStartTime();
+        if (Objects.nonNull(startTime) && startTime.isBefore(loginUserDetails.getLoginTime())) {
+            return false;
+        }
+        LocalDateTime endTime = onlineUserPageQueryDTO.getEndTime();
+        if (Objects.nonNull(endTime) && endTime.isAfter(loginUserDetails.getLoginTime())) {
+            return false;
+        }
+        String account = onlineUserPageQueryDTO.getLoginAccount();
+        return !StringUtils.hasText(account) || loginUserDetails.getLoginAccount().contains(account);
     }
 }

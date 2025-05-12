@@ -507,7 +507,6 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
                                 fileList={iconFiles}
                                 accept={'image/*'}
                                 maxCount={1}
-                                showUploadList
                                 onUploadSuccess={async (resourceId) => {
                                     setIconFiles([{
                                         uid: resourceId,

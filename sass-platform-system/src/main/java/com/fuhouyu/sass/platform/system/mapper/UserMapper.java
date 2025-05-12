@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.Users;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,7 +29,7 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2025/3/10 17:34
  */
-public interface UserMapper extends BaseMapper<Long, Users> {
+public interface UserMapper extends BaseMapper<Users> {
 
 
     /**

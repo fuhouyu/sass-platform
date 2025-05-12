@@ -15,9 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.organization.OrganizationTreeDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +34,47 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/1/4 22:27
  */
-public interface OrganizationService extends BaseService<Long, OrganizationDTO> {
+public interface OrganizationService extends IService<Organizations> {
+
+
+    /**
+     * 保存组织信息
+     *
+     * @param dto 组织信息
+     * @return 组织id
+     */
+    long save(OrganizationDTO dto);
+
+    /**
+     * 修改组织信息
+     *
+     * @param dto 组织信息
+     */
+    void edit(OrganizationDTO dto);
+
+    /**
+     * 批量删除组织信息
+     * @param ids ids
+     * 批量删除组织信息
+     */
+    Integer deleteByIds(Collection<Long> ids);
+
+
+    /**
+     * 通过id获取组织信息
+     *
+     * @param id 组织id
+     * @return 组织信息
+     */
+    OrganizationDTO findById(Long id);
+
+    /**
+     * 分页查询组织信息
+     *
+     * @param pageQuery 分页查询条件
+     * @return 组织分页信息
+     */
+    PageResultDTO<OrganizationDTO> pageList(OrganizationPageQueryDTO pageQuery);
 
     /**
      * 检查组织编码是否存在

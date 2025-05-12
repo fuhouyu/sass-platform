@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.UserPositions;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,14 +30,8 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/1/11 18:21
  */
-public interface UserPositionMapper {
+public interface UserPositionMapper extends BaseMapper<UserPositions> {
 
-    /**
-     * 插入用户职位
-     *
-     * @param userPositions 用户职位对象
-     */
-    void insert(UserPositions userPositions);
 
     /**
      * 批量插入用户职位

@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.application;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Applications;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Schema(name = "ApplicationPageQueryDTO", description = "应用分页查询对象")
 @EqualsAndHashCode(callSuper = true)
-public class ApplicationPageQueryDTO extends PageQueryDTO {
+public class ApplicationPageQueryDTO extends PageQueryDTO<Applications> {
 
     @Schema(name = "clientName", description = "客户端名称")
     private String clientName;

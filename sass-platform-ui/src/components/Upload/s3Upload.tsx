@@ -35,7 +35,7 @@ const loadAwsSdk = async () => {
     return {S3Client, Upload, ChecksumAlgorithm};
 };
 export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
-    const {prefix, isPublic, children, showUploadFloatButton, onUploadSuccess} = uploadProps;
+    const {prefix, isPublic, children, showUploadList, onUploadSuccess} = uploadProps;
     const {t} = useTranslation();
     const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
     const [totalProgress, setTotalProgress] = React.useState(0);
@@ -83,7 +83,8 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath === '' ? file.name : file.webkitRelativePath];
         const abortController = new AbortController();
-        if (showUploadFloatButton) {
+        console.log(showUploadList)
+        if (showUploadList) {
             storeUploadFiles({
                 id: file.uid,
                 name: file.name,
@@ -114,7 +115,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
             }
             setTotalProgress(percentage);
             const status = percentage === 100 ? 'success' : 'uploading';
-            if (showUploadFloatButton) {
+            if (showUploadList) {
                 storeUploadFiles({
                     id: file.uid,
                     name: file.name,

@@ -60,7 +60,7 @@ public class OperationLogController {
     @Operation(summary = "查询操作日志")
     @PreAuthorize("@auth.hasAnyPermission('system:operation-log:list')")
     public BaseResponse<PageResultDTO<OperationLogDTO>> page(OperationLogPageQueryDTO operationLogPageQueryDTO) {
-        return ResponseHelper.success(this.operationLogService.page(operationLogPageQueryDTO));
+        return ResponseHelper.success(this.operationLogService.pageList(operationLogPageQueryDTO));
     }
 
     /**
