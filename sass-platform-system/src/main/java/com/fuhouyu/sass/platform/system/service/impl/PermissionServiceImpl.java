@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.user.User;
@@ -22,7 +24,9 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.common.utils.TreeConvertUtil;
 import com.fuhouyu.sass.platform.system.assembler.PermissionAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.permission.PermissionTreeDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Permissions;
 import com.fuhouyu.sass.platform.system.enums.response.PermissionResponseStatusEnum;
@@ -35,6 +39,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -51,7 +56,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PermissionServiceImpl implements PermissionService {
+public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permissions> implements PermissionService {
 
     private static final PermissionAssembler PERMISSION_ASSEMBLER = PermissionAssembler.INSTANCE;
 
@@ -76,7 +81,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Long save(PermissionDTO dto) {
+    public long save(PermissionDTO dto) {
         long id = snowflakeIdWorker.nextId();
         String permissionCode = dto.getPermissionCode();
         Permissions permissions = this.permissionMapper.queryByPermissionCode(permissionCode);
@@ -96,30 +101,14 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
 
-    @Override
-    public void saveBatch(List<PermissionDTO> dtoList) {
-        if (CollectionUtils.isEmpty(dtoList)) {
-            return;
-        }
-        List<Permissions> list = dtoList.stream().map(dto -> {
-            dto.setId(snowflakeIdWorker.nextId());
-            return PERMISSION_ASSEMBLER.toEntity(dto);
-        }).toList();
-        this.permissionMapper.insertBatch(list);
-    }
 
     @Override
     public void edit(PermissionDTO dto) {
-        this.permissionMapper.update(PERMISSION_ASSEMBLER.toEntity(dto));
+        this.permissionMapper.updateById(PERMISSION_ASSEMBLER.toEntity(dto));
     }
 
     @Override
-    public int removeById(Long id) {
-        return this.removeByIds(List.of(id));
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
+    public int deleteByIds(Collection<Long> ids) {
         List<Permissions> permissionsList = this.permissionMapper.queryByIds(ids);
         if (CollectionUtils.isEmpty(permissionsList)) {
             return 0;
@@ -152,10 +141,6 @@ public class PermissionServiceImpl implements PermissionService {
         return PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryById(id));
     }
 
-    @Override
-    public Function<PageQueryDTO, List<PermissionDTO>> getPageResult() {
-        return p -> PERMISSION_ASSEMBLER.toDTO(this.permissionMapper.queryList(p));
-    }
 
     @Override
     public List<PermissionDTO> getPermissionList(Long parentId) {
@@ -197,7 +182,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<Long> copyPermissionToTenant(List<PermissionDTO> sourcePermissionList, Long tenantId) {
         if (CollectionUtils.isEmpty(sourcePermissionList)) {
-            return null;
+            return Collections.emptyList();
         }
         // 映射 oldId -> newId
         Map<Long, Long> idMap = new HashMap<>();
@@ -225,7 +210,7 @@ public class PermissionServiceImpl implements PermissionService {
             targetPermissionList.add(entity);
         }
 
-        this.permissionMapper.insertBatch(targetPermissionList);
+        this.permissionMapper.insert(targetPermissionList);
         return targetPermissionList.stream().map(Permissions::getId).toList();
     }
 
@@ -244,6 +229,14 @@ public class PermissionServiceImpl implements PermissionService {
         this.permissionMapper.deleteByIds(deletePermissionIds);
     }
 
+    @Override
+    public PageResultDTO<PermissionDTO> pageList(PermissionPageQueryDTO queryDTO) {
+        LambdaQueryWrapper<Permissions> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Objects.nonNull(queryDTO.getParentId()), Permissions::getParentId, queryDTO.getParentId());
+        lambdaQueryWrapper.like(StringUtils.hasText(queryDTO.getPermissionName()), Permissions::getPermissionName, queryDTO.getPermissionName());
+        return PageResultDTO.buildPageResult(this.permissionMapper.selectPage(queryDTO, lambdaQueryWrapper), PERMISSION_ASSEMBLER::toDTO);
+    }
+
     /**
      * 检查父级是否存在，不存在则抛出异常
      *
@@ -259,7 +252,7 @@ public class PermissionServiceImpl implements PermissionService {
             throw new ServiceException(PermissionResponseStatusEnum.PARENT_PERMISSION_NOT_FOUND);
         }
         // 如果当前父级为叶子节点，进行修改
-        if (parentPermission.getIsLeaf()) {
+        if (Boolean.TRUE.equals(parentPermission.getIsLeaf())) {
             this.permissionMapper.updateLeafById(false, parentId);
         }
     }

@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantSpace;
 import org.apache.ibatis.annotations.Param;
@@ -27,7 +28,7 @@ import org.apache.ibatis.annotations.Param;
  * @author fuhouyu
  * @since 2025/2/17 21:51
  */
-public interface TenantSpaceMapper extends BaseMapper<Long, TenantSpace> {
+public interface TenantSpaceMapper extends BaseMapper<TenantSpace> {
 
     /**
      * 根据桶名称查询租户空间

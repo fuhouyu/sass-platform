@@ -48,7 +48,7 @@ export const Tenant: React.FC = () => {
     const tableRef = useRef<TableRefType<TenantInfo>>(null);
     const [updateId, setUpdateId] = useState<string | undefined>();
     const {tenant} = useUserStore(state => state);
-    const {notificationMessage} = useNotification();
+    const {contextHolder, notificationMessage} = useNotification();
     const columns: TableColumnsType = [
         {
             title: t('Tenant.code'),
@@ -197,6 +197,7 @@ export const Tenant: React.FC = () => {
 
 
     return (<>
+        {contextHolder}
         <PageList
             tableProps={{
                 tableRef: tableRef,

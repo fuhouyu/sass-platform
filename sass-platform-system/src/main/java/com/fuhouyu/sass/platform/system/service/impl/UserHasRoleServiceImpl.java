@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.sass.platform.system.domain.entity.UserHasRole;
 import com.fuhouyu.sass.platform.system.mapper.UserHasRoleMapper;
 import com.fuhouyu.sass.platform.system.service.UserHasRoleService;
@@ -37,7 +38,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserHasRoleServiceImpl implements UserHasRoleService {
+public class UserHasRoleServiceImpl extends ServiceImpl<UserHasRoleMapper, UserHasRole> implements UserHasRoleService {
 
     private final UserHasRoleMapper userHasRoleMapper;
 

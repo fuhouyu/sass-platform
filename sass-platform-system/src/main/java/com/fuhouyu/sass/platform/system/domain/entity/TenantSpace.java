@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -28,11 +30,13 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@TableName("tenant_space")
 public class TenantSpace extends BaseEntity {
 
     /**
      * 租户id
      */
+    @TableId
     private Long tenantId;
 
     /**

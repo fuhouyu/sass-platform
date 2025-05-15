@@ -139,7 +139,7 @@ public class PermissionController {
     @PreAuthorize("@auth.hasAnyPermission('system:permission:delete')")
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> deletePermission(@RequestBody @NotEmpty(message = "未选择要删除的权限") List<Long> idList) {
-        this.permissionService.removeByIds(idList);
+        this.permissionService.deleteByIds(idList);
         return ResponseHelper.success();
     }
 

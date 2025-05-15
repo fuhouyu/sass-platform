@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.AccountMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Accounts" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Accounts" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <id column="account" property="account" jdbcType="VARCHAR"/>
         <result column="account_type" property="accountType" jdbcType="VARCHAR"/>
         <result column="user_type" property="userType" jdbcType="VARCHAR"/>
@@ -72,51 +72,6 @@
         </trim>
     </insert>
 
-    <insert id="insertBatch" parameterType="java.util.List" >
-        INSERT INTO
-        <include refid="TableName"/>
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="AllColumns"/>
-        </trim>
-        VALUES
-        <foreach collection="list" separator="," item="entity">
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{entity.account},
-                #{entity.accountType},
-                #{entity.userType},
-                #{entity.userId},
-                #{entity.credentials},
-                #{entity.credentialsExpirationTime},
-                #{entity.refAccountId},
-                #{entity.ownerTenantId},
-                #{entity.isEnabled},
-                #{entity.createdAt},
-                #{entity.updatedAt},
-                #{entity.createdBy},
-                #{entity.updatedBy}
-            </trim>
-        </foreach>
-    </insert>
-
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Accounts">
-        UPDATE
-        <include refid="TableName"/>
-        SET
-        <if test="credentials != null and credentials != ''">
-            credentials = #{credentials},
-        </if>
-        <if test="credentialsExpirationTime != null">
-            credentials_expiration_time = #{credentialsExpirationTime},
-        </if>
-        <if test="refAccountId != null and refAccountId != ''">
-            ref_account_id = #{refAccountId},
-        </if>
-        updated_at = #{updatedAt},
-        updated_by = #{updatedBy}
-        WHERE account = #{account}
-        AND account_type = #{accountType}
-    </update>
-
     <delete id="deleteById">
         DELETE FROM <include refid="TableName"/>
         WHERE account = #{account}
@@ -142,21 +97,6 @@
     </select>
 
 
-    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="AllColumns"/>
-        FROM <include refid="TableName"/>
-        WHERE
-         <foreach collection="list" item="item" separator=" AND ">
-            (account = #{item.account} AND account_type = #{item.account_type})
-        </foreach>
-    </select>
-
-    <select id="queryList" resultMap="BaseResultMap" >
-        SELECT
-        <include refid="AllColumns"/>
-                FROM
-        <include refid="TableName"/>
-    </select>
 
     <select id="queryByUserId" resultMap="BaseResultMap">
         SELECT

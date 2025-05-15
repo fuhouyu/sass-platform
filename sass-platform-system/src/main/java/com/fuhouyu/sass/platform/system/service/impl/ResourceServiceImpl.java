@@ -16,6 +16,8 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -25,7 +27,7 @@ import com.fuhouyu.framework.s3.properties.S3Properties;
 import com.fuhouyu.framework.s3.service.StsOperation;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.ResourcesAssembler;
-import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
 import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantSpaceDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
@@ -42,11 +44,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -67,7 +69,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * <p>
@@ -80,7 +81,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class ResourceServiceImpl implements ResourceService {
+public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> implements ResourceService {
 
     private static final ResourcesAssembler RESOURCES_ASSEMBLER = ResourcesAssembler.INSTANCE;
 
@@ -111,7 +112,7 @@ public class ResourceServiceImpl implements ResourceService {
     private final S3Presigner s3Presigner;
 
     @Override
-    public Long save(ResourceDTO dto) {
+    public long save(ResourceDTO dto) {
         Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
         String bucketName = tenantSpaceDTO.getBucketName();
@@ -129,7 +130,7 @@ public class ResourceServiceImpl implements ResourceService {
         this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
         String mimeType = dto.getMimeType();
         String name = dto.getName();
-        if (StringUtils.isAllBlank(mimeType) && name.contains(".")) {
+        if (!StringUtils.hasText(mimeType) && name.contains(".")) {
             mimeType = name.substring(name.lastIndexOf(".") + 1);
         }
         String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
@@ -152,18 +153,13 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void edit(ResourceDTO dto) {
-        this.resourceMapper.update(RESOURCES_ASSEMBLER.toEntity(dto));
+        this.resourceMapper.updateById(RESOURCES_ASSEMBLER.toEntity(dto));
     }
 
     @Override
-    public int removeById(Long aLong) {
-        return this.resourceMapper.deleteById(aLong);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
+    public int deleteByIds(Collection<Long> ids) {
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(ContextHolderStrategy.getContext().getUser().getTenantId());
-        List<Resources> resources = this.resourceMapper.queryByIds(ids);
+        List<Resources> resources = this.resourceMapper.selectByIds(ids);
         if (CollectionUtils.isEmpty(resources)) {
             return 0;
         }
@@ -199,13 +195,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public ResourceDTO findById(Long id) {
-        Resources resources = this.resourceMapper.queryById(id);
+        Resources resources = this.resourceMapper.selectById(id);
         return RESOURCES_ASSEMBLER.toDTO(resources);
-    }
-
-    @Override
-    public Function<PageQueryDTO, List<ResourceDTO>> getPageResult() {
-        return p -> RESOURCES_ASSEMBLER.toDTO(this.resourceMapper.queryList(p));
     }
 
 
@@ -252,7 +243,7 @@ public class ResourceServiceImpl implements ResourceService {
     public StsTemporaryTokenResponseDTO generateToken(StsTemporaryTokenRequestDTO requestDTO) {
         TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(ContextHolderStrategy.getContext().getUser().getTenantId());
         List<String> fileNames = requestDTO.getFileNames();
-        Map<String, String> objectsMap = new HashMap<>(fileNames.size());
+        Map<String, String> objectsMap = HashMap.newHashMap(fileNames.size());
         String prefix = requestDTO.getPrefix();
         for (String fileName : fileNames) {
             String parentPath = this.getParentPath(fileName);
@@ -352,7 +343,7 @@ public class ResourceServiceImpl implements ResourceService {
             LoggerUtil.warn(log, "资源bucketName为空, id: {}", id);
             throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_BUCKET_NOT_EXISTS);
         }
-        if (!resourceDetailDTO.getIsPublic()) {
+        if (Boolean.FALSE.equals(resourceDetailDTO.getIsPublic())) {
             if (Objects.isNull(ContextHolderStrategy.getContext().getUser()) ||
                     !Objects.equals(ContextHolderStrategy.getContext().getUser().getTenantId(), resourceDetailDTO.getOwnerTenantId())) {
                 throw new ServiceException(ResourceResponseStatusEnum.RESOURCE_NOT_AUTH_ACCESS);
@@ -366,6 +357,17 @@ public class ResourceServiceImpl implements ResourceService {
         return this.checkResourcePermission(id);
     }
 
+
+    @Override
+    public PageResultDTO<ResourceDTO> pageList(ResourcePageQueryDTO pageQueryDTO) {
+        LambdaQueryWrapper<Resources> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.likeRight(StringUtils.hasText(pageQueryDTO.getPrefix()), Resources::getObjectKey, pageQueryDTO.getPrefix());
+        lambdaQueryWrapper.like(StringUtils.hasText(pageQueryDTO.getName()), Resources::getName, pageQueryDTO.getName());
+        lambdaQueryWrapper.eq(StringUtils.hasText(pageQueryDTO.getCategory()), Resources::getCategory, pageQueryDTO.getCategory());
+        lambdaQueryWrapper.eq(Objects.nonNull(pageQueryDTO.getIsPublic()), Resources::getIsPublic, pageQueryDTO.getIsPublic());
+
+        return PageResultDTO.buildPageResult(this.resourceMapper.selectPage(pageQueryDTO, lambdaQueryWrapper), RESOURCES_ASSEMBLER::toDTO);
+    }
 
     /**
      * 检查资源是否存在
@@ -440,7 +442,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return 父级id
      */
     private Long createDirectory(String parentPathName, boolean isPublic) {
-        if (StringUtils.isAllBlank(parentPathName)) {
+        if (!StringUtils.hasText(parentPathName)) {
             return -1L;
         }
         String[] split = parentPathName.split("/");
@@ -522,7 +524,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private void checkSignedUrl(ResourceSignedUrlDTO resourceSignedUrlDTO,
                                 ResourceDetailDTO resourceDetailDTO) {
-        if (resourceDetailDTO.getIsPublic()) {
+        if (Boolean.TRUE.equals(resourceDetailDTO.getIsPublic())) {
             return;
         }
         SignedUrlUtil.SignedUrlDTO verifySignedUrlDTO = SignedUrlUtil.SignedUrlDTO

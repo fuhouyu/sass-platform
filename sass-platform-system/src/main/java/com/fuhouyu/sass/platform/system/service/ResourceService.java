@@ -15,9 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.resource.*;
+import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 /**
@@ -28,8 +32,41 @@ import java.util.function.Consumer;
  * @author fuhouyu
  * @since 2025/2/16 12:40
  */
-public interface ResourceService extends BaseService<Long, ResourceDTO> {
+public interface ResourceService extends IService<Resources> {
 
+    /**
+     * 保存资源
+     * @param resourceDTO 资源dto对象
+     * @return 主键id
+     */
+    long save(ResourceDTO resourceDTO);
+
+    /**
+     * 编辑资源
+     * @param resourceDTO 资源dto对象
+     */
+    void edit(ResourceDTO resourceDTO);
+
+    /**
+     * 根据id删除资源
+     * @param ids 主键id
+     * @return 删除结果
+     */
+    int deleteByIds(Collection<Long> ids);
+
+    /**
+     * 根据id查询资源
+     * @param id 主键id
+     */
+    ResourceDTO findById(Long id);
+
+    /**
+     * 分页查询资源列表
+     * @param pageQueryDTO 分页查询dto对象
+     * @return 分页结果
+     */
+    PageResultDTO<ResourceDTO> pageList(ResourcePageQueryDTO pageQueryDTO);
+    
     /**
      * 下载资源
      *

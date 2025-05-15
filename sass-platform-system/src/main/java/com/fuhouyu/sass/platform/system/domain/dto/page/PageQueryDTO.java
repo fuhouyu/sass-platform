@@ -15,17 +15,20 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.page;
 
-import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.github.pagehelper.util.SqlSafeUtil;
+import cn.idev.excel.event.Order;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.OrderedIterator;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * <p>
@@ -40,48 +43,39 @@ import java.util.Objects;
 @Setter
 @Slf4j
 @Schema(name = "PageQueryDTO", description = "pageQueryDTO")
-public class PageQueryDTO implements Serializable {
+public class PageQueryDTO<T> extends Page<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 123876123971923123L;
 
     @Schema(name = "pageNum", description = "页号", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageNum;
+    private Long pageNum = 1L;
 
     @Schema(name = "pageSize", description = "每页显示条数", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageSize;
-
-    @Schema(name = "isAsc", description = "是否顺序排序", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Boolean isAsc;
-
-    @Schema(name = "sortColumn", description = "排序列", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String sortColumn;
+    private Long pageSize = 10L;
 
     public PageQueryDTO() {
-        this(1, 10);
+        super();
+        super.addOrder(OrderItem.desc("updated_by"));
     }
 
-    public PageQueryDTO(Integer pageNum, Integer pageSize) {
+    public PageQueryDTO(List<OrderItem> orderItems) {
+        super();
+        super.setOrders(orderItems);
+    }
+
+    public PageQueryDTO(Long pageNum, Long pageSize) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        this.sortColumn = "updated_at";
-        this.isAsc = false;
     }
 
-    /**
-     * 获取排序
-     *
-     * @return 排序字段
-     */
-    public String getOrderBy() {
-        if (Objects.isNull(sortColumn) || Objects.isNull(this.isAsc)) {
-            return null;
-        }
-        String orderBy = sortColumn + " " + (isAsc ? "ASC" : "DESC");
-        if (SqlSafeUtil.check(orderBy)) {
-            LoggerUtil.error(log, "排序字段不正确:{}", sortColumn);
-            throw new IllegalArgumentException("排序字段设置错误！");
-        }
-        return orderBy;
+    @Override
+    public long getCurrent() {
+        return this.pageNum;
+    }
+
+    @Override
+    public long getSize() {
+        return this.pageSize;
     }
 }

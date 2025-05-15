@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import org.apache.ibatis.annotations.Param;
@@ -31,14 +31,10 @@ import java.util.List;
  * @author fuhouyu
  * @since 2025/1/4 22:06
  */
-public interface OrganizationMapper extends BaseMapper<Long, Organizations> {
+public interface OrganizationMapper extends BaseMapper<Organizations> {
 
-    @Override
-    @TenantQuery
     Organizations queryById(Long id);
 
-    @Override
-    @TenantQuery
     List<Organizations> queryByIds(@Param("list") Collection<Long> list);
 
     /**
@@ -47,11 +43,8 @@ public interface OrganizationMapper extends BaseMapper<Long, Organizations> {
      * @param organizationCode 组织编码
      * @return 组织
      */
-    @TenantQuery
     Organizations queryByOrganizationCode(@Param("organizationCode") String organizationCode);
 
-    @Override
-    @TenantQuery
     <P extends PageQueryDTO> List<Organizations> queryList(@Param("pageQuery") P pageQuery);
 
     /**
@@ -60,7 +53,6 @@ public interface OrganizationMapper extends BaseMapper<Long, Organizations> {
      * @param organizationCode 组织编码
      * @return 1存在，0不存在
      */
-    @TenantQuery
     Integer existsOrganizationCode(@Param("organizationCode") String organizationCode);
 
     /**
@@ -84,7 +76,6 @@ public interface OrganizationMapper extends BaseMapper<Long, Organizations> {
      * @param parentId 父级id
      * @return 组织集合
      */
-    @TenantQuery
     List<Organizations> queryListByParentId(@Param("parentId") Long parentId);
 
     /**

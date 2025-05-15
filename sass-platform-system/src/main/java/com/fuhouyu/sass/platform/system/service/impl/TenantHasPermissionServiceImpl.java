@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantHasPermission;
 import com.fuhouyu.sass.platform.system.mapper.TenantHasPermissionMapper;
 import com.fuhouyu.sass.platform.system.service.TenantHasPermissionService;
@@ -37,7 +38,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TenantHasPermissionServiceImpl implements TenantHasPermissionService {
+public class TenantHasPermissionServiceImpl extends ServiceImpl<TenantHasPermissionMapper, TenantHasPermission> implements TenantHasPermissionService {
 
     private final TenantHasPermissionMapper tenantHasPermissionMapper;
 

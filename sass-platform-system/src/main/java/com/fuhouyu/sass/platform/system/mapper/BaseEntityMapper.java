@@ -15,35 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
-import org.apache.ibatis.annotations.Param;
-
-import java.time.LocalDate;
-import java.util.List;
-
 /**
  * <p>
- * 租户mapper接口
+ *
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/20 22:29
+ * @since 2025/5/12 18:51
  */
-public interface TenantInfoMapper extends BaseMapper<TenantInfo> {
-
-    /**
-     * 通过租户编码进行查询
-     *
-     * @param tenantCode 租户编码
-     * @return 租户do实体对象
-     */
-    TenantInfo queryByTenantCode(String tenantCode);
-
-    /**
-     * 查询有效的租户
-     *
-     * @return 租户列表
-     */
-    List<TenantInfo> queryEffectiveTenantList(@Param("now") LocalDate now);
+public interface BaseEntityMapper {
 }

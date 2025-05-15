@@ -1080,6 +1080,7 @@ CREATE TABLE tenant_space
     bucket_name VARCHAR(100) NOT NULL,
     capacity   BIGINT      NOT NULL,
     acl        VARCHAR(32) NOT NULL,
+    is_deleted BOOLEAN DEFAULT  FALSE NOT NULL ,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     updated_at TIMESTAMP   NOT NULL,
@@ -1095,6 +1096,7 @@ COMMENT ON COLUMN tenant_space.created_at IS '创建时间';
 COMMENT ON COLUMN tenant_space.created_by IS '创建人';
 COMMENT ON COLUMN tenant_space.updated_at IS '更新时间';
 COMMENT ON COLUMN tenant_space.updated_by IS '更新人';
+COMMENT ON COLUMN tenant_space.is_deleted IS '是否删除';
 
 
 INSERT INTO tenant_space (tenant_id, bucket_name, capacity, acl,
@@ -1264,6 +1266,7 @@ CREATE TABLE param_configs
     group_key VARCHAR(32) NOT NULL,
     remark            VARCHAR(512),
     is_allow_modified BOOLEAN      NOT NULL DEFAULT TRUE,
+    is_deleted BOOLEAN NOT NULL  DEFAULT FALSE,
     created_at        TIMESTAMP    NOT NULL,
     created_by        VARCHAR(32)  NOT NULL,
     updated_at        TIMESTAMP    NOT NULL,
@@ -1276,6 +1279,8 @@ COMMENT ON COLUMN param_configs.config_key IS '配置key';
 COMMENT ON COLUMN param_configs.config_value IS '配置值';
 COMMENT ON COLUMN param_configs.group_key IS '分组标识';
 COMMENT ON COLUMN param_configs.remark IS '备注';
+COMMENT ON COLUMN param_configs.is_allow_modified IS '是否允许修改标记';
+COMMENT ON COLUMN param_configs.is_deleted IS '是否删除标记';
 COMMENT ON COLUMN param_configs.created_at IS '创建时间';
 COMMENT ON COLUMN param_configs.created_by IS '创建人';
 COMMENT ON COLUMN param_configs.updated_at IS '更新时间';

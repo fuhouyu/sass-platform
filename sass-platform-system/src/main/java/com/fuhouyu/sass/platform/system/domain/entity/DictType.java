@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,6 +35,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@TableName("dict_type")
 public class DictType extends BaseEntity {
 
     @Serial
@@ -70,6 +74,7 @@ public class DictType extends BaseEntity {
     /**
      * 所属租户
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 
     /**

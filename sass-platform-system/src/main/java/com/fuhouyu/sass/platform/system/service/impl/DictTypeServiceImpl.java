@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -22,6 +25,7 @@ import com.fuhouyu.sass.platform.system.assembler.DictTypeAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypeDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictType;
 import com.fuhouyu.sass.platform.system.enums.response.DictTypeResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.mapper.DictTypeMapper;
@@ -29,6 +33,7 @@ import com.fuhouyu.sass.platform.system.service.DictTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +51,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DictTypeServiceImpl implements DictTypeService {
+public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> implements DictTypeService {
 
     private static final DictTypeAssembler DICT_TYPE_ASSEMBLER = DictTypeAssembler.INSTANCE;
 
@@ -63,12 +68,12 @@ public class DictTypeServiceImpl implements DictTypeService {
     @Override
     public List<DictTypeDTO> findList() {
         DictTypePageQueryDTO dictTypePageQueryDTO = new DictTypePageQueryDTO();
-        dictTypePageQueryDTO.setSortColumn("display_order");
+        dictTypePageQueryDTO.addOrder(OrderItem.asc("display_order"));
         return DICT_TYPE_ASSEMBLER.toDTO(this.dictTypeMapper.queryList(dictTypePageQueryDTO));
     }
 
     @Override
-    public Long save(DictTypeDTO dto) {
+    public long save(DictTypeDTO dto) {
         long id = snowflakeIdWorker.nextId();
         if (Objects.equals(Boolean.TRUE, this.checkDictCodeExists(dto.getDictCode()))) {
             throw new ServiceException(DictTypeResponseStatusEnum.DICT_TYPE_CODE_EXISTS,
@@ -84,18 +89,9 @@ public class DictTypeServiceImpl implements DictTypeService {
 
     @Override
     public void edit(DictTypeDTO dto) {
-        this.dictTypeMapper.update(DICT_TYPE_ASSEMBLER.toEntity(dto));
+        this.dictTypeMapper.updateById(DICT_TYPE_ASSEMBLER.toEntity(dto));
     }
 
-    @Override
-    public int removeById(Long id) {
-        return this.dictTypeMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
-        return this.dictTypeMapper.deleteByIds(ids);
-    }
 
     @Override
     public DictTypeDTO findById(Long id) {
@@ -104,7 +100,11 @@ public class DictTypeServiceImpl implements DictTypeService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<DictTypeDTO>> getPageResult() {
-        return p -> DICT_TYPE_ASSEMBLER.toDTO(this.dictTypeMapper.queryList(p));
+    public PageResultDTO<DictTypeDTO> pageList(DictTypePageQueryDTO pageQueryDTO) {
+        LambdaQueryWrapper<DictType> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(StringUtils.hasText(pageQueryDTO.getDictCode()), DictType::getDictCode, pageQueryDTO.getDictCode());
+        lambdaQueryWrapper.eq(Objects.nonNull(pageQueryDTO.getIsEnabled()), DictType::getIsEnabled, pageQueryDTO.getIsEnabled());
+        return PageResultDTO.buildPageResult(this.dictTypeMapper.selectPage(pageQueryDTO, lambdaQueryWrapper), DICT_TYPE_ASSEMBLER::toDTO);
+
     }
 }

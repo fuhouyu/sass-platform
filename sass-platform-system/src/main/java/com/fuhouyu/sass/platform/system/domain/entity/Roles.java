@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,6 +36,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@TableName("roles")
 public class Roles extends BaseEntity {
 
     @Serial
@@ -52,6 +56,7 @@ public class Roles extends BaseEntity {
 
     private Boolean isAllowModified;
 
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 
 }

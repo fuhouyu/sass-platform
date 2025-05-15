@@ -202,6 +202,9 @@ export const OnlineUser: FC = () => {
                             showTime
                             allowClear
                             allowEmpty
+                            disabledDate={(currentDate) => {
+                                return currentDate.isAfter(new Date());
+                            }}
                             defaultValue={[
                                 pageQuery['startTime'] ? dayjs(decodeURIComponent(pageQuery['startTime'])) : null,
                                 pageQuery['endTime'] ? dayjs(decodeURIComponent(pageQuery['endTime'])) : null,

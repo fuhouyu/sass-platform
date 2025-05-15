@@ -15,9 +15,13 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UpdatePasswordDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
 
 import java.util.Collection;
@@ -31,7 +35,47 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/2 22:25
  */
-public interface AccountService extends BaseService<AccountIdDTO, AccountDTO> {
+public interface AccountService extends IService<Accounts> {
+
+    /**
+     * 保存账号信息
+     *
+     * @param accountDTO 账号dto对象
+     * @return 账号id dto对象
+     */
+    AccountIdDTO saveAccounts(AccountDTO accountDTO);
+
+    /**
+     * 批量保存账号信息
+     *
+     * @param accountDTOList 账号dto集合
+     */
+    void saveAccounts(Collection<AccountDTO> accountDTOList);
+
+
+    /**
+     * 修改账号
+     *
+     * @param accountDTO account dto对象
+     */
+    void editAccounts(AccountDTO accountDTO);
+
+    /**
+     * 删除账号
+     *
+     * @param accountIdDTO 账号id dto对象
+     * @return 影响行数
+     */
+    int removeById(AccountIdDTO accountIdDTO);
+
+
+    /**
+     * 查询账号信息
+     *
+     * @param accountIdDTO 账号id dto对象
+     * @return 账号dto对象
+     */
+    AccountDTO findById(AccountIdDTO accountIdDTO);
 
     /**
      * 通过用户id查询账号

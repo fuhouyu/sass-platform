@@ -16,10 +16,12 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,11 +37,9 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/24 20:26
  */
-public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
+public interface AdminUserMapper extends BaseMapper<AdminUsers> {
 
 
-    @Override
-    @TenantQuery
     int update(AdminUsers adminUsers);
 
     /**
@@ -57,15 +57,18 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param loginIp   登录ip
      * @param loginTime 登录时间
      */
-    @TenantQuery
     void recordLoginSuccess(@Param("userId") Long userId,
                             @Param("loginIp") String loginIp,
                             @Param("loginTime") LocalDateTime loginTime);
 
 
-    @Override
-    @TenantQuery
-    <P extends PageQueryDTO> List<AdminUsers> queryList(P pageQuery);
+    /**
+     * 查询用户列表
+     *
+     * @param pageQuery 分页查询对象
+     * @return 用户列表
+     */
+    IPage<AdminUsers> queryList(@Param("pageQuery") AdminUserPageQueryDTO pageQuery);
 
     /**
      * 查询用户详情列表
@@ -73,8 +76,7 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param pageQuery 分页查询对象
      * @return 用户详情列表
      */
-    @TenantQuery
-    <P extends PageQueryDTO> List<AdminUserDTO> queryDetailList(@Param("pageQuery") P pageQuery);
+    IPage<AdminUserDTO> queryDetailList(@Param("pageQuery") AdminUserPageQueryDTO pageQuery);
 
     /**
      * 查询用户详情
@@ -82,7 +84,6 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param id 用户id
      * @return 用户详情
      */
-    @TenantQuery
     AdminUserDetailDTO queryDetailById(Long id);
 
     /**
@@ -99,6 +100,5 @@ public interface AdminUserMapper extends BaseMapper<Long, AdminUsers> {
      * @param organizationId 组织id
      * @return 用户详情
      */
-    @TenantQuery
     AdminUserDetailDTO findDetailByIdAndOrganizationId(@Param("id") Long id, @Param("organizationId") Long organizationId);
 }

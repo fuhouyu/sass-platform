@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.TenantSpaceMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.TenantSpace" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.TenantSpace" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <result column="tenant_id" property="tenantId"/>
         <result column="bucket_name" property="bucketName"/>
         <result column="capacity" property="capacity"/>
@@ -72,27 +72,6 @@
         </trim>
     </insert>
 
-    <insert id="insertBatch" parameterType="java.util.List" >
-        INSERT INTO
-        <include refid="TableName"/>
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="InsertColumns"/>
-        </trim>
-        VALUES
-        <foreach collection="list" separator="," item="entity">
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{entity.tenantId},
-                #{entity.bucketName},
-                #{entity.capacity},
-                #{entity.acl},
-                #{entity.createdAt},
-                #{entity.updatedAt},
-                #{entity.createdBy},
-                #{entity.updatedBy}
-            </trim>
-        </foreach>
-    </insert>
-
     <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Resources">
         UPDATE
         <include refid="TableName"/>
@@ -111,42 +90,6 @@
         WHERE tenant_id = #{tenantId}
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM <include refid="TableName"/>
-        WHERE tenant_id = #{id}
-    </delete>
-
-    <delete id="deleteByIds" parameterType="java.util.List">
-        DELETE FROM
-        <include refid="TableName"/>
-        WHERE tenant_id IN
-        <foreach collection="list" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-    </delete>
-
-    <select id="queryById" resultMap="BaseResultMap">
-        SELECT <include refid="QueryColumns"/>
-        FROM <include refid="TableName"/> ts
-        WHERE tenant_id = #{id}
-    </select>
-
-
-    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT <include refid="InsertColumns"/>
-        FROM <include refid="TableName"/> ts
-        WHERE tenant_id IN
-        <foreach collection="list" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-    </select>
-
-    <select id="queryList" resultMap="BaseResultMap" >
-        SELECT
-        <include refid="QueryColumns"/>
-                FROM
-        <include refid="TableName"/> ts
-    </select>
 
     <select id="countTenantSpaceByName" resultType="int">
         SELECT COUNT(1) FROM <include refid="TableName"/>

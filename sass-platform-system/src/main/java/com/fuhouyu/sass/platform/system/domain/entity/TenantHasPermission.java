@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,6 +31,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@TableName("tenant_has_permission")
 public class TenantHasPermission extends BaseEntity {
 
     @Serial

@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.organization;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Organizations;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "OrganizationPageQueryDTO", description = "组织分页查询的dto对象")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrganizationPageQueryDTO extends PageQueryDTO {
+public class OrganizationPageQueryDTO extends PageQueryDTO<Organizations> {
 
     @Schema(name = "parentId", description = "父级id")
     private Long parentId;
@@ -41,7 +42,7 @@ public class OrganizationPageQueryDTO extends PageQueryDTO {
 
     public OrganizationPageQueryDTO() {
         this.parentId = -1L;
-        this.setSortColumn("display_order");
-        this.setIsAsc(true);
+//        this.setSortColumn("display_order");
+//        this.setIsAsc(true);
     }
 }

@@ -15,12 +15,15 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.RolesAssembler;
 import com.fuhouyu.sass.platform.system.constants.TenantConstant;
-import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RoleDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.role.RolePageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Roles;
@@ -31,11 +34,11 @@ import com.fuhouyu.sass.platform.system.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * <p>
@@ -48,7 +51,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends ServiceImpl<RoleMapper, Roles> implements RoleService {
 
     private static final RolesAssembler ROLES_ASSEMBLER = RolesAssembler.INSTANCE;
 
@@ -84,8 +87,8 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public List<RoleDTO> list() {
-        return ROLES_ASSEMBLER.toDTO(this.roleMapper.queryList(new RolePageQueryDTO()));
+    public List<RoleDTO> getRoleList() {
+        return ROLES_ASSEMBLER.toDTO(this.roleMapper.selectList(new QueryWrapper<>()));
     }
 
     @Override
@@ -101,11 +104,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void editStatus(RoleDTO roleDTO) {
-        this.roleMapper.update(ROLES_ASSEMBLER.toEntity(roleDTO));
+        this.roleMapper.updateById(ROLES_ASSEMBLER.toEntity(roleDTO));
     }
 
     @Override
-    public Long save(RoleDTO dto) {
+    public long save(RoleDTO dto) {
         String roleCode = dto.getRoleCode();
         Roles roles = this.roleMapper.queryByRoleCode(roleCode);
         if (Objects.nonNull(roles)) {
@@ -125,21 +128,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void edit(RoleDTO dto) {
-        this.roleMapper.update(ROLES_ASSEMBLER.toEntity(dto));
+        this.roleMapper.updateById(ROLES_ASSEMBLER.toEntity(dto));
         // 保存角色和权限关系
         this.roleHasPermissionService.removeRolePermissionByRoleId(dto.getId());
         this.roleHasPermissionService.saveRolePermission(dto.getId(), dto.getPermissionIds());
     }
 
-    @Override
-    public int removeById(Long id) {
-        return this.roleMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
-        return this.roleMapper.deleteByIds(ids);
-    }
 
     @Override
     public RoleDTO findById(Long id) {
@@ -153,7 +147,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<RoleDTO>> getPageResult() {
-        return p -> ROLES_ASSEMBLER.toDTO(this.roleMapper.queryList(p));
+    public PageResultDTO<RoleDTO> pageList(RolePageQueryDTO pageQueryDTO) {
+        LambdaQueryWrapper<Roles> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(StringUtils.hasText(pageQueryDTO.getRoleCode()), Roles::getRoleCode, pageQueryDTO.getRoleCode());
+        lambdaQueryWrapper.eq(Objects.nonNull(pageQueryDTO.getIsEnabled()), Roles::getIsEnabled, pageQueryDTO.getIsEnabled());
+
+        return PageResultDTO.buildPageResult(this.roleMapper.selectPage(pageQueryDTO, lambdaQueryWrapper), ROLES_ASSEMBLER::toDTO);
     }
 }

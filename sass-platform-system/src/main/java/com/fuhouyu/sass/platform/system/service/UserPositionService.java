@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserPositionDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.UserPositions;
 
 import java.util.Collection;
 
@@ -27,7 +29,7 @@ import java.util.Collection;
  * @author fuhouyu
  * @since 2025/1/11 12:24
  */
-public interface UserPositionService {
+public interface UserPositionService extends IService<UserPositions> {
 
 
     /**

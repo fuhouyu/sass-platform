@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-public class WechatAppletServiceImpl implements WechatAppletService {
+public class WechatAppletServiceImpl  implements WechatAppletService {
 
     private static final String WECHAT_APPLET_CACHE_KEY = "wechat:applet:access-token";
 

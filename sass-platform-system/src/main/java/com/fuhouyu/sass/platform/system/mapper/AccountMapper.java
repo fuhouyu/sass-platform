@@ -16,9 +16,10 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.AccountId;
 import com.fuhouyu.sass.platform.system.domain.entity.Accounts;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
@@ -32,7 +33,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/27 23:46
  */
-public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
+public interface AccountMapper extends BaseMapper<Accounts> {
 
 
     /**
@@ -65,7 +66,6 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param accountType 账号类型
      * @return 账号
      */
-    @TenantQuery
     Accounts queryAccountByUserIdAndType(@Param("userId") Long userId, @Param("accountType") String accountType);
 
     /**
@@ -82,4 +82,13 @@ public interface AccountMapper extends BaseMapper<AccountId, Accounts> {
      * @param enabled 启禁用状态
      */
     void updateAccountStatusByUserId(@Param("userId") Long userId, @Param("enabled") Boolean enabled);
+
+    /**
+     * 通过账号id查询账号信息
+     *
+     * @param accountId 账号id
+     * @return 账号信息
+     */
+    Accounts queryById(AccountId accountId);
+
 }

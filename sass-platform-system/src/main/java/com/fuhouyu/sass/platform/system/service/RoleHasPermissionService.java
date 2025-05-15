@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/12/14 16:35
  */
-public interface RoleHasPermissionService {
+public interface RoleHasPermissionService extends IService<RoleHasPermission> {
 
     /**
      * 保存角色id和权限id集合

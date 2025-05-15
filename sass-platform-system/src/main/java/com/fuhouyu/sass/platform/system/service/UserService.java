@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Users;
 
 /**
  * <p>
@@ -25,7 +27,30 @@ import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
  * @author fuhouyu
  * @since 2025/3/10 17:45
  */
-public interface UserService extends BaseService<Long, UserDTO> {
+public interface UserService extends IService<Users> {
+
+    /**
+     * 保存用户
+     *
+     * @param dto 用户信息
+     * @return 用户id
+     */
+    long save(UserDTO dto);
+
+    /**
+     * 编辑用户
+     *
+     * @param dto 用户信息
+     */
+    void edit(UserDTO dto);
+
+    /**
+     * 根据id查询用户
+     *
+     * @param id 用户id
+     * @return 用户信息
+     */
+    UserDTO findById(Long id);
 
     /**
      * 生成用户名称

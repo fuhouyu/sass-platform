@@ -16,7 +16,7 @@
 package com.fuhouyu.sass.platform.system.mapper;
 
 
-import com.fuhouyu.framework.database.annotations.TenantQuery;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictType;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/10/9 18:00
  */
-public interface DictTypeMapper extends BaseMapper<Long, DictType> {
+public interface DictTypeMapper extends BaseMapper<DictType> {
 
     /**
      * 通过字典类型编码查询出字典类型对象
@@ -40,7 +40,6 @@ public interface DictTypeMapper extends BaseMapper<Long, DictType> {
      * @param dictCode 字典类型编码
      * @return 字典类型do对象
      */
-    @TenantQuery
     DictType queryByDictCode(@Param("dictCode") String dictCode);
 
     /**
@@ -49,8 +48,6 @@ public interface DictTypeMapper extends BaseMapper<Long, DictType> {
      * @param id 主键id
      * @return 实体对象
      */
-    @TenantQuery
-    @Override
     DictType queryById(Long id);
 
     /**
@@ -59,8 +56,6 @@ public interface DictTypeMapper extends BaseMapper<Long, DictType> {
      * @param list id集合
      * @return 查询到的实体对象
      */
-    @TenantQuery
-    @Override
     List<DictType> queryByIds(@Param("list") Collection<Long> list);
 
 
@@ -71,7 +66,5 @@ public interface DictTypeMapper extends BaseMapper<Long, DictType> {
      * @param <P>       范围查询的类型
      * @return 批量查询
      */
-    @TenantQuery
-    @Override
     <P extends PageQueryDTO> List<DictType> queryList(@Param("pageQuery") P pageQuery);
 }

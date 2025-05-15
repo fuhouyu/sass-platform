@@ -95,7 +95,7 @@ public class WechatAppletAuthenticationProvider implements AuthenticationProvide
             accountDTO.setUserType(UserTypeEnum.NORMAL);
             accountDTO.setCreatedBy(userDTO.getUsername());
             accountDTO.setUpdatedBy(userDTO.getUsername());
-            this.accountService.save(accountDTO);
+            this.accountService.saveAccounts(accountDTO);
             userDetails = SecurityUserDetailAssembler.INSTANCE.toSecurityUserDetail(accountDTO);
         }
         return UsernamePasswordAuthenticationToken.authenticated(userDetails, authentication.getCredentials(), List.of());

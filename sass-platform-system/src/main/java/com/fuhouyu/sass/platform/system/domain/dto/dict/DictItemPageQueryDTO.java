@@ -15,7 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.dict;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.DictItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "DictItemPageQueryDTO", description = "字典项分页查询的dto对象")
-public class DictItemPageQueryDTO extends PageQueryDTO {
+public class DictItemPageQueryDTO extends PageQueryDTO<DictItem> {
 
     @Schema(name = "dictCode", description = "字典编码查询")
     private String dictCode;
@@ -43,7 +45,6 @@ public class DictItemPageQueryDTO extends PageQueryDTO {
     private Boolean isEnabled;
 
     public DictItemPageQueryDTO() {
-        this.setSortColumn("display_order");
-        this.setIsAsc(true);
+        super.addOrder(OrderItem.asc("display_order"));
     }
 }

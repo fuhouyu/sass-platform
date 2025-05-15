@@ -15,6 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fuhouyu.framework.database.annotations.FieldCipher;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +35,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@TableName("applications")
 public class Applications extends BaseEntity {
 
     @Serial
@@ -40,6 +45,7 @@ public class Applications extends BaseEntity {
     /**
      * 客户端唯一标识
      */
+    @TableId
     private String clientId;
 
     /**
@@ -104,13 +110,9 @@ public class Applications extends BaseEntity {
     private Boolean isEnabled;
 
     /**
-     * 是否已删除：true 删除，false 正常
-     */
-    private Boolean isDeleted;
-
-    /**
      * 所属租户ID
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long ownerTenantId;
 
 }

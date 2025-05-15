@@ -15,10 +15,10 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.UserAssembler;
-import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Users;
 import com.fuhouyu.sass.platform.system.mapper.UserMapper;
@@ -28,10 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 /**
  * <p>
@@ -44,7 +41,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, Users> implements UserService {
 
     private static final UserAssembler USERS_ASSEMBLER = UserAssembler.INSTANCE;
 
@@ -66,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long save(UserDTO dto) {
+    public long save(UserDTO dto) {
         long id = snowflakeIdWorker.nextId();
         Users entity = USERS_ASSEMBLER.toEntity(dto);
         entity.setId(id);
@@ -76,26 +73,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void edit(UserDTO dto) {
-        this.userMapper.update(USERS_ASSEMBLER.toEntity(dto));
+        this.userMapper.updateById(USERS_ASSEMBLER.toEntity(dto));
     }
 
-    @Override
-    public int removeById(Long id) {
-        return this.userMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
-        return this.userMapper.deleteByIds(ids);
-    }
 
     @Override
     public UserDTO findById(Long id) {
-        return USERS_ASSEMBLER.toDTO(this.userMapper.queryById(id));
+        return USERS_ASSEMBLER.toDTO(this.userMapper.selectById(id));
     }
 
-    @Override
-    public Function<PageQueryDTO, List<UserDTO>> getPageResult() {
-        return p -> USERS_ASSEMBLER.toDTO(this.userMapper.queryList(p));
-    }
 }

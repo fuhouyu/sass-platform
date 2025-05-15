@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.config;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.ParamConfigs;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,12 +32,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @Schema(name = "ParamConfigPageQueryDTO", description = "参数配置查询的dto对象")
 @EqualsAndHashCode(callSuper = true)
-public class ParamConfigPageQueryDTO extends PageQueryDTO {
+public class ParamConfigPageQueryDTO extends PageQueryDTO<ParamConfigs> {
 
     @Schema(name = "configKey", description = "配置key")
     private String configKey;
 
     @Schema(name = "configName", description = "配置名称")
     private String configName;
+
+    @Schema(name = "groupKey", description = "分组key")
+    private String groupKey;
 
 }

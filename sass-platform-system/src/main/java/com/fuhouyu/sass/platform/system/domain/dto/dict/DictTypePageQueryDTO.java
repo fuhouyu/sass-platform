@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.domain.dto.dict;
 
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.DictType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "DictTypePageQueryDTO", description = "字典类型分页查询的dto对象")
-public class DictTypePageQueryDTO extends PageQueryDTO {
+public class DictTypePageQueryDTO extends PageQueryDTO<DictType> {
 
     @Schema(name = "dictCode", description = "字典类型编码")
     private String dictCode;
@@ -39,8 +40,4 @@ public class DictTypePageQueryDTO extends PageQueryDTO {
     @Schema(name = "isEnabled", description = "启禁用状态")
     private Boolean isEnabled;
 
-    public DictTypePageQueryDTO() {
-        this.setSortColumn("display_order");
-        this.setIsAsc(true);
-    }
 }

@@ -16,11 +16,12 @@
 package com.fuhouyu.sass.platform.system.service;
 
 
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.BasicTenantDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.SaveOrEditTenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.tenant.TenantInfoDetailDTO;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.tenant.*;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantInfo;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,8 +32,22 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/9/21 16:23
  */
-public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
+public interface TenantInfoService extends IService<TenantInfo> {
 
+
+    /**
+     * 保存租户信息
+     *
+     * @param tenantInfoDTO 租户信息dto
+     * @return id
+     */
+    long save(TenantInfoDTO tenantInfoDTO);
+
+    /**
+     * 编辑租户信息
+     * @param tenantInfoDTO 租户信息dto
+     */
+    void edit(TenantInfoDTO tenantInfoDTO);
 
     /**
      * 通过租户编码获取租户
@@ -41,6 +56,14 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @return 租户dto对象
      */
     TenantInfoDTO findByTenantCode(String tenantCode);
+
+    /**
+     * 通过id查询租户信息
+     *
+     * @param id 主键id
+     * @return 租户信息
+     */
+    TenantInfoDTO findById(Long id);
 
     /**
      * 通过id查询出租户的详情
@@ -56,7 +79,7 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @param tenantInfoDTO 租户信息
      * @return id
      */
-    Long saveTenantDetail(SaveOrEditTenantInfoDTO tenantInfoDTO);
+    long saveTenantDetail(SaveOrEditTenantInfoDTO tenantInfoDTO);
 
     /**
      * 修改租户空间详情
@@ -78,4 +101,12 @@ public interface TenantInfoService extends BaseService<Long, TenantInfoDTO> {
      * @param id 主键id
      */
     void resetPassword(Long id);
+
+    /**
+     * 分页查询租户列表
+     *
+     * @param pageQueryDTO 分页查询参数
+     * @return 分页结果
+     */
+    PageResultDTO<TenantInfoDTO> pageList(TenantPageQueryDTO pageQueryDTO);
 }

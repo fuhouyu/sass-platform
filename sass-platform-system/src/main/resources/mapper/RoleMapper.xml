@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.sass.platform.system.mapper.RoleMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Roles" extends="com.fuhouyu.sass.platform.system.mapper.BaseMapper.BaseResultMap">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.Roles" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
         <result column="role_code" property="roleCode" jdbcType="VARCHAR"/>
@@ -87,32 +87,6 @@
         </trim>
     </insert>
 
-    <insert id="insertBatch" parameterType="java.util.List" >
-        INSERT INTO
-        <include refid="TableName"/>
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="AllColumns"/>
-        </trim>
-        VALUES
-        <foreach collection="list" separator="," item="entity">
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{entity.id},
-                #{entity.roleName},
-                #{entity.roleCode},
-                #{entity.displayOrder},
-                #{entity.dataScope},
-                #{entity.ownerTenantId},
-                #{entity.isEnabled},
-                #{entity.isAllowModified},
-                #{entity.isDeleted},
-                #{entity.createdAt},
-                #{entity.updatedAt},
-                #{entity.createdBy},
-                #{entity.updatedBy},
-            </trim>
-        </foreach>
-    </insert>
-
     <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Roles">
         UPDATE
         <include refid="TableName"/>
@@ -135,18 +109,6 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
-        DELETE FROM <include refid="TableName"/>
-        WHERE id = #{id}
-    </delete>
-
-    <delete id="deleteByIds" parameterType="java.util.List">
-        DELETE FROM <include refid="TableName"/>
-        WHERE id IN
-        <foreach collection="list" open="(" close=")" separator="," item="id">
-            #{id}
-        </foreach>
-    </delete>
 
     <select id="queryById" resultMap="BaseResultMap">
         SELECT <include refid="QueryColumns"/>
@@ -169,22 +131,6 @@
         SELECT <include refid="QueryColumns"/>
         FROM <include refid="TableName"/> r
         WHERE r.role_code = #{roleCode}
-    </select>
-
-    <select id="queryList" resultMap="BaseResultMap" >
-        SELECT
-        <include refid="QueryColumns"/>
-                FROM
-        <include refid="TableName"/> r
-        <where>
-            <if test="pageQuery.roleCode != null and pageQuery.roleCode != ''">
-                r.role_code = #{pageQuery.roleCode}
-            </if>
-            <if test="pageQuery.isEnabled != null">
-                AND r.is_enabled = #{pageQuery.isEnabled}
-            </if>
-            AND r.is_deleted = false
-        </where>
     </select>
 
     <delete id="deleteByTenantIds">

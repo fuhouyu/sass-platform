@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuhouyu.sass.platform.system.domain.entity.TenantHasPermission;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/24 19:46
  */
-public interface TenantHasPermissionService {
+public interface TenantHasPermissionService  extends IService<TenantHasPermission> {
 
     /**
      * 保存或更新关联关系

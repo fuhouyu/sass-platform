@@ -15,7 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationPageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.Applications;
 
 /**
  * <p>
@@ -25,7 +29,38 @@ import com.fuhouyu.sass.platform.system.domain.dto.application.ApplicationDTO;
  * @author fuhouyu
  * @since 2025/4/9 20:32
  */
-public interface ApplicationService extends BaseService<String, ApplicationDTO> {
+public interface ApplicationService extends IService<Applications> {
+
+
+    /**
+     * 保存应用信息
+     *
+     * @param applicationDTO 应用信息
+     * @return 应用id
+     */
+    String save(ApplicationDTO applicationDTO);
+
+    /**
+     * 编辑应用信息
+     *
+     * @param applicationDTO 应用信息
+     */
+    void edit(ApplicationDTO applicationDTO);
+
+    /**
+     * 查询应用信息
+     *
+     * @param clientId 应用id
+     */
+    ApplicationDTO findById(String clientId);
+
+    /**
+     * 分页查询应用信息
+     *
+     * @param queryDTO 查询的dto对象
+     * @return 分页查询结果
+     */
+    PageResultDTO<ApplicationDTO> pageList(ApplicationPageQueryDTO queryDTO);
 
     /**
      * 生成客户端密钥

@@ -34,6 +34,7 @@ export const Home: React.FC = () => {
     // 默认选择最近30天
     const [dateRange, setDateRange] = useState<string>('last30');
     const [customDateRange, setCustomDateRange] = useState<[Dayjs | undefined, Dayjs | undefined]>();
+    const [loading, setLoading] = useState<boolean>(true);
     const {t} = useTranslation();
 
     const initVisitSummary = useCallback(async (date: string) => {
@@ -42,6 +43,7 @@ export const Home: React.FC = () => {
             period: 'DAY',
         });
         setVisitSummary(data);
+        setLoading(false);
     }, []);
 
     useEffect(() => {
@@ -86,7 +88,7 @@ export const Home: React.FC = () => {
 
                     />
                 </div>
-                <Card title={t('MatomoVisit.title')}>
+                <Card title={t('MatomoVisit.title')} loading={loading}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <div>
                             <span style={{fontSize: 16}}>{t('MatomoVisit.totalVisits')}</span>
@@ -109,10 +111,10 @@ export const Home: React.FC = () => {
                     </div>
                 </Card>
                 <Flex justify={'space-between'} align={'center'}>
-                    <Card style={{width: '49%'}}>
+                    <Card style={{width: '49%'}} loading={loading}>
                         <VisitTrendChart data={visitSummary}/>
                     </Card>
-                    <Card style={{width: '49%'}}>
+                    <Card style={{width: '49%'}} loading={loading}>
                         <ActionDepthChart data={visitSummary}/>
                     </Card>
                 </Flex>

@@ -15,6 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -23,8 +28,10 @@ import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.AdminUsersAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.AdminUsers;
 import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
 import com.fuhouyu.sass.platform.system.enums.response.UserResponseStatusEnum;
@@ -37,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -55,7 +63,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AdminUserServiceImpl implements AdminUserService {
+public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUsers> implements AdminUserService {
 
     private static final AdminUsersAssembler USERS_ASSEMBLER = AdminUsersAssembler.INSTANCE;
 
@@ -69,22 +77,17 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     private final UserHasRoleService userHasRoleService;
 
+
     @Override
-    public Long save(AdminUserDTO userinfoDTO) {
-        this.validUsernameExists(userinfoDTO.getUsername());
+    public long saveUser(AdminUserDetailDTO userDTO) {
+        this.validUsernameExists(userDTO.getUsername());
         long id = snowflakeIdWorker.nextId();
-        AdminUsers entity = USERS_ASSEMBLER.toEntity(userinfoDTO);
+        AdminUsers entity = USERS_ASSEMBLER.toEntity(userDTO);
         entity.setId(id);
         if (Objects.isNull(entity.getOwnerTenantId())) {
             entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         }
         this.adminUserMapper.insert(entity);
-        return id;
-    }
-
-    @Override
-    public Long saveUser(AdminUserDetailDTO userDTO) {
-        Long id = this.save(userDTO);
         // 保存账号信息
         userDTO.setId(id);
         this.saveAccounts(userDTO);
@@ -125,8 +128,13 @@ public class AdminUserServiceImpl implements AdminUserService {
         AccountDTO account = userDTO.getAccount();
         this.userHasRoleService.saveOrUpdateUserRole(userDTO.getId(), userDTO.getRoleIds());
         if (Objects.nonNull(account) && Objects.nonNull(account.getCredentials())) {
-            this.accountService.edit(account);
+            this.accountService.editAccounts(account);
         }
+    }
+
+    @Override
+    public void edit(AdminUserDTO userDTO) {
+        this.adminUserMapper.update(USERS_ASSEMBLER.toEntity(userDTO));
     }
 
     @Override
@@ -154,49 +162,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUserDTO findById(Long userId) {
-        AdminUsers adminUsers = this.adminUserMapper.queryById(userId);
+        AdminUsers adminUsers = this.adminUserMapper.selectById(userId);
         return USERS_ASSEMBLER.toDTO(adminUsers);
     }
 
     @Override
-    public void edit(AdminUserDTO userinfoDTO) {
-        this.adminUserMapper.update(USERS_ASSEMBLER.toEntity(userinfoDTO));
-    }
-
-    @Override
-    public void saveBatch(List<AdminUserDTO> dtoList) {
-        List<AdminUsers> list = dtoList.stream().map(dto -> {
-            dto.setId(snowflakeIdWorker.nextId());
-            return USERS_ASSEMBLER.toEntity(dto);
-        }).toList();
-        this.adminUserMapper.insertBatch(list);
-    }
-
-    @Override
-    public int removeById(Long id) {
-        User user = ContextHolderStrategy.getContext().getUser();
-        if (id.equals(user.getId())) {
-            throw new ServiceException(UserResponseStatusEnum.USER_NO_PERMISSION);
-        }
-        return this.adminUserMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> ids) {
-        User user = ContextHolderStrategy.getContext().getUser();
-        if (ids.contains(user.getId())) {
-            throw new ServiceException(UserResponseStatusEnum.USER_NO_PERMISSION);
-        }
-        int deleteUserCount = this.adminUserMapper.deleteByIds(ids);
-        this.accountService.removeByUserIds(ids);
-        this.userPositionService.removeByUserIds(ids);
-        this.userHasRoleService.removeByUserIds(ids);
-        return deleteUserCount;
-    }
-
-    @Override
-    public Function<PageQueryDTO, List<AdminUserDTO>> getPageResult() {
-        return this.adminUserMapper::queryDetailList;
+    public PageResultDTO<AdminUserDTO> pageList(AdminUserPageQueryDTO pageQueryDTO) {
+        IPage<AdminUsers> page = this.adminUserMapper.queryList(pageQueryDTO);
+        return PageResultDTO.buildPageResult(page, USERS_ASSEMBLER::toDTO);
     }
 
     /**
@@ -229,7 +202,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         accountDTO.encodeCredentials();
         try {
-            this.accountService.save(accountDTO);
+            this.accountService.saveAccounts(accountDTO);
         } catch (Exception e) {
             LoggerUtil.error(log, "用户账号注册失败: {}", accountDTO, e);
             throw new ServiceException(UserResponseStatusEnum.USER_REGISTER_ERROR);

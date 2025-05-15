@@ -15,7 +15,11 @@
  */
 package com.fuhouyu.sass.platform.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypeDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.dict.DictTypePageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.DictType;
 
 import java.util.List;
 
@@ -27,8 +31,37 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/12/15 17:09
  */
-public interface DictTypeService extends BaseService<Long, DictTypeDTO> {
+public interface DictTypeService extends IService<DictType> {
 
+    /**
+     * 保存字典类型
+     *
+     * @param dto dto对象
+     * @return 主键
+     */
+    long save(DictTypeDTO dto);
+
+    /**
+     * 修改字典类型
+     *
+     * @param dto dto对象
+     */
+    void edit(DictTypeDTO dto);
+
+    /**
+     * 根据主键查询字典类型     * @param id
+     *
+     * @return 字典类型
+     */
+    DictTypeDTO findById(Long id);
+
+    /**
+     * 分页查询字典类型
+     *
+     * @param pageQueryDTO 分页查询对象
+     * @return 分页结果
+     */
+    PageResultDTO<DictTypeDTO> pageList(DictTypePageQueryDTO pageQueryDTO);
 
     /**
      * 检查字典编码是否存在

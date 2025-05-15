@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.TenantHasPermission;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,7 +30,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/24 19:49
  */
-public interface TenantHasPermissionMapper {
+public interface TenantHasPermissionMapper extends BaseMapper<TenantHasPermission> {
 
     /**
      * 批量保存

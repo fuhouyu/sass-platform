@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,7 +30,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/12/14 16:43
  */
-public interface RoleHasPermissionMapper {
+public interface RoleHasPermissionMapper extends BaseMapper<RoleHasPermission> {
 
     /**
      * 批量插入

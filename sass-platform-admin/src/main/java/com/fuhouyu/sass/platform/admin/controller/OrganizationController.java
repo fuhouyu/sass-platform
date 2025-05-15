@@ -132,7 +132,7 @@ public class OrganizationController {
     @PreAuthorize("@auth.hasAnyPermission('system:organization:delete')")
     @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> deleteOrganization(@RequestBody @NotEmpty(message = "未选择要删除的组织") List<Long> idList) {
-        this.organizationService.removeByIds(idList);
+        this.organizationService.deleteByIds(idList);
         return ResponseHelper.success();
     }
 

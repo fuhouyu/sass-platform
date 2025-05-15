@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
@@ -22,6 +25,7 @@ import com.fuhouyu.sass.platform.system.assembler.DictItemAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.dict.DictItemPageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.DictItem;
 import com.fuhouyu.sass.platform.system.enums.response.DictItemResponseStatusEnum;
 import com.fuhouyu.sass.platform.system.enums.response.DictTypeResponseStatusEnum;
@@ -51,7 +55,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DictItemServiceImpl implements DictItemService {
+public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> implements DictItemService {
 
     private static final DictItemAssembler DICT_ITEM_ASSEMBLER = DictItemAssembler.INSTANCE;
 
@@ -81,12 +85,12 @@ public class DictItemServiceImpl implements DictItemService {
     }
 
     @Override
-    public Long save(DictItemDTO dto) {
-        if (!dictTypeService.checkDictCodeExists(dto.getDictCode())) {
+    public long save(DictItemDTO dto) {
+        if (Boolean.FALSE.equals(dictTypeService.checkDictCodeExists(dto.getDictCode()))) {
             throw new ServiceException(DictTypeResponseStatusEnum.DICT_TYPE_NOT_EXISTS,
                     String.format("字典类型 [%s] 不存在", dto.getDictCode()));
         }
-        if (this.checkItemCodeExists(dto.getDictCode(), dto.getItemCode())) {
+        if (Boolean.TRUE.equals(this.checkItemCodeExists(dto.getDictCode(), dto.getItemCode()))) {
             throw new ServiceException(DictItemResponseStatusEnum.DICT_ITEM_CODE_EXISTS,
                     String.format("字典项编码 [%s] 已存在", dto.getItemCode()));
         }
@@ -101,18 +105,9 @@ public class DictItemServiceImpl implements DictItemService {
 
     @Override
     public void edit(DictItemDTO dto) {
-        this.dictItemMapper.update(DICT_ITEM_ASSEMBLER.toEntity(dto));
+        this.dictItemMapper.updateById(DICT_ITEM_ASSEMBLER.toEntity(dto));
     }
 
-    @Override
-    public int removeById(Long id) {
-        return this.dictItemMapper.deleteById(id);
-    }
-
-    @Override
-    public int removeByIds(Collection<Long> id) {
-        return this.dictItemMapper.deleteByIds(id);
-    }
 
     @Override
     public DictItemDTO findById(Long id) {
@@ -121,7 +116,12 @@ public class DictItemServiceImpl implements DictItemService {
     }
 
     @Override
-    public Function<PageQueryDTO, List<DictItemDTO>> getPageResult() {
-        return p -> DICT_ITEM_ASSEMBLER.toDTO(this.dictItemMapper.queryList(p));
+    public PageResultDTO<DictItemDTO> pageList(DictItemPageQueryDTO queryDTO) {
+        LambdaQueryWrapper<DictItem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(DictItem::getDictCode, queryDTO.getDictCode());
+        lambdaQueryWrapper.eq(Objects.nonNull(queryDTO.getIsEnabled()), DictItem::getIsEnabled, queryDTO.getIsEnabled());
+        lambdaQueryWrapper.eq(Objects.nonNull(queryDTO.getItemCode()), DictItem::getItemCode, queryDTO.getItemCode());
+        DictItemPageQueryDTO dictItemPageQueryDTO = this.dictItemMapper.selectPage(queryDTO, lambdaQueryWrapper);
+        return PageResultDTO.buildPageResult(dictItemPageQueryDTO, DICT_ITEM_ASSEMBLER::toDTO);
     }
 }
