@@ -72,6 +72,10 @@ $dark-button-font-hover-color: #2090FF;
 
 // main
 .dark {
+
+  .page-list-container {
+    background-color: $dark-main-border;
+  }
   // 表单搜索头
   .search-header {
     background-color: $dark-main-bgc;

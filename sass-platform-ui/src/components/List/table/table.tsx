@@ -144,61 +144,7 @@ const Table = <T extends object>(tableProps: TableProps<T>) => {
                 />
 
             </div>
-
-            {/*<Pagination*/}
-            {/*    className="pagination"*/}
-            {/*    total={pageResult?.total}*/}
-            {/*    defaultCurrent={pageResult?.pageNum}*/}
-            {/*    defaultPageSize={pageResult?.pageSize}*/}
-            {/*    onChange={(page, pageSize) => {*/}
-            {/*        updateSearchParams({pageNum: page, pageSize: pageSize})*/}
-            {/*    }}*/}
-            {/*/>*/}
         </Card>
-
-        // <div className="table-container">
-        //     {/*<div className={'table-title'}>*/}
-        //     {/*    <div className="title-line">*/}
-        //     {/*        {tableName && <span className="title">{tableName}</span>}*/}
-        //     {/*        <div className="components">*/}
-        //     {/*            {tableComponents?.map((component, index) => (*/}
-        //     {/*                <div className='component' key={index}>*/}
-        //     {/*                    {component}*/}
-        //     {/*                </div>*/}
-        //     {/*            ))}*/}
-        //     {/*        </div>*/}
-        //     {/*    </div>*/}
-        //     {/*    {!disableTableHint && (*/}
-        //     {/*        <div className="tips-container">*/}
-        //     {/*            <Space>*/}
-        //     {/*                <InfoCircleFilled className="table-tips-icon" />*/}
-        //     {/*                <span>{t('Common.listTips')}</span>*/}
-        //     {/*            </Space>*/}
-        //     {/*        </div>*/}
-        //     {/*    )}*/}
-        //     {/*</div>*/}
-        //
-        //
-        //     <AntdTable<T>
-        //         {...tableProps}
-        //         rowKey={tableProps.rowKey ?? 'id'}
-        //         onChange={onChange}
-        //         loading={loading}
-        //         virtual
-        //         scroll={{ y: '100%', x: '100%' }}
-        //         dataSource={pageResult?.list}
-        //         rowSelection={{ ...tableProps.rowSelection, columnWidth: 48 }}
-        //         pagination={{
-        //             defaultCurrent: (searchParams.get('pageNum') ?? 1) as number,
-        //             total: pageResult?.total,
-        //             hideOnSinglePage: false,
-        //             showSizeChanger: true,
-        //             defaultPageSize: pageResult?.pageSize ?? 10,
-        //         }}
-        //         showSorterTooltip={{target: 'sorter-icon'}}
-        //     />
-        // </div>
-
 
     );
 }
