@@ -315,7 +315,6 @@ const TenantResource: React.FC = () => {
                     <S3Upload
                         isPublic={false}
                         showUploadList={false}
-                        showUploadFloatButton
                         prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
