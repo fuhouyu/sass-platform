@@ -15,19 +15,14 @@
  */
 package com.fuhouyu.sass.platform.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.sass.platform.common.utils.SnowflakeIdWorker;
 import com.fuhouyu.sass.platform.system.assembler.AdminUsersAssembler;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageResultDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.AdminUserDetailDTO;
@@ -44,13 +39,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * <p>
@@ -168,8 +161,8 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
 
     @Override
     public PageResultDTO<AdminUserDTO> pageList(AdminUserPageQueryDTO pageQueryDTO) {
-        IPage<AdminUsers> page = this.adminUserMapper.queryList(pageQueryDTO);
-        return PageResultDTO.buildPageResult(page, USERS_ASSEMBLER::toDTO);
+        IPage<AdminUserDTO> page = this.adminUserMapper.queryDetailList(pageQueryDTO);
+        return PageResultDTO.buildPageResult(page);
     }
 
     /**
