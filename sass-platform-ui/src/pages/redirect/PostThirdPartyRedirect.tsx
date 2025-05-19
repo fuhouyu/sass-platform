@@ -121,7 +121,7 @@ export const PostThirdPartyRedirect = () => {
                     setBindModal(false);
                     navigate(BaseUrlConstant.LOGIN_URL);
                 }}
-                onClose={() => setBindModal(false)}
+                afterClose={() => setBindModal(false)}
                 className={'account-bind-modal'}
             >
                 <div className={'account-icon'}>
