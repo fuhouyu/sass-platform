@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {FC, useRef, useState} from "react";
+import {FC, useRef, useState} from "react";
 import './index.scss';
 import {Application as ApplicationModel} from "@/model/application";
 import {useTranslation} from "react-i18next";
@@ -27,7 +27,9 @@ import {TableRefType} from "@components/List/table/interface.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {applicationApi} from "@/apis/application.tsx";
-import {ApplicationManageForm} from "@/pages/application/manage/components/ApplicationManageForm.tsx";
+import {
+  ApplicationManageForm
+} from "@/pages/application/manage/components/ApplicationManageForm.tsx";
 
 export const ApplicationManage: FC = () => {
 

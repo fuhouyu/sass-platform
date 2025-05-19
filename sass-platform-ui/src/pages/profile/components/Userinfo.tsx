@@ -15,7 +15,7 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Button, Flex, Form, Input, message} from "antd";
 import {useUserStore} from "@/store";

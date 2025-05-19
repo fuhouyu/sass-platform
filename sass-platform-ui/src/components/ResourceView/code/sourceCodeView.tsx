@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 
 import {useThemeStore} from "@/store/modules/theme.tsx";

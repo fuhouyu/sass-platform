@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import './index.scss';
 import Player from "xgplayer";
 import Mp4Plugin from "xgplayer-mp4";

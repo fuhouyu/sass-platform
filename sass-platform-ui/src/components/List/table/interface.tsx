@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Ref} from "react";
+import {Ref} from "react";
 import {TableProps as AntdTableProps} from "antd";
 import {PageQuery, PageResult} from "@/model/pageQuery";
 import {AnyObject} from "antd/es/_util/type";

@@ -16,7 +16,7 @@
 import './index.scss'
 import {Button, Col, Descriptions, DescriptionsProps, Flex, Form, Input, Row, Space} from "antd";
 import {Modal} from "@/components";
-import React, {useState} from "react";
+import {useState} from "react";
 import {accountApi} from "@/apis/account.tsx";
 import {useTranslation} from "react-i18next";
 import {EditOutlined} from "@ant-design/icons";

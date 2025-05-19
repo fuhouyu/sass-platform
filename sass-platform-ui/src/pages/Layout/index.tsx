@@ -16,7 +16,7 @@
 
 import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Layout, {Content, Footer} from "antd/es/layout/layout";
 import {LayoutHeader} from "@/pages/Layout/header";
 import {LayoutMenu} from "@/pages/Layout/menu";
@@ -24,7 +24,18 @@ import './index.scss'
 import {Bread} from "@/components";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
 import {QuestionCircleFilled, UnorderedListOutlined} from "@ant-design/icons";
-import {Affix, Badge, Button, Drawer, Flex, Progress, Space, Table, TableColumnsType, Tooltip} from "antd";
+import {
+  Affix,
+  Badge,
+  Button,
+  Drawer,
+  Flex,
+  Progress,
+  Space,
+  Table,
+  TableColumnsType,
+  Tooltip
+} from "antd";
 import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
 import {FileUtils} from "@/utils/fileUtil.tsx";

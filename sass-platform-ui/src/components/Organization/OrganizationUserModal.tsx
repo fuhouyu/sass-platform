@@ -16,7 +16,7 @@
 
 import {Button, Input, Splitter, TableColumnsType, Tag, Tree} from "antd";
 import {userApi} from "@/apis/adminUser.tsx";
-import React, {Key, useEffect, useRef, useState} from "react";
+import {Key, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Userinfo} from "@/model/user.tsx";
 import {PageQuery} from "@/model/pageQuery.tsx";
@@ -86,7 +86,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
             initOrganization().then();
         }
         return () => setPageQuery({} as PageQuery)
-    }, [isModalOpen])
+    }, [initOrganization, isModalOpen])
 
     /**
      * 关闭组织用户modal

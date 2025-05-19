@@ -15,7 +15,7 @@
  */
 
 
-import React, {FC, useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import './index.scss'
 import ReactECharts from 'echarts-for-react';
 import {Card, Flex, List} from "antd";

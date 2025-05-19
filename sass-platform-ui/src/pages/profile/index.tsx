@@ -15,7 +15,7 @@
  */
 
 
-import React, {useState} from "react";
+import {useState} from "react";
 import "./index.scss"
 import {SettingOutlined, UserOutlined} from "@ant-design/icons";
 import {Avatar, Divider, Menu, message, Space, Tooltip} from "antd";

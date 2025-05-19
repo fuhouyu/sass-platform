@@ -19,7 +19,7 @@ import {useTranslation} from "react-i18next";
 import {ParamConfig as ParamConfigModel} from "@/model/paramConfig";
 import {Button, Form, Input, message, Popconfirm, TableColumnsType} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useRef, useState} from "react";
+import {useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Modal, PageList, PermissionButton} from "@/components";
 import {paramConfigApi} from '@/apis/paramConfig';

@@ -16,7 +16,7 @@
 
 
 import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {AccountType} from "@/model/account.tsx";
 import {Button, Form, Input, message, Modal, Spin} from "antd";
 import {accountApi} from "@/apis/account.tsx";

@@ -14,7 +14,21 @@
  * limitations under the License.
  */
 
-import {Button, Col, Drawer, Flex, Form, Input, InputNumber, message, Radio, Row, Select, Space, Tooltip} from "antd"
+import {
+  Button,
+  Col,
+  Drawer,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Tooltip
+} from "antd"
 import {Trans, useTranslation} from "react-i18next";
 import {Application as ApplicationModel} from "@/model/application.tsx";
 import {CommonConstant} from "@/constants/commonConstant.tsx";
@@ -22,7 +36,7 @@ import {applicationApi} from "@/apis/application.tsx";
 import {IconFont, S3Upload} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {AnyObject} from "antd/es/_util/type";
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {useLocaleStore} from "@/store";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
@@ -85,7 +99,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
             }]);
         }
         form.setFieldsValue({...applicationInfo});
-    }, [updateId])
+    }, [form, preview, updateId])
 
     useEffect(() => {
         initApplicationInfo().then()

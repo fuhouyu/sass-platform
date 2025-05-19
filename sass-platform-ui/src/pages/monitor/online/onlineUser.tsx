@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {FC, useRef, useState} from "react";
+import {FC, useRef, useState} from "react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useTranslation} from "react-i18next";
 import {Button, DatePicker, Input, Popconfirm, TableColumnsType, Tooltip} from "antd";

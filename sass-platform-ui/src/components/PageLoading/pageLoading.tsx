@@ -15,7 +15,6 @@
  */
 
 
-import React from "react";
 import './index.scss'
 import {Space} from "antd";
 import {PageLoadingProps} from "@components/PageLoading/interface.tsx";

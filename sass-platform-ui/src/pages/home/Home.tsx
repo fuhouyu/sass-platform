@@ -15,7 +15,7 @@
  */
 
 
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {matomoApi} from "@/apis/matomo.tsx";
 import VisitTrendChart from "@/pages/home/components/matomoVisit/VisitTrendChart.tsx";

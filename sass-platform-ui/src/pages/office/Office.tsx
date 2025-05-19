@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {FC, useCallback, useEffect, useState} from "react";
+import {FC, lazy, useCallback, useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
 import {message} from "antd";
@@ -27,7 +27,7 @@ import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
 
 
-const DocumentEditor = React.lazy(() =>
+const DocumentEditor = lazy(() =>
     import('@onlyoffice/document-editor-react').then(module => ({
         default: module.DocumentEditor
     }))
