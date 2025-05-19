@@ -15,7 +15,7 @@
  */
 
 import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
-import React, {useCallback, useState} from "react";
+import {useCallback, useState} from "react";
 import {organizationApi} from "@/apis/organization.tsx";
 
 /**

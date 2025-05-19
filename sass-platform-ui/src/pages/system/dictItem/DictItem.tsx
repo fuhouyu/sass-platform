@@ -18,20 +18,20 @@ import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictItem as DictItemModel} from "@/model/dictItem";
 import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    Switch,
-    TableColumnsType,
-    Tooltip
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Radio,
+  Select,
+  Switch,
+  TableColumnsType,
+  Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
@@ -140,7 +140,7 @@ export const DictItem = () => {
 
     useEffect(() => {
         queryDictType().then();
-    }, [])
+    }, [queryDictType])
 
 
 

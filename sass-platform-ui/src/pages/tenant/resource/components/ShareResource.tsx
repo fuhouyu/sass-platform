@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Button, Flex, Input, InputNumber, message, Space, Typography} from 'antd';
 import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
 import dayjs from 'dayjs';

@@ -21,28 +21,31 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-    {ignores: ['dist']},
-    {
-        extends: [js.configs.recommended, ...tseslint.configs.recommended],
-        files: ['**/*.{ts,tsx}'],
-        languageOptions: {
-            ecmaVersion: 2020,
-            globals: globals.browser,
-            parserOptions: {
-                project: ['./tsconfig.app.json'],
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
-        plugins: {
-            'react-hooks': reactHooks,
-            'react-refresh': reactRefresh,
-        },
-        rules: {
-            ...reactHooks.configs.recommended.rules,
-            'react-refresh/only-export-components': [
-                'warn',
-                {allowConstantExport: true},
-            ],
-        },
+  {ignores: ['dist', 'dist*', 'node_modules']},
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+        projectService: true,
+      },
+
     },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', {allowConstantExport: true}],
+      '@typescript-eslint/no-unused-vars': 'off', // 禁用 TypeScript 未使用变量的警告
+      '@typescript-eslint/no-explicit-any': 'off', // 允许使用any
+      '@typescript-eslint/no-unused-expressions': 'off', // 关闭对未使用的表达式的检查
+      '@eslint-react/hooks-extra/no-unnecessary-use-prefix': 'off',
+      ...reactHooks.configs.recommended.rules,
+    },
+  },
 )

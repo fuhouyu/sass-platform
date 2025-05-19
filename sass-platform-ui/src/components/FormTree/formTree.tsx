@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useRef, useState} from "react";
+import {Key, useEffect, useRef, useState} from "react";
 import {Checkbox, CheckboxProps, Space, Tree, TreeProps} from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import './index.scss'

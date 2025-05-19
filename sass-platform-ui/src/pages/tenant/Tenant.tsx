@@ -15,7 +15,7 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {Button, Drawer, Input, Popconfirm, Space, Switch, TableColumnsType} from "antd";
 import {TenantInfo} from "@/model/tenant";
 import {PageList, PermissionButton} from "@/components";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import "./index.scss"
 import {Avatar, Button, Divider, Flex, Form, Input, Select, Space} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";

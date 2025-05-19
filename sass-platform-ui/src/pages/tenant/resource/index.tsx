@@ -15,26 +15,26 @@
  */
 
 
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {
-    Breadcrumb,
-    BreadcrumbProps,
-    Button,
-    Divider,
-    Drawer,
-    Dropdown,
-    Flex,
-    Input,
-    List,
-    Menu,
-    MenuProps,
-    Modal,
-    Popconfirm,
-    Select,
-    Space,
-    TableColumnsType,
-    Tag,
-    Tooltip
+  Breadcrumb,
+  BreadcrumbProps,
+  Button,
+  Divider,
+  Drawer,
+  Dropdown,
+  Flex,
+  Input,
+  List,
+  Menu,
+  MenuProps,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  TableColumnsType,
+  Tag,
+  Tooltip
 } from "antd";
 import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
 import {Trans, useTranslation} from "react-i18next";
@@ -42,14 +42,14 @@ import {resourceApi} from "@/apis/resource.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
 import {
-    DownloadOutlined,
-    EditOutlined,
-    EyeOutlined,
-    FolderOutlined,
-    LeftOutlined,
-    LockOutlined,
-    ShareAltOutlined,
-    UploadOutlined
+  DownloadOutlined,
+  EditOutlined,
+  EyeOutlined,
+  FolderOutlined,
+  LeftOutlined,
+  LockOutlined,
+  ShareAltOutlined,
+  UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
@@ -65,7 +65,11 @@ import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.t
 import {useButton} from "@/hooks/useButton.tsx";
 import {AnyObject} from "antd/es/_util/type";
 import {useNotification} from "@/hooks/useNotification.tsx";
-import {getCategoryInfo, ResourceCategoryEnum, resourceTypeInfo,} from "@/enums/ResourceCategoryEnum.tsx";
+import {
+  getCategoryInfo,
+  ResourceCategoryEnum,
+  resourceTypeInfo,
+} from "@/enums/ResourceCategoryEnum.tsx";
 import {FileUtils} from "@/utils/fileUtil.tsx";
 import {ShareResource} from "./components/ShareResource";
 

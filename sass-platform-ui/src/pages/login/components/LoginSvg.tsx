@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import LoginBackgroundSvg from '@assets/images/background.svg?react';
+import LoginBackgroundSvg from '@/assets/background.svg?react';
 import {FC} from "react";
 
 

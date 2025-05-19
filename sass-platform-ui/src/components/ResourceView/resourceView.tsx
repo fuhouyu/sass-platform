@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, {lazy, Suspense, useCallback, useEffect, useState} from "react"
+import {lazy, Suspense, useCallback, useEffect, useState} from "react"
 import {ResourceViewProps} from "./interface"
 import {ImageView} from "@components/ResourceView/image/imageView.tsx";
 import "./index.scss"

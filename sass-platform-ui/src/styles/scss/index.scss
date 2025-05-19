@@ -13,22 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-import './index.scss'
-import {useTranslation} from "react-i18next";
-import {Space} from "antd";
-
-export const ResourceLoading = ({title}: { title?: string | undefined }) => {
-    const {t} = useTranslation();
-    return (
-        <div className={'loading-container'}>
-            <Space align={'center'} direction={'vertical'}>
-                <div>
-                    <div className="resource-loader"></div>
-                </div>
-                <div className="loading-span">{title ?? t('Common.resourceLoading')}</div>
-            </Space>
-        </div>
-    )
-}

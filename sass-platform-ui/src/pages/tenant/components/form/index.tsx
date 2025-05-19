@@ -15,21 +15,21 @@
  */
 
 import {
-    Avatar,
-    Button,
-    Col,
-    DatePicker,
-    Flex,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Radio,
-    Space,
-    Steps,
-    Tooltip
+  Avatar,
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Radio,
+  Space,
+  Steps,
+  Tooltip
 } from "antd";
-import React, {Key, useCallback, useEffect, useState} from "react";
+import {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.tsx";
 import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
 import {Menu} from "@/model/menu.tsx";

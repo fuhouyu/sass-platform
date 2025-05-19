@@ -100,7 +100,7 @@ request.interceptors.response.use(async function (response) {
     // 如果是1001，表示用户需要绑定
     if (response.data.code === 400) {
         const paramErrors = response.data.data as ParamError[];
-        paramErrors.forEach(({code, message, errorLevel}) => {
+      paramErrors.forEach(({message, errorLevel}) => {
             // 根据 errorLevel 判断通知的类型
             if (errorLevel === 'ERROR') {
                 notification.error({

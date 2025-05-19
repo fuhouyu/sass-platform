@@ -18,20 +18,20 @@ import './index.scss'
 import {useTranslation} from "react-i18next";
 import {DictType as DictTypeModel} from "@/model/dictType";
 import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Select,
-    Switch,
-    TableColumnsType,
-    Tooltip
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Radio,
+  Select,
+  Switch,
+  TableColumnsType,
+  Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import React, {useRef, useState} from "react";
+import {useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType';

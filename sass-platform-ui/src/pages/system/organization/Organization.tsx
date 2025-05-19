@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import React, {Key, useEffect, useRef, useState} from "react";
+import {Key, useEffect, useRef, useState} from "react";
 import {Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {
-    Button,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Popconfirm,
-    Radio,
-    Splitter,
-    Switch,
-    TableColumnsType,
-    Tree,
-    TreeSelect
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Radio,
+  Splitter,
+  Switch,
+  TableColumnsType,
+  Tree,
+  TreeSelect
 } from "antd";
 import {AnyObject} from "antd/es/_util/type";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
@@ -127,7 +127,7 @@ export const Organization = () => {
 
     useEffect(() => {
         initOrganization().then();
-    }, []);
+    }, [initOrganization]);
 
     /**
      * table列选择
