@@ -15,22 +15,11 @@
  */
 
 
-import {IConfig} from "@onlyoffice/document-editor-react";
+import {AnyObject} from "antd/es/_util/type";
 
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
+declare global {
+  interface Window {
+    _mtm?: AnyObject[]; // 或更具体的类型，例如: MatomoEvent[]
+    _paq?: AnyObject[]; // 或更具体的类型，例如: MatomoEvent[]
+  }
 }

@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
+import {Tenant} from "@/views/tenant/Tenant";
 
-import {IConfig} from "@onlyoffice/document-editor-react";
-
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
-}
+export default Tenant;

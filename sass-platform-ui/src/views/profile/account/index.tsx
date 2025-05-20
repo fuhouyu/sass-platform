@@ -15,22 +15,18 @@
  */
 
 
-import {IConfig} from "@onlyoffice/document-editor-react";
+import {WeLinkLogin} from "@/components";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
+/**
+ * 账号绑定
+ * @constructor
+ */
+const AccountBind = () => {
+    usePageTitle('Menu.profile');
+    return (
+        <WeLinkLogin redirectType={'bind'}/>
+    )
 }
+
+export default AccountBind;

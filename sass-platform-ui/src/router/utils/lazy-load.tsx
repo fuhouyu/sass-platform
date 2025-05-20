@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
+import {FC, ReactNode, Suspense} from 'react';
 
-import {IConfig} from "@onlyoffice/document-editor-react";
-
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
-}
+/**
+ * 组件懒加载，结合Suspense实现
+ * @param Component 组件对象
+ * @returns 返回新组件
+ */
+export const LazyLoad = (Component: FC): ReactNode => {
+  return (
+    <Suspense fallback={<div className="route-loading"></div>}>
+      <Component/>
+    </Suspense>
+  );
+};

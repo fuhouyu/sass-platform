@@ -17,19 +17,11 @@ package com.fuhouyu.sass.platform.system.components.handle;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.sass.platform.system.domain.entity.BaseEntity;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
 
 /**
  * <p>
@@ -50,7 +42,8 @@ public class BaseEntityHandle implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "createdAt", LocalDateTime.class, nowTime);
         this.strictInsertFill(metaObject, "updatedAt", LocalDateTime.class, nowTime);
         this.strictInsertFill(metaObject, "isDeleted", Boolean.class, false);
-        this.strictInsertFill(metaObject, "ownerTenantId", Long.class, ContextHolderStrategy.getContext().getUser().getTenantId());
+
+        this.strictInsertFill(metaObject, "ownerTenantId", Long.class, getOwnerTenant(metaObject));
         this.strictInsertFill(metaObject, "createdBy", String.class, getUsername(metaObject, "createdBy"));
         this.strictInsertFill(metaObject, "updatedBy", String.class, getUsername(metaObject, "updatedBy"));
     }
@@ -71,8 +64,29 @@ public class BaseEntityHandle implements MetaObjectHandler {
      */
     private String getUsername(MetaObject metaObject, String fieldName) {
         String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        String fieldValue = metaObject.findProperty(fieldName, true);
-        return Objects.isNull(fieldValue) ? username : fieldValue;
+        String field = metaObject.findProperty(fieldName, true);
+        if (Objects.isNull(field)) {
+            return null;
+        }
+        Object value = metaObject.getValue(field);
+        return Objects.isNull(value) ? username : value.toString();
+    }
 
+    /**
+     * 获取租户id
+     *
+     * @param metaObject metaObject
+     * @return 租户id
+     */
+    private Long getOwnerTenant(MetaObject metaObject) {
+        String fieldName = metaObject.findProperty("ownerTenantId", true);
+        if (Objects.isNull(fieldName)) {
+            return null;
+        }
+        Object value = metaObject.getValue(fieldName);
+        if (Objects.isNull(value)) {
+            return ContextHolderStrategy.getContext().getUser().getTenantId();
+        }
+        return (Long) value;
     }
 }

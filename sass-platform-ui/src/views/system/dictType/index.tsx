@@ -15,22 +15,6 @@
  */
 
 
-import {IConfig} from "@onlyoffice/document-editor-react";
+import {DictType} from "@/views/system/dictType/DictType";
 
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
-}
+export default DictType

@@ -18,6 +18,7 @@
 import {DataRouter} from "react-router-dom";
 import {StateCreator} from "zustand";
 import {create} from "zustand/react";
+import router from "@/router";
 
 
 /**
@@ -27,7 +28,7 @@ interface RouterState {
     /**
      * router
      */
-    router: DataRouter | null;
+    router: DataRouter;
 }
 
 interface RouterAction {
@@ -43,7 +44,7 @@ interface RouterAction {
  * @param set set
  */
 const createRouterSlice: StateCreator<RouterState & RouterAction> = (set) => ({
-    router: null,
+  router: router,
     storeRouter: (router: DataRouter) => set({router})
 });
 
