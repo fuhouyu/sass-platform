@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
+import {Permission} from "@/views/system/permission/Permission";
 
-import {IConfig} from "@onlyoffice/document-editor-react";
-
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
-}
+export default Permission;

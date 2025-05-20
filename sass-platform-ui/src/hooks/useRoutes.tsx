@@ -14,72 +14,74 @@
  * limitations under the License.
  */
 
-import {NotFound} from "../pages/error/notfound/NotFound.tsx";
 import {lazy, useCallback, useState} from "react";
 import {Menu} from "@/model/menu.tsx";
 import {getAccessToken} from "@/utils";
 import {useRouterStore, useUserStore} from "@/store";
 import {createBrowserRouter, DataRouteObject} from "react-router-dom";
-import {commonRoutes} from "@/routes/routes.tsx";
+import NotFound from "@/views/error/notfound";
+import router from "@/router";
+import {loader} from "@/router/utils";
 
 
-const modules = import.meta.glob('../pages/**/index.tsx');
+const modules = import.meta.glob('../views/**/index.tsx');
 const lazyElement = (path: string) => {
-    const module = modules[`../pages/${path}/index.tsx`];
-    if (!module) {
-        return (<NotFound/>);
-    }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const Component = lazy(module);
-    return (
-        <Component/>
-    );
+  const module = modules[`../views/${path}/index.tsx`];
+  if (!module) {
+    return (<NotFound/>);
+  }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  const Component = lazy(module);
+  return (
+    <Component/>
+  );
 };
 
-export const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
+const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
 
-    if (menuProps === undefined || menuProps.length === 0) {
-        return [];
+  if (menuProps === undefined || menuProps.length === 0) {
+    return [];
+  }
+  return menuProps.map((item) => {
+    return {
+      id: item.id!,
+      path: item.routePath ?? '',
+      children: item.children ? parseRoutes(item.children) : [],
+      element: item.componentPath && lazyElement(item.componentPath),
+      loader: loader,
     }
-    return menuProps.map((item) => {
-        return {
-            id: item.id!,
-            path: item.routePath ?? '',
-            children: item.children ? parseRoutes(item.children) : [],
-            element: item.componentPath && lazyElement(item.componentPath),
-        }
-    })
+  })
 };
 
 /**
  * 路由hook
  */
 export const useRoutes = () => {
-    const {userMenus, fetchUserMenus} = useUserStore();
-    const [initialized, setInitialized] = useState(false);
-    const {storeRouter} = useRouterStore(state => state);
+  const {userMenus, fetchUserMenus} = useUserStore();
+  const [initialized, setInitialized] = useState(false);
+  const {storeRouter} = useRouterStore(state => state);
 
-    /**
-     * 更新动态路由
-     */
-    const updateDynamicRoutes = useCallback(async () => {
-        const rootRoutes = [...commonRoutes];
-        const accessToken = getAccessToken();
-        if (!accessToken) {
-            const updatedRouter = createBrowserRouter(rootRoutes);
-            storeRouter(updatedRouter);
-            setInitialized(true);
-            return;
-        }
-        if (initialized || userMenus) return;
-        const menus = await fetchUserMenus();
-        setInitialized(true);
-        const dynamicRoutes = parseRoutes(menus);
-        rootRoutes[0].children = [...dynamicRoutes, ...(rootRoutes[0].children ?? [])];
-        const updatedRouter = createBrowserRouter(rootRoutes);
-        storeRouter(updatedRouter);
-    }, [userMenus, initialized, fetchUserMenus, storeRouter]);
+  /**
+   * 更新动态路由
+   */
+  const updateDynamicRoutes = useCallback(async () => {
+    const rootRoutes = [...router.routes];
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      const updatedRouter = createBrowserRouter(rootRoutes);
+      storeRouter(updatedRouter);
+      setInitialized(true);
+      return;
+    }
+    if (initialized || userMenus) return;
+    const menus = await fetchUserMenus();
+    setInitialized(true);
+    const dynamicRoutes = parseRoutes(menus);
+    rootRoutes[0].children = [...dynamicRoutes, ...(rootRoutes[0].children ?? [])];
+    const updatedRouter = createBrowserRouter(rootRoutes);
+    storeRouter(updatedRouter);
+  }, [userMenus, initialized, fetchUserMenus, storeRouter]);
 
-    return {initialized, updateDynamicRoutes};
+  return {initialized, updateDynamicRoutes};
 }

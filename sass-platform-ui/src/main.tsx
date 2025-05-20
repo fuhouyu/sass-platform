@@ -15,8 +15,9 @@
  */
 
 import {createRoot} from 'react-dom/client'
-import './index.scss'
 import "normalize.css"
+import '@/styles/scss/global.scss';
+import './index.scss'
 import '@ant-design/v5-patch-for-react-19';
 import {App} from "@/App";
 

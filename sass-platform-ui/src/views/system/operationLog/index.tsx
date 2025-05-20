@@ -15,22 +15,6 @@
  */
 
 
-import {IConfig} from "@onlyoffice/document-editor-react";
+import {OperationLog} from "@/views/system/operationLog/OperationLog";
 
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
-
-    /**
-     * server url
-     */
-    documentServerUrl: string;
-
-    /**
-     * api url
-     */
-    documentServerApiUrl: string;
-}
+export default OperationLog

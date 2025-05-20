@@ -15,11 +15,11 @@
  */
 
 
-import {useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {RouterProvider} from "react-router-dom";
 import '@/i18n/index'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
-import {ConfigProvider, theme} from "antd";
+import {App as AntdApp, ConfigProvider, theme} from "antd";
 import {useLocaleStore, useRouterStore} from "@/store";
 import {Locale} from "antd/es/locale";
 import enUS from 'antd/locale/en_US';
@@ -32,92 +32,93 @@ import dayjs from "dayjs";
 import * as echarts from "echarts/core";
 
 echarts.registerTheme('dark-white-font', {
-    backgroundColor: '#2A2A2A',
+  backgroundColor: '#2A2A2A',
+  textStyle: {
+    color: '#ffffff'
+  },
+  title: {
     textStyle: {
-        color: '#ffffff'
+      color: '#ffffff'
     },
-    title: {
-        textStyle: {
-            color: '#ffffff'
-        },
-        subtextStyle: {
-            color: '#cccccc'
-        }
-    },
-    legend: {
-        textStyle: {
-            color: '#ffffff'
-        }
-    },
-    tooltip: {
-        backgroundColor: '#333333', // 深色背景
-        borderColor: '#555555',
-        borderWidth: 1,
-        textStyle: {
-            color: '#ffffff'        // 白色字体
-        }
-    },
-    xAxis: {
-        axisLabel: {
-            color: '#ffffff'
-        },
-        axisLine: {
-            lineStyle: {
-                color: '#888888'
-            }
-        }
-    },
-    yAxis: {
-        axisLabel: {
-            color: '#ffffff'
-        },
-        axisLine: {
-            lineStyle: {
-                color: '#888888'
-            }
-        },
-        splitLine: {
-            lineStyle: {
-                color: '#333333'
-            }
-        }
+    subtextStyle: {
+      color: '#cccccc'
     }
+  },
+  legend: {
+    textStyle: {
+      color: '#ffffff'
+    }
+  },
+  tooltip: {
+    backgroundColor: '#333333', // 深色背景
+    borderColor: '#555555',
+    borderWidth: 1,
+    textStyle: {
+      color: '#ffffff'        // 白色字体
+    }
+  },
+  xAxis: {
+    axisLabel: {
+      color: '#ffffff'
+    },
+    axisLine: {
+      lineStyle: {
+        color: '#888888'
+      }
+    }
+  },
+  yAxis: {
+    axisLabel: {
+      color: '#ffffff'
+    },
+    axisLine: {
+      lineStyle: {
+        color: '#888888'
+      }
+    },
+    splitLine: {
+      lineStyle: {
+        color: '#333333'
+      }
+    }
+  }
 });
-export const App: React.FC = () => {
-    const {initialized, updateDynamicRoutes} = useRoutes();
-    const language = useLocaleStore(state => state.language);
-    const [antdLocale, setAntdLocale] = useState<Locale>();
-    const {router} = useRouterStore(state => state);
-    const currentTheme = useThemeStore(state => state.theme);
+export const App: FC = () => {
+  const {initialized, updateDynamicRoutes} = useRoutes();
+  const language = useLocaleStore(state => state.language);
+  const [antdLocale, setAntdLocale] = useState<Locale>();
+  const {router} = useRouterStore(state => state);
+  const currentTheme = useThemeStore(state => state.theme);
 
 
+  useEffect(() => {
+    updateDynamicRoutes().then();
+    dayjs.locale(language);
+    setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
+  }, [language, updateDynamicRoutes]);
 
-    useEffect(() => {
-        updateDynamicRoutes().then();
-        dayjs.locale(language);
-        setAntdLocale(language === CommonConstant.ZH_CN_LANGUAGE ? zhCN : enUS);
-    }, [language, updateDynamicRoutes]);
-
-    if (!initialized) {
-        return <PageLoading/>;
-    }
-    // 路由加载完成后，渲染页面
-    return (
-        <ConfigProvider
-            locale={antdLocale}
-            theme={{
-                token: {
-                    colorBgBase: currentTheme === 'dark' ? "#161616" : '#ffffff'
-                },
-                algorithm: currentTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
-                components: {
-                    Tree: {
-                        titleHeight: 32,
-                    },
-                },
-            }}
-        >
-            <RouterProvider router={router!}/>
-        </ConfigProvider>
-    );
+  if (!initialized) {
+    return <PageLoading/>;
+  }
+  // 路由加载完成后，渲染页面
+  return (
+    <ConfigProvider
+      locale={antdLocale}
+      theme={{
+        token: {
+          colorBgBase: currentTheme === 'dark' ? "#161616" : '#ffffff'
+        },
+        algorithm: currentTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        components: {
+          Tree: {
+            titleHeight: 32,
+          },
+        },
+      }}
+    >
+      <AntdApp>
+        <RouterProvider router={router}/>
+      </AntdApp>
+    </ConfigProvider>
+  );
 };
