@@ -64,8 +64,12 @@ public class BaseEntityHandle implements MetaObjectHandler {
      */
     private String getUsername(MetaObject metaObject, String fieldName) {
         String username = ContextHolderStrategy.getContext().getUser().getUsername();
-        String fieldValue = metaObject.findProperty(fieldName, true);
-        return Objects.isNull(fieldValue) ? username : fieldValue;
+        String field = metaObject.findProperty(fieldName, true);
+        if (Objects.isNull(field)) {
+            return null;
+        }
+        Object value = metaObject.getValue(field);
+        return Objects.isNull(value) ? username : value.toString();
     }
 
     /**
@@ -75,10 +79,14 @@ public class BaseEntityHandle implements MetaObjectHandler {
      * @return 租户id
      */
     private Long getOwnerTenant(MetaObject metaObject) {
-        String fieldValue = metaObject.findProperty("ownerTenantId", true);
-        if (Objects.isNull(fieldValue)) {
+        String fieldName = metaObject.findProperty("ownerTenantId", true);
+        if (Objects.isNull(fieldName)) {
+            return null;
+        }
+        Object value = metaObject.getValue(fieldName);
+        if (Objects.isNull(value)) {
             return ContextHolderStrategy.getContext().getUser().getTenantId();
         }
-        return Long.valueOf(fieldValue);
+        return (Long) value;
     }
 }
