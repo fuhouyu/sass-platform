@@ -15,7 +15,7 @@
     "@aws-sdk/client-s3": "^3.750.0",
     "@aws-sdk/lib-storage": "^3.750.0",
     "@marsidev/react-turnstile": "^1.1.0",
-    "@onlyoffice/document-editor-react": "^1.5.1",
+    "@onlyoffice/document-editor-react": "^2.0.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/event-source-polyfill": "^1.0.5",
     "@types/react": "^19.0.0",
