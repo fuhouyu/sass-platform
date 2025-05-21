@@ -15,7 +15,7 @@
  */
 
 import {Button, Input, Splitter, TableColumnsType, Tag, Tree} from "antd";
-import {userApi} from "@/apis/adminUser.tsx";
+import {userApi} from "@/apis/adminUser.ts";
 import {Key, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Userinfo} from "@/model/user.tsx";

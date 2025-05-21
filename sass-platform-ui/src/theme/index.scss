@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// 主容器
 $dark-container-bgc: #161616;
 $dark-container-border: #303030;
 $dark-menu-bac: #2D2D2D;
@@ -21,156 +20,68 @@ $dark-main-bgc: #303030;
 $dark-main-border: #161616;
 $dark-aside-border: #1C1D1F;
 $dark-antd-modal-header: #353535;
-// modal
+
 $dark-modal-bac: #2A2A2A;
 
-// 按钮
 $dark-button-bgc: #2A2A2A;
 $dark-button-border: #585858;
 
-// 字体
 $dark-font-color: #ffffff;
 $dark-button-font-hover-color: #2090FF;
 
-
 .dark {
-
-  .resource-container {
-    background-color: $dark-container-bgc;
-  }
-  .content-body {
-    background-color: $dark-main-bgc;
-  }
-  // 页头
-  .layout-header {
-    background-color: $dark-container-bgc;
-    border-bottom: 1px solid $dark-container-border;
-
-    .header-title-divider {
-      background-color: $dark-container-bgc;
-    }
-
-    .header-title-container h2 {
-      color: $dark-font-color;
-    }
-  }
-
-  // 侧边栏
-  .ant-layout-sider-light, .ant-menu-light {
-    background-color: $dark-container-bgc;
-  }
-
-  .layout-main-sider, .ant-layout-sider-light, .ant-layout-sider-children {
-    border-right: $dark-aside-border;
-  }
-
-  .ant-layout-sider-trigger, .ant-layout-sider-children {
-    background: $dark-main-bgc;
-    border-top: 1px solid $dark-aside-border;
-  }
-}
-
-// main
-.dark {
-
-  .page-list-container {
-    background-color: $dark-main-border;
-  }
-  // 表单搜索头
-  .search-header {
-    background-color: $dark-main-bgc;
-  }
-
-  .table-container {
-    background-color: $dark-main-bgc;
-  }
-
-  .tips-container {
-    background-color: $dark-main-bgc;
-    border: 1px solid $dark-aside-border;
-  }
-
-  .tree-container, {
-    background-color: $dark-main-bgc;
-  }
-
+  // ---------------- 通用容器样式 ----------------
+  .resource-container,
+  .file-actions-list,
+  .ant-list-item:hover,
+  .tree-container,
+  .space-bucket-breadcrumb,
   .resource-content .title-line {
     background-color: $dark-container-bgc;
   }
 
-  .space-bucket-breadcrumb {
-    background-color: $dark-container-bgc;
+  .content-body,
+  .search-header,
+  .table-container,
+  .tips-container,
+  .page-list-container,
+  .log-item-value {
+    background-color: $dark-main-bgc;
   }
 
-  .table-tips-icon {
+  .tips-container {
+    border: 1px solid $dark-aside-border;
+  }
+
+  // ---------------- 页头 ----------------
+  .layout-header,
+  .header-title-divider {
+    background-color: $dark-container-bgc;
+    border-bottom: 1px solid $dark-container-border;
+  }
+
+  .header-title-container h2 {
     color: $dark-font-color;
   }
 
-  .title-line .title:before {
-    background-color: $dark-font-color;
-  }
-}
-
-// 登录
-.dark {
-  .login-left {
-    background: radial-gradient(
-                    circle at 50px 50px,
-                    #3a4f75 0%, /* 着重色高亮区域 */
-                    #1e2a44 30%, /* 过渡到深色 */
-                    #121c30 60%,
-                    #0b1220 85%,
-                    #050a15 100%
-    );
-    color: $dark-font-color;
-    font-family: "Segoe UI", sans-serif;
-
+  // ---------------- 侧边栏 ----------------
+  .ant-layout-sider-light,
+  .ant-menu-light,
+  .layout-main-sider,
+  .ant-layout-sider-children {
+    background-color: $dark-main-bgc;
+    border-right: $dark-aside-border;
   }
 
-  .login-right {
-    background-color: $dark-container-bgc;
-
-    .foot-copyright {
-      color: $dark-font-color;
-    }
-
-    // 工具
-    .login-tools {
-      background-color: $dark-container-border;
-
-      button {
-        color: $dark-font-color;
-      }
-    }
-
-    .login-title {
-      color: $dark-font-color;
-    }
-
-    .qrcode-title {
-      color: $dark-font-color;
-
-      span {
-        color: #007bff;
-      }
-    }
+  .ant-layout-sider-trigger {
+    background: $dark-main-bgc;
+    border-top: 1px solid $dark-aside-border;
   }
-}
 
-// 租户空间
-.dark {
-  .file-actions-list {
-    background-color: $dark-container-bgc;
-
-    .ant-list-item:hover {
-      background-color: $dark-container-bgc;
-    }
-  }
-}
-
-// 按钮
-.dark {
-  .ant-btn-primary, .add-button, .edit-button {
+  // ---------------- 按钮 ----------------
+  .ant-btn-primary,
+  .add-button,
+  .edit-button {
     background-color: $dark-button-bgc;
     border: 1px solid $dark-button-border;
     color: $dark-font-color;
@@ -180,26 +91,63 @@ $dark-button-font-hover-color: #2090FF;
     background-color: $dark-button-bgc;
     color: $dark-button-font-hover-color;
   }
-}
 
-// modal
-.dark {
+  // ---------------- modal ----------------
   .ant-modal-header .ant-modal-title {
     background: $dark-antd-modal-header;
   }
-}
 
-// 个人中心
-.dark {
-  .profile-left, .ant-menu-light, .profile-right, .ant-layout-header {
+  // ---------------- 登录 ----------------
+  .login-left {
+    background: radial-gradient(
+        circle at 50px 50px,
+        #3a4f75 0%,
+        #1e2a44 30%,
+        #121c30 60%,
+        #0b1220 85%,
+        #050a15 100%
+    );
+    color: $dark-font-color;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .login-right {
+    background-color: $dark-container-bgc;
+
+    .foot-copyright,
+    .login-title,
+    .qrcode-title {
+      color: $dark-font-color;
+    }
+
+    .qrcode-title span {
+      color: #007bff;
+    }
+
+    .login-tools {
+      background-color: $dark-container-border;
+
+      button {
+        color: $dark-font-color;
+      }
+    }
+  }
+
+  // ---------------- 个人中心 ----------------
+  .profile-left,
+  .profile-right,
+  .ant-menu-light,
+  .ant-layout-header {
     background-color: $dark-main-bgc;
     border-right: 1px solid $dark-main-border;
   }
-}
 
-// 日志
-.dark {
-  .log-item-value {
-    background-color: $dark-main-bgc;
+  // ---------------- 其他 ----------------
+  .table-tips-icon {
+    color: $dark-font-color;
+  }
+
+  .title-line .title:before {
+    background-color: $dark-font-color;
   }
 }

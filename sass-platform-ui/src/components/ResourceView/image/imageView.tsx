@@ -16,7 +16,7 @@
 import {useEffect, useState} from 'react';
 import './index.scss'
 import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
-import {resourceApi} from "@/apis/resource.tsx";
+import {resourceApi} from "@/apis/resource.ts";
 
 export const ImageView = ({id}: { id: string }) => {
     const [viewUrl, setViewUrl] = useState<string>();

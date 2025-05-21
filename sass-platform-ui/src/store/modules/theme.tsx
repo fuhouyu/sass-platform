@@ -16,7 +16,7 @@
 
 
 import {StateCreator} from "zustand";
-import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {CommonConstant} from "@/constants/commonConstant.ts";
 import {create} from "zustand/react";
 
 interface ThemeState {

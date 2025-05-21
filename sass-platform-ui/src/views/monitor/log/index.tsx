@@ -14,6 +14,98 @@
  * limitations under the License.
  */
 
-import {LogMonitor} from "@/views/monitor/log/LogMonitor.tsx";
 
-export default LogMonitor
+import {FC, useEffect, useRef, useState} from "react";
+import {sseClient} from "@/utils/sse.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
+import {Card, List, Segmented, Space, Spin, Typography} from "antd";
+import './index.scss'
+import {MessageEvent} from "event-source-polyfill";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {useTranslation} from "react-i18next";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+
+const {Text} = Typography;
+
+const LogMonitor: FC = () => {
+  usePageTitle('Menu.logMonitor');
+  const [logs, setLogs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const listRef = useRef<HTMLDivElement>(null);
+  const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+  const defaultLogLevel = querySearchParams().logLevel ? querySearchParams().logLevel : 'INFO'
+  const {t} = useTranslation();
+
+  const onMessage = (e: MessageEvent) => {
+    const data = JSON.parse(e.data);
+    if (data === 'heartbeat') {
+      return;
+    }
+    setLogs(prev => [...prev, data]);
+    setLoading(false);
+  }
+  useEffect(() => {
+    sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR_URL}?logLevel=${defaultLogLevel}`, {
+      onMessage: e => onMessage(e),
+    })
+
+  }, [defaultLogLevel])
+  useEffect(() => {
+    // 滚动到底部
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [logs]);
+
+  return (
+    <Card title={t('LogMonitor.title')}
+          extra={<Segmented
+            defaultValue={defaultLogLevel}
+            options={['INFO', 'ERROR']}
+            onChange={(value: string) => {
+              setLogs([])
+              updateSearchParams({logLevel: value})
+              sseClient.connect(`${BaseApiUrlConstant.LOG_MONITOR_URL}?logLevel=${value}`, {
+                onMessage: (e) => onMessage(e),
+              });
+            }}
+          />}
+          className={'log-container'}>
+
+
+      <Space size={'large'}/>
+      <div style={{position: 'relative', height: '600px'}}>
+        <Spin spinning={loading}
+              style={{
+                position: 'absolute',
+                top: 180,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 2
+              }}/>
+        <div
+          className={'log-content'}
+          ref={listRef}
+
+        >
+          <List
+            dataSource={logs}
+            renderItem={(item, index) => {
+              const color = defaultLogLevel === 'INFO' ? '#00ff00' : 'red'
+              return <List.Item key={index}>
+                <Text
+                  style={{
+                    color: color
+                  }}
+                  className={'log-text'}>{item}</Text>
+              </List.Item>
+            }}
+          />
+        </div>
+      </div>
+
+    </Card>
+  )
+}
+
+export default LogMonitor;

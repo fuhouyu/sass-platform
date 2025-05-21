@@ -22,7 +22,7 @@ import i18n from 'i18next';
 import {IconFont} from '@/components';
 import {useLocaleStore} from "@/store";
 import type {ItemType} from "antd/es/menu/interface";
-import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {CommonConstant} from "@/constants/commonConstant.ts";
 
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);

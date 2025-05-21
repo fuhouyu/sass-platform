@@ -22,7 +22,7 @@ import './index.scss'
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useUserStore} from "@/store";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 
 
 const getBreadcrumbName = (path: string, routers: Menu[]) => {

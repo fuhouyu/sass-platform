@@ -16,7 +16,7 @@
 
 import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
 import {useCallback, useState} from "react";
-import {organizationApi} from "@/apis/organization.tsx";
+import {organizationApi} from "@/apis/organization.ts";
 
 /**
  * 设置树数据

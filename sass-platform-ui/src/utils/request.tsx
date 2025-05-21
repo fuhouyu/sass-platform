@@ -18,8 +18,8 @@ import axios, {AxiosInstance} from "axios";
 import {getAccessToken, getRefreshToken, removeToken, storeToken} from "@/utils";
 import {message, notification} from "antd";
 import {UserBind} from "@/model/authentication.tsx";
-import {authenticationApi} from "@/apis/authentication.tsx";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {authenticationApi} from "@/apis/authentication.ts";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {useRouterStore} from "@/store";
 
 

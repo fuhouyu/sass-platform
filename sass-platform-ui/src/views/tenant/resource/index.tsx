@@ -38,7 +38,7 @@ import {
 } from "antd";
 import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
 import {Trans, useTranslation} from "react-i18next";
-import {resourceApi} from "@/apis/resource.tsx";
+import {resourceApi} from "@/apis/resource.ts";
 import type {TableRowSelection} from "antd/es/table/interface";
 import './index.scss'
 import {
@@ -53,15 +53,15 @@ import {
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
 import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
-import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
+import {tenantSpaceApi} from "@/apis/tenantSpace.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {Resource} from "@/model/resource.tsx";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.tsx";
+import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.ts";
 import {useButton} from "@/hooks/useButton.tsx";
 import {AnyObject} from "antd/es/_util/type";
 import {useNotification} from "@/hooks/useNotification.tsx";

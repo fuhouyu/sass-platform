@@ -17,7 +17,7 @@
 import {useEffect} from "react";
 import {getAccessToken} from "@/utils";
 import {Button, Result} from "antd";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 

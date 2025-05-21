@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {resourceApi} from "@/apis/resource.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
+import {resourceApi} from "@/apis/resource.ts";
 import {useCallback} from "react";
 import {request} from "@/utils";
 

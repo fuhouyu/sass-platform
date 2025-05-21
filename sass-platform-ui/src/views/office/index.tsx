@@ -14,6 +14,82 @@
  * limitations under the License.
  */
 
-import {Office} from "@/views/office/Office.tsx";
+
+import {FC, lazy, useCallback, useEffect, useState} from "react";
+import {useParams, useSearchParams} from "react-router-dom";
+import {useLocaleStore, useUserStore} from "@/store";
+import {message} from "antd";
+import {OnlyOffice} from "@/model/office.tsx";
+import {onlyOfficeApi} from "@/apis/onlyOffice.ts";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {Userinfo} from "@/model/user.tsx";
+import {useTranslation} from "react-i18next";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
+
+
+const DocumentEditor = lazy(() =>
+  import('@onlyoffice/document-editor-react').then(module => ({
+    default: module.DocumentEditor
+  }))
+);
+
+
+const Office: FC = () => {
+  usePageTitle('Menu.office');
+  const {id} = useParams();
+  const {t} = useTranslation();
+  const [params] = useSearchParams();
+  const [officeView, setOfficeView] = useState<OnlyOffice | undefined>(undefined)
+  const {fetchUserinfo} = useUserStore(state => state);
+  const {preview} = useResourceAction();
+  const [userinfo, setUserinfo] = useState<Userinfo | undefined>(undefined);
+  const language = useLocaleStore(state => state.language);
+
+  const initOfficeView = useCallback(async () => {
+    if (!id) {
+      message.error("没有找到该资源").then();
+      return <div></div>;
+    }
+
+    const onlyOffice: OnlyOffice = params.get('mode') === 'VIEW' ?
+      await onlyOfficeApi.view(id) : await onlyOfficeApi.edit(id);
+    setOfficeView(onlyOffice);
+  }, [id, params, setOfficeView]);
+
+  useEffect(() => {
+    fetchUserinfo().then(res => {
+      setUserinfo(res);
+    });
+  }, [fetchUserinfo]);
+
+  useEffect(() => {
+    initOfficeView().then();
+  }, [initOfficeView]);
+
+  if (userinfo === undefined || officeView === undefined) {
+    return <ResourceLoading title={t('Office.loading')}/>
+  }
+
+
+  return (
+    <DocumentEditor
+      id="documentEditor"
+      documentServerUrl={officeView?.documentServerUrl}
+      config={{
+        ...officeView?.config,
+        editorConfig: {
+          user: {
+            id: userinfo?.id,
+            name: userinfo?.realName,
+            image: preview(userinfo.avatar)
+          },
+          lang: language
+        },
+      }}
+      onLoadComponentError={(_, errorDescription) => console.log(errorDescription)}
+    />
+  );
+}
 
 export default Office;

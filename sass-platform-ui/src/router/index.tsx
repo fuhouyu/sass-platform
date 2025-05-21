@@ -15,8 +15,7 @@
  */
 
 import {createBrowserRouter, RouteObject} from "react-router-dom";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
-import {Home} from "@/views/home/Home.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {PageLoading} from "@/components";
 import {LazyLoad, loader} from "@/router/utils";
 import {lazy} from "react";
@@ -27,13 +26,12 @@ const routes: RouteObject[] = [
   {
     id: 'layout',
     path: '/',
-    element: LazyLoad(lazy(() => import('@/views/Layout/index.tsx'))),
+    element: LazyLoad(lazy(() => import('@/layouts'))),
     loader: loader,
     children: [
       {
         id: 'home',
         path: BaseUrlConstant.HOME_URL,
-        Component: Home,
         element: LazyLoad(lazy(() => import('@/views/home/index.tsx'))),
       },
       {
