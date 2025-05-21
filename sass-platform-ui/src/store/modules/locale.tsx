@@ -16,7 +16,7 @@
 
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
-import {CommonConstant} from "@/constants/commonConstant.tsx";
+import {CommonConstant} from "@/constants/commonConstant.ts";
 
 /**
  * 状态

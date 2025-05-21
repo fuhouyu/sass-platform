@@ -23,7 +23,7 @@ import {Button, message} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.tsx";
-import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import MarkdownPreview from '@uiw/react-markdown-preview';
 

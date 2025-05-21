@@ -30,7 +30,7 @@ import {
   Tooltip
 } from "antd";
 import {Key, useCallback, useEffect, useState} from "react";
-import {tenantApi} from "@/apis/tenant.tsx";
+import {tenantApi} from "@/apis/tenant.ts";
 import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
 import {Menu} from "@/model/menu.tsx";
 import TextArea from "antd/es/input/TextArea";
@@ -40,8 +40,8 @@ import {useLocaleStore} from "@/store";
 import './index.scss'
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Userinfo} from "@/model/user.tsx";
-import {tenantSpaceApi} from "@/apis/tenantSpace.tsx";
-import {CommonConstant} from "@/constants/commonConstant";
+import {tenantSpaceApi} from "@/apis/tenantSpace.ts";
+import {CommonConstant} from "@/constants/commonConstant.ts";
 import {TenantFormProps} from "@/views/tenant/components/form/interface.ts";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import dayjs, {Dayjs} from 'dayjs';

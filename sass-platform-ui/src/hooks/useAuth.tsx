@@ -19,7 +19,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {message} from 'antd';
 import {getAccessToken, getRefreshToken, removeToken} from "@/utils";
 import {useUserStore} from "@/store";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 
 const useAuth = () => {
     const navigate = useNavigate();

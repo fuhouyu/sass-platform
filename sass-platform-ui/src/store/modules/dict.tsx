@@ -16,7 +16,7 @@
 
 
 import {DictItem} from "@/model/dictItem.tsx";
-import {dictItemApi} from "@/apis/dictItem.tsx";
+import {dictItemApi} from "@/apis/dictItem.ts";
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
 

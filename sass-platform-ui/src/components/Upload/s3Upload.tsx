@@ -16,7 +16,7 @@
 
 import React from "react";
 import {Upload as AntdUpload} from "antd";
-import {resourceApi} from "@/apis/resource.tsx";
+import {resourceApi} from "@/apis/resource.ts";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
 import {RcFile} from "antd/es/upload";
 import {StsTemporaryTokenResponse} from "@/model/resource.tsx";

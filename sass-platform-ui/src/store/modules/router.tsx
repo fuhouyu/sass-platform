@@ -25,18 +25,18 @@ import router from "@/router";
  * routerState
  */
 interface RouterState {
-    /**
-     * router
-     */
-    router: DataRouter;
+  /**
+   * router
+   */
+  router: DataRouter;
 }
 
 interface RouterAction {
-    /**
-     * 存储router
-     * @param router router
-     */
-    storeRouter: (router: DataRouter) => void;
+  /**
+   * 存储router
+   * @param router router
+   */
+  storeRouter: (router: DataRouter) => void;
 }
 
 /**
@@ -45,9 +45,9 @@ interface RouterAction {
  */
 const createRouterSlice: StateCreator<RouterState & RouterAction> = (set) => ({
   router: router,
-    storeRouter: (router: DataRouter) => set({router})
+  storeRouter: (router: DataRouter) => set({router})
 });
 
 export const useRouterStore = create<RouterState & RouterAction>((...a) => ({
-    ...createRouterSlice(...a)
+  ...createRouterSlice(...a)
 }));

@@ -25,7 +25,7 @@ import {IconFont, S3Upload} from "@/components";
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import type {MenuItemType} from "antd/es/menu/interface";
 import {Userinfo} from "@/views/profile/components/Userinfo.tsx";
-import {AccountsSetting} from "@/views/profile/account/AccountsSetting.tsx";
+import {AccountsSetting} from "@/views/profile/components/AccountsSetting.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
 interface MenuItem extends MenuItemType {

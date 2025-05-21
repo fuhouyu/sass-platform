@@ -19,13 +19,13 @@ import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {useCallback, useEffect, useState} from "react";
 import {AccountType} from "@/model/account.tsx";
 import {Button, Form, Input, message, Modal, Spin} from "antd";
-import {accountApi} from "@/apis/account.tsx";
+import {accountApi} from "@/apis/account.ts";
 import {useTranslation} from "react-i18next";
 import {IconFont} from "@/components";
 import './index.scss';
 import {ThirdPartyBindAuthentication, UserAuthentication} from "@/model/authentication.tsx";
 import {useUserStore} from "@/store";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.tsx";
+import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 
 const PostThirdPartyRedirect = () => {
 

@@ -17,14 +17,14 @@
 
 import {FC, useEffect, useState} from "react";
 import {RouterProvider} from "react-router-dom";
-import '@/i18n/index'
+import '@/i18n'
 import {useRoutes} from "@/hooks/useRoutes.tsx";
 import {App as AntdApp, ConfigProvider, theme} from "antd";
 import {useLocaleStore, useRouterStore} from "@/store";
 import {Locale} from "antd/es/locale";
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
-import {CommonConstant} from "./constants/commonConstant";
+import {CommonConstant} from "./constants/commonConstant.ts";
 import {PageLoading} from "./components";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import 'dayjs/locale/zh-cn';

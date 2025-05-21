@@ -31,8 +31,8 @@ import {
 } from "antd"
 import {Trans, useTranslation} from "react-i18next";
 import {Application as ApplicationModel} from "@/model/application.tsx";
-import {CommonConstant} from "@/constants/commonConstant.tsx";
-import {applicationApi} from "@/apis/application.tsx";
+import {CommonConstant} from "@/constants/commonConstant.ts";
+import {applicationApi} from "@/apis/application.ts";
 import {IconFont, S3Upload} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {AnyObject} from "antd/es/_util/type";

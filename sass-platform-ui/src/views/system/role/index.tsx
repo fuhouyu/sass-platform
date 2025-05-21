@@ -14,7 +14,392 @@
  * limitations under the License.
  */
 
+import {FC, Key, useRef, useState} from "react";
+import './index.scss'
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Radio,
+  Select,
+  Switch,
+  TableColumnsType,
+  Tooltip
+} from "antd";
+import {Role as RoleModel} from "@/model/role";
+import {roleApi} from "@/apis/role.ts";
+import type {TableRowSelection} from "antd/es/table/interface";
+import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
+import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
+import {useTranslation} from "react-i18next";
+import {permissionApi} from "@/apis/permission.ts";
+import {Menu} from "@/model/menu";
+import {useButton} from "@/hooks/useButton.tsx";
+import {RolePermissionConstant} from "@/constants/permissionConstant.ts";
+import {useLocaleStore} from "@/store";
+import {CommonConstant} from "@/constants/commonConstant.ts";
+import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
+import {TableRefType} from "@/components/List/table/interface";
+import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
-import {Role} from "@/views/system/role/Role";
+const Role: FC = () => {
+  usePageTitle('Menu.roleManage');
+  const {t} = useTranslation();
+  const buttonPermissions = useButton(RolePermissionConstant.List);
+  const initForm: RoleModel = {
+    displayOrder: 1,
+    isEnabled: true,
+    dataScope: 'ALL',
+  }
+  const columns: TableColumnsType = [
+    {
+      title: t('Role.name'),
+      dataIndex: 'roleName',
+      showSorterTooltip: {target: 'full-header'},
+      align: "center",
+    },
+    {
+      title: t('Role.code'),
+      dataIndex: 'roleCode',
+      defaultSortOrder: 'descend',
+      align: "center",
+    },
+    {
+      title: t('Common.displayOrder'),
+      dataIndex: 'displayOrder',
+      align: "center",
+      sorter: true,
+      defaultSortOrder: "descend",
+      showSorterTooltip: false
+    },
+    {
+      title: t('Common.status'),
+      dataIndex: 'isEnabled',
+      align: 'center',
+      render: (_, record: RoleModel) => (
+        <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
+          await roleApi.status(record.id!, checked);
+          await tableRef?.current?.refreshPageList();
+        }}/>
+      )
+    },
+
+    {
+      title: t('Common.updatedAt'),
+      dataIndex: 'updatedAt',
+      width: 180,
+      align: "center",
+    },
+    {
+      title: t('Common.updatedBy'),
+      dataIndex: 'updatedBy',
+      align: "center",
+    },
+    {
+      title: t('Common.action'),
+      dataIndex: 'action',
+      align: "center",
+      render: (_, record: RoleModel) => {
+        return (
+          <PermissionButton permissionStr={RolePermissionConstant.EDIT}
+                            buttonPermissions={buttonPermissions}>
+            <EditButton onClick={() => openModal(record.id)}/>
+          </PermissionButton>
+        )
+      }
+    }
+  ];
+
+  const tableRef = useRef<TableRefType<RoleModel>>(null);
+  const {querySearchParams, updateSearchParams} = useRouteSearchParams();
+  const [updateId, setUpdateId] = useState<string | undefined>();
+  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const [roleQuery, setRoleQuery] = useState<Record<string, string>>({...querySearchParams()});
+  const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
+  const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
+  const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
+  const language = useLocaleStore((state) => state.language);
+
+  /**
+   * 打开模态组
+   * @param roleId 角色id
+   */
+  const openModal = async (roleId?: string) => {
+    setUpdateId(roleId);
+    const treeData = await permissionApi.getPermissionTreeSelect();
+    setTreeSelectData(treeData);
+    if (roleId) {
+      const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
+      setFormInitValues(roleInfo);
+      setPermissionIds(roleInfo.permissionIds as Key[]);
+    } else {
+      setFormInitValues(initForm);
+      setPermissionIds([]);
+    }
+    setIsModalOpen(true);
+  }
+
+  /**
+   * 处理角色表单
+   */
+  const handleForm = async () => {
+    await form.validateFields();
+    const role: RoleModel = form.getFieldsValue();
+    role.permissionIds = permissionIds;
+    setIsModalButtonLoading(true);
+    try {
+      await (updateId ? roleApi.editInfoApi(updateId, role) : roleApi.saveInfoApi(role));
+      message.success(t('Common.success')).then()
+      await tableRef?.current?.refreshPageList();
+      setIsModalOpen(false);
+    } finally {
+      setIsModalButtonLoading(false)
+    }
+  }
+
+
+  /**
+   * table列选择
+   */
+  const rowSelection: TableRowSelection<RoleModel> = {
+    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+  };
+
+  return (
+    <>
+      <PageList
+        tableProps={{
+          tableRef: tableRef,
+          tableName: t('Role.list'),
+          columns: columns,
+          pageApi: roleApi.pageInfoListApi,
+          rowSelection: rowSelection,
+          tableComponents: [
+            <>
+              <PermissionButton permissionStr={RolePermissionConstant.ADD}
+                                buttonPermissions={buttonPermissions}>
+                <AddButton onClick={() => openModal()}/>
+              </PermissionButton>
+              <PermissionButton permissionStr={RolePermissionConstant.DELETE}
+                                buttonPermissions={buttonPermissions}>
+                <Popconfirm
+                  title={t('Button.delete')}
+                  description={t('Button.deleteConfirm')}
+                  okText={t('Common.yes')}
+                  cancelText={t('Common.no')}
+                  onConfirm={async () => {
+                    await roleApi.deleteInfoApi(rowKeys as string[]);
+                    await tableRef?.current?.refreshPageList();
+                  }}
+                >
+                  <DeleteButton
+                    disabled={rowKeys === undefined || rowKeys.length === 0}/>
+                </Popconfirm>
+              </PermissionButton>
+            </>
+          ]
+        }}
+        headerSearchProps={{
+          components: [
+            <><label htmlFor="roleCode">{t('Role.code')}</label>
+              <Input
+                allowClear
+                defaultValue={roleQuery.roleCode}
+                placeholder={t('Role.codePlaceholder')}
+                id={'roleCode'}
+                onChange={(e) => {
+                  setRoleQuery({roleCode: e.target.value})
+                }}/>
+            </>,
+            <>
+              <span>{t('Common.status')}</span>
+              <Select
+                defaultValue={roleQuery.isEnabled}
+                allowClear
+                key={'isEnabled'}
+                placeholder={t('Common.statusPlaceholder')}
+                onChange={(value) => roleQuery['isEnabled'] = value}
+                options={[
+                  {value: 'true', label: <span>{t('Common.enabled')}</span>},
+                  {value: 'false', label: <span>{t('Common.disabled')}</span>}
+                ]}
+              />
+            </>
+          ],
+          onSearchClick: () => updateSearchParams(roleQuery),
+
+        }}
+      />
+
+      <Modal
+        destroyOnClose={true}
+        title={updateId ? t('Role.edit') : t('Role.add')}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={[
+          <Button key='onOk' type="primary" loading={isModalButtonLoading}
+                  onClick={handleForm}>{t('Button.submit')}</Button>,
+          <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
+        ]}
+      >
+        <Form<RoleModel>
+          name="modal-form"
+          form={form}
+          labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 6}}
+          clearOnDestroy={true}
+          autoComplete="off"
+          initialValues={{...formInitValues}}
+        >
+          <Form.Item
+            label={t('Role.name')}
+            name="roleName"
+            validateTrigger="onBlur"
+            key="roleName"
+            colon={false}
+            required={true}
+            hasFeedback
+            validateFirst={true}
+            rules={[{
+              required: true,
+              type: "string",
+              message: t('Role.namePlaceholder'),
+              max: 50,
+            }
+            ]}
+          >
+            <Input placeholder={t('Role.namePlaceholder')} maxLength={50}/>
+          </Form.Item>
+
+          <Form.Item
+            label={t('Role.code')}
+            name="roleCode"
+            validateTrigger="onBlur"
+            key="roleCode"
+            colon={false}
+            required={true}
+            validateFirst={true}
+            hasFeedback
+            rules={[{
+              required: true,
+              type: "string",
+              message: t('Role.codePlaceholder'),
+              max: 50,
+            },
+              {
+                required: true,
+                validator: async (_, value: string) => {
+                  if (updateId != null || value == null || value == '') {
+                    return;
+                  }
+                  const exists = await roleApi.checkRoleCodeExists(value);
+                  if (exists) {
+                    return Promise.reject(new Error(t('Role.codeExistsErrorMessage')));
+                  }
+                }
+              }
+            ]}
+          >
+            <Input
+              suffix={<Tooltip title={t('Role.codeTips')}>
+                <IconFont type={'i-tips-hint'}/>
+              </Tooltip>}
+              placeholder={t('Role.namePlaceholder')}
+              maxLength={50}/>
+          </Form.Item>
+
+          <Form.Item
+            label={t('Common.displayOrder')}
+            name="displayOrder"
+            validateTrigger="onBlur"
+            key="displayOrder"
+            colon={false}
+            required={true}
+            hasFeedback
+            validateFirst={true}
+            rules={[{
+              required: true,
+              type: "number",
+              message: t('Common.displayOrderPlaceholder'),
+            }]}
+          >
+            <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '30%'}}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={t('Role.dataScope')}
+            name="dataScope"
+            key="dataScope"
+            colon={false}
+            required={true}
+          >
+            <Select
+              key={'dataScope'}
+              placeholder={t('Role.dataScopePlaceholder')}
+              options={[
+                {value: 'ALL', label: <span>全部</span>},
+                {value: 'DEPT', label: <span>当前部门</span>},
+                {value: 'DEPT_AND_SUB', label: <span>部门及下辖</span>},
+                {value: 'ONLY_USER', label: <span>仅本人</span>},
+              ]}
+            />
+          </Form.Item>
+
+
+          <Form.Item
+            label={t('Common.status')}
+            name="isEnabled"
+            key="isEnabled"
+            colon={false}
+            required={true}
+          >
+            <Radio.Group>
+              <Radio value={true}>{t('Common.enabled')}</Radio>
+              <Radio value={false}>{t('Common.disabled')}</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            label={t('Role.permissionIds')}
+            key="permissionIds"
+            name="permissionIds"
+            colon={false}
+            required={true}
+            valuePropName={'checked'}
+          >
+            <FormTree<Menu>
+              formTreeProps={{
+                fieldNames: {key: 'id'},
+                checkedKeys: permissionIds,
+                onCheck: (checked: {
+                  checked: Key[];
+                  halfChecked: Key[];
+                } | Key[]) => {
+                  if (checked instanceof Array) {
+                    setPermissionIds(checked as React.Key[]);
+                    return
+                  }
+                  setPermissionIds(checked.checked);
+                },
+                titleRender: (menu: Menu) => t(`${menu.permissionName}`),
+                treeData: treeSelectData,
+              }}
+              onSelectedAll={(ids: string[]) => {
+                setPermissionIds(ids);
+              }}
+            />
+          </Form.Item>
+
+
+        </Form>
+      </Modal>
+    </>
+  )
+}
 
 export default Role;

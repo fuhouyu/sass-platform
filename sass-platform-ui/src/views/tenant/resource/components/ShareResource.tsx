@@ -19,7 +19,7 @@ import {CopyOutlined, LinkOutlined} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import {useTranslation} from "react-i18next";
 import './index.scss';
-import {resourceApi} from "@/apis/resource.tsx";
+import {resourceApi} from "@/apis/resource.ts";
 
 const {Text} = Typography;
 
