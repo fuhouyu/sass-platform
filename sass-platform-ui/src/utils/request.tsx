@@ -24,7 +24,7 @@ import {useRouterStore} from "@/store";
 
 
 const request: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL ?? '/api',
+  baseURL: import.meta.env.VITE_SERVER_URL ?? '/api',
     timeout: 10000,
 });
 
