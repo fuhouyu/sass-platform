@@ -43,8 +43,8 @@ jobs:
           VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
           VITE_MATOMO_URL: ${{ secrets.VITE_MATOMO_URL }}
           VITE_MATOMO_SITE_ID: ${{ secrets.VITE_MATOMO_SITE_ID }}
-          VITE_SERVER_URL: ${{ vars.VITE_API_URL }}
-          VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
           VITE_LOGIN_REDIRECT_URI: ${{ vars.VITE_LOGIN_REDIRECT_URI }}
         run: |
           cd sass-platform-ui
