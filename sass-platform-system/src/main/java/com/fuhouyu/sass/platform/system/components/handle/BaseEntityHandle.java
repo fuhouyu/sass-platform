@@ -63,13 +63,12 @@ public class BaseEntityHandle implements MetaObjectHandler {
      * @return 用户名
      */
     private String getUsername(MetaObject metaObject, String fieldName) {
-        String username = ContextHolderStrategy.getContext().getUser().getUsername();
         String field = metaObject.findProperty(fieldName, true);
         if (Objects.isNull(field)) {
             return null;
         }
         Object value = metaObject.getValue(field);
-        return Objects.isNull(value) ? username : value.toString();
+        return Objects.isNull(value) ? ContextHolderStrategy.getContext().getUser().getUsername() : value.toString();
     }
 
     /**
