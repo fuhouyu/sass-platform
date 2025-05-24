@@ -16,10 +16,10 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {ParamConfig as ParamConfigModel} from "@/model/paramConfig";
+import {IParamConfig} from "@/types/paramConfig";
 import {Button, Form, Input, message, Popconfirm, TableColumnsType} from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import {useRef, useState} from "react";
+import {Key, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {Modal, PageList, PermissionButton} from "@/components";
 import {paramConfigApi} from '@/apis/paramConfig.ts';
@@ -81,7 +81,7 @@ const ParamConfig = () => {
       title: t('Common.action'),
       dataIndex: 'action',
       align: "center",
-      render: (_, record: ParamConfigModel) => {
+      render: (_, record: IParamConfig) => {
         return (<PermissionButton permissionStr={ParamConfigPermissionConstant.EDIT}
                                   buttonPermissions={buttonPermissions}>
           <EditButton onClick={() => openModal(record.id)}/>
@@ -91,14 +91,14 @@ const ParamConfig = () => {
   ];
 
   const [updateId, setUpdateId] = useState<string | undefined>();
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const tableRef = useRef<TableRefType<ParamConfigModel>>(null);
+  const tableRef = useRef<TableRefType<IParamConfig>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
-  const [formInitValues, setFormInitValues] = useState<ParamConfigModel>({});
+  const [formInitValues, setFormInitValues] = useState<IParamConfig>({});
   const language = useLocaleStore((state) => state.language);
   /**
    * 打开模态组
@@ -107,7 +107,7 @@ const ParamConfig = () => {
   const openModal = async (id?: string) => {
     setUpdateId(id);
     if (id) {
-      const paramConfig: ParamConfigModel = await paramConfigApi.getInfoByIdApi(id);
+      const paramConfig: IParamConfig = await paramConfigApi.getInfoByIdApi(id);
       setFormInitValues(paramConfig);
     } else {
       setFormInitValues({});
@@ -120,7 +120,7 @@ const ParamConfig = () => {
    */
   const handleForm = async () => {
     await form.validateFields();
-    const paramConfig: ParamConfigModel = form.getFieldsValue();
+    const paramConfig: IParamConfig = form.getFieldsValue();
     setIsModalButtonLoading(true);
     try {
       await (updateId ? paramConfigApi.editInfoApi(updateId, paramConfig) : paramConfigApi.saveInfoApi(paramConfig));
@@ -136,9 +136,9 @@ const ParamConfig = () => {
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<ParamConfigModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-    getCheckboxProps: (record: ParamConfigModel) => ({
+  const rowSelection: TableRowSelection<IParamConfig> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
+    getCheckboxProps: (record: IParamConfig) => ({
       disabled: !record.isAllowModified
     }),
   };
@@ -216,7 +216,7 @@ const ParamConfig = () => {
           <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
         ]}
       >
-        <Form<ParamConfigModel>
+        <Form<IParamConfig>
           name="modal-form"
           form={form}
           labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 7}}

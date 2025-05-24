@@ -34,7 +34,7 @@ import {
   TreeSelect
 } from "antd";
 import {permissionApi} from "@/apis/permission.ts";
-import {Menu} from "@/model/menu";
+import {IMenu} from "@/types/menu";
 import './index.scss'
 import {useTranslation} from "react-i18next";
 import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
@@ -56,8 +56,8 @@ import {usePageTitle} from "@/hooks/usePageTitle.tsx";
  * @param key key
  * @param children 子集
  */
-const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] => {
-  return list.map((node: Menu) => {
+const updateTreeData = (list: IMenu[], key: Key, children: IMenu[]): IMenu[] => {
+  return list.map((node: IMenu) => {
     if (node.id === key) {
       return {
         ...node,
@@ -77,25 +77,25 @@ const updateTreeData = (list: Menu[], key: React.Key, children: Menu[]): Menu[] 
 
 const Permission: FC = () => {
   usePageTitle('Menu.permissionManage');
-  const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
+  const [treeSelectData, setTreeSelectData] = useState<IMenu[]>([]);
 
   const {t} = useTranslation();
   const buttonPermissions = useButton(PermissionConstant.List);
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
+  const [rowKeys, setRowKeys] = useState<Key[]>([]);
   const [updateId, setUpdateId] = useState<string | undefined>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const tableRef = useRef<TableRefType<Menu>>(null);
+  const tableRef = useRef<TableRefType<IMenu>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [permissionQuery, setPermissionQuery] = useState<Record<string, string>>({
     ...querySearchParams()
   });
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-  const [formParentPermission, setFormParentPermission] = useState<Menu>({} as Menu);
-  const [lazyTreeData, setLazyTreeData] = useState<Menu[]>([]);
+  const [formParentPermission, setFormParentPermission] = useState<IMenu>({} as IMenu);
+  const [lazyTreeData, setLazyTreeData] = useState<IMenu[]>([]);
   const language = useLocaleStore((state) => state.language);
 
-  const columns: TableColumnsType<Menu> = [
+  const columns: TableColumnsType<IMenu> = [
     {
       title: t('Permission.name'),
       dataIndex: 'permissionName',
@@ -119,7 +119,7 @@ const Permission: FC = () => {
       title: t('Common.status'),
       dataIndex: 'isEnabled',
       align: 'center',
-      render: (_, record: Menu) => (
+      render: (_, record: IMenu) => (
         <Switch
           disabled={!record.isAllowModified}
           defaultChecked={record.isEnabled} onChange={async (checked) => {
@@ -145,22 +145,20 @@ const Permission: FC = () => {
       align: 'center',
       width: 120,
       fixed: 'right',
-      render: (_: AnyObject, record: Menu) => {
-        return (<>
-          <PermissionButton buttonPermissions={buttonPermissions}
-                            permissionStr={PermissionConstant.EDIT}>
-            <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
-          </PermissionButton>
-        </>)
+      render: (_: AnyObject, record: IMenu) => {
+        return (<PermissionButton buttonPermissions={buttonPermissions}
+                                  permissionStr={PermissionConstant.EDIT}>
+          <EditButton disabled={!record.isAllowModified} onClick={() => openModal(record.id)}/>
+        </PermissionButton>)
       }
     }
   ];
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<Menu> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-    getCheckboxProps: (record: Menu) => ({
+  const rowSelection: TableRowSelection<IMenu> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
+    getCheckboxProps: (record: IMenu) => ({
       disabled: !record.isAllowModified
     }),
   };
@@ -186,7 +184,7 @@ const Permission: FC = () => {
    * @param selectedKeys 当前选中的key
    * @param node 选中的树节点
    */
-  const onSelectTree = async (selectedKeys: Key[], {node}: { node: Menu }) => {
+  const onSelectTree = async (selectedKeys: Key[], {node}: { node: IMenu }) => {
     if (!selectedKeys || selectedKeys.length === 0) {
       // 查询一级菜单
       updateSearchParams({...permissionQuery, parentId: null})
@@ -202,7 +200,7 @@ const Permission: FC = () => {
    * @param key key，这里是主键id
    * @param children 子菜单
    */
-  const onLoadData = async ({key, children}: { key: React.Key, children?: Menu[] | undefined }) => {
+  const onLoadData = async ({key, children}: { key: Key, children?: IMenu[] | undefined }) => {
     if (children) {
       return new Promise<void>((resolve) => {
         resolve()
@@ -240,7 +238,7 @@ const Permission: FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setUpdateId(undefined);
-    setFormParentPermission({} as Menu)
+    setFormParentPermission({} as IMenu)
   }
 
   /**
@@ -257,7 +255,7 @@ const Permission: FC = () => {
    * 处理表单
    */
   const handleForm = async () => {
-    let values: Menu;
+    let values: IMenu;
     try {
       values = await form.validateFields();
     } catch {
@@ -297,7 +295,7 @@ const Permission: FC = () => {
               fieldNames={{key: 'id', title: 'permissionName'}}
               loadData={onLoadData}
               treeData={lazyTreeData}
-              titleRender={(menu: Menu) => t(`${menu.permissionName}`)}
+              titleRender={(menu: IMenu) => t(`${menu.permissionName}`)}
               onSelect={onSelectTree}
             />}
 
@@ -316,7 +314,7 @@ const Permission: FC = () => {
             ]}
             onSearchClick={() => updateSearchParams(permissionQuery)}
           />
-          <Table<Menu>
+          <Table<IMenu>
             tableRef={tableRef}
             tableName={t('Permission.list')}
             columns={columns}
@@ -386,7 +384,7 @@ const Permission: FC = () => {
             required={true}
           >
             <TreeSelect
-              treeTitleRender={(menu: Menu) => {
+              treeTitleRender={(menu: IMenu) => {
                 if (menu) {
                   return t(`${menu.permissionName}`);
                 }
@@ -396,7 +394,7 @@ const Permission: FC = () => {
                 label: 'permissionName',
                 value: 'id',
               }}
-              onSelect={(_: string, node: Menu) => {
+              onSelect={(_: string, node: IMenu) => {
                 setFormParentPermission(node);
               }}
               allowClear

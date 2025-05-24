@@ -1,6 +1,8 @@
 interface ImportMetaEnv {
   // api 请求地址
-  readonly VITE_API_URL: string;
+  readonly VITE_API_BASE_URL: string;
+  // 后端服务地址
+  readonly VITE_SERVER_URL: string;
   // 第三方登录跳转回调
   readonly VITE_LOGIN_REDIRECT_URI: string;
   // welink

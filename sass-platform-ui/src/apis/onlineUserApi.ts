@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
+import {IPageQuery, IPageResult} from "@/types/pageQuery";
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {OnlineUser} from "@/model/onlineUser.tsx";
+import {IOnlineUser} from "@/types/onlineUser";
 import {Key} from "react";
 
 class OnlineUserApi {
@@ -31,7 +31,7 @@ class OnlineUserApi {
      * 在线用户
      * @param pageQuery 分页查询对象
      */
-    onlineUserList: (pageQuery: PageQuery) => Promise<PageResult<OnlineUser>> = (pageQuery: PageQuery): Promise<PageResult<OnlineUser>> =>
+    onlineUserList: (pageQuery: IPageQuery) => Promise<IPageResult<IOnlineUser>> = (pageQuery: IPageQuery): Promise<IPageResult<IOnlineUser>> =>
         request.get(`${this._baseUrl}/list`, {
             params: {...pageQuery}
         });

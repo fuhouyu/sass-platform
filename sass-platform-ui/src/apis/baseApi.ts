@@ -15,7 +15,7 @@
  */
 
 
-import {PageQuery, PageResult} from "@/model/pageQuery";
+import {IPageQuery, IPageResult} from "@/types/pageQuery";
 import {request} from "@/utils";
 
 /**
@@ -56,7 +56,7 @@ interface BaseApi<T> {
      * 分页查询
      * @param pageQuery 查询对象
      */
-    pageInfoListApi: (pageQuery: PageQuery) => Promise<PageResult<T>>;
+    pageInfoListApi: (pageQuery: IPageQuery) => Promise<IPageResult<T>>;
 
     /**
      * 修改状态
@@ -100,7 +100,7 @@ export class DefaultApiImpl<T> implements BaseApi<T> {
         return request.delete(`${this.baseUrl}`, {data: ids});
     };
 
-    pageInfoListApi = (pageQuery: PageQuery): Promise<PageResult<T>> => {
+    pageInfoListApi = (pageQuery: IPageQuery): Promise<IPageResult<T>> => {
         return request.get(`${this.baseUrl}/page`, {params: pageQuery})
     }
 

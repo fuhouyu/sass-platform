@@ -48,7 +48,7 @@ export const FormTree = <T extends object>({formTreeProps, onSelectedAll}: {
         });
         return allIds;
     };
-    const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+  const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
     const ids: string[] = extractAllIds(formTreeProps.treeData, formTreeProps.fieldNames?.key)
     const [selectedAll, setSelectedAll] = useState<boolean>(false);
     const [expanded, setExpanded] = useState<boolean>(false);

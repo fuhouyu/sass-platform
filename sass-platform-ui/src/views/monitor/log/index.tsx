@@ -16,7 +16,7 @@
 
 
 import {FC, useEffect, useRef, useState} from "react";
-import {sseClient} from "@/utils/sse.tsx";
+import {sseClient} from "@/utils/sse.ts";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {Card, List, Segmented, Space, Spin, Typography} from "antd";
 import './index.scss'

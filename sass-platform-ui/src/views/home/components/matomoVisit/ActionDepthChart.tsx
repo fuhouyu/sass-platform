@@ -15,12 +15,12 @@
  */
 
 import {FC} from "react";
-import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import ReactECharts from "echarts-for-react";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {useTranslation} from "react-i18next";
 
-export const ActionDepthChart: FC<{ data: MatomoVisitSummary[] }> = ({data}) => {
+export const ActionDepthChart: FC<{ data: IMatomoVisitSummary[] }> = ({data}) => {
     const dates = data.map(item => item.date);
     const actions = data.map(item => item.nbActions ?? 0);
     const maxActions = data.map(item => item.maxActions ?? 0);

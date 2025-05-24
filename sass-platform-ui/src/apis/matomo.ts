@@ -15,10 +15,10 @@
  */
 
 import {
-  MatomoCountryVisit,
-  MatomoVisitQuery,
-  MatomoVisitSummary
-} from "@/model/matomoVisitSummary.tsx";
+  IMatomoCountryVisit,
+  IMatomoVisitQuery,
+  IMatomoVisitSummary
+} from "@/types/matomoVisitSummary";
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
@@ -35,7 +35,7 @@ class MatomoApi {
      * 获取访问统计
      * @param query 查询对象
      */
-    getVisitSummary: (query: MatomoVisitQuery) => Promise<MatomoVisitSummary[]> = (query: MatomoVisitQuery): Promise<MatomoVisitSummary[]> =>
+    getVisitSummary: (query: IMatomoVisitQuery) => Promise<IMatomoVisitSummary[]> = (query: IMatomoVisitQuery): Promise<IMatomoVisitSummary[]> =>
         request.get(`${this._baseUrl}/visit-summary`, {
             params: query
         });
@@ -44,7 +44,7 @@ class MatomoApi {
      * 获取国家访问统计
      * @param query 查询对象
      */
-    getCountryVisit: (query: MatomoVisitQuery) => Promise<MatomoCountryVisit[]> = (query: MatomoVisitQuery): Promise<MatomoCountryVisit[]> =>
+    getCountryVisit: (query: IMatomoVisitQuery) => Promise<IMatomoCountryVisit[]> = (query: IMatomoVisitQuery): Promise<IMatomoCountryVisit[]> =>
         request.get(`${this._baseUrl}/country-visit`, {
             params: query
         });

@@ -16,11 +16,11 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
-import {Organization} from "@/model/organization.tsx";
+import {IOrganization} from "@/types/organization";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
 
-class OrganizationApi extends DefaultApiImpl<Organization> {
+class OrganizationApi extends DefaultApiImpl<IOrganization> {
 
     constructor() {
         super(BaseApiUrlConstant.ORGANIZATION_API_PREFIX);
@@ -30,13 +30,13 @@ class OrganizationApi extends DefaultApiImpl<Organization> {
      * 通过父级id获取子集
      * @param parentId 父级id
      */
-    getOrganizationListApi: (parentId?: string) => Promise<Organization[]> = (parentId?: string): Promise<Organization[]> =>
+    getOrganizationListApi: (parentId?: string) => Promise<IOrganization[]> = (parentId?: string): Promise<IOrganization[]> =>
         parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
 
     /**
      * 获取组织树
      */
-    getOrganizationTreeSelect: () => Promise<Organization[]> = (): Promise<Organization[]> =>
+    getOrganizationTreeSelect: () => Promise<IOrganization[]> = (): Promise<IOrganization[]> =>
         request.get(`${this.baseUrl}/tree`)
 }
 

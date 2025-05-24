@@ -14,51 +14,30 @@
  * limitations under the License.
  */
 
-
-import {BaseModel} from "@/model/base";
-import React from "react";
-
-/**
- * 角色详情
- */
-export interface Role extends BaseModel {
-    /**
-     * 主键id
-     */
-    id?: string;
+export interface IAccount {
 
     /**
-     * 角色名称
+     * 账号
      */
-    roleName?: string;
+    account: string;
 
     /**
-     * 角色编码
+     * 账号类型
      */
-    roleCode?: string;
+    accountType: AccountType;
 
     /**
-     * 显示顺序
+     * 用户id
      */
-    displayOrder?: number;
+    userId?: string;
 
     /**
-     * 数据范围
+     * 所属的第三方账号id
      */
-    dataScope?: string;
+    refAccountId?: string;
 
     /**
-     * 状态：true 启用
+     * 是否启用
      */
-    isEnabled?: boolean;
-
-    /**
-     * 是否允许修改
-     */
-    isAllowModified?: boolean;
-
-    /**
-     * 权限id集合
-     */
-    permissionIds?: React.Key[]
+    isEnabled: boolean;
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Organization, Organization as OrganizationModal} from "@/model/organization.tsx";
-import {useCallback, useState} from "react";
+import {IOrganization} from "@/types/organization";
+import {Key, useCallback, useState} from "react";
 import {organizationApi} from "@/apis/organization.ts";
 
 /**
@@ -25,10 +25,10 @@ import {organizationApi} from "@/apis/organization.ts";
  * @param children 子集
  */
 function updateTreeData(
-    treeData: OrganizationModal[],
-    key: React.Key,
-    children: OrganizationModal[]
-): OrganizationModal[] {
+  treeData: IOrganization[],
+  key: Key,
+  children: IOrganization[]
+): IOrganization[] {
     return treeData.map(node => {
         if (node.id === key) {
             return {...node, children: [...children]}; // 返回新引用
@@ -47,11 +47,11 @@ function updateTreeData(
  */
 export function useOrganizationLazyData(): {
     initOrganization: () => Promise<void>,
-    organizationLazyData: Organization[];
-    onLoadData: ({key, children}: { key: React.Key; children?: Organization[] }) => Promise<void>
+  organizationLazyData: IOrganization[];
+  onLoadData: ({key, children}: { key: Key; children?: IOrganization[] }) => Promise<void>
 } {
     // 维护 lazyData 状态
-    const [organizationLazyData, setOrganizationLazyData] = useState<OrganizationModal[]>([]);
+  const [organizationLazyData, setOrganizationLazyData] = useState<IOrganization[]>([]);
 
     /**
      * 初始化data
@@ -67,7 +67,7 @@ export function useOrganizationLazyData(): {
      * @param key 主键 ID
      * @param children 子菜单
      */
-    const onLoadData = async ({key, children}: { key: React.Key; children?: OrganizationModal[] }) => {
+    const onLoadData = async ({key, children}: { key: Key; children?: IOrganization[] }) => {
         if (children) {
             return Promise.resolve();
         }

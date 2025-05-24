@@ -19,7 +19,7 @@ import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {Button, Flex, Form, Input, message} from "antd";
 import {useUserStore} from "@/store";
-import {Userinfo as UserinfoModal} from "@/model/user.tsx";
+import {IUserinfo} from "@/types/user";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 export const Userinfo = () => {
@@ -35,7 +35,7 @@ export const Userinfo = () => {
     }, [form, userinfo])
 
 
-    const onFinish = async (values: UserinfoModal) => {
+  const onFinish = async (values: IUserinfo) => {
         setButtonLoading(true);
         try {
           const updateValues = {...userinfo, ...values}
@@ -57,7 +57,7 @@ export const Userinfo = () => {
             <Flex
                 className={'userinfo-form'}
                 justify={'space-between'}>
-                <Form<UserinfoModal>
+              <Form<IUserinfo>
                     form={form}
                     onFinish={onFinish}
                     layout="vertical"

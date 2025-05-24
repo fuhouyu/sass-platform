@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {request} from "./request";
-import {getAccessToken, getRefreshToken, removeToken, storeToken} from "./token";
+import {request} from "./request.ts";
+import {getAccessToken, getRefreshToken, removeToken, storeToken} from "./token.ts";
 
 export {request, storeToken, getAccessToken, getRefreshToken, removeToken};

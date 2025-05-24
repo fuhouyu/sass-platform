@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import React from "react";
+import {FC, ReactNode, useState} from "react";
 import {Upload as AntdUpload} from "antd";
 import {resourceApi} from "@/apis/resource.ts";
 import {S3UploadProps} from "@components/Upload/interface.tsx";
 import {RcFile} from "antd/es/upload";
-import {StsTemporaryTokenResponse} from "@/model/resource.tsx";
+import {IStsTemporaryTokenResponse} from "@/types/resource";
 import {useUploadStore} from "@/store/modules/upload.tsx";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {Trans, useTranslation} from "react-i18next";
@@ -34,14 +34,14 @@ const loadAwsSdk = async () => {
     ]);
     return {S3Client, Upload, ChecksumAlgorithm};
 };
-export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
+export const S3Upload: FC<S3UploadProps> = (uploadProps) => {
     const {prefix, isPublic, children, showUploadList, onUploadSuccess} = uploadProps;
     const {t} = useTranslation();
     const storeUploadFiles = useUploadStore(state => state.storeUploadFiles);
-    const [totalProgress, setTotalProgress] = React.useState(0);
+  const [totalProgress, setTotalProgress] = useState(0);
     const {notificationMessage, contextHolder} = useNotification();
 
-    const uploadNotification = (type: NotificationType, message: React.ReactNode) => {
+  const uploadNotification = (type: NotificationType, message: ReactNode) => {
         notificationMessage({
             type: type,
             message: t('Resource.upload.file'),
@@ -78,7 +78,7 @@ export const S3Upload: React.FC<S3UploadProps> = (uploadProps) => {
      * @param stsTokenResponse stsToken响应
      * @param file 需要上传的文件
      */
-    const doFileUpload = async (s3Client: S3Client, stsTokenResponse: StsTemporaryTokenResponse, file: RcFile) => {
+    const doFileUpload = async (s3Client: S3Client, stsTokenResponse: IStsTemporaryTokenResponse, file: RcFile) => {
         const {Upload, ChecksumAlgorithm} = await loadAwsSdk();
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath === '' ? file.name : file.webkitRelativePath];

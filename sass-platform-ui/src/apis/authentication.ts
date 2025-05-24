@@ -16,11 +16,11 @@
 
 import {request} from "@/utils";
 import {
-  ThirdPartyBindAuthentication,
-  UserAuthentication,
+  IThirdPartyBindAuthentication,
+  IUserAuthentication,
   UserBind,
   UserToken
-} from "@/model/authentication";
+} from "@/types/authentication";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
 const baseAuthUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX
@@ -37,7 +37,7 @@ class AuthenticationApi {
      * 用户登录
      * @param loginData 登录的表单信息
      */
-    adminLoginApi = (loginData: UserAuthentication): Promise<UserToken | UserBind> =>
+    adminLoginApi = (loginData: IUserAuthentication): Promise<UserToken | UserBind> =>
         request.post(`${baseAuthUrl}/admin-login`, loginData);
 
 
@@ -54,7 +54,7 @@ class AuthenticationApi {
      * 登录的
      * @param loginData
      */
-    loginBindApi = (loginData: ThirdPartyBindAuthentication): Promise<UserToken> =>
+    loginBindApi = (loginData: IThirdPartyBindAuthentication): Promise<UserToken> =>
         request.post(`${baseAuthUrl}/login-bind`, loginData);
 
     /**

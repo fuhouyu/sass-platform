@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {PageQuery} from "@/model/pageQuery.tsx";
+import {IPageQuery} from "@/types/pageQuery";
 
 /**
  * 操作日志分页查询对象
  */
-export interface OperationLogPageQuery extends PageQuery {
+export interface IOperationLogPageQuery extends IPageQuery {
     systemName?: string;
     moduleName?: string;
     risk?: string;
@@ -27,7 +27,7 @@ export interface OperationLogPageQuery extends PageQuery {
 }
 
 
-export interface OperationLog {
+export interface IOperationLog {
     /**
      * 主键id
      */

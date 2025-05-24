@@ -38,7 +38,7 @@ import {
 } from "antd";
 import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
 import {useTranslation} from "react-i18next";
-import {FileUtils} from "@/utils/fileUtil.tsx";
+import {FileUtils} from "@/utils/fileUtil.ts";
 import {useUserStore} from "@/store";
 
 const LayoutMain = () => {

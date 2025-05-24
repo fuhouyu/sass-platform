@@ -18,7 +18,7 @@ import {FC, useCallback, useEffect, useState} from "react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {matomoApi} from "@/apis/matomo.ts";
 import VisitTrendChart from "@/views/home/components/matomoVisit/VisitTrendChart.tsx";
-import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import {Card, DatePicker, Flex, Select, Space} from "antd";
 import './index.scss'
 import ActionDepthChart from "@/views/home/components/matomoVisit/ActionDepthChart.tsx";
@@ -29,7 +29,7 @@ const {RangePicker} = DatePicker;
 
 const Home: FC = () => {
   usePageTitle('Menu.home');
-  const [visitSummary, setVisitSummary] = useState<MatomoVisitSummary[]>([]);
+  const [visitSummary, setVisitSummary] = useState<IMatomoVisitSummary[]>([]);
   // 默认选择最近30天
   const [dateRange, setDateRange] = useState<string>('last30');
   const [customDateRange, setCustomDateRange] = useState<[Dayjs | undefined, Dayjs | undefined]>();

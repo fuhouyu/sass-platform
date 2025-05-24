@@ -30,7 +30,7 @@ import {
   Tooltip
 } from "antd"
 import {Trans, useTranslation} from "react-i18next";
-import {Application as ApplicationModel} from "@/model/application.tsx";
+import {IApplication} from "@/types/application";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 import {applicationApi} from "@/apis/application.ts";
 import {IconFont, S3Upload} from "@/components";
@@ -60,7 +60,7 @@ export interface ApplicationManageFormProps {
 
 }
 
-const initForm: ApplicationModel = {
+const initForm: IApplication = {
     isEnabled: true,
     published: true,
 }
@@ -88,7 +88,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
         if (!updateId) {
             return
         }
-        const applicationInfo: ApplicationModel = await applicationApi.getInfoByIdApi(updateId);
+      const applicationInfo: IApplication = await applicationApi.getInfoByIdApi(updateId);
         if (applicationInfo.icon) {
             const icon = applicationInfo.icon as unknown as string;
             setIconFiles([{
@@ -110,7 +110,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
      */
     const handleForm = async () => {
         await form.validateFields();
-        const application: ApplicationModel = form.getFieldsValue();
+      const application: IApplication = form.getFieldsValue();
         setIsModalButtonLoading(true);
         try {
             application.icon = iconFiles![0].uid as unknown as number
@@ -145,7 +145,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
                 setIconFiles(undefined);
             }}
         >
-            <Form<ApplicationModel>
+          <Form<IApplication>
                 form={form}
                 labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 9}}
                 clearOnDestroy={true}

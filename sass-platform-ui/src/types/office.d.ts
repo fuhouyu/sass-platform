@@ -15,51 +15,22 @@
  */
 
 
-/**
- * 账号类型
- */
-export enum AccountType {
-    /**
-     * 密码
-     */
-    PASSWORD = "PASSWORD",
+import {IConfig} from "@onlyoffice/document-editor-react";
+
+export interface IOnlyOffice {
 
     /**
-     * 刷新令牌
+     * config
      */
-    REFRESH_TOKEN = "REFRESH_TOKEN",
+    config: IConfig
 
     /**
-     * weLink
+     * server url
      */
-    WELINK = "WELINK",
-}
-
-
-export interface Account {
+    documentServerUrl: string;
 
     /**
-     * 账号
+     * api url
      */
-    account: string;
-
-    /**
-     * 账号类型
-     */
-    accountType: AccountType;
-
-    /**
-     * 用户id
-     */
-    userId?: string;
-
-    /**
-     * 所属的第三方账号id
-     */
-    refAccountId?: string;
-
-    /**
-     * 是否启用
-     */
-    isEnabled: boolean;
+    documentServerApiUrl: string;
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Ref} from "react";
+import {ReactNode, Ref} from "react";
 import {TableProps as AntdTableProps} from "antd";
-import {PageQuery, PageResult} from "@/model/pageQuery";
+import {IPageQuery, IPageResult} from "@/types/pageQuery";
 import {AnyObject} from "antd/es/_util/type";
 
 export type TableRefType<T> = {
@@ -28,7 +28,7 @@ export type TableRefType<T> = {
     /**
      * 列表
      */
-    pageResult: PageResult<T> | undefined
+    pageResult: IPageResult<T> | undefined
 
 };
 
@@ -48,7 +48,7 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
      * 分页查询api
      * @param pageQuery 查询参数
      */
-    pageApi: (pageQuery: PageQuery) => Promise<PageResult<RecordType>>
+    pageApi: (pageQuery: IPageQuery) => Promise<IPageResult<RecordType>>
 
     /**
      * 行主键
@@ -58,7 +58,7 @@ export interface TableProps<RecordType = AnyObject> extends AntdTableProps<Recor
     /**
      * 组件数组
      */
-    tableComponents?: React.ReactNode[];
+    tableComponents?: ReactNode[];
 
     /**
      * 关闭表格提示
@@ -72,10 +72,10 @@ export interface RefreshPageProps<T> {
      * 处理pageData
      * @param pageData pageData
      */
-    dataCallback?: (pageData: PageResult<T>) => void
+    dataCallback?: (pageData: IPageResult<T>) => void
 
     /**
      * 分页查询对象
      */
-    pageQuery?: Record<string, string | undefined> | PageQuery;
+    pageQuery?: Record<string, string | undefined> | IPageQuery;
 }

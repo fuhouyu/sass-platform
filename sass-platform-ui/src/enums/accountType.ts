@@ -15,50 +15,23 @@
  */
 
 
-import {BaseModel} from "@/model/base";
-
 /**
- * 字典项类型
+ * 账号类型
  */
-export interface DictItem extends BaseModel {
+export enum AccountType {
+  /**
+   * 密码
+   */
+  PASSWORD = "PASSWORD",
 
-    /**
-     * 主键id
-     */
-    id?: string;
+  /**
+   * 刷新令牌
+   */
+  REFRESH_TOKEN = "REFRESH_TOKEN",
 
-    /**
-     * 字典编码
-     */
-    dictCode?: string;
-
-    /**
-     * 字典名称
-     */
-    itemName?: string;
-
-    /**
-     * 字典编码
-     */
-    itemCode?: string;
-
-    /**
-     * 允许修改
-     */
-    isAllowModified?: boolean;
-
-    /**
-     * 是否启禁用
-     */
-    isEnabled?: boolean;
-
-    /**
-     * 显示
-     */
-    displayOrder?: number;
-
-    /**
-     * 备注
-     */
-    remark?: string;
+  /**
+   * weLink
+   */
+  WELINK = "WELINK",
 }
+

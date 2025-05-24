@@ -17,11 +17,11 @@
 
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {Resource, StsTemporaryTokenRequest, StsTemporaryTokenResponse} from "@/model/resource.tsx";
+import {IResource, IStsTemporaryTokenRequest, IStsTemporaryTokenResponse} from "@/types/resource";
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
 import {AxiosRequestConfig} from "axios";
 
-class ResourceApi extends DefaultApiImpl<Resource> {
+class ResourceApi extends DefaultApiImpl<IResource> {
 
 
     constructor(baseUrl: string) {
@@ -31,8 +31,8 @@ class ResourceApi extends DefaultApiImpl<Resource> {
     /**
      *生成临时的stsToken
      */
-    generateStsToken: (stsTokenRequest: StsTemporaryTokenRequest) =>
-        Promise<StsTemporaryTokenResponse> = (stsTokenRequest: StsTemporaryTokenRequest): Promise<StsTemporaryTokenResponse> =>
+    generateStsToken: (stsTokenRequest: IStsTemporaryTokenRequest) =>
+      Promise<IStsTemporaryTokenResponse> = (stsTokenRequest: IStsTemporaryTokenRequest): Promise<IStsTemporaryTokenResponse> =>
         request.post(`${this.baseUrl}/sts-token`, stsTokenRequest);
 
     /**

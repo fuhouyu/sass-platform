@@ -18,9 +18,9 @@
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
-import {DictType} from "@/model/dictType";
+import {IDictType} from "@/types/dictType";
 
-class DictTypeApi extends DefaultApiImpl<DictType> {
+class DictTypeApi extends DefaultApiImpl<IDictType> {
 
     constructor() {
         super(BaseApiUrlConstant.DICT_TYPE_API_PREFIX);
@@ -36,7 +36,7 @@ class DictTypeApi extends DefaultApiImpl<DictType> {
     /**
      * 获取字典项列表
      */
-    getList: () => Promise<DictType[]> = (): Promise<DictType[]> => request.get(`${this.baseUrl}/list`)
+    getList: () => Promise<IDictType[]> = (): Promise<IDictType[]> => request.get(`${this.baseUrl}/list`)
 }
 
 

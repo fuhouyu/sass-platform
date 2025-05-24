@@ -19,10 +19,10 @@ import {FC, lazy, useCallback, useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import {useLocaleStore, useUserStore} from "@/store";
 import {message} from "antd";
-import {OnlyOffice} from "@/model/office.tsx";
+import {IOnlyOffice} from "@/types/office";
 import {onlyOfficeApi} from "@/apis/onlyOffice.ts";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-import {Userinfo} from "@/model/user.tsx";
+import {IUserinfo} from "@/types/user";
 import {useTranslation} from "react-i18next";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {ResourceLoading} from "@components/ResourceView/loading/ResourceLoading.tsx";
@@ -40,10 +40,10 @@ const Office: FC = () => {
   const {id} = useParams();
   const {t} = useTranslation();
   const [params] = useSearchParams();
-  const [officeView, setOfficeView] = useState<OnlyOffice | undefined>(undefined)
+  const [officeView, setOfficeView] = useState<IOnlyOffice | undefined>(undefined)
   const {fetchUserinfo} = useUserStore(state => state);
   const {preview} = useResourceAction();
-  const [userinfo, setUserinfo] = useState<Userinfo | undefined>(undefined);
+  const [userinfo, setUserinfo] = useState<IUserinfo | undefined>(undefined);
   const language = useLocaleStore(state => state.language);
 
   const initOfficeView = useCallback(async () => {
@@ -52,7 +52,7 @@ const Office: FC = () => {
       return <div></div>;
     }
 
-    const onlyOffice: OnlyOffice = params.get('mode') === 'VIEW' ?
+    const onlyOffice: IOnlyOffice = params.get('mode') === 'VIEW' ?
       await onlyOfficeApi.view(id) : await onlyOfficeApi.edit(id);
     setOfficeView(onlyOffice);
   }, [id, params, setOfficeView]);

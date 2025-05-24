@@ -16,7 +16,7 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {OperationLog as OperationLogModel} from "@/model/operationLog";
+import {IOperationLog as OperationLogModel} from "@/types/operationLog";
 import {Button, DatePicker, Descriptions, List, message, Select, TableColumnsType, Tag} from "antd";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {Modal, PageList} from "@/components";

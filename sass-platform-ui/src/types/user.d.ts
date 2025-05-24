@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base";
-import {Account} from "@/model/account.tsx";
+import {BaseModel} from "@/types/base";
+import {IAccount} from "@/types/account";
 
-export interface UserPosition extends BaseModel {
+export interface IUserPosition extends BaseModel {
     /**
      * 用户id
      */
@@ -43,7 +43,7 @@ export interface UserPosition extends BaseModel {
 /**
  * 用户详情
  */
-export interface Userinfo extends BaseModel {
+export interface IUserinfo extends BaseModel {
     /**
      * 头像地址
      */
@@ -88,12 +88,12 @@ export interface Userinfo extends BaseModel {
     /**
      * 用户职位
      */
-    userPosition?: UserPosition;
+    userPosition?: IUserPosition;
 
     /**
      * 用户账号
      */
-    account?: Account;
+    account?: IAccount;
 
     /**
      租户id

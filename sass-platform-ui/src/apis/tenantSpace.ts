@@ -17,7 +17,7 @@
 
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
-import {TenantSpace} from "@/model/tenant.tsx";
+import {ITenantSpace} from "@/types/tenant";
 
 class TenantSpaceApi {
     _baseUrl: string;
@@ -36,12 +36,12 @@ class TenantSpaceApi {
      * 通过租户id获取租户空间
      * @param tenantId 租户id
      */
-    getTenantSpaceByTenantId: (tenantId: string) => Promise<TenantSpace> = (tenantId: string): Promise<TenantSpace> => request.get(`${this._baseUrl}/${tenantId}`);
+    getTenantSpaceByTenantId: (tenantId: string) => Promise<ITenantSpace> = (tenantId: string): Promise<ITenantSpace> => request.get(`${this._baseUrl}/${tenantId}`);
 
     /**
      * 获取当前登录用户租户空间
      */
-    getTenantSpaceForMe: () => Promise<TenantSpace> = (): Promise<TenantSpace> => request.get(`${this._baseUrl}/me`);
+    getTenantSpaceForMe: () => Promise<ITenantSpace> = (): Promise<ITenantSpace> => request.get(`${this._baseUrl}/me`);
 
 }
 

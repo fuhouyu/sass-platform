@@ -22,7 +22,7 @@ import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import {Button, message} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {sseClient} from "@/utils/sse.tsx";
+import {sseClient} from "@/utils/sse.ts";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {ResourceCategoryEnum} from "@/enums/ResourceCategoryEnum.tsx";
 import MarkdownPreview from '@uiw/react-markdown-preview';

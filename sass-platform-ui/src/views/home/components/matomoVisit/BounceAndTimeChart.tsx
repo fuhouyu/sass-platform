@@ -15,12 +15,12 @@
  */
 
 import {FC} from "react";
-import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import ReactECharts from "echarts-for-react";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {useTranslation} from "react-i18next";
 
-export const BounceAndTimeChart: FC<{ data: MatomoVisitSummary[] }> = ({data}) => {
+export const BounceAndTimeChart: FC<{ data: IMatomoVisitSummary[] }> = ({data}) => {
     const dates = data.map(item => item.date);
     const bounceRates = data.map(item =>
         parseFloat(item.bounceRate?.replace('%', '') ?? '0')

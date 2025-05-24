@@ -14,42 +14,45 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base.tsx";
 
-export interface ParamConfig extends BaseModel {
+import {BaseModel} from "@/types/base";
+
+/**
+ * 字典类型
+ */
+export interface IDictType extends BaseModel {
     /**
      * 主键id
      */
     id?: string;
 
     /**
-     * 配置名称
+     * 字典名称
      */
-    configName?: string;
+    dictName?: string;
 
     /**
-     * 配置键
+     * 字典编码
      */
-    configKey?: string;
+    dictCode?: string;
 
     /**
-     * 配置value
+     * 允许修改
      */
-    configValue?: string;
+    isAllowModified?: boolean;
 
     /**
-     * 分组标识
+     * 是否启禁用
      */
-    groupKey?: string;
+    isEnabled?: boolean;
+
+    /**
+     * 显示
+     */
+    displayOrder?: number;
 
     /**
      * 备注
      */
     remark?: string;
-
-    /**
-     * 是否允许修改
-     */
-    isAllowModified?: boolean;
-
 }

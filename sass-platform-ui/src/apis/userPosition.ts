@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {UserPosition} from "@/model/user.tsx";
+import {IUserPosition} from "@/types/user";
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
@@ -31,7 +31,7 @@ class UserPositionApi {
      * 保存用户职务
      * @param userPosition 用户职务
      */
-    saveUserPosition: (userPosition: UserPosition) => Promise<void> = (userPosition: UserPosition): Promise<void> => request.post(`${this._baseUrl}`, userPosition)
+    saveUserPosition: (userPosition: IUserPosition) => Promise<void> = (userPosition: IUserPosition): Promise<void> => request.post(`${this._baseUrl}`, userPosition)
 
     /**
      * 通过组织id和用户id删除职位

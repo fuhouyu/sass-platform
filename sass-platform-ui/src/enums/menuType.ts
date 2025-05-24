@@ -14,27 +14,8 @@
  * limitations under the License.
  */
 
-/**
- * 分页查询对象
- */
-export interface PageQuery {
-    pageNum: number | undefined;
-    pageSize: number | undefined;
-    keyword?: string;
-    sortColumn?: string;
-    isAsc?: boolean;
-
-    // 允许动态添加任意键
-    [key: string]: unknown;
-}
-
-
-/**
- * 分页查询的结果集
- */
-export interface PageResult<T> {
-    pageNum: number;
-    pageSize: number;
-    total: number;
-    list: T[];
+export enum MenuType {
+  DIR = 'DIR',
+  MENU = "MENU",
+  BUTTON = "BUTTON",
 }

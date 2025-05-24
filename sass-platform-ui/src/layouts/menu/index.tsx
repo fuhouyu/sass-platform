@@ -20,11 +20,12 @@ import {useUserStore} from "@/store";
 import {useTranslation} from "react-i18next";
 import {MenuProps, useMenuTree} from "@/hooks/useMenuTree.tsx";
 import {IconFont} from "@/components";
-import {Menu as UserMenus, MenuType} from "@/model/menu.tsx";
+import {IMenu} from "@/types/menu";
 import Sider from "antd/es/layout/Sider";
 import {Divider, Menu} from "antd";
 import './index.scss'
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
+import {MenuType} from "@/enums/menuType.ts";
 
 const LayoutMenu = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const LayoutMenu = () => {
     }
   ]
 
-  const userMenus: UserMenus[] = useUserStore(state => state.userMenus) ?? []
+  const userMenus: IMenu[] = useUserStore(state => state.userMenus) ?? []
 
   const menuItems: MenuProps[] = useMenuTree(userMenus, [MenuType.BUTTON]) as MenuProps[]
   menuItems.unshift(...commonMenus);

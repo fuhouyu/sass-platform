@@ -15,7 +15,7 @@
  */
 
 
-import {Menu as UserMenus} from "@/model/menu.tsx";
+import {IMenu as UserMenus} from "@/types/menu";
 import {useUserStore} from "@/store";
 
 /**

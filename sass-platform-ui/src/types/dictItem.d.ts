@@ -15,22 +15,50 @@
  */
 
 
-import {IConfig} from "@onlyoffice/document-editor-react";
+import {BaseModel} from "@/types/base";
 
-export interface OnlyOffice {
-
-    /**
-     * config
-     */
-    config: IConfig
+/**
+ * 字典项类型
+ */
+export interface IDictItem extends BaseModel {
 
     /**
-     * server url
+     * 主键id
      */
-    documentServerUrl: string;
+    id?: string;
 
     /**
-     * api url
+     * 字典编码
      */
-    documentServerApiUrl: string;
+    dictCode?: string;
+
+    /**
+     * 字典名称
+     */
+    itemName?: string;
+
+    /**
+     * 字典编码
+     */
+    itemCode?: string;
+
+    /**
+     * 允许修改
+     */
+    isAllowModified?: boolean;
+
+    /**
+     * 是否启禁用
+     */
+    isEnabled?: boolean;
+
+    /**
+     * 显示
+     */
+    displayOrder?: number;
+
+    /**
+     * 备注
+     */
+    remark?: string;
 }

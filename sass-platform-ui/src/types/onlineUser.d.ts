@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface OnlineUser {
+export interface IOnlineUser {
     // 访问令牌, 仅在返回时填充该值
     accessToken?: string;
     // 登录时间

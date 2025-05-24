@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TenantInfo} from "@/model/tenant";
+import {ITenantInfo} from "@/types/tenant";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
 import {request} from "@/utils";
@@ -22,7 +22,7 @@ import {request} from "@/utils";
 
 const baseTenantUrl = BaseApiUrlConstant.TENANT_API_PREFIX;
 
-class TenantApi extends DefaultApiImpl<TenantInfo> {
+class TenantApi extends DefaultApiImpl<ITenantInfo> {
 
     constructor() {
         super(baseTenantUrl);
@@ -38,13 +38,13 @@ class TenantApi extends DefaultApiImpl<TenantInfo> {
     /**
      * 查询当前用户所属的租户详情
      */
-    findTenantInfoForMe: () => Promise<TenantInfo> = (): Promise<TenantInfo> => request.get(`${this.baseUrl}/me`);
+    findTenantInfoForMe: () => Promise<ITenantInfo> = (): Promise<ITenantInfo> => request.get(`${this.baseUrl}/me`);
 
 
     /**
      * 租户列表
      */
-    list: () => Promise<TenantInfo[]> = (): Promise<TenantInfo[]> => request.get(`${this.baseUrl}/list`);
+    list: () => Promise<ITenantInfo[]> = (): Promise<ITenantInfo[]> => request.get(`${this.baseUrl}/list`);
 
     /**
      * 重置密码

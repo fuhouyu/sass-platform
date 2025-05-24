@@ -15,7 +15,7 @@
  */
 
 import {lazy, useCallback, useState} from "react";
-import {Menu} from "@/model/menu.tsx";
+import {IMenu} from "@/types/menu";
 import {getAccessToken} from "@/utils";
 import {useRouterStore, useUserStore} from "@/store";
 import {createBrowserRouter, DataRouteObject} from "react-router-dom";
@@ -38,7 +38,7 @@ const lazyElement = (path: string) => {
   );
 };
 
-const parseRoutes = (menuProps: Menu[]): DataRouteObject[] => {
+const parseRoutes = (menuProps: IMenu[]): DataRouteObject[] => {
 
   if (menuProps === undefined || menuProps.length === 0) {
     return [];

@@ -15,9 +15,9 @@
  */
 
 
-import {BaseModel} from "@/model/base.tsx";
+import {BaseModel} from "@/types/base";
 
-export interface StsTemporaryTokenRequest {
+export interface IStsTemporaryTokenRequest {
 
     /**
      * 前缀名称
@@ -31,7 +31,7 @@ export interface StsTemporaryTokenRequest {
 
 }
 
-export interface StsTemporaryTokenResponse {
+export interface IStsTemporaryTokenResponse {
 
     /**
      * ak
@@ -75,7 +75,7 @@ export interface StsTemporaryTokenResponse {
 }
 
 
-export interface Resource extends BaseModel {
+export interface IResource extends BaseModel {
 
     /**
      * id

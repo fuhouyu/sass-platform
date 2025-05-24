@@ -15,7 +15,7 @@
  */
 
 
-import {DictItem} from "@/model/dictItem.tsx";
+import {IDictItem} from "@/types/dictItem";
 import {dictItemApi} from "@/apis/dictItem.ts";
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
@@ -27,7 +27,7 @@ interface DictState {
     /**
      * 字典类型item映射
      */
-    dictTypeItemMapping: Record<string, DictItem[]>;
+    dictTypeItemMapping: Record<string, IDictItem[]>;
 }
 
 /**
