@@ -16,11 +16,11 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
-import {DictItem} from "@/model/dictItem";
+import {IDictItem} from "@/types/dictItem";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
 
-class DictItemApi extends DefaultApiImpl<DictItem> {
+class DictItemApi extends DefaultApiImpl<IDictItem> {
 
     constructor() {
         super(BaseApiUrlConstant.DICT_ITEM_API_PREFIX);
@@ -38,7 +38,7 @@ class DictItemApi extends DefaultApiImpl<DictItem> {
      * 通过字典编码获取字典项
      * @param dictCode 字典编码
      */
-    getDictItemListByDictCode: (dictCode: string) => Promise<DictItem[]> = (dictCode: string): Promise<DictItem[]> =>
+    getDictItemListByDictCode: (dictCode: string) => Promise<IDictItem[]> = (dictCode: string): Promise<IDictItem[]> =>
         request.get(`${this.baseUrl}/list`, {params: {dictCode}});
 
 
@@ -46,7 +46,7 @@ class DictItemApi extends DefaultApiImpl<DictItem> {
      * 通过字典编码获取字典项映射
      * @param dictCodes 字典编码，以,分隔
      */
-    getDictItemTypeMappingList: (dictCodes: string) => Promise<Record<string, DictItem[]>> = (dictCodes: string): Promise<Record<string, DictItem[]>> =>
+    getDictItemTypeMappingList: (dictCodes: string) => Promise<Record<string, IDictItem[]>> = (dictCodes: string): Promise<Record<string, IDictItem[]>> =>
         request.get(`${this.baseUrl}/type-mapping`, {params: {dictCodes}});
 }
 

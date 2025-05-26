@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import {Userinfo,} from "@/model/user";
+import {IUserinfo,} from "@/types/user";
 import {
-  ThirdPartyBindAuthentication,
-  UserAuthentication,
+  IThirdPartyBindAuthentication,
+  IUserAuthentication,
   UserBind,
   UserToken
-} from "@/model/authentication";
-import {Menu} from "@/model/menu";
+} from "@/types/authentication";
+import {IMenu} from "@/types/menu";
 import {userApi} from "@/apis/adminUser.ts";
 import {permissionApi} from "@/apis/permission.ts";
 import {removeToken, storeToken} from "@/utils";
 import {authenticationApi} from "@/apis/authentication.ts";
 import {create} from "zustand/react";
 import {StateCreator} from "zustand";
-import {TenantInfo} from "@/model/tenant.tsx";
+import {ITenantInfo} from "@/types/tenant";
 
 /**
  * 用户状态
@@ -41,16 +41,16 @@ interface UserState {
     /**
      * 用户详情
      */
-    userinfo: Userinfo;
+    userinfo: IUserinfo;
     /**
      * 用户菜单
      */
-    userMenus: Menu[] | undefined;
+    userMenus: IMenu[] | undefined;
 
     /**
      * 当前用户的租户
      */
-    tenant?: TenantInfo;
+    tenant?: ITenantInfo;
 }
 
 /**
@@ -61,7 +61,7 @@ interface UserAction {
      * 用户登录
      * @param loginForm 登录表单对象
      */
-    fetchLogin: (loginForm: UserAuthentication) => Promise<UserToken | UserBind>
+    fetchLogin: (loginForm: IUserAuthentication) => Promise<UserToken | UserBind>
     /**
      * 刷新用户令牌
      * @param token 刷新令牌
@@ -71,15 +71,15 @@ interface UserAction {
      * 登录并绑定
      * @param loginForm 表单对象
      */
-    fetchLoginAndBind: (loginForm: ThirdPartyBindAuthentication) => Promise<UserToken>
+    fetchLoginAndBind: (loginForm: IThirdPartyBindAuthentication) => Promise<UserToken>
     /**
      * 用户详情
      */
-    fetchUserinfo: () => Promise<Userinfo>
+    fetchUserinfo: () => Promise<IUserinfo>
     /**
      * 用户菜单
      */
-    fetchUserMenus: () => Promise<Menu[]>
+    fetchUserMenus: () => Promise<IMenu[]>
     /**
      * 用户登出
      */
@@ -88,13 +88,13 @@ interface UserAction {
      * 修改用户详情
      * @param editUserinfo 用户详情
      */
-    fetchEditUserinfo: (editUserinfo: Userinfo) => Promise<void>,
+    fetchEditUserinfo: (editUserinfo: IUserinfo) => Promise<void>,
     /**
      * 存储租户
      * @param tenant 租户
      *
      */
-    storeTenant: (tenant?: TenantInfo) => void;
+    storeTenant: (tenant?: ITenantInfo) => void;
 }
 
 /**
@@ -127,7 +127,7 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set, get) => ({
         return res;
     },
 
-    fetchLoginAndBind: async (loginForm: ThirdPartyBindAuthentication) => {
+  fetchLoginAndBind: async (loginForm: IThirdPartyBindAuthentication) => {
         const authenticationRes = await authenticationApi.loginBindApi(loginForm);
         set({token: authenticationRes});
         storeToken(authenticationRes);
@@ -138,7 +138,7 @@ const createUserSlice: StateCreator<UserState & UserAction> = (set, get) => ({
         if (Object.keys(get().userinfo).length > 0) {
             return get().userinfo;
         }
-        const res: Userinfo = await userApi.getInfoMeApi();
+      const res: IUserinfo = await userApi.getInfoMeApi();
         set({userinfo: res});
         return res;
     },

@@ -16,11 +16,11 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
-import {Application} from "@/model/application.tsx";
+import {IApplication} from "@/types/application";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
 
-class ApplicationApi extends DefaultApiImpl<Application> {
+class ApplicationApi extends DefaultApiImpl<IApplication> {
 
     constructor(baseUrl: string) {
         super(baseUrl);
@@ -37,7 +37,7 @@ class ApplicationApi extends DefaultApiImpl<Application> {
      * 获取应用详情
      * @param id 主键id
      */
-    getInfoByIdApi = (id: string): Promise<Application> => {
+    getInfoByIdApi = (id: string): Promise<IApplication> => {
         return request.get(`${this.baseUrl}?clientId=${id}`);
     };
 
@@ -55,7 +55,7 @@ class ApplicationApi extends DefaultApiImpl<Application> {
      * @param id 应用id
      * @param info 应用信息
      */
-    editInfoApi = (id: string, info: Application): Promise<void> => {
+    editInfoApi = (id: string, info: IApplication): Promise<void> => {
         return request.put(`${this.baseUrl}`, {...info, id});
     };
 

@@ -15,9 +15,9 @@
  */
 
 
-import {BaseModel} from "@/model/base.tsx";
+import {BaseModel} from "@/types/base";
 
-export interface Organization extends BaseModel {
+export interface IOrganization extends BaseModel {
 
     /**
      * 主键id
@@ -67,5 +67,5 @@ export interface Organization extends BaseModel {
     /**
      * 子集
      */
-    children?: Organization[]
+    children?: IOrganization[]
 }

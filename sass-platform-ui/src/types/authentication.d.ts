@@ -17,7 +17,7 @@
 /**
  * 用户认证
  */
-export interface UserAuthentication {
+export interface IUserAuthentication {
     /**
      * 登录标识
      */
@@ -46,7 +46,7 @@ export interface UserAuthentication {
 /**
  * 三方平台账号绑定
  */
-export interface ThirdPartyBindAuthentication extends UserAuthentication {
+export interface IThirdPartyBindAuthentication extends IUserAuthentication {
 
     /**
      * 临时token

@@ -15,7 +15,7 @@
  */
 
 import {Key, useEffect, useRef, useState} from "react";
-import {Organization as OrganizationModal} from "@/model/organization.tsx";
+import {IOrganization} from "@/types/organization";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {
@@ -50,23 +50,23 @@ import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 const Organization = () => {
   usePageTitle('Menu.organizationManage');
-  const [treeSelectData, setTreeSelectData] = useState<OrganizationModal[]>([]);
+  const [treeSelectData, setTreeSelectData] = useState<IOrganization[]>([]);
   const {t} = useTranslation();
   const buttonPermissions = useButton(OrganizationPermissionConstant.List);
-  const tableRef = useRef<TableRefType<OrganizationModal>>(null);
+  const tableRef = useRef<TableRefType<IOrganization>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({...querySearchParams()});
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([]);
+  const [rowKeys, setRowKeys] = useState<Key[]>([]);
   const [updateId, setUpdateId] = useState<string | undefined>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-  const [formParentOrganization, setFormParentOrganization] = useState<OrganizationModal>({} as OrganizationModal);
+  const [formParentOrganization, setFormParentOrganization] = useState<IOrganization>({} as IOrganization);
   const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
   const language = useLocaleStore((state) => state.language);
 
 
-  const columns: TableColumnsType<OrganizationModal> = [
+  const columns: TableColumnsType<IOrganization> = [
     {
       title: t('Organization.name'),
       dataIndex: 'organizationName',
@@ -88,7 +88,7 @@ const Organization = () => {
       title: t('Common.status'),
       dataIndex: 'isEnabled',
       align: 'center',
-      render: (_, record: OrganizationModal) => (
+      render: (_, record: IOrganization) => (
         <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
           await organizationApi.status(record.id!, checked);
           await tableRef?.current?.refreshPageList();
@@ -113,7 +113,7 @@ const Organization = () => {
       fixed: 'right',
       width: 120,
       dataIndex: 'action',
-      render: (_: AnyObject, record: OrganizationModal) => {
+      render: (_: AnyObject, record: IOrganization) => {
         return (
 
           <PermissionButton buttonPermissions={buttonPermissions}
@@ -132,8 +132,8 @@ const Organization = () => {
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<OrganizationModal> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+  const rowSelection: TableRowSelection<IOrganization> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
   };
 
 
@@ -142,7 +142,7 @@ const Organization = () => {
    * @param selectedKeys 当前选中的key
    * @param node 选中的树节点
    */
-  const onSelectTree = async (selectedKeys: Key[], {node}: { node: OrganizationModal }) => {
+  const onSelectTree = async (selectedKeys: Key[], {node}: { node: IOrganization }) => {
     if (!selectedKeys || selectedKeys.length === 0) {
       updateSearchParams({...organizationQuery, parentId: null})
       return
@@ -181,7 +181,7 @@ const Organization = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setUpdateId(undefined);
-    setFormParentOrganization({} as OrganizationModal)
+    setFormParentOrganization({} as IOrganization)
   }
 
 
@@ -189,7 +189,7 @@ const Organization = () => {
    * 处理表单
    */
   const handleForm = async () => {
-    let values: OrganizationModal;
+    let values: IOrganization;
     try {
       values = await form.validateFields();
     } catch {
@@ -214,7 +214,7 @@ const Organization = () => {
       <Splitter>
         <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
           <div className='tree-info'>
-            <Tree<OrganizationModal>
+            <Tree<IOrganization>
               showIcon={false}
               defaultExpandParent={true}
               defaultSelectedKeys={[organizationQuery.parentId]}
@@ -240,7 +240,7 @@ const Organization = () => {
             ]}
             onSearchClick={() => updateSearchParams(organizationQuery)}
           />
-          <Table<OrganizationModal>
+          <Table<IOrganization>
             tableRef={tableRef}
             tableName={t('Organization.list')}
             columns={columns}
@@ -313,7 +313,7 @@ const Organization = () => {
                 label: 'organizationName',
                 value: 'id',
               }}
-              onSelect={(_: string, node: OrganizationModal) => setFormParentOrganization(node)}
+              onSelect={(_: string, node: IOrganization) => setFormParentOrganization(node)}
               allowClear
               dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
               treeData={treeSelectData}

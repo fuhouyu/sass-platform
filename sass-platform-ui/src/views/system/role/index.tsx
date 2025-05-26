@@ -29,14 +29,14 @@ import {
   TableColumnsType,
   Tooltip
 } from "antd";
-import {Role as RoleModel} from "@/model/role";
+import {IRole} from "@/types/role";
 import {roleApi} from "@/apis/role.ts";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {FormTree, IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import {useTranslation} from "react-i18next";
 import {permissionApi} from "@/apis/permission.ts";
-import {Menu} from "@/model/menu";
+import {IMenu} from "@/types/menu";
 import {useButton} from "@/hooks/useButton.tsx";
 import {RolePermissionConstant} from "@/constants/permissionConstant.ts";
 import {useLocaleStore} from "@/store";
@@ -49,7 +49,7 @@ const Role: FC = () => {
   usePageTitle('Menu.roleManage');
   const {t} = useTranslation();
   const buttonPermissions = useButton(RolePermissionConstant.List);
-  const initForm: RoleModel = {
+  const initForm: IRole = {
     displayOrder: 1,
     isEnabled: true,
     dataScope: 'ALL',
@@ -79,7 +79,7 @@ const Role: FC = () => {
       title: t('Common.status'),
       dataIndex: 'isEnabled',
       align: 'center',
-      render: (_, record: RoleModel) => (
+      render: (_, record: IRole) => (
         <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
           await roleApi.status(record.id!, checked);
           await tableRef?.current?.refreshPageList();
@@ -102,7 +102,7 @@ const Role: FC = () => {
       title: t('Common.action'),
       dataIndex: 'action',
       align: "center",
-      render: (_, record: RoleModel) => {
+      render: (_, record: IRole) => {
         return (
           <PermissionButton permissionStr={RolePermissionConstant.EDIT}
                             buttonPermissions={buttonPermissions}>
@@ -113,17 +113,17 @@ const Role: FC = () => {
     }
   ];
 
-  const tableRef = useRef<TableRefType<RoleModel>>(null);
+  const tableRef = useRef<TableRefType<IRole>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [updateId, setUpdateId] = useState<string | undefined>();
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [roleQuery, setRoleQuery] = useState<Record<string, string>>({...querySearchParams()});
-  const [permissionIds, setPermissionIds] = useState<React.Key[]>([]);
-  const [treeSelectData, setTreeSelectData] = useState<Menu[]>([]);
-  const [formInitValues, setFormInitValues] = useState<RoleModel>(initForm);
+  const [permissionIds, setPermissionIds] = useState<Key[]>([]);
+  const [treeSelectData, setTreeSelectData] = useState<IMenu[]>([]);
+  const [formInitValues, setFormInitValues] = useState<IRole>(initForm);
   const language = useLocaleStore((state) => state.language);
 
   /**
@@ -135,7 +135,7 @@ const Role: FC = () => {
     const treeData = await permissionApi.getPermissionTreeSelect();
     setTreeSelectData(treeData);
     if (roleId) {
-      const roleInfo: RoleModel = await roleApi.getInfoByIdApi(roleId);
+      const roleInfo: IRole = await roleApi.getInfoByIdApi(roleId);
       setFormInitValues(roleInfo);
       setPermissionIds(roleInfo.permissionIds as Key[]);
     } else {
@@ -150,7 +150,7 @@ const Role: FC = () => {
    */
   const handleForm = async () => {
     await form.validateFields();
-    const role: RoleModel = form.getFieldsValue();
+    const role: IRole = form.getFieldsValue();
     role.permissionIds = permissionIds;
     setIsModalButtonLoading(true);
     try {
@@ -167,8 +167,8 @@ const Role: FC = () => {
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<RoleModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+  const rowSelection: TableRowSelection<IRole> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
   };
 
   return (
@@ -248,7 +248,7 @@ const Role: FC = () => {
           <Button key='onCancel' onClick={() => setIsModalOpen(false)}>{t('Button.cancel')}</Button>
         ]}
       >
-        <Form<RoleModel>
+        <Form<IRole>
           name="modal-form"
           form={form}
           labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 6}}
@@ -372,7 +372,7 @@ const Role: FC = () => {
             required={true}
             valuePropName={'checked'}
           >
-            <FormTree<Menu>
+            <FormTree<IMenu>
               formTreeProps={{
                 fieldNames: {key: 'id'},
                 checkedKeys: permissionIds,
@@ -381,12 +381,12 @@ const Role: FC = () => {
                   halfChecked: Key[];
                 } | Key[]) => {
                   if (checked instanceof Array) {
-                    setPermissionIds(checked as React.Key[]);
+                    setPermissionIds(checked);
                     return
                   }
                   setPermissionIds(checked.checked);
                 },
-                titleRender: (menu: Menu) => t(`${menu.permissionName}`),
+                titleRender: (menu: IMenu) => t(`${menu.permissionName}`),
                 treeData: treeSelectData,
               }}
               onSelectedAll={(ids: string[]) => {

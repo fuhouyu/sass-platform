@@ -16,11 +16,11 @@
 
 
 import {Modal as AntdModal, ModalProps} from "antd";
-import React from "react";
+import {FC} from "react";
 import './index.scss'
 import {IconFont} from "@/components";
 
-export const Modal: React.FC<ModalProps> = (modalProps: ModalProps) => {
+export const Modal: FC<ModalProps> = (modalProps: ModalProps) => {
     return (
         <AntdModal
             {...modalProps}

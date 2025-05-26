@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {UserToken} from "@/model/authentication";
+
+import {UserToken} from "@/types/authentication";
 
 /**
  * accessTokenKey

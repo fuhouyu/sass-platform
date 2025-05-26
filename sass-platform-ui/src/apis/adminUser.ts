@@ -16,14 +16,14 @@
 
 
 import {request} from "@/utils";
-import {Userinfo} from "@/model/user";
+import {IUserinfo} from "@/types/user";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
 
 
 const baseUserUrl = BaseApiUrlConstant.ADMIN_USER_API_PREFIX;
 
-class AdminUserApi extends DefaultApiImpl<Userinfo> {
+class AdminUserApi extends DefaultApiImpl<IUserinfo> {
 
     constructor() {
         super(baseUserUrl);
@@ -42,7 +42,7 @@ class AdminUserApi extends DefaultApiImpl<Userinfo> {
      * @param id 主键id
      * @param organizationId 组织id
      */
-    getDetailByIdApi = (id: string, organizationId: string): Promise<Userinfo> => {
+    getDetailByIdApi = (id: string, organizationId: string): Promise<IUserinfo> => {
         return request.get(`${this.baseUrl}/${id}?organizationId=${organizationId}`);
     };
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base.tsx";
+import {BaseModel} from "@/types/base";
 
 /**
  * 应用
  *
  */
-export interface Application extends BaseModel {
+export interface IApplication extends BaseModel {
     // 客户端id
     clientId?: string;
     // 客户端密钥

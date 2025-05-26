@@ -15,7 +15,7 @@
  */
 
 
-import {PageQuery} from "@/model/pageQuery";
+import {IPageQuery} from "@/types/pageQuery";
 import {SearchComponentProps} from "@components/List/header/interface";
 import {TableProps} from "@components/List/table/interface";
 
@@ -36,5 +36,5 @@ export interface PageListProps<T> {
      * 设置分页查询
      * @param pageQuery 查询对象
      */
-    setPageQuery?: (pageQuery: PageQuery) => void;
+    setPageQuery?: (pageQuery: IPageQuery) => void;
 }

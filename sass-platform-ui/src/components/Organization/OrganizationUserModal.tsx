@@ -18,13 +18,13 @@ import {Button, Input, Splitter, TableColumnsType, Tag, Tree} from "antd";
 import {userApi} from "@/apis/adminUser.ts";
 import {Key, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {Userinfo} from "@/model/user.tsx";
-import {PageQuery} from "@/model/pageQuery.tsx";
+import {IUserinfo} from "@/types/user";
+import {IPageQuery} from "@/types/pageQuery";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
 import {OrganizationUserModalProps} from "@components/Organization/interface.tsx";
 import './index.scss'
 import {Modal, PageList} from "@/components";
-import {Organization} from "@/model/organization.tsx";
+import {IOrganization} from "@/types/organization";
 import {TableRefType} from "@components/List/table/interface.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
@@ -33,7 +33,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
     const {t} = useTranslation();
     const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
     const {isModalOpen, setIsModalOpen, rowSelection} = organizationUserProps;
-    const tableRef = useRef<TableRefType<Userinfo>>(null);
+  const tableRef = useRef<TableRefType<IUserinfo>>(null);
     const columns: TableColumnsType = [
         {
             title: t('User.username'),
@@ -74,7 +74,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
     ];
     const {querySearchParams} = useRouteSearchParams();
     const params = querySearchParams();
-    const [pageQuery, setPageQuery] = useState<PageQuery>({
+  const [pageQuery, setPageQuery] = useState<IPageQuery>({
         pageNum: 1,
         pageSize: 10,
         organizationId: params.organizationId
@@ -85,7 +85,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
         if (isModalOpen) {
             initOrganization().then();
         }
-        return () => setPageQuery({} as PageQuery)
+      return () => setPageQuery({} as IPageQuery)
     }, [initOrganization, isModalOpen])
 
     /**
@@ -124,7 +124,7 @@ export const OrganizationUserModal = (organizationUserProps: OrganizationUserMod
                                 max="70%">
                     <div className='tree-info'>
 
-                        <Tree<Organization>
+                      <Tree<IOrganization>
                             defaultExpandParent={true}
                             blockNode
                             showIcon={false}

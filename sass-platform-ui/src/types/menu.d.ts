@@ -15,19 +15,15 @@
  */
 
 
-import {BaseModel} from "@/model/base";
+import {BaseModel} from "@/types/base";
+import {MenuType} from "@/enums/menuType.ts";
 
-export enum MenuType {
-    DIR = 'DIR',
-    MENU = "MENU",
-    BUTTON = "BUTTON",
-}
 
-export interface Menu extends BaseModel {
+export interface IMenu extends BaseModel {
     /**
      * 权限树子集
      */
-    children?: Menu[];
+    children?: IMenu[];
     /**
      * 组件路径
      */

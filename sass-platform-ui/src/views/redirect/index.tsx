@@ -17,15 +17,15 @@
 
 import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {useCallback, useEffect, useState} from "react";
-import {AccountType} from "@/model/account.tsx";
 import {Button, Form, Input, message, Modal, Spin} from "antd";
 import {accountApi} from "@/apis/account.ts";
 import {useTranslation} from "react-i18next";
 import {IconFont} from "@/components";
 import './index.scss';
-import {ThirdPartyBindAuthentication, UserAuthentication} from "@/model/authentication.tsx";
+import {IThirdPartyBindAuthentication, IUserAuthentication} from "@/types/authentication";
 import {useUserStore} from "@/store";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
+import {AccountType} from "@/enums/accountType.ts";
 
 const PostThirdPartyRedirect = () => {
 
@@ -33,7 +33,7 @@ const PostThirdPartyRedirect = () => {
     const location = useLocation();
     const {t} = useTranslation();
     const [bindModal, setBindModal] = useState<boolean>(false);
-    const [userForm] = Form.useForm<ThirdPartyBindAuthentication>();
+  const [userForm] = Form.useForm<IThirdPartyBindAuthentication>();
     const [temporaryToken, setTemporaryToken] = useState<string>('');
     const {fetchLogin, fetchLoginAndBind} = useUserStore();
     const navigate = useNavigate();
@@ -64,7 +64,7 @@ const PostThirdPartyRedirect = () => {
      */
     const loginForm = async () => {
         await userForm.validateFields();
-        const userBindAuthentication: ThirdPartyBindAuthentication = userForm.getFieldsValue();
+      const userBindAuthentication: IThirdPartyBindAuthentication = userForm.getFieldsValue();
         userBindAuthentication.temporaryToken = temporaryToken;
         userBindAuthentication.accountType = AccountType.PASSWORD;
         try {
@@ -136,14 +136,14 @@ const PostThirdPartyRedirect = () => {
                     form={userForm}
                     onFinish={loginForm}
                 >
-                    <Form.Item<UserAuthentication>
+                  <Form.Item<IUserAuthentication>
                         name="identify"
                         rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                     >
                         <Input prefix={<IconFont type={'i-zhanghao'}/>}
                                placeholder={t('Login.usernamePlaceholder')}/>
                     </Form.Item>
-                    <Form.Item<UserAuthentication>
+                  <Form.Item<IUserAuthentication>
                         name="credentials"
                         rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                     >

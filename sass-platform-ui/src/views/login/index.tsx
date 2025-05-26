@@ -19,15 +19,14 @@ import {FC, useCallback, useEffect, useRef, useState} from "react";
 import "./index.scss"
 import {Avatar, Button, Divider, Flex, Form, Input, Select, Space} from "antd";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {UserAuthentication} from "@/model/authentication";
+import {IUserAuthentication} from "@/types/authentication";
 import useAuth from "@/hooks/useAuth";
 import {IconFont, WeLinkLogin} from "@/components";
 import {useTranslation} from "react-i18next";
 import useLanguageSwitcher from "@/hooks/useLanguageSwitcher";
-import {AccountType} from "@/model/account.tsx";
 import {Turnstile, TurnstileInstance} from "@marsidev/react-turnstile";
 import {useUserStore} from "@/store";
-import {TenantInfo} from "@/model/tenant.tsx";
+import {ITenantInfo} from "@/types/tenant";
 import {tenantApi} from "@/apis/tenant.ts";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 
@@ -38,6 +37,7 @@ import {useThemeStore} from "@/store/modules/theme.tsx";
 import {useRoutes} from "@/hooks/useRoutes.tsx";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import logo from '@/assets/images/logo.png'
+import {AccountType} from "@/enums/accountType.ts";
 
 
 /**
@@ -57,7 +57,7 @@ const Login: FC = () => {
   const [turnstileToken, setTurnstileToken] = useState<string | undefined>();
   const {fetchLogin} = useUserStore(state => state);
   const {preview} = useResourceAction();
-  const [tenantList, setTenantList] = useState<TenantInfo[]>([]);
+  const [tenantList, setTenantList] = useState<ITenantInfo[]>([]);
   const [tenantId, setTenantId] = useState<string>();
   const {theme, changeTheme} = useThemeStore();
   const {updateDynamicRoutes} = useRoutes();
@@ -81,7 +81,7 @@ const Login: FC = () => {
   }, [isAuth, navigate, initTenant]);
 
 
-  const onFinish = async (loginData: UserAuthentication) => {
+  const onFinish = async (loginData: IUserAuthentication) => {
     setLoginButtonLoading(true);
     loginData.accountType = AccountType.PASSWORD;
     loginData.cloudflareTurnstileToken = turnstileToken;

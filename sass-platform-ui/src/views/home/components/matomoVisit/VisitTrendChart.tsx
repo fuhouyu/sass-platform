@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import {FC} from "react";
 import ReactECharts from "echarts-for-react";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 import {useTranslation} from "react-i18next";
 
-const VisitTrendChart: FC<{ data: MatomoVisitSummary[] }> = ({data}) => {
+const VisitTrendChart: FC<{ data: IMatomoVisitSummary[] }> = ({data}) => {
     const dates = data.map(item => item.date);
     const nbVisits = data.map(item => item.nbVisits ?? 0);
     const nbUniqVisitors = data.map(item => item.nbUniqVisitors ?? 0);

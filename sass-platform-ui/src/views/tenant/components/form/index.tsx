@@ -32,21 +32,21 @@ import {
 import {Key, useCallback, useEffect, useState} from "react";
 import {tenantApi} from "@/apis/tenant.ts";
 import {FormTree, OrganizationUserModal, S3Upload} from "@/components";
-import {Menu} from "@/model/menu.tsx";
+import {IMenu} from "@/types/menu";
 import TextArea from "antd/es/input/TextArea";
 import {useTranslation} from "react-i18next";
-import {TenantInfo, TenantSpace} from "@/model/tenant.tsx";
+import {ITenantInfo, ITenantSpace} from "@/types/tenant";
 import {useLocaleStore} from "@/store";
 import './index.scss'
 import type {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user.tsx";
+import {IUserinfo} from "@/types/user";
 import {tenantSpaceApi} from "@/apis/tenantSpace.ts";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 import {TenantFormProps} from "@/views/tenant/components/form/interface.ts";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import dayjs, {Dayjs} from 'dayjs';
 
-interface _TenantForm extends TenantInfo {
+interface _TenantForm extends ITenantInfo {
     dateRange?: Dayjs[] | null[]
 }
 
@@ -57,11 +57,11 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     const [current, setCurrent] = useState(0);
     const {t} = useTranslation();
     const [tenantInfoForm] = Form.useForm<_TenantForm>();
-    const [tenantSpaceForm] = Form.useForm<TenantSpace>();
+  const [tenantSpaceForm] = Form.useForm<ITenantSpace>();
     const [tenantInfo, setTenantInfo] = useState<_TenantForm | undefined>(undefined);
-    const [tenantSpace, setTenantSpace] = useState<TenantSpace | undefined>(undefined);
-    const [addPermissionIds, setAddPermissionIds] = useState<React.Key[]>([]);
-    const [deletePermissionIds, setDeletePermissionIds] = useState<React.Key[]>([]);
+  const [tenantSpace, setTenantSpace] = useState<ITenantSpace | undefined>(undefined);
+  const [addPermissionIds, setAddPermissionIds] = useState<Key[]>([]);
+  const [deletePermissionIds, setDeletePermissionIds] = useState<Key[]>([]);
     const language = useLocaleStore((state) => state.language);
     const [isChooseUserModalOpen, setIsChooseUserModalOpen] = useState<boolean>(false);
     const {preview} = useResourceAction();
@@ -133,8 +133,8 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
     /**
      * 用户列选择
      */
-    const userRowSelection: TableRowSelection<Userinfo> = {
-        onChange: (_: React.Key[], selectedRows: Userinfo[]) => {
+    const userRowSelection: TableRowSelection<IUserinfo> = {
+      onChange: (_: Key[], selectedRows: IUserinfo[]) => {
             if (selectedRows.length === 0) {
                 return
             }
@@ -318,7 +318,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                             required={true}
                             hasFeedback={true}
                         >
-                            <FormTree<Menu>
+                          <FormTree<IMenu>
                                 formTreeProps={{
                                     fieldNames: {key: 'id'},
                                     checkedKeys: addPermissionIds,
@@ -333,7 +333,7 @@ const TenantForm = (tenantFormProps: TenantFormProps) => {
                                             setDeletePermissionIds([...deletePermissionIds, ...checkedKeys]);
                                         }
                                     },
-                                    titleRender: (menu: Menu) => t(`${menu.permissionName}`),
+                                  titleRender: (menu: IMenu) => t(`${menu.permissionName}`),
                                     treeData: permissionTreeData,
 
                                 }}

@@ -15,13 +15,13 @@
  */
 
 
-import React from "react";
-import {Menu} from "@/model/menu.tsx";
+import {FC, ReactNode} from "react";
+import {IMenu} from "@/types/menu";
 
 export interface PermissionButtonProps {
-    buttonPermissions: Menu[],
+  buttonPermissions: IMenu[],
     permissionStr: string,
-    children: React.ReactNode
+  children: ReactNode
 }
 
 /**
@@ -31,7 +31,7 @@ export interface PermissionButtonProps {
  * @param children 按钮组件
  * @constructor PermissionButton
  */
-export const PermissionButton: React.FC<PermissionButtonProps> = ({
+export const PermissionButton: FC<PermissionButtonProps> = ({
                                                                       buttonPermissions,
                                                                       permissionStr,
                                                                       children

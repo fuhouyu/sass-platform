@@ -18,7 +18,7 @@
 /**
  * 系统信息
  */
-export interface SystemInfo {
+export interface ISystemInfo {
     /**
      * os 名称
      */
@@ -40,7 +40,7 @@ export interface SystemInfo {
 /**
  * cpu info
  */
-export interface CpuInfo {
+export interface ICpuInfo {
 
     /**
      * 核心数
@@ -56,7 +56,7 @@ export interface CpuInfo {
 /**
  * 内存详情
  */
-export interface MemoryInfo {
+export interface IMemoryInfo {
     /**
      * 总内存
      */
@@ -82,7 +82,7 @@ export interface MemoryInfo {
 /**
  * jvm info
  */
-export interface JvmInfo {
+export interface IJvmInfo {
 
     /**
      * 最大内存
@@ -146,17 +146,17 @@ export interface JvmInfo {
 /**
  * 服务监控
  */
-export interface ServerMonitor {
+export interface IServerMonitor {
 
     // cpu
-    cpuInfo?: CpuInfo;
+  cpuInfo?: ICpuInfo;
 
     // 内存
-    memoryInfo?: MemoryInfo;
+  memoryInfo?: IMemoryInfo;
 
     // 系统信息
-    systemInfo?: SystemInfo;
+  systemInfo?: ISystemInfo;
 
     // jvm 信息
-    jvmInfo?: JvmInfo;
+  jvmInfo?: IJvmInfo;
 }

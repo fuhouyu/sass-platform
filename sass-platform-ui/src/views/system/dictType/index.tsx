@@ -17,7 +17,7 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {DictType as DictTypeModel} from "@/model/dictType";
+import {IDictType as DictTypeModel} from "@/types/dictType";
 import {
   Button,
   Form,
@@ -32,7 +32,7 @@ import {
   Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import {useRef, useState} from "react";
+import {Key, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import {dictTypeApi} from '@/apis/dictType.ts';
@@ -125,7 +125,7 @@ const DictType = () => {
   ];
 
   const [updateId, setUpdateId] = useState<string | undefined>();
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -171,7 +171,7 @@ const DictType = () => {
    * table列选择
    */
   const rowSelection: TableRowSelection<DictTypeModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
     getCheckboxProps: (record: DictTypeModel) => ({
       disabled: !record.isAllowModified
     }),

@@ -15,18 +15,18 @@
  */
 
 
-import {FC, useRef, useState} from "react";
+import {FC, Key, useRef, useState} from "react";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useTranslation} from "react-i18next";
 import {Button, DatePicker, Input, Popconfirm, TableColumnsType, Tooltip} from "antd";
 import './index.scss'
 import {TableRefType} from "@components/List/table/interface.tsx";
-import {OperationLog as OperationLogModel} from "@/model/operationLog.tsx";
+import {IOperationLog} from "@/types/operationLog";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {PageList, PermissionButton} from "@/components";
 import {onlineUserApi} from "@/apis/onlineUserApi.ts";
 import dayjs from "dayjs";
-import {OnlineUser as OnlineUserModel} from "@/model/onlineUser.tsx";
+import {IOnlineUser} from "@/types/onlineUser";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {getAccessToken} from "@/utils";
 import {useButton} from "@/hooks/useButton.tsx";
@@ -109,7 +109,7 @@ const OnlineUser: FC = () => {
       title: t('Common.action'),
       dataIndex: 'action',
       align: "center",
-      render: (_, record: OnlineUserModel) => {
+      render: (_, record: IOnlineUser) => {
         return <Button
           disabled={record.accessToken === getAccessToken()}
           type="primary"
@@ -129,18 +129,18 @@ const OnlineUser: FC = () => {
   ];
 
   const buttonPermissions = useButton(OnlineUserPermissionConstant.List);
-  const tableRef = useRef<TableRefType<OperationLogModel>>(null);
+  const tableRef = useRef<TableRefType<IOperationLog>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
 
 
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<OnlineUserModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-    getCheckboxProps: (record: OnlineUserModel) => ({
+  const rowSelection: TableRowSelection<IOnlineUser> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
+    getCheckboxProps: (record: IOnlineUser) => ({
       disabled: record.accessToken === getAccessToken()
     }),
   };

@@ -16,7 +16,7 @@
 
 
 import {Event, EventSourcePolyfill, MessageEvent} from "event-source-polyfill";
-import {getAccessToken} from "@/utils/token.tsx";
+import {getAccessToken} from "@/utils/token.ts";
 
 class SSEClient {
     private eventSource: EventSourcePolyfill | null = null;

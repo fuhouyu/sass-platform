@@ -15,9 +15,9 @@
  */
 
 
-import {FC, useRef, useState} from "react";
+import {FC, Key, useRef, useState} from "react";
 import {Button, Drawer, Input, Popconfirm, Space, Switch, TableColumnsType} from "antd";
-import {TenantInfo} from "@/model/tenant";
+import {ITenantInfo} from "@/types/tenant";
 import {PageList, PermissionButton} from "@/components";
 import './index.scss'
 import {tenantApi} from "@/apis/tenant.ts";
@@ -31,7 +31,7 @@ import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
 import TenantForm from "./components/form";
 import {permissionApi} from "@/apis/permission.ts";
-import {Menu} from "@/model/menu.tsx";
+import {IMenu} from "@/types/menu";
 import {ReloadOutlined} from "@ant-design/icons";
 import {useUserStore} from "@/store";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
@@ -45,7 +45,7 @@ const Tenant: FC = () => {
   usePageTitle('Menu.tenantManage');
   const buttonPermissions = useButton(TenantPermissionConstant.List);
   const {t} = useTranslation();
-  const tableRef = useRef<TableRefType<TenantInfo>>(null);
+  const tableRef = useRef<TableRefType<ITenantInfo>>(null);
   const [updateId, setUpdateId] = useState<string | undefined>();
   const {tenant} = useUserStore(state => state);
   const {contextHolder, notificationMessage} = useNotification();
@@ -66,7 +66,7 @@ const Tenant: FC = () => {
       title: t('Tenant.type'),
       dataIndex: 'tenantType',
       align: 'center',
-      render: (_, record: TenantInfo) => {
+      render: (_, record: ITenantInfo) => {
         return findDictItemName('TENANT_TYPE', record.tenantType);
       }
     },
@@ -84,7 +84,7 @@ const Tenant: FC = () => {
       title: t('Common.status'),
       dataIndex: 'isEnabled',
       align: 'center',
-      render: (_, record: TenantInfo) => (
+      render: (_, record: ITenantInfo) => (
         <Switch
           disabled={tenant?.id === record.id}
           defaultChecked={record.isEnabled} onChange={async (checked) => {
@@ -97,7 +97,7 @@ const Tenant: FC = () => {
       title: t('Tenant.expiration'),
       dataIndex: 'expiration',
       align: 'center',
-      render: (_, record: TenantInfo) => {
+      render: (_, record: ITenantInfo) => {
         if (record.startDate && record.endDate) {
           return record.startDate + "-" + record.endDate;
         }
@@ -122,7 +122,7 @@ const Tenant: FC = () => {
       align: "center",
       width: 240,
       fixed: 'right',
-      render: (_, record: TenantInfo) => {
+      render: (_, record: ITenantInfo) => {
         const flag = record.id === tenant?.id
         return (
           <PermissionButton buttonPermissions={buttonPermissions}
@@ -158,21 +158,21 @@ const Tenant: FC = () => {
     }
   ];
 
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
 
   const [tenantQuery, setTenantQuery] = useState<Record<string, string>>({...querySearchParams()});
   const {findDictItemName} = useDictItem(["TENANT_TYPE"]);
   const [openTenantDrawer, setOpenTenantDrawer] = useState<boolean>(false);
-  const [permissionTree, setPermissionTree] = useState<Menu[] | undefined>(undefined);
+  const [permissionTree, setPermissionTree] = useState<IMenu[] | undefined>(undefined);
 
 
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<TenantInfo> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
-    getCheckboxProps: (record: TenantInfo) => ({
+  const rowSelection: TableRowSelection<ITenantInfo> = {
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
+    getCheckboxProps: (record: ITenantInfo) => ({
       disabled: tenant?.id === record.id
     }),
   };

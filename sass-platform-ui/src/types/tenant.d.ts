@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {BaseModel} from "@/model/base";
+import {BaseModel} from "@/types/base";
 import {Key} from "react";
 
 /**
  * 租户详情
  */
-export interface TenantInfo extends BaseModel {
+export interface ITenantInfo extends BaseModel {
     id?: string;
     // 租户编码
     tenantCode?: string;
@@ -47,7 +47,7 @@ export interface TenantInfo extends BaseModel {
     // 管理员用户真实姓名
     adminUserRealName?: string;
     // 租户空间
-    tenantSpace?: TenantSpace;
+  tenantSpace?: ITenantSpace;
     // 开始日期
     startDate?: string;
     // 结束日期
@@ -55,7 +55,7 @@ export interface TenantInfo extends BaseModel {
 }
 
 
-export interface TenantSpace extends BaseModel {
+export interface ITenantSpace extends BaseModel {
 
     /**
      * 租户名称

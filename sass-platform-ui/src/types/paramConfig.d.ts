@@ -14,15 +14,42 @@
  * limitations under the License.
  */
 
+import {BaseModel} from "@/types/base";
 
-// 搜索组件的基础属性
-import {ReactNode} from "react";
+export interface IParamConfig extends BaseModel {
+    /**
+     * 主键id
+     */
+    id?: string;
 
+    /**
+     * 配置名称
+     */
+    configName?: string;
 
-// 搜索组件的主接口
-export interface SearchComponentProps {
-    // 组件数组
-  components: ReactNode[];
-    // 搜索事件
-    onSearchClick?: () => void;
+    /**
+     * 配置键
+     */
+    configKey?: string;
+
+    /**
+     * 配置value
+     */
+    configValue?: string;
+
+    /**
+     * 分组标识
+     */
+    groupKey?: string;
+
+    /**
+     * 备注
+     */
+    remark?: string;
+
+    /**
+     * 是否允许修改
+     */
+    isAllowModified?: boolean;
+
 }

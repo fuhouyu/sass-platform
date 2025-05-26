@@ -20,9 +20,9 @@ import './index.scss'
 import ReactECharts from 'echarts-for-react';
 import {Card, Flex, List} from "antd";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {ServerMonitor as ServerMonitorModel} from "@/model/monitor.tsx";
+import {IServerMonitor as ServerMonitorModel} from "@/types/monitor";
 import {useTranslation} from "react-i18next";
-import {sseClient} from "@/utils/sse.tsx";
+import {sseClient} from "@/utils/sse.ts";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useThemeStore} from "@/store/modules/theme.tsx";
 

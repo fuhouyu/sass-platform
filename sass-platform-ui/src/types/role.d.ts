@@ -15,44 +15,50 @@
  */
 
 
-import {BaseModel} from "@/model/base";
+import {BaseModel} from "@/types/base";
+import {Key} from "react";
 
 /**
- * 字典类型
+ * 角色详情
  */
-export interface DictType extends BaseModel {
+export interface IRole extends BaseModel {
     /**
      * 主键id
      */
     id?: string;
 
     /**
-     * 字典名称
+     * 角色名称
      */
-    dictName?: string;
+    roleName?: string;
 
     /**
-     * 字典编码
+     * 角色编码
      */
-    dictCode?: string;
+    roleCode?: string;
 
     /**
-     * 允许修改
-     */
-    isAllowModified?: boolean;
-
-    /**
-     * 是否启禁用
-     */
-    isEnabled?: boolean;
-
-    /**
-     * 显示
+     * 显示顺序
      */
     displayOrder?: number;
 
     /**
-     * 备注
+     * 数据范围
      */
-    remark?: string;
+    dataScope?: string;
+
+    /**
+     * 状态：true 启用
+     */
+    isEnabled?: boolean;
+
+    /**
+     * 是否允许修改
+     */
+    isAllowModified?: boolean;
+
+    /**
+     * 权限id集合
+     */
+    permissionIds?: Key[]
 }

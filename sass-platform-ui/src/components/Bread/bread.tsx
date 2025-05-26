@@ -17,7 +17,7 @@
 
 import {Breadcrumb, BreadcrumbProps} from "antd";
 import {useMemo} from "react";
-import {Menu} from "@/model/menu";
+import {IMenu} from "@/types/menu";
 import './index.scss'
 import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
@@ -25,7 +25,7 @@ import {useUserStore} from "@/store";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 
 
-const getBreadcrumbName = (path: string, routers: Menu[]) => {
+const getBreadcrumbName = (path: string, routers: IMenu[]) => {
     for (const item of routers) {
         if (matchPath(path, item.routePath ?? '')) {
             return item.permissionName;

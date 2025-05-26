@@ -17,7 +17,7 @@
 
 import './index.scss'
 import {useTranslation} from "react-i18next";
-import {DictItem as DictItemModel} from "@/model/dictItem";
+import {IDictItem as DictItemModel} from "@/types/dictItem";
 import {
   Button,
   Form,
@@ -32,12 +32,12 @@ import {
   Tooltip
 } from "antd";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {Key, useCallback, useEffect, useRef, useState} from "react";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import TextArea from "antd/es/input/TextArea";
 import {dictItemApi} from "@/apis/dictItem.ts";
-import {DictType} from "@/model/dictType";
+import {IDictType} from "@/types/dictType";
 import {useNavigate, useParams} from "react-router-dom";
 import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.ts";
@@ -116,11 +116,11 @@ const DictItem = () => {
   ];
 
   const [updateId, setUpdateId] = useState<string | undefined>();
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [dictTypeList, setDictTypeList] = useState<DictType[]>([]);
+  const [dictTypeList, setDictTypeList] = useState<IDictType[]>([]);
   const params = useParams();
   const navigate = useNavigate();
   const [dictTypeCode, setDictTypeCode] = useState<string>(params.dictCode!);
@@ -182,7 +182,7 @@ const DictItem = () => {
    * table列选择
    */
   const rowSelection: TableRowSelection<DictItemModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
     getCheckboxProps: (record: DictItemModel) => ({
       disabled: !record.isAllowModified
     }),

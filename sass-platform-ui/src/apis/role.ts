@@ -16,14 +16,14 @@
 
 
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
-import {Role} from "@/model/role";
+import {IRole} from "@/types/role";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
 
 /**
  * 角色api
  */
-class RoleApi extends DefaultApiImpl<Role> {
+class RoleApi extends DefaultApiImpl<IRole> {
 
     constructor() {
         super(BaseApiUrlConstant.ROLE_API_PREFIX);
@@ -38,7 +38,7 @@ class RoleApi extends DefaultApiImpl<Role> {
     /**
      * 获取角色列表
      */
-    list: () => Promise<Role[]> = (): Promise<Role[]> => request.get(`${this.baseUrl}/list`)
+    list: () => Promise<IRole[]> = (): Promise<IRole[]> => request.get(`${this.baseUrl}/list`)
 }
 
 export const roleApi: RoleApi = new RoleApi();

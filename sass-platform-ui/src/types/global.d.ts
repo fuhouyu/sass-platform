@@ -23,3 +23,27 @@ declare global {
     _paq?: AnyObject[]; // 或更具体的类型，例如: MatomoEvent[]
   }
 }
+
+
+declare type IResponse<T> = {
+  // 响应码
+  code: number;
+  // 响应信息
+  message: string;
+  // 是否成功
+  isSuccess: boolean;
+  // 响应数据
+  data: T;
+}
+
+
+export type BaseModel = {
+  // 创建时间
+  createdAt?: string;
+  // 创建人
+  createdBy?: string;
+  // 更新时间
+  updatedAt?: string;
+  // 更新人
+  updatedBy?: string;
+}

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {FC, useRef, useState} from "react";
+import {FC, Key, useRef, useState} from "react";
 import './index.scss';
-import {Application as ApplicationModel} from "@/model/application";
+import {IApplication as ApplicationModel} from "@/types/application";
 import {useTranslation} from "react-i18next";
 import {useButton} from "@/hooks/useButton.tsx";
 import {ApplicationPermissionConstant} from "@/constants/permissionConstant.ts";
@@ -91,7 +91,7 @@ const ApplicationManage: FC = () => {
   const tableRef = useRef<TableRefType<ApplicationModel>>(null);
   const [updateId, setUpdateId] = useState<string | undefined>();
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-  const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
@@ -99,7 +99,7 @@ const ApplicationManage: FC = () => {
    * table列选择
    */
   const rowSelection: TableRowSelection<ApplicationModel> = {
-    onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
   };
 
   return (

@@ -15,11 +15,11 @@
  */
 
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
-import {ParamConfig} from "@/model/paramConfig.tsx";
+import {IParamConfig} from "@/types/paramConfig";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {request} from "@/utils";
 
-class ParamConfigApi extends DefaultApiImpl<ParamConfig> {
+class ParamConfigApi extends DefaultApiImpl<IParamConfig> {
 
     constructor(baseUrl: string) {
         super(baseUrl);

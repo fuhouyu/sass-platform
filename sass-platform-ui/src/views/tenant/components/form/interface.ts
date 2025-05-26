@@ -15,7 +15,7 @@
  */
 
 
-import {Menu} from "@/model/menu.tsx";
+import {IMenu} from "@/types/menu";
 
 /**
  * 租户表单属性
@@ -30,7 +30,7 @@ export interface TenantFormProps {
     /**
      * 权限树数据
      */
-    permissionTreeData?: Menu[] | undefined;
+    permissionTreeData?: IMenu[] | undefined;
 
     /**
      * 表单处理后的回调

@@ -16,12 +16,12 @@
 
 
 import {request} from "@/utils";
-import {Menu} from "@/model/menu";
+import {IMenu} from "@/types/menu";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {DefaultApiImpl} from "@/apis/baseApi.ts";
 
 
-class PermissionApi extends DefaultApiImpl<Menu> {
+class PermissionApi extends DefaultApiImpl<IMenu> {
     constructor() {
         super(BaseApiUrlConstant.PERMISSION_API_PREFIX);
     }
@@ -29,20 +29,20 @@ class PermissionApi extends DefaultApiImpl<Menu> {
     /**
      *  获取当前用户的权限api
      */
-    getUserPermissionApi: () => Promise<Menu[]> = (): Promise<Menu[]> => request.get(`${this.baseUrl}/me`);
+    getUserPermissionApi: () => Promise<IMenu[]> = (): Promise<IMenu[]> => request.get(`${this.baseUrl}/me`);
 
     /**
      * 查询子集列表
      * @param parentId 父级id，为空时查询出一级
      */
-    getPermissionListApi: (parentId?: string) => Promise<Menu[]> = (parentId?: string): Promise<Menu[]> => {
+    getPermissionListApi: (parentId?: string) => Promise<IMenu[]> = (parentId?: string): Promise<IMenu[]> => {
         return parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
     }
 
     /**
      * 权限树选择器
      */
-    getPermissionTreeSelect: () => Promise<Menu[]> = (): Promise<Menu[]> => {
+    getPermissionTreeSelect: () => Promise<IMenu[]> = (): Promise<IMenu[]> => {
         return request(`${this.baseUrl}/tree`)
     }
 

@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
+/**
+ * 分页查询对象
+ */
+export interface IPageQuery {
+    pageNum: number | undefined;
+    pageSize: number | undefined;
+    keyword?: string;
+    sortColumn?: string;
+    isAsc?: boolean;
 
-import {BaseModel} from "@/model/base.tsx";
+    // 允许动态添加任意键
+    [key: string]: unknown;
+}
 
-export interface Position extends BaseModel {
-    id?: string;
-    positionName?: string;
-    positionCode?: string;
-    remark?: string;
+
+/**
+ * 分页查询的结果集
+ */
+export interface IPageResult<T> {
+    pageNum: number;
+    pageSize: number;
+    total: number;
+    list: T[];
 }

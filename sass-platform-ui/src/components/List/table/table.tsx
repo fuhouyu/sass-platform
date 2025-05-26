@@ -22,7 +22,7 @@ import {useTranslation} from "react-i18next";
 import {useCallback, useEffect, useImperativeHandle, useState} from "react";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {useLocation, useSearchParams} from "react-router-dom";
-import {PageQuery, PageResult} from "@/model/pageQuery.tsx";
+import {IPageQuery, IPageResult} from "@/types/pageQuery";
 
 /**
  * 处理_转换为驼峰
@@ -33,7 +33,7 @@ const camelToSnake = (str: string | undefined): string | undefined => {
     return str.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`);
 };
 
-const initPageQuery: PageQuery = {
+const initPageQuery: IPageQuery = {
     pageNum: 1,
     pageSize: 10
 }
@@ -42,7 +42,7 @@ const initPageQuery: PageQuery = {
 const Table = <T extends object>(tableProps: TableProps<T>) => {
     const {pageApi, tableName, tableRef, tableComponents, disableTableHint} = tableProps;
     const {t} = useTranslation();
-    const [pageResult, setPageResult] = useState<PageResult<T>>()
+  const [pageResult, setPageResult] = useState<IPageResult<T>>()
     const [searchParams] = useSearchParams();
     const {updateSearchParams} = useRouteSearchParams();
     const location = useLocation();

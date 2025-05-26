@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {OperationLog, OperationLogPageQuery} from "@/model/operationLog.tsx";
-import {PageResult} from "@/model/pageQuery.tsx";
+import {IOperationLog, IOperationLogPageQuery} from "@/types/operationLog";
+import {IPageResult} from "@/types/pageQuery";
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
@@ -31,7 +31,7 @@ class OperationLogApi {
      * 分页查询的对象
      * @param pageQuery 分页查询
      */
-    pageApi: (pageQuery: OperationLogPageQuery) => Promise<PageResult<OperationLog>> = (pageQuery: OperationLogPageQuery): Promise<PageResult<OperationLog>> =>
+    pageApi: (pageQuery: IOperationLogPageQuery) => Promise<IPageResult<IOperationLog>> = (pageQuery: IOperationLogPageQuery): Promise<IPageResult<IOperationLog>> =>
         request.get(`${this._baseUrl}/page`, {
             params: pageQuery
         });
@@ -47,7 +47,7 @@ class OperationLogApi {
      * 操作日志详情
      * @param id 主键id
      */
-    operationLogInfo: (id: string) => Promise<OperationLog> = (id: string): Promise<OperationLog> =>
+    operationLogInfo: (id: string) => Promise<IOperationLog> = (id: string): Promise<IOperationLog> =>
         request.get(`${this._baseUrl}/${id}`)
 }
 

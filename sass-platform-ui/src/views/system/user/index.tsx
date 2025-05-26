@@ -40,7 +40,7 @@ import {
 } from "antd";
 import {IconFont, Modal, PageList, PermissionButton} from "@/components";
 import './index.scss'
-import {Userinfo} from "@/model/user";
+import {IUserinfo} from "@/types/user";
 import {userApi} from "@/apis/adminUser.ts";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton";
 import type {TableRowSelection} from "antd/es/table/interface";
@@ -52,12 +52,11 @@ import {
 } from "@/constants/permissionConstant.ts";
 import {DownOutlined} from "@ant-design/icons";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
-import {Organization} from "@/model/organization.tsx";
+import {IOrganization} from "@/types/organization";
 import {organizationApi} from "@/apis/organization.ts";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
-import {AccountType} from "@/model/account.tsx";
 import {roleApi} from "@/apis/role.ts";
-import {Role} from "@/model/role.tsx";
+import {IRole} from "@/types/role";
 import {userHasRoleApi} from "@/apis/userHasRole.ts";
 import {OrganizationUserModal} from "@components/Organization/OrganizationUserModal.tsx";
 import {userPositionApi} from "@/apis/userPosition.ts";
@@ -66,6 +65,7 @@ import {CommonConstant} from "@/constants/commonConstant.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {TableRefType} from "@components/List/table/interface.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+import {AccountType} from "@/enums/accountType.ts";
 
 
 const User: FC = () => {
@@ -99,7 +99,7 @@ const User: FC = () => {
       title: t('Common.status'),
       dataIndex: 'isEnabled',
       align: 'center',
-      render: (_, record: Userinfo) => (
+      render: (_, record: IUserinfo) => (
         <Switch
           defaultChecked={record.isEnabled} onChange={async (checked) => {
           await userApi.status(record.id!, checked);
@@ -153,7 +153,7 @@ const User: FC = () => {
       dataIndex: 'action',
       width: 240,
       fixed: 'right',
-      render: (_, record: Userinfo) => {
+      render: (_, record: IUserinfo) => {
         return (
           <Space>
             <PermissionButton permissionStr={UserPermissionConstant.EDIT}
@@ -173,19 +173,19 @@ const User: FC = () => {
     }
   ];
   const [updateUserId, setUpdateUserId] = useState<string | undefined>();
-  const [selectUserIds, setSelectUserIds] = useState<React.Key[]>([])
+  const [selectUserIds, setSelectUserIds] = useState<Key[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isRoleAuthenticationModalOpen, setIsRoleAuthenticationModalOpen] = useState<boolean>(false);
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [userHasRoleForm] = Form.useForm();
-  const tableRef = useRef<TableRefType<Userinfo>>(null);
+  const tableRef = useRef<TableRefType<IUserinfo>>(null);
   const {querySearchParams, updateSearchParams} = useRouteSearchParams();
   const [userQuery, setUserQuery] = useState<Record<string, string>>({...querySearchParams()});
-  const [formInitValues, setFormInitValues] = useState<Userinfo>({} as Userinfo);
+  const [formInitValues, setFormInitValues] = useState<IUserinfo>({} as IUserinfo);
   const {initOrganization, organizationLazyData, onLoadData} = useOrganizationLazyData();
-  const [organizationTree, setOrganizationTree] = useState<Organization[]>();
-  const [roleSelectList, setRoleSelectList] = useState<Role[]>([]);
+  const [organizationTree, setOrganizationTree] = useState<IOrganization[]>();
+  const [roleSelectList, setRoleSelectList] = useState<IRole[]>([]);
   const language = useLocaleStore((state) => state.language);
   const [userHasRole, setUserHasRole] = useState<{
     username?: string,
@@ -204,7 +204,7 @@ const User: FC = () => {
    * 打开模态组
    * @param userinfo 用户信息
    */
-  const openModal = async (userinfo?: Userinfo) => {
+  const openModal = async (userinfo?: IUserinfo) => {
     setOrganizationTree(await organizationApi.getOrganizationTreeSelect());
     setRoleSelectList(await roleApi.list());
     setUpdateUserId(userinfo?.id)
@@ -220,7 +220,7 @@ const User: FC = () => {
    * 打开角色授权modal
    * @param userinfo 用户详情
    */
-  const openRoleAuthenticationModal = async (userinfo: Userinfo) => {
+  const openRoleAuthenticationModal = async (userinfo: IUserinfo) => {
     const roleIds = await userHasRoleApi.getRoleIdListByUserId(userinfo.id!);
     setRoleSelectList(await roleApi.list());
     setUserHasRole({
@@ -275,7 +275,7 @@ const User: FC = () => {
   const handlerUserForm = async () => {
     await form.validateFields();
     setIsModalButtonLoading(true);
-    const userDetail: Userinfo = form.getFieldsValue();
+    const userDetail: IUserinfo = form.getFieldsValue();
     if (userDetail.account) {
       userDetail.account.accountType = AccountType.PASSWORD;
     }
@@ -308,7 +308,7 @@ const User: FC = () => {
   const saveUserPosition = async () => {
     await form.validateFields();
     setIsModalButtonLoading(true);
-    const userinfo: Userinfo = form.getFieldsValue();
+    const userinfo: IUserinfo = form.getFieldsValue();
     const userPosition = userinfo.userPosition;
     if (!userPosition) {
       return
@@ -328,8 +328,8 @@ const User: FC = () => {
   /**
    * 用户列选择
    */
-  const userRowSelection: TableRowSelection<Userinfo> = {
-    onChange: (_: React.Key[], selectedRows: Userinfo[]) => {
+  const userRowSelection: TableRowSelection<IUserinfo> = {
+    onChange: (_: Key[], selectedRows: IUserinfo[]) => {
       if (selectedRows.length === 0) {
         return
       }
@@ -345,8 +345,8 @@ const User: FC = () => {
   /**
    * table列选择
    */
-  const rowSelection: TableRowSelection<Userinfo> = {
-    onChange: (selectedRowKeys: React.Key[]) => setSelectUserIds(selectedRowKeys),
+  const rowSelection: TableRowSelection<IUserinfo> = {
+    onChange: (selectedRowKeys: Key[]) => setSelectUserIds(selectedRowKeys),
   };
 
 
@@ -382,7 +382,7 @@ const User: FC = () => {
       <Splitter>
         <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
           <div className='tree-info'>
-            <Tree<Organization>
+            <Tree<IOrganization>
               defaultExpandParent={true}
               showIcon={false}
               blockNode
@@ -621,7 +621,7 @@ const User: FC = () => {
                     hasFeedback
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 12}}
                   >
-                    <Select<Role>
+                    <Select<IRole>
                       mode="multiple"
                       allowClear
                       style={{width: '100%'}}
@@ -646,7 +646,7 @@ const User: FC = () => {
                     labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 12}}
                     rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
                   >
-                    <TreeSelect<Organization>
+                    <TreeSelect<IOrganization>
                       disabled={formInitValues.userPosition?.organizationId != null}
                       showSearch
                       placeholder={t('Position.ownerOrganizationPlaceholder')}
@@ -820,7 +820,7 @@ const User: FC = () => {
                 labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 7 : 12}}
                 rules={[{required: true, message: t('Position.ownerOrganizationPlaceholder')}]}
               >
-                <TreeSelect<Organization>
+                <TreeSelect<IOrganization>
                   disabled={formInitValues.userPosition?.organizationId != null}
                   showSearch
                   placeholder={t('Position.ownerOrganizationPlaceholder')}

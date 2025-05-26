@@ -16,7 +16,7 @@
 
 
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {Account} from "@/model/account.tsx";
+import {IAccount} from "@/types/account";
 import {request} from "@/utils";
 
 class AccountApi {
@@ -29,7 +29,7 @@ class AccountApi {
     /**
      * 获取当前自己绑定的账号
      */
-    getAccountForMe: () => Promise<Account[]> = (): Promise<Account[]> =>
+    getAccountForMe: () => Promise<IAccount[]> = (): Promise<IAccount[]> =>
         request.get(`${this.baseUrl}/me`);
 
     /**
@@ -37,7 +37,7 @@ class AccountApi {
      * @param accountType 账号类型
      * @param code 临时授权码
      */
-    bindThirdPartyAccount: (accountType: string, code: string) => Promise<Account> = (accountType: string, code: string): Promise<Account> =>
+    bindThirdPartyAccount: (accountType: string, code: string) => Promise<IAccount> = (accountType: string, code: string): Promise<IAccount> =>
         request.post(`${this.baseUrl}/bind`, {account: code, accountType: accountType});
 
 

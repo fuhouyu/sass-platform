@@ -1,6 +1,6 @@
 import {useThemeStore} from "@/store/modules/theme";
 import {FC} from "react";
-import {MatomoVisitSummary} from "@/model/matomoVisitSummary.tsx";
+import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import ReactECharts from "echarts-for-react";
 import {useTranslation} from "react-i18next";
 
@@ -19,7 +19,7 @@ import {useTranslation} from "react-i18next";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const VisitQualityRadarChart: FC<{ data: MatomoVisitSummary[] }> = ({data}) => {
+export const VisitQualityRadarChart: FC<{ data: IMatomoVisitSummary[] }> = ({data}) => {
     const currentTheme = useThemeStore(state => state.theme);
     const {t} = useTranslation();
 

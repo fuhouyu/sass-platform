@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface MatomoVisitQuery {
+export interface IMatomoVisitQuery {
     // 日期
     date: string;
     // 周期
@@ -22,7 +22,7 @@ export interface MatomoVisitQuery {
 
 }
 
-export interface MatomoVisitSummary {
+export interface IMatomoVisitSummary {
     /**日期**/
     date: string;
     /** 唯一访客数 */
@@ -62,7 +62,7 @@ export interface MatomoVisitSummary {
 /**
  * 国家访问统计
  */
-export interface MatomoCountryVisit {
+export interface IMatomoCountryVisit {
     /** 国家/地区名称 */
     label: string;
 

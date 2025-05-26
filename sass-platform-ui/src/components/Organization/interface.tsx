@@ -17,10 +17,10 @@
 
 import {Dispatch, SetStateAction} from "react";
 import {TableRowSelection} from "antd/es/table/interface";
-import {Userinfo} from "@/model/user.tsx";
+import {IUserinfo} from "@/types/user";
 
 export interface OrganizationUserModalProps {
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
-    rowSelection?: TableRowSelection<Userinfo>;
+    rowSelection?: TableRowSelection<IUserinfo>;
 }

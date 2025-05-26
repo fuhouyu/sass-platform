@@ -18,8 +18,9 @@
 import {ReactNode, useCallback} from "react";
 import {IconFont} from "@/components";
 import {MenuProps as AntdMenuProps, TreeDataNode} from "antd";
-import {Menu, MenuType} from "@/model/menu";
+import {IMenu} from "@/types/menu";
 import {useTranslation} from "react-i18next";
+import {MenuType} from "@/enums/menuType.ts";
 
 export type MenuProps = Required<AntdMenuProps>['items'][number];
 
@@ -30,13 +31,13 @@ export type MenuTreeType = {
     icon?: ReactNode;
 } & (MenuProps | TreeDataNode);
 
-export function useMenuTree(menus: Menu[], excludeType?: MenuType[]): MenuTreeType[] {
+export function useMenuTree(menus: IMenu[], excludeType?: MenuType[]): MenuTreeType[] {
     const {t} = useTranslation();
-    const convertMenuItem = useCallback((permissionInterfaces: Menu[], parentPath?: string | undefined): (MenuTreeType[] | undefined | null) => {
+  const convertMenuItem = useCallback((permissionInterfaces: IMenu[], parentPath?: string | undefined): (MenuTreeType[] | undefined | null) => {
         if (permissionInterfaces === undefined || permissionInterfaces.length === 0) {
             return undefined;
         }
-        const menus = permissionInterfaces?.map((item: Menu) => {
+    const menus = permissionInterfaces?.map((item: IMenu) => {
             if (!item.isVisible || excludeType?.includes(item.permissionType!)) {
                 return undefined;
             }

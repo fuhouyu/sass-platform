@@ -16,7 +16,7 @@
 
 import {request} from "@/utils";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {OnlyOffice as OnlyOfficeModal} from '@/model/office.tsx'
+import {IOnlyOffice as OnlyOfficeModal} from '@/types/office'
 
 class OnlyOfficeApi {
     private readonly _baseUrl: string;

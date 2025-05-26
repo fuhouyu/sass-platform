@@ -15,7 +15,7 @@
  */
 
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import {FC, Key, useCallback, useEffect, useRef, useState} from "react";
 import {
   Breadcrumb,
   BreadcrumbProps,
@@ -52,10 +52,10 @@ import {
   UploadOutlined
 } from "@ant-design/icons";
 import {DeleteButton} from "@/components/Button/commonButton";
-import {TenantSpace as TenantSpaceModel} from "@/model/tenant.tsx";
+import {ITenantSpace} from "@/types/tenant";
 import {tenantSpaceApi} from "@/apis/tenantSpace.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {Resource} from "@/model/resource.tsx";
+import {IResource} from "@/types/resource";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {TableRefType} from "@/components/List/table/interface";
@@ -70,28 +70,28 @@ import {
   ResourceCategoryEnum,
   resourceTypeInfo,
 } from "@/enums/ResourceCategoryEnum.tsx";
-import {FileUtils} from "@/utils/fileUtil.tsx";
+import {FileUtils} from "@/utils/fileUtil.ts";
 import {ShareResource} from "./components/ShareResource";
 
-const TenantResource: React.FC = () => {
+const TenantResource: FC = () => {
     usePageTitle('Menu.resourceManage');
     const {t} = useTranslation();
 
-    const tableRef = useRef<TableRefType<Resource>>(null);
-    const [rowKeys, setRowKeys] = useState<React.Key[]>([])
+  const tableRef = useRef<TableRefType<IResource>>(null);
+  const [rowKeys, setRowKeys] = useState<Key[]>([])
     const {querySearchParams, updateSearchParams} = useRouteSearchParams();
     const {generateSignedUrl} = useResourceAction();
-    const [tenantSpace, setTenantSpace] = useState<TenantSpaceModel | undefined>(undefined);
+  const [tenantSpace, setTenantSpace] = useState<ITenantSpace | undefined>(undefined);
     const [countObjects, setCountObjects] = useState<number>(0)
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
-    const [selectFile, setSelectFile] = useState<Resource>();
+  const [selectFile, setSelectFile] = useState<IResource>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
     const [shareModal, setShareModal] = useState<boolean>(false);
     const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
     const {notificationMessage, contextHolder} = useNotification();
     const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
 
-    const columns: TableColumnsType<Resource> = [
+  const columns: TableColumnsType<IResource> = [
         {
             title: t('Resource.name'),
             dataIndex: 'name',
@@ -154,7 +154,7 @@ const TenantResource: React.FC = () => {
             title: t('Resource.access'),
             dataIndex: 'isPublic',
             align: "center",
-            render: (_, record: Resource) => {
+          render: (_, record: IResource) => {
                 if (record.isDirectory) {
                     return <div>-</div>;
                 }
@@ -197,7 +197,7 @@ const TenantResource: React.FC = () => {
             align: 'center',
             width: 240,
             fixed: 'right',
-            render: (_: AnyObject, record: Resource) => {
+          render: (_: AnyObject, record: IResource) => {
                 if (record.isDirectory) {
                     return <span>-</span>
                 }
@@ -291,11 +291,11 @@ const TenantResource: React.FC = () => {
     /**
      * table列选择
      */
-    const rowSelection: TableRowSelection<Resource> = {
-        onChange: (selectedRowKeys: React.Key[]) => setRowKeys(selectedRowKeys),
+    const rowSelection: TableRowSelection<IResource> = {
+      onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
     };
 
-    const onTableRowClick = (record: Resource) => {
+  const onTableRowClick = (record: IResource) => {
         if (record.isDirectory) {
             breadcrumbClick(record.objectKey)
             return
@@ -447,7 +447,7 @@ const TenantResource: React.FC = () => {
                     </Flex>
                 </div>
                 <div className={'resource-content'}>
-                    <PageList<Resource>
+                  <PageList<IResource>
                         tableProps={{
                             tableRef: tableRef,
                             onRow: (record) => ({
