@@ -116,6 +116,9 @@
                         <exclude>CHANGELOG.md</exclude>
                         <exclude>qodana.yaml</exclude>
                         <exclude>.flattened-pom.xml</exclude>
+                        <exclude>**/reset.css</exclude>
+                        <exclude>**/.stylelintignore</exclude>
+                        <exclude>**/.prettierignore</exclude>
                         <exclude>qodana.yaml</exclude>
                         <exclude>style/*</exclude>
                         <exclude>**/README.md</exclude>
