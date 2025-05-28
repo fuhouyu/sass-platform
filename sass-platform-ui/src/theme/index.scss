@@ -20,7 +20,6 @@ $dark-main-bgc: #303030;
 $dark-main-border: #161616;
 $dark-aside-border: #1C1D1F;
 $dark-antd-modal-header: #353535;
-
 $dark-modal-bac: #2A2A2A;
 
 $dark-button-bgc: #2A2A2A;
@@ -38,6 +37,10 @@ $dark-button-font-hover-color: #2090FF;
   .space-bucket-breadcrumb,
   .resource-content .title-line {
     background-color: $dark-container-bgc;
+  }
+
+  .tree-info {
+    background-color: $dark-menu-bac;
   }
 
   .content-body,
@@ -145,6 +148,15 @@ $dark-button-font-hover-color: #2090FF;
   // ---------------- 其他 ----------------
   .table-tips-icon {
     color: $dark-font-color;
+  }
+
+  .file-actions-list .ant-list-item:hover {
+    background-color: $dark-menu-bac;
+    border-radius: .5rem;
+  }
+
+  .ant-tree-list .ant-tree-treenode .ant-tree-node-selected {
+    background-color: $dark-main-bgc;
   }
 
   .title-line .title:before {

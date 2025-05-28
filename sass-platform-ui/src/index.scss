@@ -75,11 +75,14 @@ a {
     box-shadow: 0 0.125rem 0.25rem 1px rgba(0, 0, 0, .02);
     border-radius: 0.125rem;
     overflow: auto;
-    padding: 0.625rem;
     height: 100%;
     // 容器高度
     .ant-tree {
       height: 100%;
+    }
+
+    .ant-tree-treenode {
+      padding: 0.125rem 0.5rem;
     }
 
     // 选中
