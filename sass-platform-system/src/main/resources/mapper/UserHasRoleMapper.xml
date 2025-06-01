@@ -78,8 +78,8 @@
 
     <select id="queryRoleIdsByUserId" resultType="java.lang.Long">
         SELECT r.id FROM
-        <include refid="TableName"/> uhr
-        LEFT JOIN roles r   ON r.id = uhr.role_id
+        roles r
+        LEFT JOIN <include refid="TableName"/> uhr ON r.id = uhr.role_id
         WHERE user_id = #{userId}
     </select>
 </mapper>
