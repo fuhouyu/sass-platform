@@ -63,7 +63,7 @@ import {userPositionApi} from "@/apis/userPosition.ts";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {AccountType} from "@/enums/accountType.ts";
 

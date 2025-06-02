@@ -17,7 +17,7 @@
 
 import './index.scss'
 import {Space} from "antd";
-import {PageLoadingProps} from "@components/PageLoading/interface.tsx";
+import {PageLoadingProps} from "@components/PageLoading/interface";
 
 export const PageLoading = ({title}: PageLoadingProps) => {
 

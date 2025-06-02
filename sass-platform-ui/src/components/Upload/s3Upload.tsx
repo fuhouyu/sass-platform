@@ -17,10 +17,10 @@
 import {FC, ReactNode, useState} from "react";
 import {Upload as AntdUpload} from "antd";
 import {resourceApi} from "@/apis/resource.ts";
-import {S3UploadProps} from "@components/Upload/interface.tsx";
+import {S3UploadProps} from "@components/Upload/interface";
 import {RcFile} from "antd/es/upload";
 import {IStsTemporaryTokenResponse} from "@/types/resource";
-import {useUploadStore} from "@/store/modules/upload.tsx";
+import {useUploadStore} from "@/store/modules/upload.ts";
 import {Progress} from "@aws-sdk/lib-storage/dist-types/types";
 import {Trans, useTranslation} from "react-i18next";
 import {NotificationType, useNotification} from "@/hooks/useNotification.tsx";

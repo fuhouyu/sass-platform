@@ -17,7 +17,7 @@
 import {FC} from "react";
 import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import ReactECharts from "echarts-for-react";
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 import {useTranslation} from "react-i18next";
 
 export const ActionDepthChart: FC<{ data: IMatomoVisitSummary[] }> = ({data}) => {

@@ -18,7 +18,7 @@
 import {useCallback, useEffect} from "react";
 import {useTranslation} from "react-i18next";
 import './index.scss'
-import {WeLinkLoginProps} from "@components/ThirdPlatformLogin/weLink/interface.tsx";
+import {WeLinkLoginProps} from "@components/ThirdPlatformLogin/weLink/interface";
 
 declare global {
     interface Window {

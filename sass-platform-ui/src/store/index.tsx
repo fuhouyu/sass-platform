@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {useDictStore} from "./modules/dict";
-import {useLocaleStore} from "./modules/locale";
-import {useRouterStore} from "./modules/router";
-import {useUserStore} from "./modules/user";
+import {useDictStore} from "./modules/dict.ts";
+import {useLocaleStore} from "./modules/locale.ts";
+import {useRouterStore} from "./modules/router.ts";
+import {useUserStore} from "./modules/user.ts";
 
 
 export {

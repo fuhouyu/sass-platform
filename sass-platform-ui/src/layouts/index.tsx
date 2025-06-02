@@ -36,7 +36,7 @@ import {
   TableColumnsType,
   Tooltip
 } from "antd";
-import {UploadFile, useUploadStore} from "@/store/modules/upload.tsx";
+import {UploadFile, useUploadStore} from "@/store/modules/upload.ts";
 import {useTranslation} from "react-i18next";
 import {FileUtils} from "@/utils/fileUtil.ts";
 import {useUserStore} from "@/store";

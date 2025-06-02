@@ -26,7 +26,7 @@ import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import {CommonConstant} from "./constants/commonConstant.ts";
 import {PageLoading} from "./components";
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 import 'dayjs/locale/zh-cn';
 import dayjs from "dayjs";
 import * as echarts from "echarts/core";

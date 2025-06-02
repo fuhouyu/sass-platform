@@ -58,7 +58,7 @@ import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {IResource} from "@/types/resource";
 import {ResourceView} from "@components/ResourceView/resourceView.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
-import {TableRefType} from "@/components/List/table/interface";
+import {TableRefType} from "@components/List/table/interface";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.ts";

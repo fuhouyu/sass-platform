@@ -25,7 +25,7 @@ import {LogoutOutlined, MoonOutlined, SunOutlined, UserOutlined} from "@ant-desi
 import {Header} from "antd/es/layout/layout";
 import './index.scss'
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
 import {tenantApi} from "@/apis/tenant.ts";
 
