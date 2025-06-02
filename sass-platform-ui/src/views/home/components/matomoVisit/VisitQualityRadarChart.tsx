@@ -1,4 +1,4 @@
-import {useThemeStore} from "@/store/modules/theme";
+import {useThemeStore} from "@/store/modules/theme.ts";
 import {FC} from "react";
 import {IMatomoVisitSummary} from "@/types/matomoVisitSummary";
 import ReactECharts from "echarts-for-react";

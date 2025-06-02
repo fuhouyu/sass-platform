@@ -43,7 +43,7 @@ import {useButton} from '@/hooks/useButton';
 import {DictItemPermissionConstant} from "@/constants/permissionConstant.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {dictTypeApi} from '@/apis/dictType.ts';
-import {TableRefType} from '@/components/List/table/interface';
+import {TableRefType} from '@components/List/table/interface';
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 /**

@@ -17,7 +17,7 @@
 import {useEffect, useState} from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 import {oneDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {Button, message} from "antd";
 import {CopyOutlined} from "@ant-design/icons";

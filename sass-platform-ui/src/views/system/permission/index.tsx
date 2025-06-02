@@ -46,7 +46,7 @@ import {useButton} from "@/hooks/useButton";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams";
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 
 

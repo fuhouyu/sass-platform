@@ -21,7 +21,7 @@ import {Button, DatePicker, Descriptions, List, message, Select, TableColumnsTyp
 import {useCallback, useEffect, useRef, useState} from "react";
 import {Modal, PageList} from "@/components";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {TableRefType} from '@/components/List/table/interface';
+import {TableRefType} from '@components/List/table/interface';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -33,7 +33,7 @@ import {useDictItem} from "@/hooks/useDictItem.tsx";
 import dayjs from "dayjs";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import ReactJson from "react-json-view";
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 
 
 /**

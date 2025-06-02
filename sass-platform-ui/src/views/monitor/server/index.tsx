@@ -24,7 +24,7 @@ import {IServerMonitor as ServerMonitorModel} from "@/types/monitor";
 import {useTranslation} from "react-i18next";
 import {sseClient} from "@/utils/sse.ts";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-import {useThemeStore} from "@/store/modules/theme.tsx";
+import {useThemeStore} from "@/store/modules/theme.ts";
 
 interface MemoryData {
   timestamps: string[];

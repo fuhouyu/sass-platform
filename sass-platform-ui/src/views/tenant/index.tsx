@@ -28,7 +28,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {TenantPermissionConstant} from "@/constants/permissionConstant.ts";
 import {useDictItem} from "@/hooks/useDictItem.tsx";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import TenantForm from "./components/form";
 import {permissionApi} from "@/apis/permission.ts";
 import {IMenu} from "@/types/menu";

@@ -42,7 +42,7 @@ import {useButton} from "@/hooks/useButton.tsx";
 import {useLocaleStore} from "@/store";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {TableRefType} from '@/components/List/table/interface';
+import {TableRefType} from '@components/List/table/interface';
 import {Link} from 'react-router-dom';
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 

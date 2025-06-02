@@ -20,7 +20,7 @@ import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useTranslation} from "react-i18next";
 import {Button, DatePicker, Input, Popconfirm, TableColumnsType, Tooltip} from "antd";
 import './index.scss'
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import {IOperationLog} from "@/types/operationLog";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import {PageList, PermissionButton} from "@/components";

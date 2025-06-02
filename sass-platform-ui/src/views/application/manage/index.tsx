@@ -23,7 +23,7 @@ import {ApplicationPermissionConstant} from "@/constants/permissionConstant.ts";
 import {Input, Popconfirm, Select, Switch, TableColumnsType} from "antd";
 import {PageList, PermissionButton} from "@/components";
 import {AddButton, DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 import type {TableRowSelection} from "antd/es/table/interface";
 import {applicationApi} from "@/apis/application.ts";

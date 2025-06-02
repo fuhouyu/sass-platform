@@ -21,11 +21,11 @@ import {useTranslation} from "react-i18next";
 import {IUserinfo} from "@/types/user";
 import {IPageQuery} from "@/types/pageQuery";
 import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
-import {OrganizationUserModalProps} from "@components/Organization/interface.tsx";
+import {OrganizationUserModalProps} from "@components/Organization/interface";
 import './index.scss'
 import {Modal, PageList} from "@/components";
 import {IOrganization} from "@/types/organization";
-import {TableRefType} from "@components/List/table/interface.tsx";
+import {TableRefType} from "@components/List/table/interface";
 import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
 
 export const OrganizationUserModal = (organizationUserProps: OrganizationUserModalProps) => {
