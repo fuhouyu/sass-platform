@@ -30,6 +30,5 @@ java -jar sass-platform-admin/target/sass-platform-admin-1.0.0-SNAPSHOT.jar
 ```shell
 cd sass-platform-ui
 npm i
-echo 'VITE_API_URL=/api' >  .env.local
 npm run dev
 ```
