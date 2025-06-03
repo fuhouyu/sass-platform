@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2024-2025 fuhouyu.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+       https://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuhouyu.sass.platform.system.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.SiteSetting" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result property="siteName" column="site_name"/>
+        <result property="siteDescription" column="site_description"/>
+        <result property="siteLogo" column="site_logo"/>
+        <result property="siteFavicon" column="site_favicon"/>
+        <result property="contactEmail" column="contact_email"/>
+        <result property="contactPhone" column="contact_phone"/>
+        <result property="contactAddress" column="contact_address"/>
+        <result property="icpNumber" column="icp_number"/>
+        <result property="beianUrl" column="beian_url"/>
+        <result property="languageDefault" column="language_default"/>
+        <result property="timezone" column="timezone"/>
+    </resultMap>
+
+
+    <sql id="TableName">
+        site_setting
+    </sql>
+
+    <sql id="InsertColumns">
+        site_name,
+        site_description,
+        site_logo,
+        site_favicon,
+        contact_email,
+        contact_phone,
+        contact_address,
+        icp_number,
+        beian_url,
+        language_default,
+        timezone,
+        created_at,
+        created_by,
+        updated_at,
+        updated_by
+    </sql>
+
+    <sql id="QueryAllColumns">
+        ss.site_name,
+        ss.site_description,
+        ss.site_logo,
+        ss.site_favicon,
+        ss.contact_email,
+        ss.contact_phone,
+        ss.contact_address,
+        ss.icp_number,
+        ss.beian_url,
+        ss.language_default,
+        ss.timezone,
+        ss.created_at,
+        ss.created_by,
+        ss.updated_at,
+        ss.updated_by
+    </sql>
+
+
+</mapper>
