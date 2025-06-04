@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - develop
-      - feature/*
 permissions: read-all
 
 jobs:
@@ -30,7 +29,7 @@ jobs:
           java-version: '21'
       - name: Build with Maven
         run: |
-          mvn --batch-mode -U clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
+          mvn --batch-mode clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
       - uses: actions/upload-artifact@v4
         name: Upload distribution jar
         with:
