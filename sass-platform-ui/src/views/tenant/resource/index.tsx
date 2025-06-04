@@ -318,7 +318,7 @@ const TenantResource: FC = () => {
                 label: (
                     <S3Upload
                         isPublic={false}
-                        showUploadList={false}
+                        showUploadList={true}
                         prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >
@@ -333,7 +333,7 @@ const TenantResource: FC = () => {
                     <S3Upload
                         directory
                         isPublic={false}
-                        showUploadList={false}
+                        showUploadList={true}
                         prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
                         onUploadSuccess={queryResource}
                     >

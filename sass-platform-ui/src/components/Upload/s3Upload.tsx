@@ -83,7 +83,6 @@ export const S3Upload: FC<S3UploadProps> = (uploadProps) => {
 
         const objectKey = stsTokenResponse.objectsMap[file.webkitRelativePath === '' ? file.name : file.webkitRelativePath];
         const abortController = new AbortController();
-        console.log(showUploadList)
         if (showUploadList) {
             storeUploadFiles({
                 id: file.uid,
