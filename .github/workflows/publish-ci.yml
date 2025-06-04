@@ -117,8 +117,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: ./
-
+          path: dist
+      - name: Display dist
+        run: ls -R dist
       - name: Scp dist File
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -126,6 +127,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          source: "dist/"
+          source: "dist"
           target: "/develop/projects/web/static"
           strip_components: 1
