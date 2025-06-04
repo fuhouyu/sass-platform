@@ -1,0 +1,140 @@
+name: publish-ci
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+      - feature/*
+permissions: read-all
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Cache Maven Repos"
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: "Checkout"
+        uses: actions/checkout@v4
+      - name: "Set up JDK 21"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Build with Maven
+        run: |
+          mvn --batch-mode -U clean package -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -DskipTests -Pprod
+      - uses: actions/upload-artifact@v4
+        name: Upload distribution jar
+        with:
+          name: sass-platform-admin
+          path: sass-platform-admin/target/sass-platform-admin-*.jar
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Sass Platform repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: "Cache Npm Repos"
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm/repository
+          key: ${{ runner.os }}-package-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-package-
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: pnpm build
+        env:
+          VITE_CLOUDFLARE_SITE_KEY: '${{ secrets.CLOUDFLARE_SITE_KEY }}'
+          VITE_WELINK_CLIENT_ID: ${{ secrets.WELINK_CLIENT_ID }}
+          VITE_MATOMO_URL: ${{ secrets.VITE_MATOMO_URL }}
+          VITE_MATOMO_SITE_ID: ${{ secrets.VITE_MATOMO_SITE_ID }}
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_LOGIN_REDIRECT_URI: ${{ vars.VITE_LOGIN_REDIRECT_URI }}
+        run: |
+          cd sass-platform-ui
+          pnpm install && pnpm run build
+      - uses: actions/upload-artifact@v4
+        name: Upload web dist
+        with:
+          name: dist
+          path: sass-platform-ui/dist
+  deploy-jar:
+    if: ${{ success() }}
+    needs: [ build-jar ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Jar File
+        uses: actions/download-artifact@v4
+        with:
+          name: sass-platform-admin
+          path: ./
+      - name: Scp Jar File
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "sass-platform-admin.jar"
+          target: "/develop/projects/web"
+
+      - name: start sass-platform-admin
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            sh /develop/projects/web/startup.sh
+  deploy-web:
+    if: ${{ success() }}
+    needs: [ build-web ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: ./
+      - name: Scp dist File
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "sass-platform-admin.jar"
+          target: "/develop/projects/web"
+
+      - name: Scp dist File
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "dist/"
+          target: "/develop/projects/web/static"
+          strip_components: 1
