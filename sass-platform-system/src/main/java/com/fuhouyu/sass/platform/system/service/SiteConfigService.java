@@ -16,8 +16,8 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.fuhouyu.sass.platform.system.domain.dto.site.SiteSettingDTO;
-import com.fuhouyu.sass.platform.system.domain.entity.SiteSetting;
+import com.fuhouyu.sass.platform.system.domain.dto.site.SiteConfigDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.SiteConfig;
 
 /**
  * <p>
@@ -27,14 +27,14 @@ import com.fuhouyu.sass.platform.system.domain.entity.SiteSetting;
  * @author fuhouyu
  * @since 2025/6/3 22:29
  */
-public interface SiteSettingService extends IService<SiteSetting> {
+public interface SiteConfigService extends IService<SiteConfig> {
 
     /**
      * 获取网站设置
      *
      * @return 网站设置
      */
-    SiteSettingDTO getSiteSetting();
+    SiteConfigDTO getSiteConfig();
 
     /**
      * 更新网站设置
@@ -42,5 +42,5 @@ public interface SiteSettingService extends IService<SiteSetting> {
      * @param siteSetting 网站设置
      * @return 是否更新成功
      */
-    boolean updateSiteSetting(SiteSettingDTO siteSetting);
+    boolean updateSiteConfig(SiteConfigDTO siteSetting);
 }

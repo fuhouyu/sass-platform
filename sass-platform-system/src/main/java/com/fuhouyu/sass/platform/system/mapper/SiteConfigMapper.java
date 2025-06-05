@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.sass.platform.system.assembler;
+package com.fuhouyu.sass.platform.system.mapper;
 
-import com.fuhouyu.sass.platform.system.domain.dto.site.SiteSettingDTO;
-import com.fuhouyu.sass.platform.system.domain.entity.SiteSetting;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fuhouyu.sass.platform.system.domain.entity.SiteConfig;
 
 /**
  * <p>
- * 网站设置转换
+ * 网站设置mapper对象
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/10 17:48
+ * @since 2025/6/3 22:13
  */
-@Mapper
-public interface SiteSettingAssembler extends BaseAssembler<SiteSetting, SiteSettingDTO> {
+public interface SiteConfigMapper extends BaseMapper<SiteConfig> {
 
-    SiteSettingAssembler INSTANCE = Mappers.getMapper(SiteSettingAssembler.class);
+
 }

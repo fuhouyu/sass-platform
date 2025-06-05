@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "SiteSettingDTO", description = "网站设置的dto对象")
-public class SiteSettingDTO extends BaseDTO {
+public class SiteConfigDTO extends BaseDTO {
 
     @Schema(description = "主键ID")
     private Long id;
