@@ -16,11 +16,11 @@
 package com.fuhouyu.sass.platform.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fuhouyu.sass.platform.system.assembler.SiteSettingAssembler;
-import com.fuhouyu.sass.platform.system.domain.dto.site.SiteSettingDTO;
-import com.fuhouyu.sass.platform.system.domain.entity.SiteSetting;
-import com.fuhouyu.sass.platform.system.mapper.SiteSettingMapper;
-import com.fuhouyu.sass.platform.system.service.SiteSettingService;
+import com.fuhouyu.sass.platform.system.assembler.SiteConfigAssembler;
+import com.fuhouyu.sass.platform.system.domain.dto.site.SiteConfigDTO;
+import com.fuhouyu.sass.platform.system.domain.entity.SiteConfig;
+import com.fuhouyu.sass.platform.system.mapper.SiteConfigMapper;
+import com.fuhouyu.sass.platform.system.service.SiteConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,18 +36,18 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class SiteSettingServiceImpl extends ServiceImpl<SiteSettingMapper, SiteSetting> implements SiteSettingService {
+public class SiteConfigServiceImpl extends ServiceImpl<SiteConfigMapper, SiteConfig> implements SiteConfigService {
 
-    private static final SiteSettingAssembler SITE_SETTING_ASSEMBLER = SiteSettingAssembler.INSTANCE;
+    private static final SiteConfigAssembler SITE_SETTING_ASSEMBLER = SiteConfigAssembler.INSTANCE;
 
     @Override
-    public synchronized SiteSettingDTO getSiteSetting() {
-        List<SiteSetting> siteSettings = this.baseMapper.selectList(null);
-        return siteSettings.stream().map(SITE_SETTING_ASSEMBLER::toDTO).findFirst().orElse(null);
+    public synchronized SiteConfigDTO getSiteConfig() {
+        List<SiteConfig> siteConfigs = this.baseMapper.selectList(null);
+        return siteConfigs.stream().map(SITE_SETTING_ASSEMBLER::toDTO).findFirst().orElse(null);
     }
 
     @Override
-    public boolean updateSiteSetting(SiteSettingDTO siteSetting) {
+    public boolean updateSiteConfig(SiteConfigDTO siteSetting) {
         int count = this.baseMapper.updateById(SITE_SETTING_ASSEMBLER.toEntity(siteSetting));
         return count > 0;
     }

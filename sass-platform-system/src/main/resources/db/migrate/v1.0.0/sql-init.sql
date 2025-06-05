@@ -1414,10 +1414,10 @@ COMMENT ON COLUMN applications.created_by IS '创建人';
 COMMENT ON COLUMN applications.updated_at IS '更新时间';
 COMMENT ON COLUMN applications.updated_by IS '更新人';
 
-DROP TABLE IF EXISTS site_setting;
-CREATE TABLE site_setting
+DROP TABLE IF EXISTS site_config;
+CREATE TABLE site_config
 (
-    id               SERIAL PRIMARY KEY,                   -- 主键
+    id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),           -- 主键
 
     site_name        VARCHAR(255) NOT NULL,                -- 网站名称
     site_description TEXT,                                 -- 网站描述
@@ -1440,28 +1440,28 @@ CREATE TABLE site_setting
 );
 
 -- 表注释
-COMMENT ON TABLE site_setting IS '网站设置表：用于存储网站的基础配置参数（字段直出式）';
+COMMENT ON TABLE site_config IS '网站设置表：用于存储网站的基础配置参数（字段直出式）';
 
 -- 字段注释
-COMMENT ON COLUMN site_setting.id IS '主键ID';
-COMMENT ON COLUMN site_setting.site_name IS '网站名称';
-COMMENT ON COLUMN site_setting.site_description IS '网站描述，例如用于 SEO';
-COMMENT ON COLUMN site_setting.site_logo IS '网站logo url id';
-COMMENT ON COLUMN site_setting.site_favicon IS '浏览器地址栏favicon.ico图标地址';
-COMMENT ON COLUMN site_setting.contact_email IS '联系邮箱';
-COMMENT ON COLUMN site_setting.contact_phone IS '联系电话';
-COMMENT ON COLUMN site_setting.contact_address IS '联系地址';
-COMMENT ON COLUMN site_setting.icp_number IS 'ICP备案号';
-COMMENT ON COLUMN site_setting.beian_url IS '备案跳转链接，例如工信部网站';
-COMMENT ON COLUMN site_setting.language_default IS '默认语言（如 zh-CN、en-US）';
-COMMENT ON COLUMN site_setting.timezone IS '默认时区（如 Asia/Shanghai）';
-COMMENT ON COLUMN site_setting.created_at IS '创建时间';
-COMMENT ON COLUMN site_setting.created_by IS '创建人';
-COMMENT ON COLUMN site_setting.updated_at IS '更新时间';
-COMMENT ON COLUMN site_setting.updated_by IS '更新人';
+COMMENT ON COLUMN site_config.id IS '主键ID';
+COMMENT ON COLUMN site_config.site_name IS '网站名称';
+COMMENT ON COLUMN site_config.site_description IS '网站描述，例如用于 SEO';
+COMMENT ON COLUMN site_config.site_logo IS '网站logo url id';
+COMMENT ON COLUMN site_config.site_favicon IS '浏览器地址栏favicon.ico图标地址';
+COMMENT ON COLUMN site_config.contact_email IS '联系邮箱';
+COMMENT ON COLUMN site_config.contact_phone IS '联系电话';
+COMMENT ON COLUMN site_config.contact_address IS '联系地址';
+COMMENT ON COLUMN site_config.icp_number IS 'ICP备案号';
+COMMENT ON COLUMN site_config.beian_url IS '备案跳转链接，例如工信部网站';
+COMMENT ON COLUMN site_config.language_default IS '默认语言（如 zh-CN、en-US）';
+COMMENT ON COLUMN site_config.timezone IS '默认时区（如 Asia/Shanghai）';
+COMMENT ON COLUMN site_config.created_at IS '创建时间';
+COMMENT ON COLUMN site_config.created_by IS '创建人';
+COMMENT ON COLUMN site_config.updated_at IS '更新时间';
+COMMENT ON COLUMN site_config.updated_by IS '更新人';
 
 
-INSERT INTO site_setting (id, site_name, site_description, site_logo, site_favicon,
+INSERT INTO site_config (id, site_name, site_description, site_logo, site_favicon,
                           contact_email, contact_phone, contact_address, icp_number, beian_url,
                           language_default, timezone, created_at, created_by, updated_at, updated_by)
 VALUES (1, 'Sass', 'Sass 是一个成熟、稳定、功能丰富的 CSS 预处理器。', '', '',

@@ -31,7 +31,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SiteSetting extends BaseEntity {
+public class SiteConfig extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1541692736541253877L;
