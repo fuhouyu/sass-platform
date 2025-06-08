@@ -244,7 +244,7 @@ const DictType = () => {
 
       <Modal
         centered
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('DictType.edit') : t('DictType.add')}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

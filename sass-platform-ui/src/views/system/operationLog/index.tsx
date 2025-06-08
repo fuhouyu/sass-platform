@@ -276,7 +276,7 @@ const OperationLog = () => {
         open={isModalOpen}
         closable
         onCancel={() => setIsModalOpen(false)}
-        destroyOnClose
+        destroyOnHidden
         width={'80%'}
         footer={[]}
       >

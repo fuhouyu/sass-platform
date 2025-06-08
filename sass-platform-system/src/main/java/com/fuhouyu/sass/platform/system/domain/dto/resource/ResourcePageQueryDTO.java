@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.domain.dto.resource;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.fuhouyu.sass.platform.system.domain.dto.page.PageQueryDTO;
 import com.fuhouyu.sass.platform.system.domain.entity.Resources;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.util.List;
 
 /**
  * <p>
@@ -50,4 +52,8 @@ public class ResourcePageQueryDTO extends PageQueryDTO<Resources> {
 
     @Schema(name = "isPublic", description = "是否公开")
     private Boolean isPublic;
+
+    public ResourcePageQueryDTO() {
+        super(List.of(OrderItem.desc("updated_at")));
+    }
 }

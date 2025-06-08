@@ -32,14 +32,14 @@ class DictItemApi extends DefaultApiImpl<IDictItem> {
      * @param itemCode 字典项编码
      */
     checkItemCodeExists: (dictCode: string, itemCode: string) => Promise<boolean> = (dictCode: string, itemCode: string): Promise<boolean> =>
-        request.get(`${this.baseUrl}/exists?dictCode=${dictCode}&itemCode=${itemCode}`)
+      request.get(`${this._baseUrl}/exists?dictCode=${dictCode}&itemCode=${itemCode}`)
 
     /**
      * 通过字典编码获取字典项
      * @param dictCode 字典编码
      */
     getDictItemListByDictCode: (dictCode: string) => Promise<IDictItem[]> = (dictCode: string): Promise<IDictItem[]> =>
-        request.get(`${this.baseUrl}/list`, {params: {dictCode}});
+      request.get(`${this._baseUrl}/list`, {params: {dictCode}});
 
 
     /**
@@ -47,7 +47,7 @@ class DictItemApi extends DefaultApiImpl<IDictItem> {
      * @param dictCodes 字典编码，以,分隔
      */
     getDictItemTypeMappingList: (dictCodes: string) => Promise<Record<string, IDictItem[]>> = (dictCodes: string): Promise<Record<string, IDictItem[]>> =>
-        request.get(`${this.baseUrl}/type-mapping`, {params: {dictCodes}});
+      request.get(`${this._baseUrl}/type-mapping`, {params: {dictCodes}});
 }
 
 export const dictItemApi: DictItemApi = new DictItemApi();

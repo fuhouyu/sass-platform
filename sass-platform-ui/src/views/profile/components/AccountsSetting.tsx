@@ -86,7 +86,7 @@ export const AccountsSetting = () => {
                     width={600}
                     open={passwordEditModalOpen}
                     closable
-                    destroyOnClose
+                    destroyOnHidden
                     onCancel={() => setPasswordEditModalOpen(false)}
                     onOk={() => {
                         updatePasswordForm.validateFields().then(async (values) => {

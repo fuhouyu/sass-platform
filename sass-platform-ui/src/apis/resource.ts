@@ -33,7 +33,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      */
     generateStsToken: (stsTokenRequest: IStsTemporaryTokenRequest) =>
       Promise<IStsTemporaryTokenResponse> = (stsTokenRequest: IStsTemporaryTokenRequest): Promise<IStsTemporaryTokenResponse> =>
-        request.post(`${this.baseUrl}/sts-token`, stsTokenRequest);
+      request.post(`${this._baseUrl}/sts-token`, stsTokenRequest);
 
     /**
      * 下载文件
@@ -42,7 +42,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      * @param config 请求配置
      */
     downloadFile: (id: string, preview?: boolean, config?: AxiosRequestConfig) => Promise<void | Blob> =
-        (id: string, preview?: boolean, config?: AxiosRequestConfig): Promise<void | Blob> => request.get(`${this.baseUrl}/${id}/download`, {
+      (id: string, preview?: boolean, config?: AxiosRequestConfig): Promise<void | Blob> => request.get(`${this._baseUrl}/${id}/download`, {
             ...config,
             params: {preview}
         })
@@ -53,7 +53,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      * @param preview 是否为预览
      */
     generateSignedUrl: (id: string, preview?: boolean) => Promise<string> = (id: string, preview?: boolean): Promise<string> =>
-        request.get(`${this.baseUrl}/generate/${id}/signed-url`, {
+      request.get(`${this._baseUrl}/generate/${id}/signed-url`, {
             params: {preview}
         })
 
@@ -61,7 +61,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      * 获取有多少个对象
      */
     countObjects: () => Promise<number> = (): Promise<number> =>
-        request.get(`${this.baseUrl}/count`);
+      request.get(`${this._baseUrl}/count`);
 
     /**
      * 切换资源访问的状态
@@ -69,7 +69,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      * @param isPublic 公开访问/私有访问
      */
     status: (id: string, isPublic: boolean) => Promise<void> = (id: string, isPublic: boolean): Promise<void> =>
-        request.put(`${this.baseUrl}/${id}/status?public=${isPublic}`);
+      request.put(`${this._baseUrl}/${id}/status?public=${isPublic}`);
 
     /**
      * 分享资源
@@ -77,7 +77,7 @@ class ResourceApi extends DefaultApiImpl<IResource> {
      * @param expires 过期时间
      */
     share: (id: string, expires: number) => Promise<string> = (id: string, expires: number): Promise<string> =>
-        request.get(`${this.baseUrl}/${id}/share?expires=${expires}`);
+      request.get(`${this._baseUrl}/${id}/share?expires=${expires}`);
 }
 
 export const resourceApi: ResourceApi = new ResourceApi(BaseApiUrlConstant.RESOURCE_API_PREFIX);

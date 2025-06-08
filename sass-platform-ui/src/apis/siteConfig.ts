@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
+import {ISiteConfig} from "@/types/site-config";
+import {request} from "@/utils";
+import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
-import {Modal as AntdModal, ModalProps} from "antd";
-import {FC} from "react";
-import './index.scss'
-import {IconFont} from "@/components";
+class SiteConfigApi {
 
-export const Modal: FC<ModalProps> = (modalProps: ModalProps) => {
-    return (
-        <AntdModal
-            {...modalProps}
-            closeIcon={<IconFont type="i-close1" style={{
-                fontSize: '1.5rem',
-                color: 'white'
-            }}/>}
-            centered
-            destroyOnHidden
-            className={'modal-container'}
-        >
-        </AntdModal>
-    )
+  private readonly _baseUrl: string;
+
+
+  constructor(baseUrl: string) {
+    this._baseUrl = baseUrl;
+  }
+
+  /**
+   * 获取网站配置
+   */
+  getSiteConfig: () => Promise<ISiteConfig> = (): Promise<ISiteConfig> => request.get(`${this._baseUrl}`);
 }
+
+export const siteConfigApi: SiteConfigApi = new SiteConfigApi(BaseApiUrlConstant.SITE_CONFIG_URL);

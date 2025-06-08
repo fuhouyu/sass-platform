@@ -482,7 +482,7 @@ const User: FC = () => {
         title={updateUserId ? t('User.edit') : t('User.add')}
         className="ant-modal-header"
         open={isModalOpen}
-        destroyOnClose
+        destroyOnHidden
         width={750}
         onCancel={() => closeModal()}
         footer={[
@@ -723,7 +723,7 @@ const User: FC = () => {
         title={t('User.roleAuthorization')}
         className="ant-modal-header"
         open={isRoleAuthenticationModalOpen}
-        destroyOnClose
+        destroyOnHidden
         onCancel={() => closeRoleAuthentication()}
         footer={[
           <Button key='onOk' type="primary" loading={isModalButtonLoading}
@@ -786,7 +786,7 @@ const User: FC = () => {
         width={750}
         className="ant-modal-header"
         open={isOrganizationUserModalOpen}
-        destroyOnClose
+        destroyOnHidden
         onCancel={closeOrganizationUserModal}
         footer={[
           <Button key='onOk' type="primary" loading={isModalButtonLoading}

@@ -130,7 +130,7 @@ export const ApplicationManageForm = (props: ApplicationManageFormProps) => {
             open={props.isOpen}
             width={'50%'}
             closable
-            destroyOnClose
+            destroyOnHidden
             footer={
                 <Flex justify={'flex-end'}>
                     <Space>

@@ -549,7 +549,7 @@ const TenantResource: FC = () => {
         <Modal
             title={selectFile?.name}
             className={'preview-modal'}
-            destroyOnClose
+            destroyOnHidden
             open={previewModal}
             footer={null}
             height={'80%'}
@@ -567,7 +567,7 @@ const TenantResource: FC = () => {
         <Modal
             title={<Space><IconFont type={'i-icon_share'}/><span>{selectFile?.name}</span></Space>}
             className={'share-modal'}
-            destroyOnClose
+            destroyOnHidden
             open={shareModal}
             footer={null}
             width={750}

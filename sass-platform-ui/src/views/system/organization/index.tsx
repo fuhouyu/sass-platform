@@ -276,7 +276,7 @@ const Organization = () => {
         </Splitter.Panel>
       </Splitter>
       <Modal
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('Organization.edit') : t('Organization.add')}
         open={isModalOpen}
         onCancel={() => closeModal()}

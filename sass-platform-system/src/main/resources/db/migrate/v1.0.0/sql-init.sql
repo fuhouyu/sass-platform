@@ -650,6 +650,15 @@ VALUES (514, 51, 'Menu.delete', 'application:delete', 4, '', '', '', '', false, 
         true, 1,
         false, now(), 'admin', now(), 'admin');
 
+-- 网站设置
+INSERT INTO permissions (id, parent_id, permission_name, permission_code, display_order, icon, route_path,
+                         component_path, url_params, is_frame, permission_type, is_allow_modified, is_visible, is_leaf,
+                         is_enabled, owner_tenant_id, is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES (6, -1, 'Menu.siteConfig', 'site-config', 6, 'i-wangzhanshezhi', 'site-config', 'site/config', '', false,
+        'Menu', false,
+        true, false,
+        true, 1, false, now(), 'admin', now(), 'admin');
+
 -- 角色关联的权限
 DROP TABLE IF EXISTS role_has_permission;
 CREATE TABLE role_has_permission
@@ -798,6 +807,8 @@ INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 513, now(), 'admin');
 INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
 VALUES (1, 514, now(), 'admin');
+INSERT INTO role_has_permission (role_id, permission_id, created_at, created_by)
+VALUES (1, 6, now(), 'admin');
 
 DROP TABLE IF EXISTS accounts;
 -- 账号表
@@ -1421,7 +1432,7 @@ CREATE TABLE site_config
 
     site_name        VARCHAR(255) NOT NULL,                -- 网站名称
     site_description TEXT,                                 -- 网站描述
-    site_logo        VARCHAR(500) NOT NULL,                -- 网站 Logo 图片地址
+    site_logo BIGINT NOT NULL,                             -- 网站 Logo 图片地址
     site_favicon     VARCHAR(500),                         -- 浏览器小图标 favicon.ico 地址
 
     contact_email    VARCHAR(255),                         -- 联系邮箱
@@ -1464,7 +1475,7 @@ COMMENT ON COLUMN site_config.updated_by IS '更新人';
 INSERT INTO site_config (id, site_name, site_description, site_logo, site_favicon,
                           contact_email, contact_phone, contact_address, icp_number, beian_url,
                           language_default, timezone, created_at, created_by, updated_at, updated_by)
-VALUES (1, 'Sass', 'Sass 是一个成熟、稳定、功能丰富的 CSS 预处理器。', '', '',
+VALUES (1, 'Sass', '站点设置', '', '',
         'mail@fuhouyu.com', '', '', '',
         '',
         'zh-CN', 'Asia/Shanghai', now(), 'admin', now(), 'admin');
