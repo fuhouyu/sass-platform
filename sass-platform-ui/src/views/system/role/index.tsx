@@ -238,7 +238,7 @@ const Role: FC = () => {
       />
 
       <Modal
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('Role.edit') : t('Role.add')}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

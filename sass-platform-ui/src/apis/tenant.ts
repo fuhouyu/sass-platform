@@ -33,24 +33,24 @@ class TenantApi extends DefaultApiImpl<ITenantInfo> {
      * true 已存在 false 不存在
      * @param tenantCode 租户编码
      */
-    checkTenantCodeExists: (tenantCode: string) => Promise<boolean> = (tenantCode: string): Promise<boolean> => request.get(`${this.baseUrl}/exists?tenantCode=${tenantCode}`)
+    checkTenantCodeExists: (tenantCode: string) => Promise<boolean> = (tenantCode: string): Promise<boolean> => request.get(`${this._baseUrl}/exists?tenantCode=${tenantCode}`)
 
     /**
      * 查询当前用户所属的租户详情
      */
-    findTenantInfoForMe: () => Promise<ITenantInfo> = (): Promise<ITenantInfo> => request.get(`${this.baseUrl}/me`);
+    findTenantInfoForMe: () => Promise<ITenantInfo> = (): Promise<ITenantInfo> => request.get(`${this._baseUrl}/me`);
 
 
     /**
      * 租户列表
      */
-    list: () => Promise<ITenantInfo[]> = (): Promise<ITenantInfo[]> => request.get(`${this.baseUrl}/list`);
+    list: () => Promise<ITenantInfo[]> = (): Promise<ITenantInfo[]> => request.get(`${this._baseUrl}/list`);
 
     /**
      * 重置密码
      * @param id 租户id
      */
-    resetPassword: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this.baseUrl}/${id}/reset`);
+    resetPassword: (id: string) => Promise<void> = (id: string): Promise<void> => request.get(`${this._baseUrl}/${id}/reset`);
 }
 
 export const tenantApi: TenantApi = new TenantApi()

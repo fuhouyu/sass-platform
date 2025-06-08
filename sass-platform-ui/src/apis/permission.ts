@@ -29,21 +29,21 @@ class PermissionApi extends DefaultApiImpl<IMenu> {
     /**
      *  获取当前用户的权限api
      */
-    getUserPermissionApi: () => Promise<IMenu[]> = (): Promise<IMenu[]> => request.get(`${this.baseUrl}/me`);
+    getUserPermissionApi: () => Promise<IMenu[]> = (): Promise<IMenu[]> => request.get(`${this._baseUrl}/me`);
 
     /**
      * 查询子集列表
      * @param parentId 父级id，为空时查询出一级
      */
     getPermissionListApi: (parentId?: string) => Promise<IMenu[]> = (parentId?: string): Promise<IMenu[]> => {
-        return parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
+      return parentId ? request.get(`${this._baseUrl}/list/${parentId}`) : request.get(`${this._baseUrl}/list`);
     }
 
     /**
      * 权限树选择器
      */
     getPermissionTreeSelect: () => Promise<IMenu[]> = (): Promise<IMenu[]> => {
-        return request(`${this.baseUrl}/tree`)
+      return request(`${this._baseUrl}/tree`)
     }
 
     /**
@@ -51,7 +51,7 @@ class PermissionApi extends DefaultApiImpl<IMenu> {
      * @param permissionCode 权限编码
      */
     checkPermissionCodeExistsApi: (permissionCode: string) => Promise<boolean> = (permissionCode: string): Promise<boolean> =>
-        request.get(`${this.baseUrl}/exists?permissionCode=${permissionCode}`)
+      request.get(`${this._baseUrl}/exists?permissionCode=${permissionCode}`)
 }
 
 /**

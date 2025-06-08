@@ -113,7 +113,7 @@ const PostThirdPartyRedirect = () => {
             <Modal
                 title={t('Account.thirdPartyAccountBind')}
                 open={bindModal}
-                destroyOnClose
+                destroyOnHidden
                 footer={[]}
                 width={600}
                 closable

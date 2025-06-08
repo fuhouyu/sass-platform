@@ -350,7 +350,7 @@ const Permission: FC = () => {
         </Splitter.Panel>
       </Splitter>
       <Modal
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('Permission.edit') : t('Permission.add')}
         open={isModalOpen}
         onCancel={() => closeModal()}

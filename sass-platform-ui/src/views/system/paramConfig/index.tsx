@@ -206,7 +206,7 @@ const ParamConfig = () => {
 
       <Modal
         centered
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('ParamConfig.edit') : t('ParamConfig.add')}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

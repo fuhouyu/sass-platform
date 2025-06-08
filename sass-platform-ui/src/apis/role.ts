@@ -33,12 +33,12 @@ class RoleApi extends DefaultApiImpl<IRole> {
      * 检查角色编码是否存在
      * @param roleCode 角色编码
      */
-    checkRoleCodeExists: (roleCode: string) => Promise<boolean> = (roleCode: string): Promise<boolean> => request.get(`${this.baseUrl}/exists`, {params: {roleCode}})
+    checkRoleCodeExists: (roleCode: string) => Promise<boolean> = (roleCode: string): Promise<boolean> => request.get(`${this._baseUrl}/exists`, {params: {roleCode}})
 
     /**
      * 获取角色列表
      */
-    list: () => Promise<IRole[]> = (): Promise<IRole[]> => request.get(`${this.baseUrl}/list`)
+    list: () => Promise<IRole[]> = (): Promise<IRole[]> => request.get(`${this._baseUrl}/list`)
 }
 
 export const roleApi: RoleApi = new RoleApi();

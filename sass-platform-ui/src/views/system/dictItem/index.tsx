@@ -277,7 +277,7 @@ const DictItem = () => {
 
       <Modal
         centered
-        destroyOnClose={true}
+        destroyOnHidden={true}
         title={updateId ? t('DictItem.edit') : t('DictItem.add')}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

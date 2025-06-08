@@ -31,13 +31,13 @@ class OrganizationApi extends DefaultApiImpl<IOrganization> {
      * @param parentId 父级id
      */
     getOrganizationListApi: (parentId?: string) => Promise<IOrganization[]> = (parentId?: string): Promise<IOrganization[]> =>
-        parentId ? request.get(`${this.baseUrl}/list/${parentId}`) : request.get(`${this.baseUrl}/list`);
+      parentId ? request.get(`${this._baseUrl}/list/${parentId}`) : request.get(`${this._baseUrl}/list`);
 
     /**
      * 获取组织树
      */
     getOrganizationTreeSelect: () => Promise<IOrganization[]> = (): Promise<IOrganization[]> =>
-        request.get(`${this.baseUrl}/tree`)
+      request.get(`${this._baseUrl}/tree`)
 }
 
 export const organizationApi = new OrganizationApi();

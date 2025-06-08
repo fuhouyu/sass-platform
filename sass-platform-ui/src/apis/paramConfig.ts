@@ -30,7 +30,7 @@ class ParamConfigApi extends DefaultApiImpl<IParamConfig> {
      * @param configKey 配置key
      */
     checkConfigKeyExists: (configKey: string) => Promise<boolean> = (configKey: string): Promise<boolean> =>
-        request.get(`${this.baseUrl}/exists?configKey=${configKey}`)
+      request.get(`${this._baseUrl}/exists?configKey=${configKey}`)
 
 }
 

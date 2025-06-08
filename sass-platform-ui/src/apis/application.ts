@@ -31,14 +31,14 @@ class ApplicationApi extends DefaultApiImpl<IApplication> {
      * @param clientId 客户端id
      */
     checkClientIdExists: (clientId: string) => Promise<boolean> = (clientId: string) =>
-        request.get(`${this.baseUrl}/exists?clientId=${clientId}`);
+      request.get(`${this._baseUrl}/exists?clientId=${clientId}`);
 
     /**
      * 获取应用详情
      * @param id 主键id
      */
     getInfoByIdApi = (id: string): Promise<IApplication> => {
-        return request.get(`${this.baseUrl}?clientId=${id}`);
+      return request.get(`${this._baseUrl}?clientId=${id}`);
     };
 
     /**
@@ -47,7 +47,7 @@ class ApplicationApi extends DefaultApiImpl<IApplication> {
      * @param enabled 是否启用
      */
     status: (id: string, enabled: boolean) => Promise<void> = (id: string, enabled: boolean): Promise<void> =>
-        request.put(`${this.baseUrl}/status?clientId=${id}&enabled=${enabled}`)
+      request.put(`${this._baseUrl}/status?clientId=${id}&enabled=${enabled}`)
 
 
     /**
@@ -56,14 +56,14 @@ class ApplicationApi extends DefaultApiImpl<IApplication> {
      * @param info 应用信息
      */
     editInfoApi = (id: string, info: IApplication): Promise<void> => {
-        return request.put(`${this.baseUrl}`, {...info, id});
+      return request.put(`${this._baseUrl}`, {...info, id});
     };
 
     /**
      * 生成客户端密钥
      */
     generateClientSecret: () => Promise<string> = (): Promise<string> =>
-        request.get(`${this.baseUrl}/secret/generate`);
+      request.get(`${this._baseUrl}/secret/generate`);
 }
 
 export const applicationApi: ApplicationApi = new ApplicationApi(BaseApiUrlConstant.APPLICATION_MANAGE_URL);

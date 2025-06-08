@@ -31,12 +31,12 @@ class DictTypeApi extends DefaultApiImpl<IDictType> {
      * @param dictCode 字典编码
      */
     checkDictCode: (dictCode: string) => Promise<boolean> = (dictCode: string): Promise<boolean> =>
-        request.get(`${this.baseUrl}/exists?dictCode=${dictCode}`)
+      request.get(`${this._baseUrl}/exists?dictCode=${dictCode}`)
 
     /**
      * 获取字典项列表
      */
-    getList: () => Promise<IDictType[]> = (): Promise<IDictType[]> => request.get(`${this.baseUrl}/list`)
+    getList: () => Promise<IDictType[]> = (): Promise<IDictType[]> => request.get(`${this._baseUrl}/list`)
 }
 
 

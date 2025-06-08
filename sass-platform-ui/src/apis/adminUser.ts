@@ -43,7 +43,7 @@ class AdminUserApi extends DefaultApiImpl<IUserinfo> {
      * @param organizationId 组织id
      */
     getDetailByIdApi = (id: string, organizationId: string): Promise<IUserinfo> => {
-        return request.get(`${this.baseUrl}/${id}?organizationId=${organizationId}`);
+      return request.get(`${this._baseUrl}/${id}?organizationId=${organizationId}`);
     };
 }
 

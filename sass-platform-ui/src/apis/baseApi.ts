@@ -23,11 +23,6 @@ import {request} from "@/utils";
  */
 interface BaseApi<T> {
     /**
-     * api基础url
-     */
-    baseUrl: string;
-
-    /**
      * 保存详情
      * @param info 详情
      */
@@ -74,38 +69,38 @@ export class DefaultApiImpl<T> implements BaseApi<T> {
     /**
      * baseUrl
      */
-    baseUrl: string;
+    protected readonly _baseUrl: string;
 
     constructor(baseUrl: string) {
-        this.baseUrl = baseUrl;
+      this._baseUrl = baseUrl;
     }
 
     saveInfoApi = (info: T): Promise<string> => {
-        return request.post(this.baseUrl, info);
+      return request.post(this._baseUrl, info);
     }
 
     editInfoApi = (id: string, info: T): Promise<void> => {
-        return request.put(`${this.baseUrl}/${id}`, info);
+      return request.put(`${this._baseUrl}/${id}`, info);
     };
 
     getInfoByIdApi = (id: string): Promise<T> => {
-        return request.get(`${this.baseUrl}/${id}`);
+      return request.get(`${this._baseUrl}/${id}`);
     };
 
     getInfoMeApi = (): Promise<T> => {
-        return request.get(`${this.baseUrl}/me`);
+      return request.get(`${this._baseUrl}/me`);
     }
 
     deleteInfoApi = (ids: string[]): Promise<void> => {
-        return request.delete(`${this.baseUrl}`, {data: ids});
+      return request.delete(`${this._baseUrl}`, {data: ids});
     };
 
     pageInfoListApi = (pageQuery: IPageQuery): Promise<IPageResult<T>> => {
-        return request.get(`${this.baseUrl}/page`, {params: pageQuery})
+      return request.get(`${this._baseUrl}/page`, {params: pageQuery})
     }
 
     status: (id: string, enabled: boolean) => Promise<void> = (id: string, enabled: boolean): Promise<void> =>
-        request.put(`${this.baseUrl}/${id}/status?enabled=${enabled}`)
+      request.put(`${this._baseUrl}/${id}/status?enabled=${enabled}`)
 
 
 }

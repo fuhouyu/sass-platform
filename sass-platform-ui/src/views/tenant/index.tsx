@@ -249,7 +249,7 @@ const Tenant: FC = () => {
 
     <Drawer title={updateId === undefined ? t('Tenant.add') : t('Tenant.edit')}
             width={'50%'}
-            destroyOnClose
+            destroyOnHidden
             closable
             maskClosable
             onClose={closeDrawer}
