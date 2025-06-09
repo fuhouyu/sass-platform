@@ -15,12 +15,12 @@
  */
 /* HTML: <div class="loader"></div> */
 .loader {
-  width: 50px;
+  width: 6.25rem;
   aspect-ratio: 1;
   display: grid;
-  border: 4px solid #0000;
+  border: 0.25rem solid transparent;
   border-radius: 50%;
-  border-color: #ccc #0000;
+  border-color: #ccc transparent;
   animation: l16 1s infinite linear;
 }
 
@@ -29,15 +29,13 @@
   content: "";
   grid-area: 1/1;
   margin: 2px;
-  border: inherit;
+  border: 4px solid transparent;
   border-radius: 50%;
 }
 
 .loader::before {
-  border-color: #f03355 #0000;
-  animation: inherit;
-  animation-duration: .5s;
-  animation-direction: reverse;
+  border-color: #f03355 transparent;
+  animation: l16 0.5s infinite linear reverse;
 }
 
 .loader::after {
@@ -46,6 +44,6 @@
 
 @keyframes l16 {
   100% {
-    transform: rotate(1turn)
+    transform: rotate(1turn);
   }
 }
