@@ -153,4 +153,12 @@ public interface ResourceService extends IService<Resources> {
      * @return 资源详情
      */
     ResourceDetailDTO findDetailById(Long id);
+
+    /**
+     * 修改临时的资源
+     *
+     * @param resourceId   资源id
+     * @param businessName 业务名称
+     */
+    void editTempResource(Long resourceId, String businessName);
 }

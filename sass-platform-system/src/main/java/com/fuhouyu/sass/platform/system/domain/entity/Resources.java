@@ -99,4 +99,9 @@ public class Resources extends BaseEntity {
      * 是否是目录
      */
     private Boolean isDirectory;
+
+    /**
+     * 是否为临时的文件
+     */
+    private Boolean isTmpFile;
 }

@@ -1479,3 +1479,9 @@ VALUES (1, 'Sass', '站点设置', '', '',
         'mail@fuhouyu.com', '', '', '',
         '',
         'zh-CN', 'Asia/Shanghai', now(), 'admin', now(), 'admin');
+
+-- 资源是否属于临时目录
+ALTER TABLE resources
+    ADD COLUMN IF NOT EXISTS is_tmp_file BOOLEAN DEFAULT FALSE;
+COMMENT ON COLUMN resources.is_tmp_file IS '是否为临时文件';
+
