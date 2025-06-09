@@ -13,37 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* HTML: <div class="loader"></div> */
-.loader {
-  width: 6.25rem;
-  aspect-ratio: 1;
-  display: grid;
-  border: 0.25rem solid transparent;
-  border-radius: 50%;
-  border-color: #ccc transparent;
-  animation: l16 1s infinite linear;
-}
+package com.fuhouyu.sass.platform.system.annotaions;
 
-.loader::before,
-.loader::after {
-  content: "";
-  grid-area: 1/1;
-  margin: 2px;
-  border: 4px solid transparent;
-  border-radius: 50%;
-}
+import java.lang.annotation.*;
 
-.loader::before {
-  border-color: #f03355 transparent;
-  animation: l16 0.5s infinite linear reverse;
-}
+/**
+ * <p>
+ * 该注解是为了从tmp目录下的临时资源移动到对应的业务下
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/6/9 19:27
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MoveTempResource {
 
-.loader::after {
-  margin: 8px;
-}
-
-@keyframes l16 {
-  100% {
-    transform: rotate(1turn);
-  }
+    /**
+     * 业务名称，将临时文件目录移动到业务目录下
+     *
+     * @return 业务名称
+     */
+    String businessName();
 }

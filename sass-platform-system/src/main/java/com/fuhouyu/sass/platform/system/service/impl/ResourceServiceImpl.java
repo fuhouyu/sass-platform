@@ -113,21 +113,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
 
     @Override
     public long save(ResourceDTO dto) {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
-        TenantSpaceDTO tenantSpaceDTO = this.tenantSpaceService.checkExists(tenantId);
-        String bucketName = tenantSpaceDTO.getBucketName();
-        String oldObject = dto.getObjectKey();
-        String newObjectKey = oldObject.replace(TMP_DIR, "");
-        Long parentId = this.createDirectory(this.getParentPath(newObjectKey), dto.getIsPublic());
-        // 复制资源
-        this.s3Client.copyObject(builder -> {
-            builder.sourceBucket(bucketName);
-            builder.destinationBucket(bucketName);
-            builder.sourceKey(oldObject);
-            builder.destinationKey(newObjectKey);
-        });
-        // 删除临时资源
-        this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
         String mimeType = dto.getMimeType();
         String name = dto.getName();
         if (!StringUtils.hasText(mimeType) && name.contains(".")) {
@@ -135,17 +120,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         }
         String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
-        HeadObjectResponse headObjectResponse = this.s3Client.headObject(
-                builder -> builder.bucket(bucketName)
-                        .key(newObjectKey)
-        );
         long id = snowflake.nextId();
         entity.setId(id);
         entity.setMimeType(mimeType);
         entity.setCategory(category);
-        entity.setObjectKey(newObjectKey);
-        entity.setParentId(parentId);
-        entity.setVersion(Optional.ofNullable(headObjectResponse.versionId()).orElse(""));
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
         this.resourceMapper.insert(entity);
         return id;
@@ -367,6 +345,39 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         lambdaQueryWrapper.eq(Objects.nonNull(pageQueryDTO.getIsPublic()), Resources::getIsPublic, pageQueryDTO.getIsPublic());
 
         return PageResultDTO.buildPageResult(this.resourceMapper.selectPage(pageQueryDTO, lambdaQueryWrapper), RESOURCES_ASSEMBLER::toDTO);
+    }
+
+    @Override
+    public void editTempResource(Long resourceId, String businessName) {
+        ResourceDetailDTO dto = this.checkResourceExists(resourceId);
+        if (!dto.getIsTmpFile()) {
+            return;
+        }
+        String oldObject = dto.getObjectKey();
+        String newObjectKey = oldObject.replace(TMP_DIR, "");
+        String bucketName = dto.getBucketName();
+
+        Long parentId = this.createDirectory(this.getParentPath(newObjectKey), dto.getIsPublic());
+        // 复制资源
+        this.s3Client.copyObject(builder -> {
+            builder.sourceBucket(bucketName);
+            builder.destinationBucket(bucketName);
+            builder.sourceKey(oldObject);
+            builder.destinationKey(newObjectKey);
+        });
+        // 删除临时资源
+        this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
+
+        HeadObjectResponse headObjectResponse = this.s3Client.headObject(
+                builder -> builder.bucket(bucketName)
+                        .key(dto.getObjectKey())
+        );
+        dto.setVersion(Optional.ofNullable(headObjectResponse.versionId()).orElse(""));
+        dto.setParentId(parentId);
+        dto.setIsTmpFile(false);
+        dto.setObjectKey(newObjectKey);
+        this.baseMapper.updateById(RESOURCES_ASSEMBLER.toEntity(dto));
+
     }
 
     /**

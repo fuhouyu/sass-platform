@@ -95,6 +95,9 @@ public class ResourceDTO extends BaseDTO implements Serializable {
             value = "RESOURCE_DIRECTORY_NOT_NULL")
     private Boolean isDirectory;
 
+    @Schema(name = "isTmpFile", description = "是否是临时文件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Boolean isTmpFile;
+
     @Schema(name = "ownerTenantId", description = "租户id，仅返回", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long ownerTenantId;
 

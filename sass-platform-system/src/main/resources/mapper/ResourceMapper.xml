@@ -28,6 +28,7 @@
         <result column="category" property="category"/>
         <result column="is_public" property="isPublic"/>
         <result column="is_directory" property="isDirectory"/>
+        <result column="is_tmp_file" property="isTmpFile"/>
         <result column="owner_tenant_id" property="ownerTenantId"/>
     </resultMap>
 
@@ -52,6 +53,7 @@
         is_deleted,
         is_public,
         is_directory,
+        is_tmp_file,
         owner_tenant_id,
         created_at,
         updated_at,
@@ -72,6 +74,7 @@
         r.version,
         r.is_public,
         r.is_directory,
+        r.is_tmp_file,
         r.owner_tenant_id,
         r.created_at,
         r.updated_at,
@@ -99,6 +102,7 @@
             #{isDeleted},
             #{isPublic},
             #{isDirectory},
+            #{isTmpFile},
             #{ownerTenantId},
             #{createdAt},
             #{updatedAt},
@@ -106,31 +110,6 @@
             #{updatedBy}
         </trim>
     </insert>
-
-
-    <update id="update" parameterType="com.fuhouyu.sass.platform.system.domain.entity.Resources">
-        UPDATE
-        <include refid="TableName"/>
-        SET
-        <if test="name != null and name != ''">
-            name = #{name},
-        </if>
-        <if test="mimeType != null and mimeType != ''">
-            mime_type = #{mimeType},
-        </if>
-        <if test="objectKey != null and objectKey != ''">
-            object_key = #{objectKey},
-        </if>
-        <if test="version != null">
-            version = #{version},
-        </if>
-        <if test="isPublic != null">
-            is_public = #{isPublic},
-        </if>
-        updated_at = #{updatedAt},
-        updated_by = #{updatedBy}
-        WHERE id = #{id}
-    </update>
 
 
     <select id="queryList" resultMap="BaseResultMap" >
