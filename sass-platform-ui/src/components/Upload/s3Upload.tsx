@@ -138,7 +138,6 @@ export const S3Upload: FC<S3UploadProps> = (uploadProps) => {
                 mimeType: file.type,
                 isPublic: isPublic,
                 isDirectory: false,
-                version: 1,
                 objectKey: objectKey,
             });
             onUploadSuccess?.(resourceId);

@@ -121,10 +121,15 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         String category = ResourceCategoryEnum.resolveCategoryNameByMimeType(mimeType);
         Resources entity = RESOURCES_ASSEMBLER.toEntity(dto);
         long id = snowflake.nextId();
+        // 这里设置id是为了让后续方便使用
+        dto.setId(id);
         entity.setId(id);
+        entity.setVersion("");
+        entity.setParentId(-1L);
         entity.setMimeType(mimeType);
         entity.setCategory(category);
         entity.setOwnerTenantId(ContextHolderStrategy.getContext().getUser().getTenantId());
+        entity.setIsTmpFile(true);
         this.resourceMapper.insert(entity);
         return id;
     }
@@ -367,10 +372,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         });
         // 删除临时资源
         this.s3Client.deleteObject(builder -> builder.bucket(bucketName).key(oldObject));
-
         HeadObjectResponse headObjectResponse = this.s3Client.headObject(
-                builder -> builder.bucket(bucketName)
-                        .key(dto.getObjectKey())
+                builder -> builder.bucket(dto.getBucketName())
+                        .key(newObjectKey)
         );
         dto.setVersion(Optional.ofNullable(headObjectResponse.versionId()).orElse(""));
         dto.setParentId(parentId);

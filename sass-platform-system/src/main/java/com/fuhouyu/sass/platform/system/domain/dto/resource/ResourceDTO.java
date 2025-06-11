@@ -18,6 +18,7 @@ package com.fuhouyu.sass.platform.system.domain.dto.resource;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
+import com.fuhouyu.sass.platform.system.annotaions.MoveTempResource;
 import com.fuhouyu.sass.platform.system.domain.dto.BaseDTO;
 import com.fuhouyu.sass.platform.system.enums.response.ResourceResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,6 +47,7 @@ public class ResourceDTO extends BaseDTO implements Serializable {
     private static final long serialVersionUID = 167123549812397819L;
 
     @Schema(name = "id", description = "资源id", requiredMode = Schema.RequiredMode.REQUIRED)
+    @MoveTempResource
     private Long id;
 
     @Schema(name = "parentId", description = "父资源id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
