@@ -128,11 +128,6 @@ export interface IResource extends BaseModel {
     objectKey: string;
 
     /**
-     * version
-     */
-    version: number;
-
-    /**
      * 是否公开
      */
     isPublic: boolean;

@@ -35,5 +35,15 @@ public @interface MoveTempResource {
      *
      * @return 业务名称
      */
-    String businessName();
+    String businessName() default "";
+
+    /**
+     * 执行时机：BEFORE 或 AFTER，默认为 BEFORE
+     */
+    Phase execPhase() default Phase.BEFORE;
+
+    enum Phase {
+        BEFORE,
+        AFTER
+    }
 }

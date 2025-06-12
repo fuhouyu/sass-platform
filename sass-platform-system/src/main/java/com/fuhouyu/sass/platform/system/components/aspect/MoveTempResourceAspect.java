@@ -26,7 +26,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -68,28 +69,47 @@ public class MoveTempResourceAspect {
     @Around("moveTempResource()")
     public Object aroundLoginMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
+        List<ResourceFieldReference> afterFieldRefs = new ArrayList<>();
 
+        // 处理 BEFORE 的逻辑，同时记录 AFTER 的字段引用
         for (Object arg : args) {
-            if (Objects.isNull(arg)) {
+            if (arg == null) {
                 continue;
             }
+
             Class<?> clazz = arg.getClass();
             for (Field field : clazz.getDeclaredFields()) {
-                MoveTempResource moveTempResource = field.getAnnotation(MoveTempResource.class);
-                if (Objects.isNull(moveTempResource)) {
+                MoveTempResource annotation = field.getAnnotation(MoveTempResource.class);
+                if (annotation == null) {
                     continue;
                 }
                 field.setAccessible(true);
                 Object value = field.get(arg);
-                if (value instanceof Long resourceId) {
-                    this.moveResource(resourceId, moveTempResource.businessName());
+
+                if (annotation.execPhase() == MoveTempResource.Phase.BEFORE && value instanceof Long resourceId) {
+                    moveResource(resourceId, annotation.businessName());
+                } else {
+                    afterFieldRefs.add(new ResourceFieldReference(arg, field, annotation.businessName()));
                 }
             }
         }
 
-        return joinPoint.proceed();
+        // 方法执行
+        Object result = joinPoint.proceed();
+
+        // 方法执行后再获取字段值
+        for (ResourceFieldReference ref : afterFieldRefs) {
+            Object value = ref.field.get(ref.target);
+            if (value instanceof Long resourceId) {
+                moveResource(resourceId, ref.businessName);
+            }
+        }
+
+        return result;
     }
 
+    private record ResourceFieldReference(Object target, Field field, String businessName) {
+    }
 
     /**
      * 移动资源到业务目录下
