@@ -129,6 +129,7 @@
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.imports</exclude>
                         <exclude>**/**.yaml</exclude>
+                        <exclude>**/.nvmrc</exclude>
                     </excludes>
                 </configuration>
                 <executions>
