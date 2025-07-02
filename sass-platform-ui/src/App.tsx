@@ -18,7 +18,7 @@
 import {FC, useEffect, useState} from "react";
 import {RouterProvider} from "react-router-dom";
 import '@/i18n'
-import {useRoutes} from "@/hooks/useRoutes.tsx";
+import {useRoutes} from "@/hooks/useRouter";
 import {App as AntdApp, ConfigProvider, theme} from "antd";
 import {useLocaleStore, useRouterStore} from "@/store";
 import {Locale} from "antd/es/locale";
