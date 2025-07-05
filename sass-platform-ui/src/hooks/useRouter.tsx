@@ -24,6 +24,7 @@ import router from "@/router";
 import {loader} from "@/router/utils";
 
 
+
 const modules = import.meta.glob('../views/**/index.tsx');
 const lazyElement = (path: string) => {
   const module = modules[`../views/${path}/index.tsx`];
@@ -53,7 +54,6 @@ const parseRoutes = (menuProps: IMenu[]): DataRouteObject[] => {
     }
   })
 };
-
 /**
  * 路由hook
  */

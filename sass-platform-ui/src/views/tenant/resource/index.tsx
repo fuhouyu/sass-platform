@@ -13,183 +13,196 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FC, Key, useCallback, useEffect, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
+import {
+    DownloadOutlined,
+    EditOutlined,
+    EyeOutlined,
+    FolderOutlined,
+    LeftOutlined,
+    LockOutlined,
+    ShareAltOutlined,
+    UploadOutlined,
+} from '@ant-design/icons';
+import { TableRefType } from '@components/List/table/interface';
+import { ResourceView } from '@components/ResourceView/resourceView.tsx';
+import {
+    Breadcrumb,
+    BreadcrumbProps,
+    Button,
+    Divider,
+    Drawer,
+    Dropdown,
+    Flex,
+    Input,
+    List,
+    Menu,
+    MenuProps,
+    Modal,
+    Popconfirm,
+    Select,
+    Space,
+    TableColumnsType,
+    Tag,
+    Tooltip,
+} from 'antd';
+import type { TableRowSelection } from 'antd/es/table/interface';
 
-import {FC, Key, useCallback, useEffect, useRef, useState} from "react";
-import {
-  Breadcrumb,
-  BreadcrumbProps,
-  Button,
-  Divider,
-  Drawer,
-  Dropdown,
-  Flex,
-  Input,
-  List,
-  Menu,
-  MenuProps,
-  Modal,
-  Popconfirm,
-  Select,
-  Space,
-  TableColumnsType,
-  Tag,
-  Tooltip
-} from "antd";
-import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
-import {Trans, useTranslation} from "react-i18next";
-import {resourceApi} from "@/apis/resource.ts";
-import type {TableRowSelection} from "antd/es/table/interface";
-import './index.scss'
-import {
-  DownloadOutlined,
-  EditOutlined,
-  EyeOutlined,
-  FolderOutlined,
-  LeftOutlined,
-  LockOutlined,
-  ShareAltOutlined,
-  UploadOutlined
-} from "@ant-design/icons";
-import {DeleteButton} from "@/components/Button/commonButton";
-import {ITenantSpace} from "@/types/tenant";
-import {tenantSpaceApi} from "@/apis/tenantSpace.ts";
-import useRouteSearchParams from "@/hooks/useRouteSearchParams.tsx";
-import {IResource} from "@/types/resource";
-import {ResourceView} from "@components/ResourceView/resourceView.tsx";
-import {useResourceAction} from "@/hooks/useResourceAction.tsx";
-import {TableRefType} from "@components/List/table/interface";
-import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
-import {usePageTitle} from "@/hooks/usePageTitle.tsx";
-import {TenantResourcePermissionConstant} from "@/constants/permissionConstant.ts";
-import {useButton} from "@/hooks/useButton.tsx";
-import {AnyObject} from "antd/es/_util/type";
+import { DeleteButton } from '@/components/Button/commonButton';
+
+import { useButton } from '@/hooks/useButton.tsx';
+import { usePageTitle } from '@/hooks/usePageTitle.tsx';
+import useRouteSearchParams from '@/hooks/useRouteSearchParams.tsx';
+
+import { resourceApi } from '@/apis/resource.ts';
+import { tenantSpaceApi } from '@/apis/tenantSpace.ts';
+import { BaseUrlConstant } from '@/constants/baseUrlConstant.ts';
+import { TenantResourcePermissionConstant } from '@/constants/permissionConstant.ts';
+import { IResource } from '@/types/resource';
+import { ITenantSpace } from '@/types/tenant';
+import { FileUtils } from '@/utils/fileUtil.ts';
+
+import { ShareResource } from './components/ShareResource';
 import {useNotification} from "@/hooks/useNotification.tsx";
+import {IconFont, PageList, PermissionButton, S3Upload} from "@/components";
+import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import { AnyObject } from "antd/es/_util/type";
 import {
   getCategoryInfo,
   ResourceCategoryEnum,
-  resourceTypeInfo,
+  resourceTypeInfo
 } from "@/enums/ResourceCategoryEnum.tsx";
-import {FileUtils} from "@/utils/fileUtil.ts";
-import {ShareResource} from "./components/ShareResource";
+import './index.scss'
 
 const TenantResource: FC = () => {
     usePageTitle('Menu.resourceManage');
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
-  const tableRef = useRef<TableRefType<IResource>>(null);
-  const [rowKeys, setRowKeys] = useState<Key[]>([])
-    const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-    const {generateSignedUrl} = useResourceAction();
-  const [tenantSpace, setTenantSpace] = useState<ITenantSpace | undefined>(undefined);
-    const [countObjects, setCountObjects] = useState<number>(0)
+    const tableRef = useRef<TableRefType<IResource>>(null);
+    const [rowKeys, setRowKeys] = useState<Key[]>([]);
+    const { querySearchParams, updateSearchParams } = useRouteSearchParams();
+    const { generateSignedUrl } = useResourceAction();
+    const [tenantSpace, setTenantSpace] = useState<ITenantSpace | undefined>(undefined);
+    const [countObjects, setCountObjects] = useState<number>(0);
     const [showFileDetail, setShowFileDetail] = useState<boolean>(false);
-  const [selectFile, setSelectFile] = useState<IResource>();
+    const [selectFile, setSelectFile] = useState<IResource>();
     const [previewModal, setPreviewModal] = useState<boolean>(false);
     const [shareModal, setShareModal] = useState<boolean>(false);
     const buttonPermissions = useButton(TenantResourcePermissionConstant.List);
-    const {notificationMessage, contextHolder} = useNotification();
-    const [pageQuery, setPageQuery] = useState<Record<string, string>>({...querySearchParams()});
+    const { notificationMessage, contextHolder } = useNotification();
+    const [pageQuery, setPageQuery] = useState<Record<string, string>>({ ...querySearchParams() });
 
-  const columns: TableColumnsType<IResource> = [
+    const columns: TableColumnsType<IResource> = [
         {
             title: t('Resource.name'),
             dataIndex: 'name',
             align: 'center',
             render: (_, record) => {
                 if (record.isDirectory) {
-                    return <Button type={'link'} onClick={() => {
-                        breadcrumbClick(record.objectKey)
-                    }}>
-                        <Space size={4}>
-                            <IconFont type={'i-dir'}/>
-                            {record.name}
-                        </Space>
-                    </Button>;
+                    return (
+                        <Button
+                            type={'link'}
+                            onClick={() => {
+                                breadcrumbClick(record.objectKey);
+                            }}
+                        >
+                            <Space size={4}>
+                                <IconFont type={'i-dir'} />
+                                {record.name}
+                            </Space>
+                        </Button>
+                    );
                 }
                 const categoryInfo = getCategoryInfo(record.category!);
-                return <Space size={4}>
-                    {categoryInfo.icon}
-                    {record.name}
-                </Space>
-            }
+                return (
+                    <Space size={4}>
+                        {categoryInfo.icon}
+                        {record.name}
+                    </Space>
+                );
+            },
         },
         {
             title: t('Resource.size'),
             dataIndex: 'size',
-            align: "center",
+            align: 'center',
             render: (_, record) => {
                 if (record.isDirectory) {
-                    return <span>-</span>
+                    return <span>-</span>;
                 }
-                return (<span>{FileUtils.formatSize(record.size)}</span>);
-            }
+                return <span>{FileUtils.formatSize(record.size)}</span>;
+            },
         },
         {
             title: t('Resource.type'),
             dataIndex: 'mimeType',
-            align: "center",
+            align: 'center',
             width: 140,
             ellipsis: {
                 showTitle: false,
             },
             render: (_, record) => {
                 if (record.isDirectory) {
-                    return <span>-</span>
+                    return <span>-</span>;
                 }
-                return <Tooltip placement="topLeft" title={record.mimeType}>
-                    {record.mimeType}
-                </Tooltip>
-            }
+                return (
+                    <Tooltip placement="topLeft" title={record.mimeType}>
+                        {record.mimeType}
+                    </Tooltip>
+                );
+            },
         },
         {
             title: t('Resource.category.title'),
             dataIndex: 'category',
-            align: "center",
+            align: 'center',
             render: (_, record) => {
-                return <span>{t(`Resource.category.${record.category?.toLowerCase()}`)}</span>
-            }
+                return <span>{t(`Resource.category.${record.category?.toLowerCase()}`)}</span>;
+            },
         },
         {
             title: t('Resource.access'),
             dataIndex: 'isPublic',
-            align: "center",
-          render: (_, record: IResource) => {
+            align: 'center',
+            render: (_, record: IResource) => {
                 if (record.isDirectory) {
                     return <div>-</div>;
                 }
-                return record.isPublic ?
-                    <Tag icon={<EyeOutlined/>} color="success">
+                return record.isPublic ? (
+                    <Tag icon={<EyeOutlined />} color="success">
                         {t('Resource.public')}
                     </Tag>
-                    :
-                    <Tag icon={<LockOutlined/>} color="warning">
+                ) : (
+                    <Tag icon={<LockOutlined />} color="warning">
                         {t('Resource.private')}
-                    </Tag>;
-            }
+                    </Tag>
+                );
+            },
         },
         {
             title: t('Common.updatedAt'),
             dataIndex: 'updatedAt',
             width: 180,
-            align: "center",
+            align: 'center',
             render: (_, record) => {
                 if (record.isDirectory) {
-                    return <span>-</span>
+                    return <span>-</span>;
                 }
-                return <span>{record.updatedAt}</span>
-            }
+                return <span>{record.updatedAt}</span>;
+            },
         },
         {
             title: t('Common.updatedBy'),
             dataIndex: 'updatedBy',
-            align: "center",
+            align: 'center',
             render: (_, record) => {
                 if (record.isDirectory) {
-                    return <span>-</span>
+                    return <span>-</span>;
                 }
-                return <span>{record.updatedBy}</span>
-            }
+                return <span>{record.updatedBy}</span>;
+            },
         },
         {
             title: t('Common.action'),
@@ -197,63 +210,73 @@ const TenantResource: FC = () => {
             align: 'center',
             width: 240,
             fixed: 'right',
-          render: (_: AnyObject, record: IResource) => {
+            render: (_: AnyObject, record: IResource) => {
                 if (record.isDirectory) {
-                    return <span>-</span>
+                    return <span>-</span>;
                 }
                 const label = record.isPublic ? t('Resource.setPrivate') : t('Resource.setPublic');
-                const icon = record.isPublic ? <LockOutlined/> : <EyeOutlined/>;
-                const successTips = record.isPublic ? t('Resource.setPrivateTips') : t('Resource.setPublicSuccessTips');
-                return (<PermissionButton buttonPermissions={buttonPermissions}
-                                          permissionStr={TenantResourcePermissionConstant.EDIT}>
-                    <Button
-                        type="primary"
-                        icon={icon}
-                        size={'small'}
-                        danger={record.isPublic}
-                        disabled={record.isDirectory}
-                        onClick={async (event) => {
-                            event.stopPropagation();
-                            await resourceApi.status(record.id!, !record.isPublic);
-                            notificationMessage({
-                                type: 'success',
-                                message: label,
-                                description: <Trans
-                                    i18nKey={successTips}
-                                    values={{name: record.name}}
-                                    components={{strong: <span className="highlight"/>}}
-                                />
-                            });
-                            await tableRef.current?.refreshPageList();
-                        }}>
-                        {label}
-                    </Button>
-                </PermissionButton>)
-            }
-        }
-    ]
+                const icon = record.isPublic ? <LockOutlined /> : <EyeOutlined />;
+                const successTips = record.isPublic
+                    ? t('Resource.setPrivateTips')
+                    : t('Resource.setPublicSuccessTips');
+                return (
+                    <PermissionButton
+                        buttonPermissions={buttonPermissions}
+                        permissionStr={TenantResourcePermissionConstant.EDIT}
+                    >
+                        <Button
+                            type="primary"
+                            icon={icon}
+                            size={'small'}
+                            danger={record.isPublic}
+                            disabled={record.isDirectory}
+                            onClick={async event => {
+                                event.stopPropagation();
+                                await resourceApi.status(record.id!, !record.isPublic);
+                                notificationMessage({
+                                    type: 'success',
+                                    message: label,
+                                    description: (
+                                        <Trans
+                                            i18nKey={successTips}
+                                            values={{ name: record.name }}
+                                            components={{ strong: <span className="highlight" /> }}
+                                        />
+                                    ),
+                                });
+                                await tableRef.current?.refreshPageList();
+                            }}
+                        >
+                            {label}
+                        </Button>
+                    </PermissionButton>
+                );
+            },
+        },
+    ];
 
     const initBreadcrumbItems: () => BreadcrumbProps['items'] = (): BreadcrumbProps['items'] => {
         const breadcrumbItems = [
             {
                 title: t('Resource.rootPath'),
                 onClick: () => breadcrumbClick(),
-            }];
+            },
+        ];
         const prefix: string = querySearchParams()['prefix'];
         if (!prefix) {
             return breadcrumbItems;
         }
-        prefix.split("/").forEach(p => {
+        prefix.split('/').forEach(p => {
             breadcrumbItems.push({
                 title: p,
                 onClick: () => breadcrumbClick(p),
-            })
-        })
-        return breadcrumbItems
+            });
+        });
+        return breadcrumbItems;
     };
 
-    const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbProps['items']>(initBreadcrumbItems);
-
+    const [breadcrumbItems, setBreadcrumbItems] =
+        useState<BreadcrumbProps['items']>(initBreadcrumbItems);
 
     const breadcrumbClick = (prefix?: string) => {
         let urlPrefix = prefix;
@@ -262,47 +285,48 @@ const TenantResource: FC = () => {
         }
         if (!prefix) {
             setBreadcrumbItems(breadcrumbItems?.slice(0, 1));
-            updateSearchParams({prefix: urlPrefix})
-            return
+            updateSearchParams({ prefix: urlPrefix });
+            return;
         }
-        updateSearchParams({prefix: urlPrefix})
-        prefix.split("/").forEach(p => {
-            const index = breadcrumbItems?.findIndex((item => item.title === p)) ?? -1;
+        updateSearchParams({ prefix: urlPrefix });
+        prefix.split('/').forEach(p => {
+            const index = breadcrumbItems?.findIndex(item => item.title === p) ?? -1;
             if (index !== -1) {
                 setBreadcrumbItems(breadcrumbItems?.slice(0, index + 1));
-                return
+                return;
             }
-            setBreadcrumbItems([...breadcrumbItems ?? [], {
-                title: p,
-                onClick: () => breadcrumbClick(p),
-            }])
-        })
-    }
-
+            setBreadcrumbItems([
+                ...(breadcrumbItems ?? []),
+                {
+                    title: p,
+                    onClick: () => breadcrumbClick(p),
+                },
+            ]);
+        });
+    };
 
     useEffect(() => {
         tenantSpaceApi.getTenantSpaceForMe().then(tenantSpace => setTenantSpace(tenantSpace));
-        resourceApi.countObjects().then((number) => {
+        resourceApi.countObjects().then(number => {
             setCountObjects(number);
-        })
-    }, [])
-
+        });
+    }, []);
 
     /**
      * table列选择
      */
     const rowSelection: TableRowSelection<IResource> = {
-      onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
+        onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
     };
 
   const onTableRowClick = (record: IResource) => {
         if (record.isDirectory) {
-            breadcrumbClick(record.objectKey)
-            return
+            breadcrumbClick(record.objectKey);
+            return;
         }
         setShowFileDetail(true);
-        setSelectFile({...record});
-    }
+        setSelectFile({ ...record });
+    };
 
     /**
      * 查询资源
@@ -311,7 +335,6 @@ const TenantResource: FC = () => {
         await tableRef?.current?.refreshPageList();
     }, []);
 
-
     const uploadButtonItems: MenuProps = {
         items: [
             {
@@ -319,14 +342,18 @@ const TenantResource: FC = () => {
                     <S3Upload
                         isPublic={false}
                         showUploadList={true}
-                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
+                        prefix={
+                            breadcrumbItems?.length === 1
+                                ? undefined
+                                : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)
+                        }
                         onUploadSuccess={queryResource}
                     >
                         {t('Resource.upload.file')}
                     </S3Upload>
                 ),
                 key: 'upload-file',
-                icon: <UploadOutlined/>,
+                icon: <UploadOutlined />,
             },
             {
                 label: (
@@ -334,46 +361,52 @@ const TenantResource: FC = () => {
                         directory
                         isPublic={false}
                         showUploadList={true}
-                        prefix={breadcrumbItems?.length === 1 ? undefined : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)}
+                        prefix={
+                            breadcrumbItems?.length === 1
+                                ? undefined
+                                : (breadcrumbItems![breadcrumbItems!.length - 1].title as string)
+                        }
                         onUploadSuccess={queryResource}
                     >
                         {t('Resource.upload.folder')}
                     </S3Upload>
                 ),
                 key: 'upload-folder',
-                icon: <FolderOutlined/>,
-            }
-        ]
-    }
+                icon: <FolderOutlined />,
+            },
+        ],
+    };
 
     const fileActions = [
         {
             key: TenantResourcePermissionConstant.DOWNLOAD,
-            icon: <DownloadOutlined/>,
+            icon: <DownloadOutlined />,
             text: t('Resource.download'),
-            onClick: async () => selectFile && window.open(await generateSignedUrl(selectFile.id, false))
+            onClick: async () =>
+                selectFile && window.open(await generateSignedUrl(selectFile.id, false)),
         },
         {
             key: TenantResourcePermissionConstant.SHARE,
-            icon: <ShareAltOutlined/>,
+            icon: <ShareAltOutlined />,
             text: t('Resource.share'),
             onClick: () => setShareModal(true),
         },
         {
             key: TenantResourcePermissionConstant.OFFICE_EDIT,
-            icon: <EditOutlined/>, text: t('Resource.editor'),
+            icon: <EditOutlined />,
+            text: t('Resource.editor'),
             onClick: () => {
-                window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=EDIT`)
+                window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=EDIT`);
             },
         },
         {
             key: TenantResourcePermissionConstant.PREVIEW,
-            icon: <EyeOutlined/>,
+            icon: <EyeOutlined />,
             text: t('Resource.preview'),
             onClick: () => {
                 if (selectFile?.category === ResourceCategoryEnum.DOCUMENT) {
-                    window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=VIEW`)
-                    return
+                    window.open(`${BaseUrlConstant.OFFICE_URL}/${selectFile?.id}?mode=VIEW`);
+                    return;
                 }
                 setPreviewModal(true);
             },
@@ -392,193 +425,232 @@ const TenantResource: FC = () => {
         menuItems.unshift({
             key: '',
             label: t(`Resource.category.all`),
-            icon: <IconFont type={'i-quanbu'}/>,
-        })
+            icon: <IconFont type={'i-quanbu'} />,
+        });
         return menuItems;
     };
 
-    return (<>
-        {contextHolder}
+    return (
+        <>
+            {contextHolder}
 
-        <Flex gap={7} className={'resource-container'}>
-            <Flex className={'resource-type-menu-container '} justify={'center'}>
-                <Menu
-                    className={'resource-type-menu'}
-                    mode="inline"
-                    items={getResourceTypeMenuItems()}
-                    defaultSelectedKeys={[querySearchParams().category ?? '']}
-                    onClick={(e) => {
-                        updateSearchParams({category: e.key})
-                    }}
-
-                />
-            </Flex>
-            <Flex className={'resource-table-container'} vertical>
-                <div className={'tenant-space-header'}>
-                    <Flex gap={8}>
-                        <IconFont type={'i-cunchu'} style={{fontSize: '2.5rem'}}/>
-                        <Flex vertical justify={'center'} className={'space-bucket-info'}>
-                            <h2>{tenantSpace?.bucketName}</h2>
-                            <Space size={24}>
-                                <span>{t('Common.createdAt')}：<strong>{tenantSpace?.createdAt}</strong></span>
-                                <span>Access: <strong>{(tenantSpace?.acl ?? '').toLocaleUpperCase()}</strong></span>
-                                <span>{((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(2)} MiB / {tenantSpace?.capacity ?? 0} GiB - {countObjects} Objects
-                            </span>
-                            </Space>
-                        </Flex>
-                    </Flex>
-                    <Flex gap={8}>
-                        <Popconfirm
-                            title={t('Button.delete')}
-                            description={t('Button.deleteConfirm')}
-                            okText={t('Common.yes')}
-                            cancelText={t('Common.no')}
-                            onConfirm={async () => {
-                                await resourceApi.deleteInfoApi(rowKeys as string[]);
-                                await tableRef?.current?.refreshPageList();
-                            }}
-                        >
-                            <DeleteButton
-                                disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                        </Popconfirm>
-                        <Dropdown.Button icon={<UploadOutlined/>} menu={uploadButtonItems}>
-                            {t('Resource.upload.file')}
-                        </Dropdown.Button>
-                    </Flex>
-                </div>
-                <div className={'resource-content'}>
-                  <PageList<IResource>
-                        tableProps={{
-                            tableRef: tableRef,
-                            onRow: (record) => ({
-                                onClick: () => onTableRowClick(record),
-                            }),
-                            columns: columns,
-                            pageApi: resourceApi.pageInfoListApi,
-                            rowSelection: rowSelection,
-                            tableComponents: [
-                                <Flex
-                                    className={''}
-                                    key={'back-button'}
-                                    justify={'center'}>
-                                    <Button className={'back-button'}
-                                            onClick={breadcrumbItems?.[breadcrumbItems.length - 2]?.onClick}
-                                    ><LeftOutlined/></Button>
-                                    <Breadcrumb className={'space-bucket-breadcrumb'} items={breadcrumbItems}/>
-                                </Flex>
-                            ]
-                        }}
-                        headerSearchProps={{
-                            components: [
-                                <><label htmlFor="name">{t('Resource.name')}</label>
-                                    <Input
-                                        allowClear
-                                        defaultValue={pageQuery.name}
-                                        placeholder={t('Resource.namePlaceholder')}
-                                        id={'name'}
-                                        onChange={(e) => setPageQuery({name: e.target.value})}
-                                    />
-                                </>,
-                                <><label htmlFor="permission">{t('Resource.permission')}</label>
-                                    <Select
-                                        allowClear
-                                        defaultValue={pageQuery.isPublic}
-                                        placeholder={t('Resource.permissionPlaceholder')}
-                                        id={'permission'}
-                                        onChange={(value) => setPageQuery({isPublic: value})}
-                                        options={[
-                                            {value: 'true', label: t('Resource.public')},
-                                            {value: 'false', label: t('Resource.private')}
-                                        ]}
-                                    />
-                                </>,
-                            ],
-                            onSearchClick: () => updateSearchParams(pageQuery),
-
+            <Flex gap={7} className={'resource-container'}>
+                <Flex className={'resource-type-menu-container '} justify={'center'}>
+                    <Menu
+                        className={'resource-type-menu'}
+                        mode="inline"
+                        items={getResourceTypeMenuItems()}
+                        defaultSelectedKeys={[querySearchParams().category ?? '']}
+                        onClick={e => {
+                            updateSearchParams({ category: e.key });
                         }}
                     />
-                    <Drawer
-                        title={selectFile?.name}
-                        placement="right"
-                        closable={false}
-                        onClose={() => setShowFileDetail(false)}
-                        open={showFileDetail}
-                    >
-                        <List
-                            className={'file-actions-list'}
-                            header={<span><strong>Actions: </strong></span>}
-                            bordered
-                            dataSource={fileActions}
-                            renderItem={(item) => {
-                                if (item.text === t('Resource.editor')) {
-                                    if (selectFile?.category !== ResourceCategoryEnum.DOCUMENT.toString()) {
-                                        return null;
-                                    }
-                                }
-                                return <PermissionButton buttonPermissions={buttonPermissions}
-                                                         permissionStr={item.key}>
-                                    <List.Item onClick={item.onClick}>
-                                        {item.icon} {item.text}
-                                    </List.Item>
-                                </PermissionButton>
-
+                </Flex>
+                <Flex className={'resource-table-container'} flex={1} vertical>
+                    <Flex className={'tenant-space-header'} justify={'space-between'} >
+                        <Flex gap={8}>
+                            <IconFont type={'i-cunchu'} style={{ fontSize: '2.5rem' }} />
+                            <Flex vertical justify={'center'} className={'space-bucket-info'}>
+                                <h2>{tenantSpace?.bucketName}</h2>
+                                <Space size={24}>
+                                    <span>
+                                        {t('Common.createdAt')}：
+                                        <strong>{tenantSpace?.createdAt}</strong>
+                                    </span>
+                                    <span>
+                                        Access:{' '}
+                                        <strong>
+                                            {(tenantSpace?.acl ?? '').toLocaleUpperCase()}
+                                        </strong>
+                                    </span>
+                                    <span>
+                                        {((tenantSpace?.usedCapacity ?? 0) / 1024 / 1024).toFixed(
+                                            2,
+                                        )}{' '}
+                                        MiB / {tenantSpace?.capacity ?? 0} GiB - {countObjects}{' '}
+                                        Objects
+                                    </span>
+                                </Space>
+                            </Flex>
+                        </Flex>
+                        <Flex gap={8}>
+                            <Popconfirm
+                                title={t('Button.delete')}
+                                description={t('Button.deleteConfirm')}
+                                okText={t('Common.yes')}
+                                cancelText={t('Common.no')}
+                                onConfirm={async () => {
+                                    await resourceApi.deleteInfoApi(rowKeys as string[]);
+                                    await tableRef?.current?.refreshPageList();
+                                }}
+                            >
+                                <DeleteButton
+                                    disabled={rowKeys === undefined || rowKeys.length === 0}
+                                />
+                            </Popconfirm>
+                            <Dropdown.Button icon={<UploadOutlined />} menu={uploadButtonItems}>
+                                {t('Resource.upload.file')}
+                            </Dropdown.Button>
+                        </Flex>
+                    </Flex>
+                    <Flex flex={1} className={'resource-content'}>
+                        <PageList<IResource>
+                            tableProps={{
+                                tableRef: tableRef,
+                                onRow: record => ({
+                                    onClick: () => onTableRowClick(record),
+                                }),
+                                columns: columns,
+                                pageApi: resourceApi.pageInfoListApi,
+                                rowSelection: rowSelection,
+                                tableComponents: [
+                                    <Flex className={''} key={'back-button'} justify={'center'}>
+                                        <Button
+                                            className={'back-button'}
+                                            onClick={
+                                                breadcrumbItems?.[breadcrumbItems.length - 2]
+                                                    ?.onClick
+                                            }
+                                        >
+                                            <LeftOutlined />
+                                        </Button>
+                                        <Breadcrumb
+                                            className={'space-bucket-breadcrumb'}
+                                            items={breadcrumbItems}
+                                        />
+                                    </Flex>,
+                                ],
+                            }}
+                            headerSearchProps={{
+                                components: [
+                                    <>
+                                        <label htmlFor="name">{t('Resource.name')}</label>
+                                        <Input
+                                            allowClear
+                                            defaultValue={pageQuery.name}
+                                            placeholder={t('Resource.namePlaceholder')}
+                                            id={'name'}
+                                            onChange={e => setPageQuery({ name: e.target.value })}
+                                        />
+                                    </>,
+                                    <>
+                                        <label htmlFor="permission">
+                                            {t('Resource.permission')}
+                                        </label>
+                                        <Select
+                                            allowClear
+                                            defaultValue={pageQuery.isPublic}
+                                            placeholder={t('Resource.permissionPlaceholder')}
+                                            id={'permission'}
+                                            onChange={value => setPageQuery({ isPublic: value })}
+                                            options={[
+                                                { value: 'true', label: t('Resource.public') },
+                                                { value: 'false', label: t('Resource.private') },
+                                            ]}
+                                        />
+                                    </>,
+                                ],
+                                onSearchClick: () => updateSearchParams(pageQuery),
                             }}
                         />
-                        <h3>{t('Resource.info')}</h3>
-                        <Divider/>
-                        <div className={'file-detail-container'}>
-                            <strong>{t('Resource.name')}: </strong>
-                            <br/>
-                            <span>{selectFile?.name}</span>
-                        </div>
-                        <div className={'file-detail-container'}>
-                            <strong>{t('Resource.size')}: </strong>
-                            <br/>
-                            <span>{selectFile?.size}</span>
-                        </div>
-                        <div className={'file-detail-container'}>
-                            <strong>Etag: </strong>
-                            <br/>
-                            <span>{selectFile?.eTag}</span>
-                        </div>
-                    </Drawer>
-                </div>
+                        <Drawer
+                            title={selectFile?.name}
+                            placement="right"
+                            closable={false}
+                            onClose={() => setShowFileDetail(false)}
+                            open={showFileDetail}
+                        >
+                            <List
+                                className={'file-actions-list'}
+                                header={
+                                    <span>
+                                        <strong>Actions: </strong>
+                                    </span>
+                                }
+                                bordered
+                                dataSource={fileActions}
+                                renderItem={item => {
+                                    if (item.text === t('Resource.editor')) {
+                                        if (
+                                            selectFile?.category !==
+                                            ResourceCategoryEnum.DOCUMENT.toString()
+                                        ) {
+                                            return null;
+                                        }
+                                    }
+                                    return (
+                                        <PermissionButton
+                                            buttonPermissions={buttonPermissions}
+                                            permissionStr={item.key}
+                                        >
+                                            <List.Item onClick={item.onClick}>
+                                                {item.icon} {item.text}
+                                            </List.Item>
+                                        </PermissionButton>
+                                    );
+                                }}
+                            />
+                            <h3>{t('Resource.info')}</h3>
+                            <Divider />
+                            <div className={'file-detail-container'}>
+                                <strong>{t('Resource.name')}: </strong>
+                                <br />
+                                <span>{selectFile?.name}</span>
+                            </div>
+                            <div className={'file-detail-container'}>
+                                <strong>{t('Resource.size')}: </strong>
+                                <br />
+                                <span>{selectFile?.size}</span>
+                            </div>
+                            <div className={'file-detail-container'}>
+                                <strong>Etag: </strong>
+                                <br />
+                                <span>{selectFile?.eTag}</span>
+                            </div>
+                        </Drawer>
+                    </Flex>
+                </Flex >
             </Flex>
-        </Flex>
 
-        <Modal
-            title={selectFile?.name}
-            className={'preview-modal'}
-            destroyOnHidden
-            open={previewModal}
-            footer={null}
-            height={'80%'}
-            width={'80%'}
-            closable
-            onCancel={() => setPreviewModal(false)}
-        >
-            <ResourceView
-                mimeType={selectFile?.mimeType ?? ''}
-                id={selectFile?.id ?? ''}
-                category={selectFile?.category ?? ''}/>
-        </Modal>
+            <Modal
+                title={selectFile?.name}
+                className={'preview-modal'}
+                destroyOnHidden
+                open={previewModal}
+                footer={null}
+                height={'80%'}
+                width={'80%'}
+                closable
+                onCancel={() => setPreviewModal(false)}
+            >
+                <ResourceView
+                    mimeType={selectFile?.mimeType ?? ''}
+                    id={selectFile?.id ?? ''}
+                    category={selectFile?.category ?? ''}
+                />
+            </Modal>
 
-        {/*资源分享*/}
-        <Modal
-            title={<Space><IconFont type={'i-icon_share'}/><span>{selectFile?.name}</span></Space>}
-            className={'share-modal'}
-            destroyOnHidden
-            open={shareModal}
-            footer={null}
-            width={750}
-            centered
-            closable
-            onCancel={() => setShareModal(false)}
-        >
-            <ShareResource id={selectFile?.id}/>
-
-        </Modal>
-    </>)
-}
+            {/* 资源分享*/}
+            <Modal
+                title={
+                    <Space>
+                        <IconFont type={'i-icon_share'} />
+                        <span>{selectFile?.name}</span>
+                    </Space>
+                }
+                className={'share-modal'}
+                destroyOnHidden
+                open={shareModal}
+                footer={null}
+                width={750}
+                centered
+                closable
+                onCancel={() => setShareModal(false)}
+            >
+                <ShareResource id={selectFile?.id} />
+            </Modal>
+        </>
+    );
+};
 
 export default TenantResource;

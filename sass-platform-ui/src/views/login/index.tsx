@@ -34,7 +34,7 @@ import Icon, {MoonOutlined, SunOutlined} from "@ant-design/icons";
 import {LoginSvg} from "@/views/login/components/LoginSvg.tsx";
 import {usePageTitle} from "@/hooks/usePageTitle.tsx";
 import {useThemeStore} from "@/store/modules/theme.ts";
-import {useRoutes} from "@/hooks/useRoutes.tsx";
+import {useRoutes} from "@/hooks/useRouter";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import logo from '@/assets/images/logo.png'
 import {AccountType} from "@/enums/accountType.ts";

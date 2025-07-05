@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-import './index.scss'
-import {PageListProps} from "@components/List/page/interface";
-import SearchHeader from "@components/List/header/searchHeader";
-import Table from "@components/List/table/table";
-import {Flex} from "antd";
+import SearchHeader from '@components/List/header/searchHeader';
+import { PageListProps } from '@components/List/page/interface';
+import Table from '@components/List/table/table';
+import { Flex } from 'antd';
 
 const PageList = <T extends object>(props: PageListProps<T>) => {
-    const {headerSearchProps, tableProps} = props
+    const { headerSearchProps, tableProps } = props;
     return (
-        <Flex vertical className={'page-list-container '}>
-            {headerSearchProps && <SearchHeader
-                {...headerSearchProps}/>}
-            <div className={'shadow-container'} style={{
-                height: '100%'
-            }}>
-                <Table<T>
-                    className={'page-table-container '}
-                    {...tableProps}/>
-            </div>
+        <Flex vertical style={{
+          height: '100%'
+        }}>
+            {headerSearchProps && <SearchHeader {...headerSearchProps} />}
+            <Table<T> className={'page-table-container '} {...tableProps} />
         </Flex>
     );
 };
