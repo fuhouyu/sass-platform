@@ -15,6 +15,7 @@
  */
 .resource-container {
   height: 100%;
+  width: 100%;
 }
 
 .tenant-space-content {
@@ -25,11 +26,6 @@
 }
 
 .tenant-space-header {
-  margin: 0 .3rem .3rem .3rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
   border: 1px solid gray;
   border-radius: 0.25rem;
   padding: .7rem;
@@ -44,13 +40,25 @@
 }
 
 .resource-content {
-  height: 100%;
+  width: 100%;
   background-color: inherit;
 
   .title-line {
+    align-items: center;
     border: 1px solid gray;
     border-radius: 6px;
+    text-align: center;
     background-color: rgb(252, 252, 253);
+  }
+
+  .space-bucket-breadcrumb {
+    display: flex;
+    background-color: rgb(252, 252, 253);
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    border-left: 1px solid gray;
+    text-align: center;
   }
 
 }
@@ -73,15 +81,7 @@
   border: none;
 }
 
-.space-bucket-breadcrumb {
-  display: flex;
-  background-color: rgb(252, 252, 253);
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 1rem;
-  border-left: 1px solid gray;
-  text-align: center;
-}
+
 
 .ant-breadcrumb-link {
   cursor: pointer;
@@ -102,8 +102,7 @@
 }
 
 .resource-table-container {
-  flex-grow: 1;
-  width: 0;
+  height: 100%;
 }
 
 

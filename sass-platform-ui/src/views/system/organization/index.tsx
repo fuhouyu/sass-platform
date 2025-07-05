@@ -13,58 +13,62 @@
  * See the License for the specific language governing organizations and
  * limitations under the License.
  */
+import { Key, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {Key, useEffect, useRef, useState} from "react";
-import {IOrganization} from "@/types/organization";
-import {useTranslation} from "react-i18next";
-import {useButton} from "@/hooks/useButton.tsx";
+import { TableRefType } from '@components/List/table/interface';
 import {
   Button,
+  Flex,
   Form,
   Input,
   InputNumber,
-  message,
   Popconfirm,
   Radio,
   Splitter,
   Switch,
   TableColumnsType,
   Tree,
-  TreeSelect
-} from "antd";
-import {AnyObject} from "antd/es/_util/type";
-import {IconFont, Modal, PermissionButton, SearchHeader, Table} from "@/components";
-import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
-import type {TableRowSelection} from "antd/es/table/interface";
-import {OrganizationPermissionConstant} from "@/constants/permissionConstant.ts";
-import {organizationApi} from "@/apis/organization.ts";
-import './index.scss'
-import TextArea from "antd/es/input/TextArea";
-import {useOrganizationLazyData} from "@/hooks/useOrganizationLazyData.tsx";
-import {useLocaleStore} from "@/store";
-import {CommonConstant} from "@/constants/commonConstant.ts";
-import useRouteSearchParams from "@/hooks/useRouteSearchParams";
-import {TableRefType} from "@components/List/table/interface";
-import {usePageTitle} from "@/hooks/usePageTitle.tsx";
+  TreeSelect,
+  message,
+} from 'antd';
+import { AnyObject } from 'antd/es/_util/type';
+import TextArea from 'antd/es/input/TextArea';
+import type { TableRowSelection } from 'antd/es/table/interface';
 
+import { useButton } from '@/hooks/useButton.tsx';
+import { useOrganizationLazyData } from '@/hooks/useOrganizationLazyData.tsx';
+import { usePageTitle } from '@/hooks/usePageTitle.tsx';
+import useRouteSearchParams from '@/hooks/useRouteSearchParams';
+import { useLocaleStore } from '@/store';
+
+import { organizationApi } from '@/apis/organization.ts';
+import { CommonConstant } from '@/constants/commonConstant.ts';
+import { OrganizationPermissionConstant } from '@/constants/permissionConstant.ts';
+import { IOrganization } from '@/types/organization';
+import {PermissionButton, Table, SearchHeader, IconFont, Modal} from "@/components";
+import {DeleteButton, EditButton} from "@components/Button/commonButton.tsx";
 
 const Organization = () => {
   usePageTitle('Menu.organizationManage');
   const [treeSelectData, setTreeSelectData] = useState<IOrganization[]>([]);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const buttonPermissions = useButton(OrganizationPermissionConstant.List);
   const tableRef = useRef<TableRefType<IOrganization>>(null);
-  const {querySearchParams, updateSearchParams} = useRouteSearchParams();
-  const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({...querySearchParams()});
+  const { querySearchParams, updateSearchParams } = useRouteSearchParams();
+  const [organizationQuery, setOrganizationQuery] = useState<Record<string, string>>({
+    ...querySearchParams(),
+  });
   const [rowKeys, setRowKeys] = useState<Key[]>([]);
   const [updateId, setUpdateId] = useState<string | undefined>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [isModalButtonLoading, setIsModalButtonLoading] = useState<boolean>(false);
-  const [formParentOrganization, setFormParentOrganization] = useState<IOrganization>({} as IOrganization);
-  const {initOrganization, onLoadData, organizationLazyData} = useOrganizationLazyData();
+  const [formParentOrganization, setFormParentOrganization] = useState<IOrganization>(
+    {} as IOrganization,
+  );
+  const { initOrganization, onLoadData, organizationLazyData } = useOrganizationLazyData();
   const language = useLocaleStore((state) => state.language);
-
 
   const columns: TableColumnsType<IOrganization> = [
     {
@@ -89,18 +93,21 @@ const Organization = () => {
       dataIndex: 'isEnabled',
       align: 'center',
       render: (_, record: IOrganization) => (
-        <Switch defaultChecked={record.isEnabled} onChange={async (checked) => {
-          await organizationApi.status(record.id!, checked);
-          await tableRef?.current?.refreshPageList();
-        }}/>
-      )
+        <Switch
+          defaultChecked={record.isEnabled}
+          onChange={async (checked) => {
+            await organizationApi.status(record.id!, checked);
+            await tableRef?.current?.refreshPageList();
+          }}
+        />
+      ),
     },
     {
       title: t('Common.updatedAt'),
       dataIndex: 'updatedAt',
       align: 'center',
       sorter: true,
-      showSorterTooltip: false
+      showSorterTooltip: false,
     },
     {
       title: t('Common.updatedBy'),
@@ -115,14 +122,15 @@ const Organization = () => {
       dataIndex: 'action',
       render: (_: AnyObject, record: IOrganization) => {
         return (
-
-          <PermissionButton buttonPermissions={buttonPermissions}
-                            permissionStr={OrganizationPermissionConstant.EDIT}>
-            <EditButton onClick={() => openModal(record.id)}/>
+          <PermissionButton
+            buttonPermissions={buttonPermissions}
+            permissionStr={OrganizationPermissionConstant.EDIT}
+          >
+            <EditButton onClick={() => openModal(record.id)} />
           </PermissionButton>
-        )
-      }
-    }
+        );
+      },
+    },
   ];
 
   useEffect(() => {
@@ -136,30 +144,28 @@ const Organization = () => {
     onChange: (selectedRowKeys: Key[]) => setRowKeys(selectedRowKeys),
   };
 
-
   /**
    * 树被点击时的事件
    * @param selectedKeys 当前选中的key
    * @param node 选中的树节点
    */
-  const onSelectTree = async (selectedKeys: Key[], {node}: { node: IOrganization }) => {
+  const onSelectTree = async (selectedKeys: Key[], { node }: { node: IOrganization }) => {
     if (!selectedKeys || selectedKeys.length === 0) {
-      updateSearchParams({...organizationQuery, parentId: null})
-      return
+      updateSearchParams({ ...organizationQuery, parentId: null });
+      return;
     }
     setFormParentOrganization(node);
     // 这里只会有一条
-    updateSearchParams({...organizationQuery, parentId: selectedKeys[0].toLocaleString()})
-  }
-
+    updateSearchParams({ ...organizationQuery, parentId: selectedKeys[0].toLocaleString() });
+  };
 
   /**
    * 权限树
    */
   const organizationTreeSelect = async () => {
-    const res = await organizationApi.getOrganizationTreeSelect()
-    setTreeSelectData(res)
-  }
+    const res = await organizationApi.getOrganizationTreeSelect();
+    setTreeSelectData(res);
+  };
 
   /**
    * 打开模态框
@@ -170,10 +176,10 @@ const Organization = () => {
     await organizationTreeSelect();
     if (updateId) {
       const organizationDetails = await organizationApi.getInfoByIdApi(updateId);
-      form.setFieldsValue({...organizationDetails})
+      form.setFieldsValue({ ...organizationDetails });
     }
     setIsModalOpen(true);
-  }
+  };
 
   /**
    * 关闭模态组
@@ -181,9 +187,8 @@ const Organization = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setUpdateId(undefined);
-    setFormParentOrganization({} as IOrganization)
-  }
-
+    setFormParentOrganization({} as IOrganization);
+  };
 
   /**
    * 处理表单
@@ -193,34 +198,35 @@ const Organization = () => {
     try {
       values = await form.validateFields();
     } catch {
-      return
+      return;
     }
     try {
       setIsModalButtonLoading(true);
-      await (updateId ? organizationApi.editInfoApi(updateId, values) : organizationApi.saveInfoApi(values));
+      await (updateId
+        ? organizationApi.editInfoApi(updateId, values)
+        : organizationApi.saveInfoApi(values));
       await tableRef?.current?.refreshPageList();
       const parentId = values.parentId;
-      await onLoadData({key: parentId});
+      await onLoadData({ key: parentId });
       setIsModalOpen(false);
-      message.success(t('Common.success')).then()
+      message.success(t('Common.success')).then();
     } finally {
       setIsModalButtonLoading(false);
     }
-  }
-
+  };
 
   return (
     <>
       <Splitter>
         <Splitter.Panel className={'tree-container'} defaultSize="10%" min="10%" max="70%">
-          <div className='tree-info'>
+          <div className="tree-info">
             <Tree<IOrganization>
               showIcon={false}
               defaultExpandParent={true}
               defaultSelectedKeys={[organizationQuery.parentId]}
               blockNode
               motion={false}
-              fieldNames={{key: 'id', title: 'organizationName'}}
+              fieldNames={{ key: 'id', title: 'organizationName' }}
               loadData={onLoadData}
               treeData={organizationLazyData}
               onSelect={onSelectTree}
@@ -228,51 +234,63 @@ const Organization = () => {
           </div>
         </Splitter.Panel>
         <Splitter.Panel>
-          <SearchHeader
-            components={[
-              <><label htmlFor="organizationName">{t('Organization.name')}</label>
-                <Input
-                  allowClear
-                  defaultValue={organizationQuery.organizationName}
-                  placeholder={t('Organization.namePlaceholder')} id={'organizationName'}
-                  onChange={(e) => setOrganizationQuery({organizationName: e.target.value})}/>
-              </>,
-            ]}
-            onSearchClick={() => updateSearchParams(organizationQuery)}
-          />
-          <Table<IOrganization>
-            tableRef={tableRef}
-            tableName={t('Organization.list')}
-            columns={columns}
-            rowSelection={rowSelection}
-            pageApi={organizationApi.pageInfoListApi}
-            scroll={{x: 1500}}
-            tableComponents={[
-              <>
-                <PermissionButton buttonPermissions={buttonPermissions}
-                                  permissionStr={OrganizationPermissionConstant.ADD}>
-                  <Button className="add-button"
-                          onClick={() => openModal()}
-                          icon={<IconFont type="i-add"/>}
+          <Flex vertical={true} style={{ height: '100%' }}>
+            <SearchHeader
+              components={[
+                <>
+                  <label htmlFor="organizationName">{t('Organization.name')}</label>
+                  <Input
+                    allowClear
+                    defaultValue={organizationQuery.organizationName}
+                    placeholder={t('Organization.namePlaceholder')}
+                    id={'organizationName'}
+                    onChange={(e) =>
+                      setOrganizationQuery({
+                        organizationName: e.target.value,
+                      })
+                    }
+                  />
+                </>,
+              ]}
+              onSearchClick={() => updateSearchParams(organizationQuery)}
+            />
+            <Table<IOrganization>
+              tableRef={tableRef}
+              tableName={t('Organization.list')}
+              columns={columns}
+              rowSelection={rowSelection}
+              pageApi={organizationApi.pageInfoListApi}
+              tableComponents={[
+                <>
+                  <PermissionButton
+                    buttonPermissions={buttonPermissions}
+                    permissionStr={OrganizationPermissionConstant.ADD}
                   >
-                    {t('Organization.add')}
-                  </Button>
-                </PermissionButton>
-                <PermissionButton buttonPermissions={buttonPermissions}
-                                  permissionStr={OrganizationPermissionConstant.DELETE}>
-                  <Popconfirm
-                    title={t('Button.delete')}
-                    description={t('Button.deleteConfirm')}
-                    okText={t('Common.yes')}
-                    cancelText={t('Common.no')}
+                    <Button
+                      className="add-button"
+                      onClick={() => openModal()}
+                      icon={<IconFont type="i-add" />}
+                    >
+                      {t('Organization.add')}
+                    </Button>
+                  </PermissionButton>
+                  <PermissionButton
+                    buttonPermissions={buttonPermissions}
+                    permissionStr={OrganizationPermissionConstant.DELETE}
                   >
-                    <DeleteButton
-                      disabled={rowKeys === undefined || rowKeys.length === 0}/>
-                  </Popconfirm>
-                </PermissionButton>
-              </>
-            ]}
-          />
+                    <Popconfirm
+                      title={t('Button.delete')}
+                      description={t('Button.deleteConfirm')}
+                      okText={t('Common.yes')}
+                      cancelText={t('Common.no')}
+                    >
+                      <DeleteButton disabled={rowKeys === undefined || rowKeys.length === 0} />
+                    </Popconfirm>
+                  </PermissionButton>
+                </>,
+              ]}
+            />
+          </Flex>
         </Splitter.Panel>
       </Splitter>
       <Modal
@@ -281,18 +299,19 @@ const Organization = () => {
         open={isModalOpen}
         onCancel={() => closeModal()}
         footer={[
-          <Button key='onOk' type="primary"
-                  loading={isModalButtonLoading}
-                  onClick={handleForm}
-          >{t('Button.confirm')}</Button>,
-          <Button key='onCancel' onClick={() => closeModal()}>{t('Button.cancel')}</Button>
+          <Button key="onOk" type="primary" loading={isModalButtonLoading} onClick={handleForm}>
+            {t('Button.confirm')}
+          </Button>,
+          <Button key="onCancel" onClick={() => closeModal()}>
+            {t('Button.cancel')}
+          </Button>,
         ]}
       >
         <Form
           clearOnDestroy={true}
           name="modal-form"
           form={form}
-          labelCol={{span: language == CommonConstant.ZH_CN_LANGUAGE ? 4 : 8}}
+          labelCol={{ span: language === CommonConstant.ZH_CN_LANGUAGE ? 4 : 8 }}
           autoComplete="off"
           initialValues={{
             parentId: formParentOrganization.id,
@@ -315,7 +334,7 @@ const Organization = () => {
               }}
               onSelect={(_: string, node: IOrganization) => setFormParentOrganization(node)}
               allowClear
-              dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
               treeData={treeSelectData}
               treeDefaultExpandAll
             />
@@ -330,12 +349,12 @@ const Organization = () => {
             rules={[
               {
                 required: true,
-                type: "string",
-                message: t('Organization.nameCheckMessage')
-              }
+                type: 'string',
+                message: t('Organization.nameCheckMessage'),
+              },
             ]}
           >
-            <Input placeholder={t('Organization.namePlaceholder')} maxLength={20}/>
+            <Input placeholder={t('Organization.namePlaceholder')} maxLength={20} />
           </Form.Item>
           <Form.Item
             label={t('Common.displayOrder')}
@@ -347,13 +366,16 @@ const Organization = () => {
             rules={[
               {
                 required: true,
-                type: "number",
-                message: t('Common.displayOrderPlaceholder')
-              }
+                type: 'number',
+                message: t('Common.displayOrderPlaceholder'),
+              },
             ]}
           >
-            <InputNumber placeholder={t('Common.displayOrderPlaceholder')} style={{width: '100%'}}
-                         min={1}/>
+            <InputNumber
+              placeholder={t('Common.displayOrderPlaceholder')}
+              style={{ width: '100%' }}
+              min={1}
+            />
           </Form.Item>
 
           <Form.Item
@@ -375,15 +397,17 @@ const Organization = () => {
             colon={false}
             validateFirst={true}
           >
-            <TextArea className="remark"
-                      placeholder={t('Common.remark')}
-                      showCount maxLength={500}/>
+            <TextArea
+              className="remark"
+              placeholder={t('Common.remark')}
+              showCount
+              maxLength={500}
+            />
           </Form.Item>
         </Form>
-
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default Organization
+export default Organization;

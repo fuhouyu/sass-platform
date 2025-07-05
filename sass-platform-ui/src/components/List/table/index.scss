@@ -24,8 +24,19 @@
     padding: 1rem .5rem;
   }
 
+  // 表格容器
+  .ant-table-wrapper, .ant-spin-nested-loading, .ant-spin-container {
+    height: 100%;
+    width: 100%;
+  }
 
+  .ant-spin-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 }
+
 // 组件
 .component {
   display: flex;
