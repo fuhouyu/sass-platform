@@ -22,10 +22,12 @@ import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.sass.platform.admin.annotaions.NoAuth;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.passkey.AuthenticationPasskeyDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.RefreshTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 import com.fuhouyu.sass.platform.system.service.UserAccountService;
+import com.fuhouyu.sass.platform.system.service.UserPasskeysService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,6 +56,8 @@ public class AuthenticationController {
 
 
     private final UserAccountService userAccountService;
+
+    private final UserPasskeysService userPasskeysService;
 
 
     /**
@@ -86,7 +90,6 @@ public class AuthenticationController {
         UserTokenDTO userTokenDTO = this.userAccountService.login(userLoginDTO);
         return ResponseHelper.success(userTokenDTO);
     }
-
 
     /**
      * 通过刷新令牌，更新token

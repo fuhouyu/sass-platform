@@ -36,6 +36,11 @@ export class BaseApiUrlConstant {
   static readonly AUTHENTICATION_API_PREFIX: string = `${BaseApiUrlConstant.VERSION}/auth`;
 
   /**
+   *通行证密钥api
+   */
+  static readonly PASSKEY_API_PREFIX: string = `${BaseApiUrlConstant.VERSION}/passkeys`;
+
+  /**
    * 权限api
    */
   static readonly PERMISSION_API_PREFIX: string = `${BaseApiUrlConstant.VERSION}/permission`;

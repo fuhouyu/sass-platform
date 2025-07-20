@@ -38,6 +38,7 @@ import {useRoutes} from "@/hooks/useRouter";
 import {BaseUrlConstant} from "@/constants/baseUrlConstant.ts";
 import logo from '@/assets/images/logo.png'
 import {AccountType} from "@/enums/accountType.ts";
+import {passkeyApi} from "@/apis/passkey.ts";
 
 
 /**
@@ -61,29 +62,40 @@ const Login: FC = () => {
   const [tenantId, setTenantId] = useState<string>();
   const {theme, changeTheme} = useThemeStore();
   const {updateDynamicRoutes} = useRoutes();
-  const [themeIcon, setThemeIcon] = useState(
-    theme === 'light' ? <MoonOutlined/> : <SunOutlined/>
-  );
+  const [themeIcon, setThemeIcon] = useState(theme === 'light' ? <MoonOutlined/> : <SunOutlined/>);
+  const [attestationOptions, setAttestationOptions] = useState<string | undefined>(undefined);
+  const [username, setUsername] = useState<string>();
 
   const initTenant = useCallback(async () => {
     const tenantInfos = await tenantApi.list();
     setTenantList(tenantInfos);
     setTenantId(tenantInfos[0].id);
-  }, [])
+  }, []);
 
-  // 如果本身存在token，跳转回首页
   useEffect(() => {
     if (isAuth) {
       navigate(BaseUrlConstant.HOME_URL);
-      return
+      return;
     }
     initTenant().then();
   }, [isAuth, navigate, initTenant]);
 
+  const checkPasskeyStatus = async (username: string) => {
+    if (!username) return;
+    const res = await passkeyApi.queryPasskeyByUsername(username);
+    setUsername(username);
+    setAttestationOptions(res);
+  };
+
+  const loginWithPasskey = async () => {
+    const credentialOptions = PublicKeyCredential.parseRequestOptionsFromJSON(JSON.parse(attestationOptions!));
+    const credential = await navigator.credentials.get({publicKey: credentialOptions});
+    await onFinish({credentials: JSON.stringify(credential), identify: username!, accountType: AccountType.PASSKEY})
+  };
 
   const onFinish = async (loginData: IUserAuthentication) => {
     setLoginButtonLoading(true);
-    loginData.accountType = AccountType.PASSWORD;
+    loginData.accountType = loginData.accountType??AccountType.PASSWORD;
     loginData.cloudflareTurnstileToken = turnstileToken;
     try {
       await fetchLogin({...loginData, tenantId});
@@ -104,18 +116,10 @@ const Login: FC = () => {
     <Flex className="container">
       <Flex className={'login-left'} vertical>
         <Flex className={'logo-container'} align={'center'}>
-          <img
-            width={42}
-            height={42}
-            src={logo} alt="logo"
-            style={{mixBlendMode: 'multiply'}}
-          />
+          <img width={42} height={42} src={logo} alt="logo" style={{mixBlendMode: 'multiply'}}/>
           <p>Sass Platform</p>
         </Flex>
-        <Icon
-          className={'login-svg'}
-          component={LoginSvg}
-        />
+        <Icon className={'login-svg'} component={LoginSvg}/>
       </Flex>
 
       <Flex className={'login-right'} vertical>
@@ -129,6 +133,7 @@ const Login: FC = () => {
               setThemeIcon(newTheme === 'light' ? <MoonOutlined/> : <SunOutlined/>);
             }}>{themeIcon}</Button>
         </Flex>
+
         <Flex flex={8} justify={'space-between'} align={'center'} vertical>
           <div className={'login-form-container'}>
             <div className={'login-title'}>
@@ -141,53 +146,53 @@ const Login: FC = () => {
               className={'tenant-choose-container'}
               onSelect={(value: string) => setTenantId(value)}
               placeholder={t('Login.chooseTenantPlaceholder')}
-              options={tenantList?.map(tenantInfo => {
-                return {
-                  value: tenantInfo.id,
-                  label: <Space className={'tenant-choose'}>
-                    <Avatar
-                      icon={null}
-                      src={preview(tenantInfo.icon)}/>{tenantInfo.tenantName}
-                  </Space>
-                };
-              })}/>
+              options={tenantList?.map(tenantInfo => ({
+                value: tenantInfo.id,
+                label: <Space className={'tenant-choose'}>
+                  <Avatar icon={null} src={preview(tenantInfo.icon)}/>
+                  {tenantInfo.tenantName}
+                </Space>
+              }))}/>
             {weLinkQr ?
-              <WeLinkLogin redirectType={'login'}/>
-              :
+              <WeLinkLogin redirectType={'login'}/> :
               <Form
                 name="login"
-                initialValues={{
-                  "identify": "admin",
-                  "credentials": "admin",
-                }}
+                initialValues={{identify: 'admin', credentials: 'admin'}}
                 onFinish={onFinish}
               >
                 <Form.Item
                   name="identify"
                   rules={[{required: true, message: t('Login.usernameEmptyMessage')}]}
                 >
-                  <Input prefix={<IconFont type={'i-zhanghao'}/>}
-                         placeholder={t('Login.usernamePlaceholder')}/>
+                  <Input
+                    prefix={<IconFont type={'i-zhanghao'}/>}
+                    placeholder={t('Login.usernamePlaceholder')}
+                    onBlur={(e) => checkPasskeyStatus(e.target.value)}
+                  />
                 </Form.Item>
+
+                {attestationOptions && (
+                  <Form.Item>
+                    <Button block type="dashed" onClick={loginWithPasskey}>
+                      使用通行密钥登录
+                    </Button>
+                  </Form.Item>
+                )}
+
                 <Form.Item
                   name="credentials"
                   rules={[{required: true, message: t('Login.passwordEmptyMessage')}]}
                 >
                   <Input.Password prefix={<IconFont type={'i-mima'}/>}
-
                                   placeholder={t('Login.passwordPlaceholder')}/>
                 </Form.Item>
+
                 {import.meta.env.VITE_CLOUDFLARE_SITE_KEY &&
                   <Form.Item className={'cloudflare-turnstile-container'}>
-                    <label>
-                      <span>{t('Login.cloudflareTurnstileVerify')}</span>
-                    </label>
+                    <label><span>{t('Login.cloudflareTurnstileVerify')}</span></label>
                     <Turnstile
                       ref={turnstileRef}
-                      options={{
-                        theme: theme as 'light' | 'dark' | 'auto',
-                        size: 'flexible',
-                      }}
+                      options={{theme: theme as 'light' | 'dark' | 'auto', size: 'flexible'}}
                       siteKey={import.meta.env.VITE_CLOUDFLARE_SITE_KEY}
                       onSuccess={(token: string) => setTurnstileToken(token)}
                     />
@@ -198,7 +203,10 @@ const Login: FC = () => {
                   <Button
                     disabled={import.meta.env.VITE_CLOUDFLARE_SITE_KEY && !turnstileToken}
                     block
-                    type="primary" htmlType="submit" loading={loginButtonLoading}>
+                    type="primary"
+                    htmlType="submit"
+                    loading={loginButtonLoading}
+                  >
                     {t('Login.loginButton')}
                   </Button>
                 </Form.Item>
@@ -208,23 +216,13 @@ const Login: FC = () => {
               <p>{t('Login.otherLogin')}</p>
             </Divider>
             <div className='other-login-methods'>
-              {weLinkQr ? <Button icon={<IconFont type="i-zhanghao"/>}
-                                  color="default"
-                                  variant="link"
-                                  className='other-login-method'
-                                  onClick={() => {
-                                    setWeLinkQr(false);
-                                  }}>
+              {weLinkQr ?
+                <Button icon={<IconFont type="i-zhanghao"/>} color="default" variant="link"
+                        className='other-login-method' onClick={() => setWeLinkQr(false)}>
                   <p>{t('Login.usernamePasswordLogin')}</p>
                 </Button> :
-                <Button icon={<IconFont type="i-WeLink"/>}
-                        color="default"
-                        variant="link"
-                        className='other-login-method'
-                        onClick={() => {
-                          setWeLinkQr(true);
-                        }}>
-
+                <Button icon={<IconFont type="i-WeLink"/>} color="default" variant="link"
+                        className='other-login-method' onClick={() => setWeLinkQr(true)}>
                   <p>{t('Login.weLinkLogin')}</p>
                 </Button>
               }
@@ -232,14 +230,13 @@ const Login: FC = () => {
           </div>
           <footer className={'foot-copyright'}>
             <p>Copyright © 2024-{new Date().getFullYear()} <a
-              href="https://github.com/fuhouyu">fuhouyu</a>.
-            </p>
+              href="https://github.com/fuhouyu">fuhouyu</a>.</p>
           </footer>
         </Flex>
       </Flex>
     </Flex>
   );
-}
+};
 
 
 export default Login;

@@ -15,28 +15,33 @@
  */
 
 
-/**
- * 账号类型
- */
-export enum AccountType {
-  /**
-   * 密码
-   */
-  PASSWORD = "PASSWORD",
-
-  /**
-   * 刷新令牌
-   */
-  REFRESH_TOKEN = "REFRESH_TOKEN",
-
-  /**
-   * weLink
-   */
-  WELINK = "WELINK",
-
-  /**
-   * 通行密钥
-   */
-  PASSKEY = "PASSKEY",
+.passkey-add-container {
+  height: 100%;
+  background-color: #F7F9FA;
 }
 
+.passkey-add-body {
+  height: 26.25rem;
+  width: 70%;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: 0 0 4px #00000010;
+  border-radius: 0.75rem;
+
+  p {
+    font-size: 0.75rem;
+  }
+}
+
+.passkey-add-header {
+  margin-bottom: 2rem;
+}
+
+.passkey-bind-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.add-content-left, .add-content-right {
+  align-self: flex-start;
+}

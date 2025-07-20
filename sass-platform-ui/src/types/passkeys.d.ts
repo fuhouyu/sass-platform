@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-
-/**
- * 账号类型
- */
-export enum AccountType {
-  /**
-   * 密码
-   */
-  PASSWORD = "PASSWORD",
+export interface Passkeys {
 
   /**
-   * 刷新令牌
+   * 通行密钥名称
    */
-  REFRESH_TOKEN = "REFRESH_TOKEN",
+  passkeyName: string;
 
   /**
-   * weLink
+   * 通行密钥id
    */
-  WELINK = "WELINK",
+  passkeyId: string;
 
   /**
-   * 通行密钥
+   * 最后使用时间
    */
-  PASSKEY = "PASSKEY",
+  lastUseTime: string;
+
+  /**
+   * 创建时间
+   */
+  createdAt: string;
 }
-

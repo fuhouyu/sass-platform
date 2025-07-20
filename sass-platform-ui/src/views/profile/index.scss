@@ -16,7 +16,9 @@
 .content-container {
   height: 100%;
 }
+
 .ant-layout .profile-container {
+  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -34,6 +36,16 @@
   // 菜单
   .profile-menu {
     border: none;
+  }
+
+  .profile-userinfo{
+    margin: 0 .5rem;
+  }
+
+  .profile-userinfo li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
 }

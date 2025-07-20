@@ -23,44 +23,42 @@ import {
 } from "@/types/authentication";
 import {BaseApiUrlConstant} from "@/constants/baseUrlConstant.ts";
 
-const baseAuthUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX
-
 
 class AuthenticationApi {
-    baseUrl: string;
+  baseUrl: string;
 
-    constructor() {
-        this.baseUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX;
-    }
+  constructor() {
+    this.baseUrl = BaseApiUrlConstant.AUTHENTICATION_API_PREFIX;
+  }
 
-    /**
-     * 用户登录
-     * @param loginData 登录的表单信息
-     */
-    adminLoginApi = (loginData: IUserAuthentication): Promise<UserToken | UserBind> =>
-        request.post(`${baseAuthUrl}/admin-login`, loginData);
+  /**
+   * 用户登录
+   * @param loginData 登录的表单信息
+   */
+  adminLoginApi = (loginData: IUserAuthentication): Promise<UserToken | UserBind> =>
+    request.post(`${this.baseUrl}/admin-login`, loginData);
 
 
-    /**
-     * 刷新token
-     * @param refreshToken 刷新令牌
-     */
-    refreshTokenApi = (refreshToken: string): Promise<UserToken> =>
-        request.put(`${baseAuthUrl}/refresh-token`, {
-            refreshToken
-        })
+  /**
+   * 刷新token
+   * @param refreshToken 刷新令牌
+   */
+  refreshTokenApi = (refreshToken: string): Promise<UserToken> =>
+    request.put(`${this.baseUrl}/refresh-token`, {
+      refreshToken
+    })
 
-    /**
-     * 登录的
-     * @param loginData
-     */
-    loginBindApi = (loginData: IThirdPartyBindAuthentication): Promise<UserToken> =>
-        request.post(`${baseAuthUrl}/login-bind`, loginData);
+  /**
+   * 登录的
+   * @param loginData
+   */
+  loginBindApi = (loginData: IThirdPartyBindAuthentication): Promise<UserToken> =>
+    request.post(`${this.baseUrl}/login-bind`, loginData);
 
-    /**
-     * 退出登录
-     */
-    logoutApi = (): Promise<void> => request.post(`${baseAuthUrl}/logout`);
+  /**
+   * 退出登录
+   */
+  logoutApi = (): Promise<void> => request.post(`${this.baseUrl}/logout`);
 }
 
 

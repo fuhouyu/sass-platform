@@ -58,6 +58,7 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
     server: {
       // open: true,// 运行时自动打开浏览器
       host: '0.0.0.0', // 局域网别人也可访问
+      allowedHosts: true,
       proxy: {
         [api]: {
           target: env.VITE_SERVER_URL,

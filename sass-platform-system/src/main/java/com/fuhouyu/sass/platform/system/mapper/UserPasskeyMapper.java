@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.sass.platform.system.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fuhouyu.sass.platform.system.domain.entity.UserPasskey;
 
 /**
- * 账号类型
+ * <p>
+ * 用户通行密钥
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2025/7/19 23:58
  */
-export enum AccountType {
-  /**
-   * 密码
-   */
-  PASSWORD = "PASSWORD",
-
-  /**
-   * 刷新令牌
-   */
-  REFRESH_TOKEN = "REFRESH_TOKEN",
-
-  /**
-   * weLink
-   */
-  WELINK = "WELINK",
-
-  /**
-   * 通行密钥
-   */
-  PASSKEY = "PASSKEY",
+public interface UserPasskeyMapper extends BaseMapper<UserPasskey> {
 }
-
