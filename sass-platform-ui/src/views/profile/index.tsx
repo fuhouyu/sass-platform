@@ -15,145 +15,111 @@
  */
 
 
-import {FC, ReactNode, useState} from "react";
+import {FC} from "react";
 import "./index.scss"
-import {SettingOutlined, UserOutlined} from "@ant-design/icons";
-import {Avatar, Divider, Menu, message, Space, Tooltip} from "antd";
+import {UserOutlined} from "@ant-design/icons";
+import {Avatar, Divider, Flex, message, Tooltip} from "antd";
 import {useTranslation} from "react-i18next";
 import {useUserStore} from "@/store";
 import {IconFont, S3Upload} from "@/components";
 import Layout, {Content, Header} from "antd/es/layout/layout";
-import type {MenuItemType} from "antd/es/menu/interface";
-import {Userinfo} from "@/views/profile/components/Userinfo.tsx";
-import {AccountsSetting} from "@/views/profile/components/AccountsSetting.tsx";
 import {useResourceAction} from "@/hooks/useResourceAction.tsx";
+import {AccountsSetting} from "@/views/profile/components/AccountsSetting.tsx";
 
-interface MenuItem extends MenuItemType {
-  element: ReactNode
-}
 
 /**
  * 个人中心用户详情
  * @constructor 构造函数
  */
 const UserProfile: FC = () => {
-    const {t} = useTranslation();
-    const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
-    const {preview} = useResourceAction();
-    const menuItems: MenuItem[] = [
-        {
-            key: 'profile',
-            icon: <UserOutlined/>,
-            label: t('Menu.profile'),
-            element: <Userinfo/>,
-        },
-        {
-            key: 'accounts',
-            icon: <SettingOutlined/>,
-            label: t('Menu.accountsSetting'),
-            element: <AccountsSetting/>,
-        },
-        // 可以继续添加其他菜单项
-    ];
-    const [selectedMenu, setSelectedMenu] = useState<MenuItem>(menuItems[0]);
+  const {t} = useTranslation();
+  const {userinfo, fetchEditUserinfo} = useUserStore(state => state);
+  const {preview} = useResourceAction();
 
-    /**
-     * 验证是否为图片
-     * @param file 文件
-     */
-    const beforeUpload = async (file: File) => {
-        const isImage = file.type.startsWith('image/');
-        if (!isImage) {
-            message.error('只能上传图片文件！');
-        }
-        return isImage;
+  /**
+   * 验证是否为图片
+   * @param file 文件
+   */
+  const beforeUpload = async (file: File) => {
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('只能上传图片文件！');
     }
+    return isImage;
+  }
 
-    return (
-        <Layout className={'profile-container'}>
-            <div className="profile-left">
+  return (
+    <Layout className={'profile-container'}>
+      <div className="profile-left">
 
+        <div style={{textAlign: 'center'}}>
 
-                <div style={{textAlign: 'center'}}>
+          <S3Upload
+            accept={'image/*'}
+            prefix={"user-avatar"}
+            isPublic={true}
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onUploadSuccess={async (resourceId) => {
+              await fetchEditUserinfo({...userinfo, avatar: resourceId});
+            }}
+          >
+            <Tooltip
+              className={'cursor-point'}
+              title={t('User.updateAvatar')}>
+              <Avatar
+                size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
+                icon={<UserOutlined/>}
+                src={preview(userinfo.avatar)}
+                className="avatar"
+              />
+            </Tooltip>
+          </S3Upload>
+          <div>
+            <h2 className="text-align-center">
+              {userinfo.realName}
+            </h2>
+          </div>
+        </div>
+        <div className={'profile-userinfo'}>
+          <ul>
+           <Flex vertical gap={10}>
 
-                    <S3Upload
-                        accept={'image/*'}
-                        prefix={"user-avatar"}
-                        isPublic={true}
-                        showUploadList={false}
-                        beforeUpload={beforeUpload}
-                        onUploadSuccess={async (resourceId) => {
-                            await fetchEditUserinfo({...userinfo, avatar: resourceId});
-                        }}
-                    >
-                        <Tooltip
-                            className={'cursor-point'}
-                            title={t('User.updateAvatar')}>
-                            <Avatar
-                                size={{xs: 100, sm: 100, md: 100, lg: 100, xl: 100, xxl: 100}}
-                                icon={<UserOutlined/>}
-                                src={preview(userinfo.avatar)}
-                                className="avatar"
-                            />
-                        </Tooltip>
-                    </S3Upload>
-                    <div>
-                        <h2 className="text-align-center">
-                            {userinfo.realName}
-                        </h2>
-                    </div>
-                </div>
+             <li>
+               <IconFont
+                 type={'i-a-Identityshenfenzhiwei'}
+                 style={{fontSize: '.9rem', width: '1.5rem'}}
+               />
+               <span style={{marginLeft: '0.5rem'}}>{userinfo.userPosition?.positionName}</span>
+             </li>
+             <li>
+               <IconFont
+                 type={'i-IPdizhi'}
+                 style={{fontSize: '.9rem', width: '1.5rem'}}
+               />
+               <span style={{marginLeft: '0.5rem'}}>{userinfo.loginIp}</span>
+             </li>
+           </Flex>
+          </ul>
+        </div>
 
-                <div className={'profile-userinfo'}>
-                    <ul>
-                        <Space direction="vertical">
-                            <li>
-                                <Space>
-                                    <IconFont
-                                        type={'i-a-Identityshenfenzhiwei'}
-                                        style={{fontSize: '.9rem'}}
-                                    />
-                                    <span>{userinfo.userPosition?.positionName}</span>
-                                </Space>
-                            </li>
+        <Divider/>
 
-                            <li>
-                                <Space>
-                                    <IconFont
-                                        type={'i-IPdizhi'}
-                                        style={{fontSize: '.9rem'}}
-                                    />
-                                    <span>{userinfo.loginIp}</span>
-                                </Space>
-                            </li>
-                        </Space>
-                    </ul>
-                </div>
-                <Divider/>
-                <Menu
-                    className={'profile-menu'}
-                    mode="inline"
-                    defaultSelectedKeys={[selectedMenu.key.toString()]}
-                    items={menuItems}
-                    onClick={(menu) => {
-                        setSelectedMenu(menuItems.find(item => item.key === menu.key) as MenuItem);
-                    }}
-                />
-            </div>
-            <div className="profile-right">
-                <Content>
-                    <Header className="layout-header">
-                        <h2 className="profile-right-title">
-                            {selectedMenu.label}
-                        </h2>
-                    </Header>
-                    <Divider/>
-                    {selectedMenu.element}
-                </Content>
-            </div>
-        </Layout>
+      </div>
+      <div className="profile-right">
+        <Content>
+          <Header className="layout-header">
+            <h2 className="profile-right-title">
+              {t('Menu.profile')}
+            </h2>
+          </Header>
+          <Divider/>
+          <AccountsSetting/>
+        </Content>
+      </div>
+    </Layout>
 
-    );
+  );
 }
 
 export default UserProfile;

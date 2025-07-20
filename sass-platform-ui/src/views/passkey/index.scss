@@ -14,29 +14,7 @@
  * limitations under the License.
  */
 
-
-/**
- * 账号类型
- */
-export enum AccountType {
-  /**
-   * 密码
-   */
-  PASSWORD = "PASSWORD",
-
-  /**
-   * 刷新令牌
-   */
-  REFRESH_TOKEN = "REFRESH_TOKEN",
-
-  /**
-   * weLink
-   */
-  WELINK = "WELINK",
-
-  /**
-   * 通行密钥
-   */
-  PASSKEY = "PASSKEY",
+.passkey-describe {
+  color: rgb(85, 85, 85);
+  font-size: 12px;
 }
-

@@ -16,6 +16,7 @@
 package com.fuhouyu.sass.platform.system.service;
 
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
+import com.fuhouyu.sass.platform.system.domain.dto.passkey.AuthenticationPasskeyDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
 
@@ -36,6 +37,14 @@ public interface UserAccountService {
      * @return token实体
      */
     UserTokenDTO login(UserLoginDTO userLoginDTO);
+
+    /**
+     * 通行密钥登录
+     *
+     * @param authenticationPasskeyDTO dto对象
+     * @return token实体
+     */
+    UserTokenDTO loginByPasskey(AuthenticationPasskeyDTO authenticationPasskeyDTO);
 
     /**
      * 退出登录

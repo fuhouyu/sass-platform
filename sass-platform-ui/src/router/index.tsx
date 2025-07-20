@@ -20,6 +20,7 @@ import {PageLoading} from "@/components";
 import {LazyLoad, loader} from "@/router/utils";
 import {lazy} from "react";
 import Login from "@/views/login";
+import {AddPasskey} from "@/views/passkey/components/AddPasskey.tsx";
 
 
 const routes: RouteObject[] = [
@@ -61,6 +62,11 @@ const routes: RouteObject[] = [
     id: 'account-bind',
     path: '/account-bind',
     element: LazyLoad(lazy(() => import('@/views/profile/account/index.tsx'))),
+  },
+  {
+    id: 'add-passkey',
+    path: '/passkeys/add',
+    element: <AddPasskey/>,
   },
   {
     id: '404',

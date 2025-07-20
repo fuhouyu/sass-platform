@@ -29,7 +29,16 @@
     <name>Sass Platform System</name>
     <description>系统模块</description>
 
+    <properties>
+        <webauthn4j.version>0.29.4.RELEASE</webauthn4j.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>com.webauthn4j</groupId>
+            <artifactId>webauthn4j-core</artifactId>
+            <version>${webauthn4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fuhouyu</groupId>
             <artifactId>sass-platform-common</artifactId>

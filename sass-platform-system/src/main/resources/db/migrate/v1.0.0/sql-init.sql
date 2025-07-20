@@ -22,17 +22,17 @@ CREATE TABLE tenant_info
     tenant_name    VARCHAR(64)           NOT NULL,
     tenant_type    VARCHAR(12)           NOT NULL,
     remark         VARCHAR(256),
-    icon       BIGINT,
+    icon           BIGINT,
     contact_person VARCHAR(20)           NOT NULL,
     contact_info   VARCHAR(20)           NOT NULL,
-    start_date DATE,
-    end_date   DATE,
+    start_date     DATE,
+    end_date       DATE,
     is_enabled     BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted     BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(64) NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    updated_by VARCHAR(64) NOT NULL,
+    created_at     TIMESTAMP             NOT NULL,
+    created_by     VARCHAR(64)           NOT NULL,
+    updated_at     TIMESTAMP             NOT NULL,
+    updated_by     VARCHAR(64)           NOT NULL,
     UNIQUE (tenant_code)
 );
 
@@ -69,8 +69,8 @@ CREATE TABLE tenant_has_permission
 (
     tenant_id     BIGINT      NOT NULL,
     permission_id BIGINT      NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(64) NOT NULL,
+    created_at    TIMESTAMP   NOT NULL,
+    created_by    VARCHAR(64) NOT NULL,
     PRIMARY KEY (tenant_id, permission_id)
 );
 COMMENT ON TABLE tenant_has_permission IS '租户权限关系表';
@@ -141,11 +141,11 @@ CREATE TABLE roles
     is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
-    owner_tenant_id BIGINT      NOT NULL,
-    created_at      TIMESTAMP   NOT NULL,
-    created_by      VARCHAR(32) NOT NULL,
-    updated_at      TIMESTAMP   NOT NULL,
-    updated_by      VARCHAR(32) NOT NULL,
+    owner_tenant_id   BIGINT                NOT NULL,
+    created_at        TIMESTAMP             NOT NULL,
+    created_by        VARCHAR(32)           NOT NULL,
+    updated_at        TIMESTAMP             NOT NULL,
+    updated_by        VARCHAR(32)           NOT NULL,
     UNIQUE (owner_tenant_id, role_code)
 );
 
@@ -172,8 +172,8 @@ VALUES (1, 1, '超级管理员', 'super_admin', 'ALL', now(), 'admin', now(), 'a
 DROP TABLE IF EXISTS user_has_role;
 CREATE TABLE user_has_role
 (
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
+    user_id    BIGINT      NOT NULL,
+    role_id    BIGINT      NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     created_by VARCHAR(32) NOT NULL,
     PRIMARY KEY (user_id, role_id)
@@ -206,13 +206,13 @@ CREATE TABLE permissions
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
     is_visible        BOOLEAN DEFAULT TRUE  NOT NULL,
     is_leaf           BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
-    owner_tenant_id BIGINT               NOT NULL,
+    is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
+    owner_tenant_id   BIGINT                NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at      TIMESTAMP            NOT NULL,
-    created_by      VARCHAR(32)          NOT NULL,
-    updated_at      TIMESTAMP            NOT NULL,
-    updated_by      VARCHAR(32)          NOT NULL,
+    created_at        TIMESTAMP             NOT NULL,
+    created_by        VARCHAR(32)           NOT NULL,
+    updated_at        TIMESTAMP             NOT NULL,
+    updated_by        VARCHAR(32)           NOT NULL,
     UNIQUE (owner_tenant_id, permission_code)
 );
 CREATE INDEX idx_permission_parent_id ON permissions (parent_id);
@@ -665,8 +665,8 @@ CREATE TABLE role_has_permission
 (
     role_id       BIGINT      NOT NULL,
     permission_id BIGINT      NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(32) NOT NULL,
+    created_at    TIMESTAMP   NOT NULL,
+    created_by    VARCHAR(32) NOT NULL,
     PRIMARY KEY (role_id, permission_id)
 );
 
@@ -816,17 +816,17 @@ CREATE TABLE accounts
 (
     account                     VARCHAR(128)         NOT NULL,
     account_type                VARCHAR(32)          NOT NULL,
-    user_id         BIGINT               NOT NULL,
-    credentials     VARCHAR(128),
+    user_id                     BIGINT               NOT NULL,
+    credentials                 VARCHAR(128),
     credentials_expiration_time TIMESTAMP,
     ref_account_id              VARCHAR(128),
-    user_type       VARCHAR(32)          NOT NULL,
-    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
-    owner_tenant_id BIGINT               NOT NULL,
-    created_at      TIMESTAMP            NOT NULL,
-    created_by      VARCHAR(32)          NOT NULL,
-    updated_at      TIMESTAMP            NOT NULL,
-    updated_by      VARCHAR(32)          NOT NULL,
+    user_type                   VARCHAR(32)          NOT NULL,
+    is_enabled                  BOOLEAN DEFAULT TRUE NOT NULL,
+    owner_tenant_id             BIGINT               NOT NULL,
+    created_at                  TIMESTAMP            NOT NULL,
+    created_by                  VARCHAR(32)          NOT NULL,
+    updated_at                  TIMESTAMP            NOT NULL,
+    updated_by                  VARCHAR(32)          NOT NULL,
     PRIMARY KEY (owner_tenant_id, account, account_type)
 );
 
@@ -861,17 +861,17 @@ CREATE TABLE dict_type
 (
     id                BIGINT                NOT NULL PRIMARY KEY,
     dict_name         VARCHAR(128)          NOT NULL,
-    dict_code       VARCHAR(128)         NOT NULL,
+    dict_code         VARCHAR(128)          NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
-    display_order   INT     DEFAULT 0    NOT NULL,
-    owner_tenant_id BIGINT               NOT NULL,
-    remark          VARCHAR(128),
-    created_at      TIMESTAMP            NOT NULL,
-    created_by      VARCHAR(32)          NOT NULL,
-    updated_at      TIMESTAMP            NOT NULL,
-    updated_by      VARCHAR(32)          NOT NULL,
+    is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
+    display_order     INT     DEFAULT 0     NOT NULL,
+    owner_tenant_id   BIGINT                NOT NULL,
+    remark            VARCHAR(128),
+    created_at        TIMESTAMP             NOT NULL,
+    created_by        VARCHAR(32)           NOT NULL,
+    updated_at        TIMESTAMP             NOT NULL,
+    updated_by        VARCHAR(32)           NOT NULL,
     UNIQUE (owner_tenant_id, dict_code)
 );
 
@@ -920,19 +920,19 @@ DROP TABLE IF EXISTS dict_item;
 CREATE TABLE dict_item
 (
     id                BIGINT                NOT NULL PRIMARY KEY,
-    dict_code       VARCHAR(128)         NOT NULL,
+    dict_code         VARCHAR(128)          NOT NULL,
     item_name         VARCHAR(128)          NOT NULL,
     item_code         VARCHAR(128)          NOT NULL,
     display_order     INT                   NOT NULL DEFAULT 0,
     is_allow_modified BOOLEAN DEFAULT TRUE  NOT NULL,
-    is_enabled      BOOLEAN DEFAULT TRUE NOT NULL,
-    owner_tenant_id BIGINT               NOT NULL,
+    is_enabled        BOOLEAN DEFAULT TRUE  NOT NULL,
+    owner_tenant_id   BIGINT                NOT NULL,
     is_deleted        BOOLEAN DEFAULT FALSE NOT NULL,
-    remark          VARCHAR(128),
-    created_at      TIMESTAMP            NOT NULL,
-    created_by      VARCHAR(32)          NOT NULL,
-    updated_at      TIMESTAMP            NOT NULL,
-    updated_by      VARCHAR(32)          NOT NULL,
+    remark            VARCHAR(128),
+    created_at        TIMESTAMP             NOT NULL,
+    created_by        VARCHAR(32)           NOT NULL,
+    updated_at        TIMESTAMP             NOT NULL,
+    updated_by        VARCHAR(32)           NOT NULL,
     UNIQUE (owner_tenant_id, dict_code, item_code)
 );
 
@@ -1012,16 +1012,16 @@ CREATE TABLE organizations
     organization_name VARCHAR(255)       NOT NULL,
     organization_code VARCHAR(255)       NOT NULL,
     organization_type VARCHAR(32)        NOT NULL,
-    is_enabled BOOLEAN     NOT NULL DEFAULT true,
-    is_leaf    BOOLEAN     NOT NULL DEFAULT true,
+    is_enabled        BOOLEAN            NOT NULL DEFAULT true,
+    is_leaf           BOOLEAN            NOT NULL DEFAULT true,
     remark            VARCHAR(255),
     display_order     INTEGER            NOT NULL DEFAULT 1,
     owner_tenant_id   BIGINT             NOT NULL,
-    is_deleted BOOLEAN     NOT NULL DEFAULT false,
-    created_at TIMESTAMP   NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(64) NOT NULL,
-    updated_by VARCHAR(64) NOT NULL
+    is_deleted        BOOLEAN            NOT NULL DEFAULT false,
+    created_at        TIMESTAMP          NOT NULL,
+    updated_at        TIMESTAMP          NOT NULL,
+    created_by        VARCHAR(64)        NOT NULL,
+    updated_by        VARCHAR(64)        NOT NULL
 );
 
 CREATE UNIQUE INDEX uni_tenant_organization_code ON organizations (owner_tenant_id, organization_code);
@@ -1060,10 +1060,10 @@ CREATE TABLE user_positions
     position_name         VARCHAR(128) NOT NULL,
     is_main               BOOLEAN      NOT NULL DEFAULT false,
     order_in_organization BIGINT       NOT NULL,
-    created_at TIMESTAMP   NOT NULL,
-    updated_at TIMESTAMP   NOT NULL,
-    created_by VARCHAR(64) NOT NULL,
-    updated_by VARCHAR(64) NOT NULL,
+    created_at            TIMESTAMP    NOT NULL,
+    updated_at            TIMESTAMP    NOT NULL,
+    created_by            VARCHAR(64)  NOT NULL,
+    updated_by            VARCHAR(64)  NOT NULL,
     PRIMARY KEY (organization_id, user_id)
 );
 
@@ -1117,23 +1117,23 @@ VALUES (1, 'platform-bucket', 1, 'private', now(), 'admin', now(), 'admin');
 DROP TABLE IF EXISTS resources;
 CREATE TABLE resources
 (
-    id           BIGINT PRIMARY KEY,
-    parent_id    BIGINT       NOT NULL DEFAULT -1,
+    id              BIGINT PRIMARY KEY,
+    parent_id       BIGINT       NOT NULL DEFAULT -1,
     name            VARCHAR(255) NOT NULL,
     size            BIGINT       NOT NULL DEFAULT 0,
     mime_type       VARCHAR(100),
-    object_key   VARCHAR(255) NOT NULL,
-    version      VARCHAR(64)  NOT NULL,
-    category     VARCHAR(64)  NOT NULL DEFAULT 'OTHER',
-    etag         VARCHAR(64)  NOT NULL,
-    is_directory BOOLEAN      NOT NULL DEFAULT FALSE,
+    object_key      VARCHAR(255) NOT NULL,
+    version         VARCHAR(64)  NOT NULL,
+    category        VARCHAR(64)  NOT NULL DEFAULT 'OTHER',
+    etag            VARCHAR(64)  NOT NULL,
+    is_directory    BOOLEAN      NOT NULL DEFAULT FALSE,
     is_deleted      BOOLEAN      NOT NULL DEFAULT FALSE,
     is_public       BOOLEAN      NOT NULL DEFAULT FALSE,
     owner_tenant_id BIGINT       NOT NULL,
-    created_at   TIMESTAMP    NOT NULL,
-    created_by   VARCHAR(32)  NOT NULL,
-    updated_at   TIMESTAMP    NOT NULL,
-    updated_by   VARCHAR(32)  NOT NULL,
+    created_at      TIMESTAMP    NOT NULL,
+    created_by      VARCHAR(32)  NOT NULL,
+    updated_at      TIMESTAMP    NOT NULL,
+    updated_by      VARCHAR(32)  NOT NULL,
     UNIQUE (owner_tenant_id, object_key)
 );
 CREATE INDEX idx_resources_parent_id ON resources (parent_id);
@@ -1273,10 +1273,10 @@ CREATE TABLE param_configs
     config_name       VARCHAR(128) NOT NULL,
     config_key        VARCHAR(256) NOT NULL,
     config_value      VARCHAR(256) NOT NULL,
-    group_key  VARCHAR(32) NOT NULL,
+    group_key         VARCHAR(32)  NOT NULL,
     remark            VARCHAR(512),
     is_allow_modified BOOLEAN      NOT NULL DEFAULT TRUE,
-    is_deleted BOOLEAN     NOT NULL DEFAULT FALSE,
+    is_deleted        BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP    NOT NULL,
     created_by        VARCHAR(32)  NOT NULL,
     updated_at        TIMESTAMP    NOT NULL,
@@ -1428,22 +1428,22 @@ COMMENT ON COLUMN applications.updated_by IS '更新人';
 DROP TABLE IF EXISTS site_config;
 CREATE TABLE site_config
 (
-    id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),           -- 主键
+    id               INT PRIMARY KEY DEFAULT 1 CHECK (id = 1), -- 主键
 
-    site_name        VARCHAR(255) NOT NULL,                -- 网站名称
-    site_description TEXT,                                 -- 网站描述
-    site_logo BIGINT NOT NULL,                             -- 网站 Logo 图片地址
-    site_favicon     VARCHAR(500),                         -- 浏览器小图标 favicon.ico 地址
+    site_name        VARCHAR(255) NOT NULL,                    -- 网站名称
+    site_description TEXT,                                     -- 网站描述
+    site_logo        BIGINT       NOT NULL,                    -- 网站 Logo 图片地址
+    site_favicon     VARCHAR(500),                             -- 浏览器小图标 favicon.ico 地址
 
-    contact_email    VARCHAR(255),                         -- 联系邮箱
-    contact_phone    VARCHAR(50),                          -- 联系电话
-    contact_address  TEXT,                                 -- 联系地址
+    contact_email    VARCHAR(255),                             -- 联系邮箱
+    contact_phone    VARCHAR(50),                              -- 联系电话
+    contact_address  TEXT,                                     -- 联系地址
 
-    icp_number       VARCHAR(100),                         -- ICP备案号
-    beian_url        VARCHAR(500),                         -- 备案跳转链接
+    icp_number       VARCHAR(100),                             -- ICP备案号
+    beian_url        VARCHAR(500),                             -- 备案跳转链接
 
-    language_default VARCHAR(20)  DEFAULT 'zh-CN',         -- 默认语言
-    timezone         VARCHAR(100) DEFAULT 'Asia/Shanghai', -- 默认时区
+    language_default VARCHAR(20)     DEFAULT 'zh-CN',          -- 默认语言
+    timezone         VARCHAR(100)    DEFAULT 'Asia/Shanghai',  -- 默认时区
     created_at       TIMESTAMP    NOT NULL,
     created_by       VARCHAR(64)  NOT NULL,
     updated_at       TIMESTAMP    NOT NULL,
@@ -1473,8 +1473,8 @@ COMMENT ON COLUMN site_config.updated_by IS '更新人';
 
 
 INSERT INTO site_config (id, site_name, site_description, site_logo, site_favicon,
-                          contact_email, contact_phone, contact_address, icp_number, beian_url,
-                          language_default, timezone, created_at, created_by, updated_at, updated_by)
+                         contact_email, contact_phone, contact_address, icp_number, beian_url,
+                         language_default, timezone, created_at, created_by, updated_at, updated_by)
 VALUES (1, 'Sass', '站点设置', '', '',
         'mail@fuhouyu.com', '', '', '',
         '',
@@ -1484,4 +1484,41 @@ VALUES (1, 'Sass', '站点设置', '', '',
 ALTER TABLE resources
     ADD COLUMN IF NOT EXISTS is_tmp_file BOOLEAN DEFAULT FALSE;
 COMMENT ON COLUMN resources.is_tmp_file IS '是否为临时文件';
+
+-- 删除已存在的表
+DROP TABLE IF EXISTS user_passkeys;
+
+CREATE TABLE user_passkeys
+(
+    username           VARCHAR(128) NOT NULL,
+    passkey_name           VARCHAR(100) NOT NULL,
+    passkey_id      TEXT         NOT NULL UNIQUE,
+    public_key         TEXT         NOT NULL,
+    sign_count         BIGINT  DEFAULT 0,
+    aaguid             TEXT,
+    client_data        TEXT         NOT NULL,
+    attestation_object TEXT         NOT NULL,
+    transports         TEXT,
+    last_use_time      TIMESTAMP,
+    created_at         TIMESTAMP    not NULL,
+    updated_at         TIMESTAMP    not null,
+    PRIMARY KEY (username, passkey_id)
+);
+
+-- 表注释
+COMMENT ON TABLE user_passkeys IS '用户通行密钥信息表';
+
+-- 字段注释
+COMMENT ON COLUMN user_passkeys.username IS '用户名称';
+COMMENT ON COLUMN user_passkeys.passkey_name IS '通行密钥名称';
+COMMENT ON COLUMN user_passkeys.passkey_id IS '通行密钥 ID（Base64 编码）';
+COMMENT ON COLUMN user_passkeys.public_key IS '公钥（Base64 编码）';
+COMMENT ON COLUMN user_passkeys.sign_count IS '签名计数器';
+COMMENT ON COLUMN user_passkeys.aaguid IS 'AAGUID（Base64 编码）';
+COMMENT ON COLUMN user_passkeys.client_data IS '客户端数据 JSON（Base64 编码）';
+COMMENT ON COLUMN user_passkeys.attestation_object IS 'Attestation 对象（Base64 编码）';
+COMMENT ON COLUMN user_passkeys.transports IS '支持的认证器传输类型（如 usb, nfc, internal）';
+COMMENT ON COLUMN user_passkeys.last_use_time IS '最后使用时间';
+COMMENT ON COLUMN user_passkeys.created_at IS '创建时间';
+COMMENT ON COLUMN user_passkeys.updated_at IS '更新时间';
 

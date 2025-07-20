@@ -32,6 +32,7 @@ import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.AccountIdDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.ThirdPartyBindPlatformDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.account.UserAccountDetails;
+import com.fuhouyu.sass.platform.system.domain.dto.passkey.AuthenticationPasskeyDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.LoginUserDetailDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.user.UserTokenDTO;
@@ -106,6 +107,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         });
         this.userService.recordLoginSuccess(userTokenDTO.getUserId());
         return userTokenDTO;
+    }
+
+    @Override
+    public UserTokenDTO loginByPasskey(AuthenticationPasskeyDTO authenticationPasskeyDTO) {
+        return null;
     }
 
     @Override

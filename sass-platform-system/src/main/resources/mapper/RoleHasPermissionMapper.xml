@@ -19,7 +19,7 @@
     <resultMap id="BaseResultMap" type="com.fuhouyu.sass.platform.system.domain.entity.RoleHasPermission" extends="com.fuhouyu.sass.platform.system.mapper.BaseEntityMapper.BaseResultMap">
         <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
-        <result column="created_at" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
         <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
     </resultMap>
 

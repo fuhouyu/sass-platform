@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.sass.platform.system.enums;
 
+import com.fuhouyu.sass.platform.system.components.security.provider.PasskeyAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.components.security.provider.WeLinkAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.components.security.provider.WechatAppletAuthenticationProvider;
 import com.fuhouyu.sass.platform.system.domain.dto.user.admin.UserLoginDTO;
@@ -56,7 +57,15 @@ public enum AccountTypeEnum {
         public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
             return new WechatAppletAuthenticationProvider.WechatAppletAuthenticationToken(userLoginDTO.getAccount());
         }
-    };
+    },
+    PASSKEY {
+        @Override
+        public AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO) {
+            return new PasskeyAuthenticationProvider.PasskeyAuthenticationToken(userLoginDTO.getAccount(), userLoginDTO.getCredentials());
+        }
+    }
+
+    ;
 
     public abstract AbstractAuthenticationToken getAuthenticationToken(UserLoginDTO userLoginDTO);
 
