@@ -21,14 +21,13 @@ import {useState} from 'react';
 import i18n from 'i18next';
 import {IconFont} from '@/components';
 import {useLocaleStore} from "@/store";
-import type {ItemType} from "antd/es/menu/interface";
 import {CommonConstant} from "@/constants/commonConstant.ts";
 
 const useLanguageSwitcher = (className?: string) => {
     const {language, changeLanguage} = useLocaleStore(state => state);
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
 
-    const switchLanguage: MenuProps['onClick'] = async (e: ItemType) => {
+    const switchLanguage: MenuProps['onClick'] = async (e) => {
         if (!e) {
             return;
         }
