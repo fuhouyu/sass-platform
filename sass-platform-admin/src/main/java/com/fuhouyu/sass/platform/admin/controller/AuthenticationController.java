@@ -57,8 +57,6 @@ public class AuthenticationController {
 
     private final UserAccountService userAccountService;
 
-    private final UserPasskeysService userPasskeysService;
-
 
     /**
      * 后台管理员用户登录

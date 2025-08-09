@@ -17,20 +17,10 @@ package com.fuhouyu.sass.platform.system.components.security.provider;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
-import com.fuhouyu.sass.platform.common.constants.HttpRequestAdditionalConstant;
-import com.fuhouyu.sass.platform.system.assembler.SecurityUserDetailAssembler;
-import com.fuhouyu.sass.platform.system.domain.dto.account.AccountDTO;
 import com.fuhouyu.sass.platform.system.domain.dto.passkey.AuthenticationPasskeyDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.user.UserDTO;
-import com.fuhouyu.sass.platform.system.domain.dto.wechat.WechatAppletSessionDTO;
 import com.fuhouyu.sass.platform.system.enums.AccountTypeEnum;
-import com.fuhouyu.sass.platform.system.enums.UserTypeEnum;
-import com.fuhouyu.sass.platform.system.service.AccountService;
 import com.fuhouyu.sass.platform.system.service.UserPasskeysService;
-import com.fuhouyu.sass.platform.system.service.UserService;
-import com.fuhouyu.sass.platform.system.service.WechatAppletService;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -43,7 +33,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
